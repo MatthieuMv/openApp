@@ -2,10 +2,7 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** openApp
+** tests_Interpreter
 */
 
-#pragma once
-
-#include "Core.hpp"
-#include "App.hpp"
+#include <criterion/criterion.h>

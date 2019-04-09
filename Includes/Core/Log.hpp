@@ -27,11 +27,11 @@ public:
 
     OStream &getStream(void) const noexcept { return _stream; }
 
-    bool repeat(void) const noexcept { return _repeat ? --_repeat, true : false;; }
+    Bool repeat(void) const noexcept { return _repeat ? --_repeat, true : false;; }
     void setRepeat(Uint value) const noexcept { _repeat = value; }
 
-    bool getEnabled(void) const noexcept { return _enabled; }
-    void setEnabled(bool value) noexcept { _enabled = value; }
+    Bool getEnabled(void) const noexcept { return _enabled; }
+    void setEnabled(Bool value) noexcept { _enabled = value; }
 
     template<typename T>
     const Log &log(const T &value) const noexcept {
@@ -46,7 +46,7 @@ public:
 private:
     OStream &_stream;
     mutable Uint _repeat = 0;
-    bool _enabled = true;
+    Bool _enabled = true;
 };
 
 class oA::Log::Repeater

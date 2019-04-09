@@ -17,7 +17,7 @@ template<typename... Args>
 class Signal
 {
 public:
-    using SignalFunction = Function<bool(Args...)>;
+    using SignalFunction = Function<Bool(Args...)>;
 
     Uint connect(SignalFunction &&slot) noexcept {
         _slots.insert(std::make_pair(++_idx, std::move(slot)));

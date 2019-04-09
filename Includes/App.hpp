@@ -7,8 +7,3 @@
 
 #pragma once
 
-/* Variant */
-#include "App/Variant.hpp"
-#include "App/VInt.hpp"
-#include "App/VFloat.hpp"
-#include "App/VString.hpp"

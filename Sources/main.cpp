@@ -11,17 +11,14 @@
 int main(void)
 {
     try {
-        int i = 0;
-        oA::Signal<> sig;
-        auto idx = sig.connect([&i]{ ++i; return true; });
-
-        oA::cout << "Sig idx " << idx << " " << i << oA::endl;
-        sig.emit();
-        oA::cout << "Sig idx " << idx << " " << i << oA::endl;
-        sig.disconnect(idx);
-        sig.emit();
-        oA::cout << "Sig idx " << idx << " " << i << oA::endl;
-        return 0;
+        oA::Interpreter i;
+        i.execString("x = 11 + 12");
+        oA::cout << "Bool " << i.toBool("x") << oA::endl
+                 << "Int " << i.toInt("x") << oA::endl
+                 << "Long " << i.toLong("x") << oA::endl
+                 << "Float " << i.toFloat("x") << oA::endl
+                 << "Double " << i.toDouble("x") << oA::endl
+                 << "String " << i.toString("x") << oA::endl;
     } catch (const std::exception &e) {
         oA::cerr << e.what() << oA::endl;
     }
