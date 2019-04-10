@@ -81,10 +81,10 @@ bin: $(OBJ)
 debug:
 	make DEBUG=-g3 bin
 
-clean:
+clean: lua_clean
 	$(RM) $(OBJ)
 
-fclean: clean lua_clean
+fclean: clean
 	$(RM) $(OA_DYNAMIC)
 	$(RM) $(OA_STATIC)
 	$(RM) $(BINARY)
