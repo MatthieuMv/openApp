@@ -70,6 +70,7 @@ clean:
 
 fclean:
 	$(RM) $(ALL_T)
+	$(RM) lua53.dll
 
 depend:
 	@$(CC) $(CFLAGS) -MM l*.c
