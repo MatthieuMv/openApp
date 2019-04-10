@@ -43,7 +43,7 @@ LUAC_T=	luac
 LUAC_O=	luac.o
 
 ALL_O= $(BASE_O) $(LUA_O) $(LUAC_O)
-ALL_T= $(LUA_A) $(LUA_T) $(LUAC_T)
+ALL_T= $(LUA_A)
 ALL_A= $(LUA_A)
 
 # Targets start here.
@@ -66,7 +66,10 @@ $(LUAC_T): $(LUAC_O) $(LUA_A)
 	$(CC) -o $@ $(LDFLAGS) $(LUAC_O) $(LUA_A) $(LIBS)
 
 clean:
-	$(RM) $(ALL_T) $(ALL_O)
+	$(RM) $(ALL_O)
+
+fclean:
+	$(RM) $(ALL_T)
 
 depend:
 	@$(CC) $(CFLAGS) -MM l*.c

@@ -30,7 +30,7 @@ RM			=	rm -f
 DEBUG		=
 CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(DEBUG)
 CPPFLAGS	=	-I $(F_INCLUDES) -I $(F_EXTERN)/lua/src
-LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua53
+LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 # Compilation sources
@@ -72,6 +72,9 @@ lua:
 lua_clean:
 	make -C $(F_EXTERN)/lua clean
 
+lua_fclean:
+	make -C $(F_EXTERN)/lua fclean
+
 bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)
 
@@ -88,4 +91,4 @@ fclean: clean lua_clean
 
 re: fclean all
 
-.PHONY: all compile static dynamic linux windows macosx lua bin debug clean fclean re
+.PHONY: all compile static dynamic bin debug lua_linux lua_windows lua_macosx lua lua_clean lua_fclean clean fclean re
