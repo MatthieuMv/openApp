@@ -77,16 +77,6 @@
 */
 #if !defined(lua_readline)	/* { */
 
-#if defined(LUA_USE_READLINE)	/* { */
-
-#include <readline/readline.h>
-#include <readline/history.h>
-#define lua_readline(L,b,p)	((void)L, ((b)=readline(p)) != NULL)
-#define lua_saveline(L,line)	((void)L, add_history(line))
-#define lua_freeline(L,b)	((void)L, free(b))
-
-#else				/* }{ */
-
 #define lua_readline(L,b,p) \
         ((void)L, fputs(p, stdout), fflush(stdout),  /* show prompt */ \
         fgets(b, LUA_MAXINPUT, stdin) != NULL)  /* get line */
@@ -94,11 +84,6 @@
 #define lua_freeline(L,b)	{ (void)L; (void)b; }
 
 #endif				/* } */
-
-#endif				/* } */
-
-
-
 
 static lua_State *globalL = NULL;
 
