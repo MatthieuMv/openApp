@@ -7,9 +7,10 @@
 
 #pragma once
 
-#include "Scalar.hpp"
-#include "String.hpp"
-#include "Variant.hpp"
+#include "Core/Scalar.hpp"
+#include "Core/String.hpp"
+#include "Core/Variant.hpp"
+#include "Core/Memory.hpp"
 
 struct lua_State;
 
@@ -34,9 +35,9 @@ public:
     String getString(const String &varname);
 
     /* Template variable getter */
-    template<typename T>
-    T get(const String &varname);
+    //template<typename T>
+    //T get(const String &varname);
 
 private:
-    lua_State *_state = nullptr;
+    oA::Shared<lua_State> _state;
 };

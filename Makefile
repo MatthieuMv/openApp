@@ -36,12 +36,13 @@ FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 # Compilation sources
 MAIN		=	$(F_SOURCES)/main.cpp
 
-CORE_SRC	=	$(F_SOURCES)/Core/Log.cpp \
-				$(F_SOURCES)/Core/Interpreter.cpp
+CORE_SRC	=	$(F_SOURCES)/Core/Log.cpp
 
 APP_SRC		=
 
-SRC			=	$(CORE_SRC) $(APP_SRC)
+INTERP_SRC	=	$(F_SOURCES)/Interpreter/Interpreter.cpp
+
+SRC			=	$(CORE_SRC) $(APP_SRC) $(INTERP_SRC)
 
 OBJ			=	$(SRC:.cpp=.o)
 

@@ -7,32 +7,31 @@
 
 #include "lua.hpp"
 #include "Core/Error.hpp"
-#include "Core/Interpreter.hpp"
+#include "Interpreter/Interpreter.hpp"
 
-oA::Interpreter::Interpreter(void)
+oA::Interpreter::Interpreter(void) : _state(luaL_newstate(), lua_close)
 {
-    _state = luaL_newstate();
+
 }
 
 oA::Interpreter::~Interpreter(void)
 {
-    lua_close(_state);
 }
 
 oA::Bool oA::Interpreter::execString(const oA::String &string)
 {
-    return !luaL_dostring(_state, string.c_str());
+    return !luaL_dostring(_state.get(), string.c_str());
 }
 
 oA::Bool oA::Interpreter::execFile(const oA::String &path)
 {
-    return !luaL_dofile(_state, path.c_str());
+    return !luaL_dofile(_state.get(), path.c_str());
 }
 
 oA::Bool oA::Interpreter::getBool(const oA::String &varname)
 {
-    lua_getglobal(_state, varname.c_str());
-    return lua_toboolean(_state, 1);
+    lua_getglobal(_state.get(), varname.c_str());
+    return lua_toboolean(_state.get(), 1);
 }
 
 oA::Int oA::Interpreter::getInt(const oA::String &varname)
@@ -43,11 +42,13 @@ oA::Int oA::Interpreter::getInt(const oA::String &varname)
 oA::Long oA::Interpreter::getLong(const oA::String &varname)
 {
     int success = 0;
+    oA::Long res;
 
-    lua_getglobal(_state, varname.c_str());
-    lua_tointegerx(_state, 1, &success);
+    lua_getglobal(_state.get(), varname.c_str());
+    res = lua_tointegerx(_state.get(), 1, &success);
     if (!success)
         throw oA::TypeError("Interpreter", "Variable @" + varname + "@ is not an integer");
+    return res;
 }
 
 oA::Float oA::Interpreter::getFloat(const oA::String &varname)
@@ -58,26 +59,22 @@ oA::Float oA::Interpreter::getFloat(const oA::String &varname)
 oA::Double oA::Interpreter::getDouble(const oA::String &varname)
 {
     int success = 0;
+    oA::Double res;
 
-    lua_getglobal(_state, varname.c_str());
-    lua_tonumberx(_state, 1, &success);
+    lua_getglobal(_state.get(), varname.c_str());
+    res = lua_tonumberx(_state.get(), 1, &success);
     if (!success)
         throw oA::TypeError("Interpreter", "Variable @" + varname + "@ is not a floating point");
+    return res;
 }
 
 oA::String oA::Interpreter::getString(const oA::String &varname)
 {
     const char *res;
 
-    lua_getglobal(_state, varname.c_str());
-    res = lua_tostring(_state, 1);
+    lua_getglobal(_state.get(), varname.c_str());
+    res = lua_tostring(_state.get(), 1);
     if (!res)
         throw oA::TypeError("Interpreter", "Variable @" + varname + "@ is not a string");
     return res;
-}
-
-template<typename T>
-T oA::Interpreter::get(const String &varname)
-{
-
 }

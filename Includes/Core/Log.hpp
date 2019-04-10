@@ -8,7 +8,9 @@
 #pragma once
 
 #include "Scalar.hpp"
+#include "String.hpp"
 #include "Stream.hpp"
+#include "Console.hpp"
 
 namespace oA { class Log; }
 
@@ -23,15 +25,17 @@ public:
         CERR
     };
 
-    Log(Output out = COUT);
+    Log(Output out = COUT,
+        ConsoleColor text = CSL_DEFAULT,
+        ConsoleColor background = CSL_BG_BLACK,
+        ConsoleColor quote = CSL_LIGHT_BLUE);
 
-    OStream &getStream(void) const noexcept { return _stream; }
-
-    Bool repeat(void) const noexcept { return _repeat ? --_repeat, true : false;; }
-    void setRepeat(Uint value) const noexcept { _repeat = value; }
-
-    Bool getEnabled(void) const noexcept { return _enabled; }
-    void setEnabled(Bool value) noexcept { _enabled = value; }
+    OStream &getStream(void) const noexcept;
+    Bool repeat(void) const noexcept;
+    void setRepeat(Uint value) const noexcept;
+    Bool getEnabled(void) const noexcept;
+    void setEnabled(Bool value) noexcept;
+    void formatConsoleString(String &string) const noexcept;
 
     template<typename T>
     const Log &log(const T &value) const noexcept {
@@ -47,6 +51,9 @@ private:
     OStream &_stream;
     mutable Uint _repeat = 0;
     Bool _enabled = true;
+    ConsoleColor _text;
+    ConsoleColor _background;
+    ConsoleColor _quote;
 };
 
 class oA::Log::Repeater
@@ -54,12 +61,9 @@ class oA::Log::Repeater
 public:
     Repeater(void) = default;
 
-    const Repeater &operator()(int x) const noexcept {
-        _x = x;
-        return (*this);
-    }
+    const Repeater &operator()(int x) const noexcept;
+    Uint get(void) const noexcept;
 
-    Uint get(void) const noexcept { return _x; }
 private:
     mutable Uint _x = 0;
 };
@@ -76,6 +80,7 @@ const oA::Log &operator<<(const oA::Log &log, const T &value) {
 
 const oA::Log &operator<<(const oA::Log &log, const oA::Log::Repeater &repeater);
 const oA::Log &operator<<(const oA::Log &log, const oA::Log::Endl &endl);
+const oA::Log &operator<<(const oA::Log &log, oA::String string);
 
 namespace oA
 {

@@ -42,6 +42,3 @@
 
 /* Time */
 #include "Core/Chrono.hpp"
-
-/* Lua API */
-#include "Core/Interpreter.hpp"

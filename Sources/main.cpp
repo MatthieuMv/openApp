@@ -12,13 +12,13 @@ int main(void)
 {
     try {
         oA::Interpreter i;
-        i.execString("x = 11 + 12");
-        oA::cout << "Bool " << i.toBool("x") << oA::endl
-                 << "Int " << i.toInt("x") << oA::endl
-                 << "Long " << i.toLong("x") << oA::endl
-                 << "Float " << i.toFloat("x") << oA::endl
-                 << "Double " << i.toDouble("x") << oA::endl
-                 << "String " << i.toString("x") << oA::endl;
+        i.execString("x = 11.123 + 12.987");
+        oA::cout << "Bool " << i.getBool("x") << oA::endl
+                 << "Int " << i.getInt("x") << oA::endl
+                 << "Long " << i.getLong("x") << oA::endl
+                 << "Float " << i.getFloat("x") << oA::endl
+                 << "Double " << i.getDouble("x") << oA::endl
+                 << "String " << i.getString("x") << oA::endl;
     } catch (const std::exception &e) {
         oA::cerr << e.what() << oA::endl;
     }
