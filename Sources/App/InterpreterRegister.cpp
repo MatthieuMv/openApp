@@ -15,6 +15,6 @@ void oA::Interpreter::RegisterInterpreterClasses(void)
     if (init)
         return;
     init = true;
-    Icout << "Registering lua base classes" << oA::endl;
+    Icout << "Registering Interpreter @base classes@" << oA::endl;
     oA::Item::registerItem();
 }

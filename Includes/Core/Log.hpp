@@ -39,8 +39,7 @@ public:
 
     Log(Output out = COUT,
         ConsoleColor text = ConsoleColor(),
-        ConsoleColor quote = ConsoleColor(),
-        ConsoleColor background = ConsoleColor());
+        ConsoleColor quote = ConsoleColor());
 
     OStream &getStream(void) const noexcept;
     Bool repeat(void) const noexcept;
@@ -64,7 +63,6 @@ private:
     mutable Uint _repeat = 0;
     Bool _enabled = true;
     ConsoleColor _text;
-    ConsoleColor _background;
     ConsoleColor _quote;
     mutable bool _inQuote = false;
 };

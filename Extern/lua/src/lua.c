@@ -79,10 +79,15 @@
 
 #if defined(LUA_USE_READLINE)	/* { */
 
-#include <readline/readline.h>
-#include <readline/history.h>
-#define lua_readline(L,b,p)	((void)L, ((b)=readline(p)) != NULL)
-#define lua_saveline(L,line)	((void)L, add_history(line))
+//#include <readline/readline.h>
+//#include <readline/history.h>
+//#define lua_readline(L,b,p)	((void)L, ((b)=readline(p)) != NULL)
+//#define lua_saveline(L,line)	((void)L, add_history(line))
+//#define lua_freeline(L,b)	((void)L, free(b))
+
+// Removed readline dependency
+#define lua_readline(L,b,p)	((void)L, ((b)=NULL) != NULL)
+#define lua_saveline(L,line)	((void)L, (void)(line))
 #define lua_freeline(L,b)	((void)L, free(b))
 
 #else				/* }{ */

@@ -27,7 +27,7 @@ RM			=	rm -f
 DEBUG		=
 CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(DEBUG) -Wno-ignored-qualifiers
 CPPFLAGS	=	-I $(F_INCLUDES) -I $(F_EXTERN) -I $(F_EXTERN)/LuaBridge -I $(F_EXTERN)/lua/src
-LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua
+LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua -ldl
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 # Compilation sources

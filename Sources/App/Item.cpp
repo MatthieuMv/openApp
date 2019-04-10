@@ -12,5 +12,6 @@ void oA::Item::registerItem(void)
 {
     oA::Interpreter::GetGlobalNamespace()
         .beginClass<oA::Item>("Item")
-            .addProperty("id", oA::Item::id, oA::Item::id);
+            .addProperty("id", &oA::Item::id, &oA::Item::set_id)
+        .endClass();
 }

@@ -13,15 +13,13 @@ const oA::Log oA::cerr(oA::Log::CERR, oA::CSL_LIGHT_YELLOW, oA::CSL_LIGHT_RED);
 const oA::Log::Repeater oA::repeat;
 const oA::Log::Endl oA::endl;
 
-oA::Log::Log(Output out, ConsoleColor text, ConsoleColor background, ConsoleColor quote)
-    : _stream(out == CERR ? std::cerr : std::cout), _text(text), _background(background), _quote(quote)
+oA::Log::Log(Output out, ConsoleColor text, ConsoleColor quote)
+    : _stream(out == CERR ? std::cerr : std::cout), _text(text), _quote(quote)
 {
     if (_text.empty())
         _text = oA::CSL_WHITE;
     if (_quote.empty())
         _quote = oA::CSL_LIGHT_BLUE;
-    if (_background.empty())
-        _background = oA::CSL_BG_BLACK;
 }
 
 oA::OStream &oA::Log::getStream(void) const noexcept
