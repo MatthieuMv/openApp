@@ -35,7 +35,9 @@ MAIN		=	$(F_SOURCES)/main.cpp
 
 CORE_SRC	=	$(F_SOURCES)/Core/Log.cpp
 
-APP_SRC		=
+APP_SRC		=	$(F_SOURCES)/App/Interpreter.cpp \
+				$(F_SOURCES)/App/InterpreterRegister.cpp \
+				$(F_SOURCES)/App/Item.cpp
 
 SRC			=	$(CORE_SRC) $(APP_SRC)
 

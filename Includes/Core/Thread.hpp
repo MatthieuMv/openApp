@@ -2,10 +2,14 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** openApp
+** Thread
 */
 
 #pragma once
 
-#include "Core.hpp"
-#include "App.hpp"
+#include <thread>
+
+namespace oA
+{
+    using Thread = std::thread;
+}

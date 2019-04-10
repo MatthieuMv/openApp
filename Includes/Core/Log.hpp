@@ -16,8 +16,16 @@
 #include "Stream.hpp"
 #include "Console.hpp"
 
+#ifndef OA_QUOTE_CHAR
+    #define OA_QUOTE_CHAR ('@')
+#endif
+
 namespace oA { class Log; }
 
+/*
+    A Log instance can provide a high level verbose API.
+    You can enable / disable it, customize text, quote (OA_QUOTE_CHAR) and background color.
+*/
 class oA::Log
 {
 public:
@@ -31,8 +39,8 @@ public:
 
     Log(Output out = COUT,
         ConsoleColor text = ConsoleColor(),
-        ConsoleColor background = ConsoleColor(),
-        ConsoleColor quote = ConsoleColor());
+        ConsoleColor quote = ConsoleColor(),
+        ConsoleColor background = ConsoleColor());
 
     OStream &getStream(void) const noexcept;
     Bool repeat(void) const noexcept;
@@ -64,9 +72,6 @@ private:
 template<>
 const oA::Log &oA::Log::log(const oA::String &value) const noexcept;
 
-template<>
-const oA::Log &oA::Log::log(const char * const &raw) const noexcept;
-
 class oA::Log::Repeater
 {
 public:
@@ -91,6 +96,7 @@ const oA::Log &operator<<(const oA::Log &log, const T &value) {
 
 const oA::Log &operator<<(const oA::Log &log, const oA::Log::Repeater &repeater);
 const oA::Log &operator<<(const oA::Log &log, const oA::Log::Endl &endl);
+const oA::Log &operator<<(const oA::Log &log, const char * const &raw);
 
 namespace oA
 {
