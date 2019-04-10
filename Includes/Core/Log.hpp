@@ -7,6 +7,10 @@
 
 #pragma once
 
+#ifndef WIN32
+    #define CONSOLE_HAS_COLOR
+#endif
+
 #include "Scalar.hpp"
 #include "String.hpp"
 #include "Stream.hpp"

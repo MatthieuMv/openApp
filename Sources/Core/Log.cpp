@@ -51,16 +51,25 @@ void oA::Log::setEnabled(oA::Bool value) noexcept
 
 void oA::Log::formatConsoleString(oA::String &str) const noexcept
 {
+    bool hasColor = false;
     auto end = oA::String::npos;
     oA::ConsoleColor color;
 
+#ifdef CONSOLE_HAS_COLOR
+    hasColor = true;
+#endif
     for (auto pos = str.find('@'); pos != end; pos = str.find('@', pos + 1)) {
         _inQuote = !_inQuote;
-        color = _inQuote ? _quote : oA::CSL_RESET + _text;
+        if (hasColor)
+            color = _inQuote ? _quote : oA::CSL_RESET + _text;
+        else
+            color = '\'';
         str.replace(str.begin() + pos, str.begin() + pos + 1, color);
     }
-    str.insert(0, _text);
-    str.insert(str.length(), oA::CSL_RESET);
+    if (hasColor) {
+        str.insert(0, _text);
+        str.insert(str.length(), oA::CSL_RESET);
+    }
 }
 
 template<>
