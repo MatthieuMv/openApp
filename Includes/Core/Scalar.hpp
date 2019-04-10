@@ -7,9 +7,19 @@
 
 #pragma once
 
+#include <stdint.h>
+
 namespace oA
 {
-    using Int = int;
+    using Bool = bool;
+
+    /* 32 Bits */
+    using Int = int32_t;
+    using Uint = uint32_t;
     using Float = float;
-    using Uint = unsigned int;
+
+    /* 64 Bits */
+    using Long = int64_t;
+    using ULong = uint64_t;
+    using Double = double;
 }
