@@ -7,7 +7,7 @@
 
 #pragma once
 
-#ifndef WIN32
+#if !defined(WIN32) && !defined(_WIN32)
     #define CONSOLE_HAS_COLOR
 #endif
 

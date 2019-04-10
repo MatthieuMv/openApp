@@ -30,7 +30,7 @@ RM			=	rm -f
 DEBUG		=
 CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(DEBUG)
 CPPFLAGS	=	-I $(F_INCLUDES) -I $(F_EXTERN)/lua/src
-LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua
+LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua53
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 # Compilation sources
