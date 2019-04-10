@@ -5,9 +5,6 @@
 ## Makefile
 ##
 
-# Platform (will be lua's one : aix bsd c89 freebsd generic linux macosx mingw posix solaris)
-OA_PLATFORM	=	linux
-
 # File names
 OA_STATIC	=	openApp.a
 OA_DYNAMIC	=	openApp.so
@@ -28,8 +25,8 @@ RM			=	rm -f
 
 # Compilation flags
 DEBUG		=
-CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(DEBUG)
-CPPFLAGS	=	-I $(F_INCLUDES) -I $(F_EXTERN)/lua/src
+CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(DEBUG) -Wno-ignored-qualifiers
+CPPFLAGS	=	-I $(F_INCLUDES) -I $(F_EXTERN) -I $(F_EXTERN)/LuaBridge -I $(F_EXTERN)/lua/src
 LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
@@ -40,9 +37,7 @@ CORE_SRC	=	$(F_SOURCES)/Core/Log.cpp
 
 APP_SRC		=
 
-INTERP_SRC	=	$(F_SOURCES)/Interpreter/Interpreter.cpp
-
-SRC			=	$(CORE_SRC) $(APP_SRC) $(INTERP_SRC)
+SRC			=	$(CORE_SRC) $(APP_SRC)
 
 OBJ			=	$(SRC:.cpp=.o)
 
@@ -57,31 +52,13 @@ static:
 dynamic:
 	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
-lua_linux:
-	make lua OA_PLATFORM=linux
-
-lua_windows:
-	make lua OA_PLATFORM=mingw
-
-lua_macosx:
-	make lua OA_PLATFORM=macosx
-
-lua:
-	make -C $(F_EXTERN)/lua $(OA_PLATFORM)
-
-lua_clean:
-	make -C $(F_EXTERN)/lua clean
-
-lua_fclean:
-	make -C $(F_EXTERN)/lua fclean
-
 bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)
 
 debug:
 	make DEBUG=-g3 bin
 
-clean: lua_clean
+clean:
 	$(RM) $(OBJ)
 
 fclean: clean
@@ -91,4 +68,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all compile static dynamic bin debug lua_linux lua_windows lua_macosx lua lua_clean lua_fclean clean fclean re
+.PHONY: all compile static dynamic bin debug clean fclean re

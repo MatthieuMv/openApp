@@ -7,7 +7,7 @@
 PLAT= none
 
 CC= gcc -std=gnu99
-CFLAGS= -O2 -Wall -Wextra -DLUA_COMPAT_5_2 -fPIC $(SYSCFLAGS) $(MYCFLAGS)
+CFLAGS= -O2 -Wall -Wextra -DLUA_COMPAT_5_2 $(SYSCFLAGS) $(MYCFLAGS)
 LDFLAGS= $(SYSLDFLAGS) $(MYLDFLAGS)
 LIBS= -lm $(SYSLIBS) $(MYLIBS)
 
@@ -43,13 +43,13 @@ LUAC_T=	luac
 LUAC_O=	luac.o
 
 ALL_O= $(BASE_O) $(LUA_O) $(LUAC_O)
-ALL_T= $(LUA_A)
+ALL_T= $(LUA_A) $(LUA_T) $(LUAC_T)
 ALL_A= $(LUA_A)
 
 # Targets start here.
 default: $(PLAT)
 
-all:	$(LUA_A)
+all:	$(ALL_T)
 
 o:	$(ALL_O)
 
@@ -68,7 +68,7 @@ $(LUAC_T): $(LUAC_O) $(LUA_A)
 clean:
 	$(RM) $(ALL_O)
 
-fclean:
+fclean: clean
 	$(RM) $(ALL_T)
 	$(RM) lua53.dll
 
@@ -111,7 +111,7 @@ freebsd:
 generic: $(ALL)
 
 linux:
-	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_LINUX" SYSLIBS="-Wl,-E -ldl"
+	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_LINUX" SYSLIBS="-Wl,-E -ldl -lreadline"
 
 macosx:
 	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_MACOSX" SYSLIBS="-lreadline"
@@ -120,7 +120,7 @@ mingw:
 	$(MAKE) "LUA_A=lua53.dll" "LUA_T=lua.exe" \
 	"AR=$(CC) -shared -o" "RANLIB=strip --strip-unneeded" \
 	"SYSCFLAGS=-DLUA_BUILD_AS_DLL" "SYSLIBS=" "SYSLDFLAGS=-s" lua.exe
-	$(RM) lua.exe
+	$(MAKE) "LUAC_T=luac.exe" luac.exe
 
 posix:
 	$(MAKE) $(ALL) SYSCFLAGS="-DLUA_USE_POSIX"

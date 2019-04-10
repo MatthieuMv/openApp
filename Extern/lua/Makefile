@@ -52,11 +52,10 @@ R= $V.4
 all:	$(PLAT)
 
 $(PLATS) clean:
-	cd src && $(MAKE) $@
+	$(MAKE) -C src $@
 
-$(PLATS) fclean:
-	cd src && $(MAKE) $@
-
+$(PLATS) fclean: clean
+	$(MAKE) -C src $@
 
 test:	dummy
 	src/lua -v
@@ -113,6 +112,6 @@ pc:
 	@echo "includedir=$(INSTALL_INC)"
 
 # list targets that do not create files (but not all makes understand .PHONY)
-.PHONY: all $(PLATS) clean fclean test install local none dummy echo pecho lecho
+.PHONY: all $(PLATS) clean test install local none dummy echo pecho lecho
 
 # (end of Makefile)
