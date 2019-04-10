@@ -9,13 +9,19 @@
 #include "Core/Log.hpp"
 
 const oA::Log oA::cout(oA::Log::COUT);
-const oA::Log oA::cerr(oA::Log::CERR, CSL_LIGHT_YELLOW, CSL_BG_BLACK, CSL_BG_LIGHT_RED);
+const oA::Log oA::cerr(oA::Log::CERR, oA::CSL_LIGHT_YELLOW, oA::CSL_BG_BLACK, oA::CSL_LIGHT_RED);
 const oA::Log::Repeater oA::repeat;
 const oA::Log::Endl oA::endl;
 
 oA::Log::Log(Output out, ConsoleColor text, ConsoleColor background, ConsoleColor quote)
     : _stream(out == CERR ? std::cerr : std::cout), _text(text), _background(background), _quote(quote)
 {
+    if (_text.empty())
+        _text = oA::CSL_WHITE;
+    if (_background.empty())
+        _background = oA::CSL_BG_BLACK;
+    if (_quote.empty())
+        _quote = oA::CSL_LIGHT_BLUE;
 }
 
 oA::OStream &oA::Log::getStream(void) const noexcept
@@ -43,21 +49,39 @@ void oA::Log::setEnabled(oA::Bool value) noexcept
     _enabled = value;
 }
 
-void oA::Log::formatConsoleString(oA::String &string) const noexcept
+void oA::Log::formatConsoleString(oA::String &str) const noexcept
 {
-    oA::Uint pos = string.find('@');
-    oA::Uint pos2;
+    auto end = oA::String::npos;
+    oA::ConsoleColor color;
 
-    while (pos != oA::String::npos) {
-        pos2 = string.find('@', pos + 1);
-        if (pos2 == oA::String::npos)
-            break;
-        string.replace(string.begin() + pos, string.begin() + pos + 1, _quote);
-        string.replace(string.begin() + pos2, string.begin() + pos2 + 1, _text);
-        pos = string.find('@', pos2 + 1);
+    for (auto pos = str.find('@'); pos != end; pos = str.find('@', pos + 1)) {
+        _inQuote = !_inQuote;
+        color = _inQuote ? _quote : oA::CSL_RESET + _text;
+        str.replace(str.begin() + pos, str.begin() + pos + 1, color);
     }
-    string.insert(0, _background);
-    string.insert(string.length(), CSL_RESET);
+    str.insert(0, _text);
+    str.insert(str.length(), oA::CSL_RESET);
+}
+
+template<>
+const oA::Log &oA::Log::log(const oA::String &value) const noexcept
+{
+    oA::String str = value;
+
+    formatConsoleString(str);
+    if (!getEnabled())
+        return (*this);
+    do {
+        getStream() << str;
+    } while (repeat());
+    return (*this);
+}
+
+template<>
+const oA::Log &oA::Log::log(const char * const & raw) const noexcept
+{
+    log(oA::String(raw));
+    return (*this);
 }
 
 const oA::Log &operator<<(const oA::Log &log, const oA::Log::Repeater &repeater)
@@ -72,13 +96,6 @@ const oA::Log &operator<<(const oA::Log &log, const oA::Log::Endl &endl)
     if (!log.getEnabled())
         return (log);
     log.getStream() << std::endl;
-    return (log);
-}
-
-const oA::Log &operator<<(const oA::Log &log, oA::String string)
-{
-    log.formatConsoleString(string);
-    log.getStream() << string;
     return (log);
 }
 

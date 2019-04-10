@@ -26,9 +26,9 @@ public:
     };
 
     Log(Output out = COUT,
-        ConsoleColor text = CSL_DEFAULT,
-        ConsoleColor background = CSL_BG_BLACK,
-        ConsoleColor quote = CSL_LIGHT_BLUE);
+        ConsoleColor text = ConsoleColor(),
+        ConsoleColor background = ConsoleColor(),
+        ConsoleColor quote = ConsoleColor());
 
     OStream &getStream(void) const noexcept;
     Bool repeat(void) const noexcept;
@@ -54,7 +54,14 @@ private:
     ConsoleColor _text;
     ConsoleColor _background;
     ConsoleColor _quote;
+    mutable bool _inQuote = false;
 };
+
+template<>
+const oA::Log &oA::Log::log(const oA::String &value) const noexcept;
+
+template<>
+const oA::Log &oA::Log::log(const char * const &raw) const noexcept;
 
 class oA::Log::Repeater
 {
@@ -80,7 +87,6 @@ const oA::Log &operator<<(const oA::Log &log, const T &value) {
 
 const oA::Log &operator<<(const oA::Log &log, const oA::Log::Repeater &repeater);
 const oA::Log &operator<<(const oA::Log &log, const oA::Log::Endl &endl);
-const oA::Log &operator<<(const oA::Log &log, oA::String string);
 
 namespace oA
 {

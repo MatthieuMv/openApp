@@ -22,4 +22,7 @@ namespace oA
     using Long = int64_t;
     using ULong = uint64_t;
     using Double = double;
+
+    /* Specific */
+    using Size = std::size_t;
 }

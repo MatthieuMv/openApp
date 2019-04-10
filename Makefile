@@ -47,7 +47,7 @@ SRC			=	$(CORE_SRC) $(APP_SRC) $(INTERP_SRC)
 OBJ			=	$(SRC:.cpp=.o)
 
 # Compilation rules
-all: compile
+all: lua compile
 
 compile: $(OBJ) static dynamic
 
