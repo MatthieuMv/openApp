@@ -7,8 +7,7 @@
 
 #pragma once
 
-#include <lua.hpp>
-#include <LuaBridge.h>
+#include "sol.hpp"
 #include "Core/Log.hpp"
 #include "Core/Mutex.hpp"
 #include "Core/Memory.hpp"
@@ -22,16 +21,13 @@ namespace oA { class Interpreter; }
 */
 class oA::Interpreter
 {
-    /* Static Class Interpreter */
-public:
-    static luabridge::Namespace GetGlobalNamespace(void);
-    static void RegisterInterpreterClasses(void);
-
-    static lua_State *LuaState;
-    static Log Icout;
-
-    /* Instanciable Class Interpreter */
 public:
     Interpreter(void);
     ~Interpreter(void);
+
+    sol::lua &lua(void) noexcept { return (_lua); }
+    const sol::lua &lua(void) const noexcept { return (_lua); }
+
+private:
+    sol::state _lua;
 };
