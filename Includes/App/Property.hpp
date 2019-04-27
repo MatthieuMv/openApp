@@ -32,6 +32,13 @@ public:
         return true;
     }
 
+    template<typename U>
+    void depends(Property<U> &other) const noexcept {
+        other.connect([] {
+            return true;
+        })
+    }
+
     Property<T> &operator=(const Property<T> &other) { set(other.get()); return (*this); }
     Property<T> &operator=(const T &value) { set(value); return (*this); }
 
