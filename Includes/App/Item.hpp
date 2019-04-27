@@ -8,6 +8,7 @@
 #pragma once
 
 #include "Core/Scalar.hpp"
+#include "Interpreter.hpp"
 #include "Property.hpp"
 #include "MakeCode.hpp"
 
@@ -16,15 +17,11 @@ namespace oA { class Item; }
 class oA::Item
 {
     MAKE_PROPERTY(String, id)
-    MAKE_PROPERTY(Property<Float>, x)
-    MAKE_PROPERTY(Property<Float>, y)
-    MAKE_PROPERTY(Property<Float>, width)
-    MAKE_PROPERTY(Property<Float>, height)
+    MAKE_PROPERTY(Float, x)
+    MAKE_PROPERTY(Float, y)
+    MAKE_PROPERTY(Float, width)
+    MAKE_PROPERTY(Float, height)
 
 public:
-    static void registerItem(void);
-
-public:
-    Item(void) {
-    }
+    Item(void) = default;
 };

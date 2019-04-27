@@ -24,5 +24,5 @@ namespace oA
     using Double = double;
 
     /* Specific */
-    using Size = std::size_t;
+    using Size = unsigned int;
 }

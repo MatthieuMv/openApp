@@ -27,7 +27,7 @@ RM			=	rm -f
 DEBUG		=
 CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(DEBUG) -Wno-ignored-qualifiers
 CPPFLAGS	=	-I $(F_INCLUDES) -I $(F_EXTERN) -I $(F_EXTERN)/sol2 -I $(F_EXTERN)/lua/src
-LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua -ldl
+LDFLAGS		=	-L $(F_EXTERN)/lua/src -l lua
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 # Compilation sources
@@ -36,7 +36,7 @@ MAIN		=	$(F_SOURCES)/main.cpp
 CORE_SRC	=	$(F_SOURCES)/Core/Log.cpp
 
 APP_SRC		=	$(F_SOURCES)/App/Interpreter.cpp \
-				$(F_SOURCES)/App/Item.cpp
+				$(F_SOURCES)/App/Register.cpp
 
 SRC			=	$(CORE_SRC) $(APP_SRC)
 

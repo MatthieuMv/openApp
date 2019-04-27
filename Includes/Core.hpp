@@ -21,6 +21,7 @@
 #include "Core/Error.hpp"
 
 /* Containers */
+#include "Core/Array.hpp"
 #include "Core/Pair.hpp"
 #include "Core/Tuple.hpp"
 #include "Core/Vector.hpp"

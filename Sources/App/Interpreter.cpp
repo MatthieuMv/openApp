@@ -8,11 +8,15 @@
 #include "Core/Error.hpp"
 #include "App/Interpreter.hpp"
 
-Interpreter::Interpreter()
+#ifdef USE_GLOBAL_INTERPRETER
+oA::Interpreter oA::GlobalInterpreter;
+#endif
+
+oA::Interpreter::Interpreter()
 {
     _lua.open_libraries(sol::lib::base);
 }
 
-Interpreter::~Interpreter()
+oA::Interpreter::~Interpreter()
 {
 }
