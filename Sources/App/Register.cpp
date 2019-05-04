@@ -21,13 +21,6 @@ void oA::Register::RegisterTypes(oA::Interpreter &interpreter)
     }
 }
 
-#ifdef USE_GLOBAL_INTERPRETER
-void oA::Register::RegisterTypesGlobal(void)
-{
-    RegisterTypes(GlobalInterpreter);
-}
-#endif
-
 void oA::Register::RegisterItem(oA::Interpreter &interpreter)
 {
     interpreter.lua().new_usertype<Item>("Item",

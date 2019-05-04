@@ -10,9 +10,9 @@
 int main(void)
 {
     try {
-        oA::Register::RegisterTypesGlobal();
-        oA::GlobalInterpreter.lua().script("itm = Item.new(); itm.x = 2");
-        oA::Item &ref = oA::GlobalInterpreter.lua()["itm"];
+        oA::Interpreter core;
+        core.lua().script("itm = Item.new(); itm.x = 2");
+        oA::Item &ref = core.lua()["itm"];
         oA::cout << "Item x = " << ref.x() << oA::endl;
         return 0;
     } catch (const oA::Error &e) {

@@ -8,11 +8,18 @@
 #pragma once
 
 #include "Core/Scalar.hpp"
-#include "Interpreter.hpp"
+#include "Core/String.hpp"
+#include "Core/List.hpp"
+#include "Core/Memory.hpp"
 #include "Property.hpp"
 #include "MakeCode.hpp"
 
-namespace oA { class Item; }
+namespace oA
+{
+    class Item;
+
+    using ItemPtr = Unique<Item>;
+}
 
 class oA::Item
 {
@@ -24,4 +31,10 @@ class oA::Item
 
 public:
     Item(void) = default;
+
+    Item &addChild(ItemPtr &&child);
+    void removeChild(const String &id);
+
+protected:
+    List<ItemPtr> _childs;
 };

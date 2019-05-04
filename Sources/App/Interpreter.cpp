@@ -7,14 +7,12 @@
 
 #include "Core/Error.hpp"
 #include "App/Interpreter.hpp"
-
-#ifdef USE_GLOBAL_INTERPRETER
-oA::Interpreter oA::GlobalInterpreter;
-#endif
+#include "App/Register.hpp"
 
 oA::Interpreter::Interpreter()
 {
     _lua.open_libraries(sol::lib::base);
+    oA::Register::RegisterTypes(*this);
 }
 
 oA::Interpreter::~Interpreter()

@@ -14,9 +14,5 @@ namespace oA::Register
     /* Global registeration */
     void RegisterTypes(Interpreter &interpreter);
 
-    #ifdef USE_GLOBAL_INTERPRETER
-    void RegisterTypesGlobal(void);
-    #endif
-
     void RegisterItem(Interpreter &interpreter);
 }

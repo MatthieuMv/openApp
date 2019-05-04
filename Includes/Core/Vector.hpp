@@ -8,9 +8,10 @@
 #pragma once
 
 #include <vector>
+#include "ContainerHelper.hpp"
 
 namespace oA
 {
     template<typename T>
-    using Vector = std::vector<T>;
+    using Vector = ContainerHelper<std::vector<T>, T>;
 }

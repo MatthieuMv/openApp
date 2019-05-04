@@ -7,8 +7,6 @@
 
 #pragma once
 
-#define USE_GLOBAL_INTERPRETER
-
 #include "sol.hpp"
 #include "Core/Log.hpp"
 #include "Core/Mutex.hpp"
@@ -33,7 +31,3 @@ public:
 private:
     sol::state _lua;
 };
-
-#ifdef USE_GLOBAL_INTERPRETER
-namespace oA { extern Interpreter GlobalInterpreter; }
-#endif
