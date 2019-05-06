@@ -33,8 +33,9 @@ public:
     }
 
     template<typename U>
-    void depends(Property<U> &other) const noexcept {
-        other.connect([] {
+    void depends(Property<U> &other) noexcept {
+        other.connect([this] {
+            this->emit();
             return true;
         });
     }

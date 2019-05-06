@@ -18,7 +18,7 @@ namespace oA
 {
     class Item;
 
-    using ItemPtr = Unique<Item>;
+    using ItemPtr = Shared<Item>;
 }
 
 class oA::Item
@@ -34,6 +34,9 @@ public:
 
     Item &addChild(ItemPtr &&child);
     void removeChild(const String &id);
+    Uint size(void) const noexcept { return _childs.size(); }
+    Item &operator[](Uint i);
+    Item &operator[](Uint i) const;
 
 protected:
     List<ItemPtr> _childs;

@@ -25,9 +25,9 @@ void oA::Register::RegisterItem(oA::Interpreter &interpreter)
 {
     interpreter.lua().new_usertype<Item>("Item",
         sol::constructors<Item()>(),
-        "x", sol::property(&Item::x, &Item::set_x),
-        "y", sol::property(&Item::y, &Item::set_y),
-        "width", sol::property(&Item::width, &Item::set_width),
-        "height", sol::property(&Item::height, &Item::set_height)
+        "x", sol::property(&Item::get_x, &Item::set_x),
+        "y", sol::property(&Item::get_y, &Item::set_y),
+        "width", sol::property(&Item::get_width, &Item::set_width),
+        "height", sol::property(&Item::get_height, &Item::set_height)
     );
 }

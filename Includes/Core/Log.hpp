@@ -20,6 +20,10 @@
     #define OA_QUOTE_CHAR ('@')
 #endif
 
+#ifndef OA_QUOTE_CHAR2
+    #define OA_QUOTE_CHAR2 ('#')
+#endif
+
 namespace oA { class Log; }
 
 /*
@@ -39,14 +43,14 @@ public:
 
     Log(Output out = COUT,
         ConsoleColor text = ConsoleColor(),
-        ConsoleColor quote = ConsoleColor());
+        ConsoleColor quote = ConsoleColor(),
+        ConsoleColor quote2 = ConsoleColor());
 
     OStream &getStream(void) const noexcept;
     Bool repeat(void) const noexcept;
     void setRepeat(Uint value) const noexcept;
     Bool getEnabled(void) const noexcept;
     void setEnabled(Bool value) noexcept;
-    void formatConsoleString(String &string) const noexcept;
 
     template<typename T>
     const Log &log(const T &value) const noexcept {
@@ -63,8 +67,11 @@ private:
     mutable Uint _repeat = 0;
     Bool _enabled = true;
     ConsoleColor _text;
-    ConsoleColor _quote;
-    mutable bool _inQuote = false;
+    ConsoleColor _quote[2];
+    mutable bool _inQuote[2] = { false, false };
+
+    void formatConsoleString(String &string) const noexcept;
+    void formatQuote(String &str, bool &inQuote, ConsoleColor color, char separator) const noexcept;
 };
 
 template<>

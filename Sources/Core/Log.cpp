@@ -8,18 +8,20 @@
 #include <iostream>
 #include "Core/Log.hpp"
 
-const oA::Log oA::cout(oA::Log::COUT);
-const oA::Log oA::cerr(oA::Log::CERR, oA::CSL_LIGHT_YELLOW, oA::CSL_LIGHT_RED);
+const oA::Log oA::cout(oA::Log::COUT, oA::CSL_WHITE, oA::CSL_LIGHT_BLUE, oA::CSL_LIGHT_MAGENTA);
+const oA::Log oA::cerr(oA::Log::CERR, oA::CSL_LIGHT_YELLOW, oA::CSL_LIGHT_RED, oA::CSL_CYAN);
 const oA::Log::Repeater oA::repeat;
 const oA::Log::Endl oA::endl;
 
-oA::Log::Log(Output out, ConsoleColor text, ConsoleColor quote)
-    : _stream(out == CERR ? std::cerr : std::cout), _text(text), _quote(quote)
+oA::Log::Log(Output out, ConsoleColor text, ConsoleColor quote, ConsoleColor quote2)
+    : _stream(out == CERR ? std::cerr : std::cout), _text(text), _quote({quote, quote2})
 {
     if (_text.empty())
         _text = oA::CSL_WHITE;
-    if (_quote.empty())
-        _quote = oA::CSL_LIGHT_BLUE;
+    for (auto &q : _quote) {
+        if (q.empty())
+            q = oA::CSL_LIGHT_BLUE;
+    }
 }
 
 oA::OStream &oA::Log::getStream(void) const noexcept
@@ -49,6 +51,12 @@ void oA::Log::setEnabled(oA::Bool value) noexcept
 
 void oA::Log::formatConsoleString(oA::String &str) const noexcept
 {
+    formatQuote(str, _inQuote[0], _quote[0], OA_QUOTE_CHAR);
+    formatQuote(str, _inQuote[1], _quote[1], OA_QUOTE_CHAR2);
+}
+
+void oA::Log::formatQuote(oA::String &str, bool &inQuote, oA::ConsoleColor quote, char separator) const noexcept
+{
     bool hasColor = false;
     auto end = oA::String::npos;
     oA::ConsoleColor color;
@@ -56,10 +64,10 @@ void oA::Log::formatConsoleString(oA::String &str) const noexcept
 #ifdef CONSOLE_HAS_COLOR
     hasColor = true;
 #endif
-    for (auto pos = str.find(OA_QUOTE_CHAR); pos != end; pos = str.find(OA_QUOTE_CHAR, pos + 1)) {
-        _inQuote = !_inQuote;
+    for (auto pos = str.find(separator); pos != end; pos = str.find(separator, pos + 1)) {
+        inQuote = !inQuote;
         if (hasColor)
-            color = _inQuote ? _quote : oA::CSL_RESET + _text;
+            color = inQuote ? quote : oA::CSL_RESET + _text;
         else
             color = '\'';
         str.replace(str.begin() + pos, str.begin() + pos + 1, color);
