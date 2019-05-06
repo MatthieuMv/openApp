@@ -37,5 +37,16 @@ namespace oA
             auto it = std::remove_if(Type::begin(), Type::end(), predicate);
             Type::erase(it, Type::end());
         }
+
+        /* findIf() : find the next element matching a value, or a predicate */
+        Value &findIf(const Value &valueToFind) {
+            auto it = std::find(Type::begin(), Type::end(), valueToFind);
+            return (*it);
+        }
+
+        Value &findIf(const Function<bool(const Value &)> &predicate) {
+            auto it = std::find_if(Type::begin(), Type::end(), predicate);
+            return (*it);
+        }
     };
 }

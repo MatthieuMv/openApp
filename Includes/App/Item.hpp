@@ -10,9 +10,10 @@
 #include "Core/Scalar.hpp"
 #include "Core/String.hpp"
 #include "Core/List.hpp"
+#include "Core/UMap.hpp"
 #include "Core/Memory.hpp"
 #include "Property.hpp"
-#include "MakeCode.hpp"
+#include "Variant.hpp"
 
 namespace oA
 {
@@ -21,23 +22,29 @@ namespace oA
     using ItemPtr = Shared<Item>;
 }
 
-class oA::Item
+class oA::Item : public oA::VObject
 {
-    MAKE_PROPERTY(String, id)
-    MAKE_PROPERTY(Float, x)
-    MAKE_PROPERTY(Float, y)
-    MAKE_PROPERTY(Float, width)
-    MAKE_PROPERTY(Float, height)
-
 public:
-    Item(void) = default;
+    Item(void) {
+        append("x") = 0;
+        append("y") = 0;
+        append("width") = 0;
+        append("height") = 0;
+    }
 
+    /* Child function */
+    Item &addChild(const ItemPtr &child);
     Item &addChild(ItemPtr &&child);
     void removeChild(const String &id);
-    Uint size(void) const noexcept { return _childs.size(); }
-    Item &operator[](Uint i);
-    Item &operator[](Uint i) const;
+    Uint childCount(void) const noexcept;
+
+    /* Property */
+    Property<Variant> &append(const String &name);
+    void remove(const String &name);
+    Property<Variant> &operator[](const String &name);
+    const Property<Variant> &operator[](const String &name) const;
 
 protected:
     List<ItemPtr> _childs;
+    UMap<String, Property<Variant>> _properties;
 };

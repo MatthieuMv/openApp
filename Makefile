@@ -36,11 +36,11 @@ MAIN		=	$(F_SOURCES)/Main.cpp
 
 CORE_SRC	=	$(F_SOURCES)/Core/Log.cpp
 
-APP_SRC		=	$(F_SOURCES)/App/Interpreter.cpp \
-				$(F_SOURCES)/App/Item.cpp \
+APP_SRC		=	$(F_SOURCES)/App/Item.cpp \
 				$(F_SOURCES)/App/Variant.cpp
 
-TSRC		=	$(F_TESTS)/tests_Variant.cpp
+TSRC		=	$(F_TESTS)/tests_Variant.cpp \
+				$(F_TESTS)/tests_Chrono.cpp
 
 SRC			=	$(CORE_SRC) $(APP_SRC)
 

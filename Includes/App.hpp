@@ -7,12 +7,15 @@
 
 #pragma once
 
-/* Lua Interpreter */
-#include "App/Interpreter.hpp"
-#include "App/Register.hpp"
-
 /* Property */
 #include "App/Property.hpp"
+
+/* Variant */
+#include "App/Variant.hpp"
+
+/* Parser */
+#include "App/Parser.hpp"
+#include "App/AppParser.hpp"
 
 /* Items */
 #include "App/Item.hpp"

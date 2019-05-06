@@ -11,41 +11,47 @@
 
 #include "Core/Scalar.hpp"
 #include "Core/String.hpp"
-#include "Item.hpp"
 
 namespace oA
 {
-    using VType = std::variant<Float, String, ItemPtr>;
+    using VType = std::variant<Float, String>;
 
     enum VariantType {
         VNumber = 0,
-        VString,
-        VItem
+        VString
     };
 
     class Variant;
 }
 
+/*
+    Variant is a safe static union which handles numbers and litterals
+*/
 class oA::Variant
 {
 public:
+    // Initialize a Variant
     Variant(void);
-    template<typename T> Variant(const T &value); // Construct any supported type
+
+    // Construct any supported VType
+    template<typename T>
+    Variant(const T &value);
+
+    // Copy another Variant
     Variant(const Variant &other);
-    ~Variant(void) = default;
 
     // Type identification
     VariantType index(void) const noexcept { return static_cast<VariantType>(_var.index()); }
     bool isSameType(const Variant &other) const noexcept { return index() == other.index(); }
 
-    // Retreive any supported types
-    Float &toFloat(void);
-    String &toString(void);
-    ItemPtr &toItemPtr(void);
-    const Float &toFloat(void) const;
-    const String &toString(void) const;
-    const ItemPtr &toItemPtr(void) const;
-    Int toInt(void) const;
+    // Retreive any supported types without conversion
+    template<typename T> T &get(void);
+    template<typename T> const T &getConst(void) const;
+
+    // Retreive any supported type with conversion
+    Float toFloat(void) const noexcept;
+    Int toInt(void) const noexcept;
+    String toString(void) const noexcept;
 
     // Retreive type name
     String getTypeName(void) const noexcept;
@@ -53,7 +59,7 @@ public:
 
     // Operators
     template<typename T> Variant &operator=(const T &value);
-    operator bool(void);
+    operator bool(void) const;
     bool operator==(const Variant &other) const;
     bool operator!=(const Variant &other) const;
     bool operator<(const Variant &other) const;
