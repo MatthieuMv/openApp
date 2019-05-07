@@ -7,8 +7,11 @@
 
 #pragma once
 
+// std::chrono
 #include <chrono>
-#include "Scalar.hpp"
+
+// Uint
+#include "Core/Scalar.hpp"
 
 namespace oA { class Chrono; }
 

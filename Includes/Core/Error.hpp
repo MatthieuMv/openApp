@@ -7,8 +7,11 @@
 
 #pragma once
 
-#include "String.hpp"
+// std::exception
 #include <stdexcept>
+
+// String
+#include "Core/String.hpp"
 
 namespace oA
 {

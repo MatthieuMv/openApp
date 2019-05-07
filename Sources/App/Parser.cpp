@@ -8,9 +8,10 @@
 // std::regex
 #include <regex>
 
-#include "Parser.hpp"
+// Parser
+#include "Core/Parser.hpp"
 
-bool oA::Parser::retreiveContext(const ContextMatch &match)
+bool oA::Parser::retreiveContext(const ContextMatch &)
 {
-
+    return false;
 }

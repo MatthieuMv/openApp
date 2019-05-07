@@ -7,6 +7,7 @@
 
 #pragma once
 
+// String
 #include "Core/String.hpp"
 
 namespace oA { class Parser; }

@@ -7,8 +7,10 @@
 
 #pragma once
 
+// std::array
 #include <array>
 
+// Uint
 #include "Core/Scalar.hpp"
 
 namespace oA

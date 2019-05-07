@@ -5,7 +5,10 @@
 ** Item
 */
 
+// AccessError
 #include "Core/Error.hpp"
+
+// Item
 #include "App/Item.hpp"
 
 oA::Item &oA::Item::addChild(const ItemPtr &child)
@@ -23,7 +26,7 @@ oA::Item &oA::Item::addChild(ItemPtr &&child)
 void oA::Item::removeChild(const oA::String &id)
 {
     _childs.removeIf([&id](const ItemPtr &child) {
-        return child["id"]->toString() == id;
+        return child->get("id").get().toString() == id;
     });
 }
 
@@ -45,7 +48,7 @@ void oA::Item::remove(const oA::String &name)
     });
 }
 
-oA::Property<oA::Variant> &oA::Item::operator[](const oA::String &name)
+oA::Property<oA::Variant> &oA::Item::get(const oA::String &name)
 {
     auto it = _properties.find(name);
 
@@ -54,11 +57,31 @@ oA::Property<oA::Variant> &oA::Item::operator[](const oA::String &name)
     return (it->second);
 }
 
-const oA::Property<oA::Variant> &oA::Item::operator[](const oA::String &name) const
+const oA::Property<oA::Variant> &oA::Item::get(const oA::String &name) const
 {
     auto it = _properties.find(name);
 
     if (it == _properties.end())
         throw AccessError("Item", "Couldn't find property @" + name + "@");
     return (it->second);
+}
+
+oA::Property<oA::Variant> &oA::Item::operator[](const oA::String &name)
+{
+    return (get(name));
+}
+
+const oA::Property<oA::Variant> &oA::Item::operator[](const oA::String &name) const
+{
+    return (get(name));
+}
+
+oA::Property<oA::Variant> &oA::Item::operator[](const char *name)
+{
+    return this->operator[](String(name));
+}
+
+const oA::Property<oA::Variant> &oA::Item::operator[](const char *name) const
+{
+    return this->operator[](String(name));
 }

@@ -7,6 +7,7 @@
 
 #pragma once
 
+// std::i/ostringstream
 #include <sstream>
 
 namespace oA

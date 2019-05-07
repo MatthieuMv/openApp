@@ -5,7 +5,10 @@
 ** Log
 */
 
+// std::cout, std::cerr
 #include <iostream>
+
+// Log
 #include "Core/Log.hpp"
 
 const oA::Log oA::cout(oA::Log::COUT, oA::CSL_WHITE, oA::CSL_LIGHT_BLUE, oA::CSL_LIGHT_MAGENTA);

@@ -7,6 +7,7 @@
 
 #pragma once
 
+// std::fstream, std::ifstream, std::ofstream
 #include <fstream>
 
 namespace oA

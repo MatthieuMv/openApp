@@ -7,7 +7,10 @@
 
 #pragma once
 
+// std::remove_if, std::find_if...
 #include <algorithm>
+
+// Function
 #include "Core/Function.hpp"
 
 namespace oA
@@ -29,24 +32,21 @@ namespace oA
 
         /* removeIf() : remove elements matching a value, or a predicate */
         void removeIf(const Value &valueToRemove) {
-            auto it = std::remove_if(Type::begin(), Type::end(), valueToRemove);
-            Type::erase(it, Type::end());
+            for (auto it = Type::begin(); it != Type::end();) {
+                if (*it == valueToRemove)
+                    it = Type::erase(it);
+                else
+                    ++it;
+            }
         }
 
         void removeIf(const Function<bool(const Value &)> &predicate) {
-            auto it = std::remove_if(Type::begin(), Type::end(), predicate);
-            Type::erase(it, Type::end());
-        }
-
-        /* findIf() : find the next element matching a value, or a predicate */
-        Value &findIf(const Value &valueToFind) {
-            auto it = std::find(Type::begin(), Type::end(), valueToFind);
-            return (*it);
-        }
-
-        Value &findIf(const Function<bool(const Value &)> &predicate) {
-            auto it = std::find_if(Type::begin(), Type::end(), predicate);
-            return (*it);
+            for (auto it = Type::begin(); it != Type::end();) {
+                if (predicate(*it))
+                    it = Type::erase(it);
+                else
+                    ++it;
+            }
         }
     };
 }

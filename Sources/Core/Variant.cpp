@@ -5,8 +5,11 @@
 ** Variant
 */
 
-#include "App/Variant.hpp"
+// LogicError, TypeError
 #include "Core/Error.hpp"
+
+// Variant
+#include "Core/Variant.hpp"
 
 oA::Variant::Variant(void) : _var(0.0f)
 {
@@ -27,8 +30,31 @@ oA::Variant::Variant(const oA::String &value) : _var(value)
 {
 }
 
-oA::Variant::Variant(const oA::Variant &other) : _var(other._var)
+oA::Variant &oA::Variant::operator=(const oA::Variant &other)
 {
+    _var = other._var;
+    return *this;
+}
+
+template<>
+oA::Variant &oA::Variant::operator=(const oA::Float &value)
+{
+    _var = value;
+    return *this;
+}
+
+template<>
+oA::Variant &oA::Variant::operator=(const oA::Int &value)
+{
+    _var = static_cast<oA::Float>(value);
+    return *this;
+}
+
+template<>
+oA::Variant &oA::Variant::operator=(const oA::String &value)
+{
+    _var = value;
+    return *this;
 }
 
 template<>
@@ -59,18 +85,48 @@ const oA::String &oA::Variant::getConst(void) const
     return std::get<String>(_var);
 }
 
-oA::Float oA::Variant::toFloat(void) const
+oA::Float oA::Variant::toFloat(void) const noexcept
 {
-
+    try {
+        switch (index()) {
+        case VNumber:
+            return getConst<Float>();
+        case VString:
+            return std::stof(getConst<String>());
+        default:
+            return 0.0f;
+        }
+    } catch (const std::invalid_argument &) {
+        return 0.0f;
+    }
 }
 
-oA::Int oA::Variant::toInt(void) const
+oA::Int oA::Variant::toInt(void) const noexcept
 {
-    return static_cast<Int>(getConst<Float>());
+    try {
+        switch (index()) {
+        case VNumber:
+            return static_cast<Int>(getConst<Float>());
+        case VString:
+            return std::stoi(getConst<String>());
+        default:
+            return 0;
+        }
+    } catch (const std::invalid_argument &) {
+        return 0;
+    }
 }
 
-oA::String &oA::Variant::toString(void) const
+oA::String oA::Variant::toString(void) const noexcept
 {
+    switch (index()) {
+    case VNumber:
+        return ToString(getConst<Float>());
+    case VString:
+        return getConst<String>();
+    default:
+        return String();
+    }
 }
 
 oA::String oA::Variant::getTypeName(void) const noexcept
@@ -90,34 +146,13 @@ oA::String oA::Variant::getTypeName(oA::VariantType type) const noexcept
     }
 }
 
-template<>
-oA::Variant &oA::Variant::operator=(const oA::Float &value)
-{
-    _var = value;
-    return *this;
-}
-
-template<>
-oA::Variant &oA::Variant::operator=(const oA::Int &value)
-{
-    _var = static_cast<oA::Float>(value);
-    return *this;
-}
-
-template<>
-oA::Variant &oA::Variant::operator=(const oA::String &value)
-{
-    _var = value;
-    return *this;
-}
-
 oA::Variant::operator bool(void) const
 {
     switch (index()) {
     case VNumber:
         return getConst<Float>();
     case VString:
-        return !getConst<String>.empty();
+        return !getConst<String>().empty();
     default:
         throw TypeError("Variant", "Invalid variant type for @operator b@ool");
     }
@@ -126,12 +161,12 @@ oA::Variant::operator bool(void) const
 bool oA::Variant::operator==(const Variant &other) const
 {
     if (!isSameType(other))
-        throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ == @" + other.getTypeName() + "=@");
+        return false;
     switch (index()) {
     case VNumber:
         return getConst<Float>() == other.getConst<Float>();
     case VString:
-        return getConst<String> == other.getConst<String>;
+        return getConst<String>() == other.getConst<String>();
     default:
         throw LogicError("Variant", "Invalid variant type for @operator ==@");
     }
@@ -157,7 +192,7 @@ bool oA::Variant::operator<(const Variant &other) const
 bool oA::Variant::operator<=(const Variant &other) const
 {
     if (!isSameType(other))
-        throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ <= @" + other.getTypeName() + "=@");
+        throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ <= @" + other.getTypeName() + "@");
     switch (index()) {
     case VNumber:
         return getConst<Float>() <= other.getConst<Float>();
@@ -181,7 +216,7 @@ bool oA::Variant::operator>(const Variant &other) const
 bool oA::Variant::operator>=(const Variant &other) const
 {
     if (!isSameType(other))
-        throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ >= @" + other.getTypeName() + "=@");
+        throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ >= @" + other.getTypeName() + "@");
     switch (index()) {
     case VNumber:
         return getConst<Float>() >= other.getConst<Float>();
@@ -199,7 +234,7 @@ oA::Variant oA::Variant::operator+(const oA::Variant &other) const
     case VNumber:
         return getConst<Float>() + other.getConst<Float>();
     case VString:
-        return getConst<String> + other.getConst<String>;
+        return getConst<String>() + other.getConst<String>();
     default:
         throw LogicError("Variant", "@Operator +@ not implemented for @" + getTypeName() + "@");
     }

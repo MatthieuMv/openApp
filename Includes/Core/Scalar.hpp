@@ -7,6 +7,7 @@
 
 #pragma once
 
+// intXX_t
 #include <stdint.h>
 
 namespace oA

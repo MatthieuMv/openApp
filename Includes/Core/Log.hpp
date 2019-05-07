@@ -11,9 +11,13 @@
     #define CONSOLE_HAS_COLOR
 #endif
 
+// Bool, Uint...
 #include "Scalar.hpp"
+// String
 #include "String.hpp"
+// OStream
 #include "Stream.hpp"
+// ConsoleColor
 #include "Console.hpp"
 
 #ifndef OA_QUOTE_CHAR

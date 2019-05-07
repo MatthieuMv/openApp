@@ -7,13 +7,16 @@
 
 #pragma once
 
-#include "Core/Scalar.hpp"
-#include "Core/String.hpp"
+// List
 #include "Core/List.hpp"
+// UMap
 #include "Core/UMap.hpp"
+// Shared
 #include "Core/Memory.hpp"
-#include "Property.hpp"
-#include "Variant.hpp"
+// Property
+#include "Core/Property.hpp"
+// Variant
+#include "Core/Variant.hpp"
 
 namespace oA
 {
@@ -22,7 +25,7 @@ namespace oA
     using ItemPtr = Shared<Item>;
 }
 
-class oA::Item : public oA::VObject
+class oA::Item
 {
 public:
     Item(void) {
@@ -41,8 +44,12 @@ public:
     /* Property */
     Property<Variant> &append(const String &name);
     void remove(const String &name);
+    Property<Variant> &get(const String &name);
+    const Property<Variant> &get(const String &name) const;
     Property<Variant> &operator[](const String &name);
     const Property<Variant> &operator[](const String &name) const;
+    Property<Variant> &operator[](const char *name);
+    const Property<Variant> &operator[](const char *name) const;
 
 protected:
     List<ItemPtr> _childs;

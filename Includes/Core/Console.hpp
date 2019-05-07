@@ -7,7 +7,8 @@
 
 #pragma once
 
-#include "String.hpp"
+// String
+#include "Core/String.hpp"
 
 namespace oA
 {

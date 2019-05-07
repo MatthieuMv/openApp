@@ -7,14 +7,22 @@
 
 #pragma once
 
-#include "Error.hpp"
-#include "UMap.hpp"
-#include "Function.hpp"
+// Bool, Uint
+#include "Core/Scalar.hpp"
+// LogicError
+#include "Core/Error.hpp"
+// UMap
+#include "Core/UMap.hpp"
+// Function
+#include "Core/Function.hpp"
 
-namespace oA
-{
+namespace oA { template<typename... Args> class Signal; }
+
+/*
+    Signal is a simple way to implement signal slot on any type
+*/
 template<typename... Args>
-class Signal
+class oA::Signal
 {
 public:
     using SignalFunction = Function<Bool(Args...)>;
@@ -44,4 +52,3 @@ private:
     UMap<Uint, SignalFunction> _slots;
     Uint _idx = 0;
 };
-}

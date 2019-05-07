@@ -7,7 +7,9 @@
 
 #pragma once
 
+// std::istream
 #include <istream>
+// std::ostream
 #include <ostream>
 
 namespace oA

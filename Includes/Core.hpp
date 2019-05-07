@@ -43,3 +43,12 @@
 
 /* Time */
 #include "Core/Chrono.hpp"
+
+/* Parser */
+#include "Core/Parser.hpp"
+
+/* Property */
+#include "Core/Property.hpp"
+
+/* Variant */
+#include "Core/Variant.hpp"

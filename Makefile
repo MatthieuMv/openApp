@@ -14,10 +14,11 @@ TESTS		=	run_tests
 # Dir names
 OA_ROOT		=	.
 F_SOURCES	=	Sources
+F_CORE		=	$(F_SOURCES)/Core
+F_APP		=	$(F_SOURCES)/App
 F_INCLUDES	=	Includes
 F_MEDIAS	=	Medias
 F_TESTS		=	Tests
-F_EXTERN	=	Extern
 
 # Command aliases
 CC			=	g++
@@ -25,8 +26,8 @@ CSTATIC		=	ar -cvq
 RM			=	rm -f
 
 # Compilation flags
-EXTERN_FLAGS		=
-CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(EXTERN_FLAGS) -Wno-ignored-qualifiers
+OPTFLAGS	=
+CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(OPTFLAGS) -Wno-ignored-qualifiers
 CPPFLAGS	=	-I $(F_INCLUDES)
 LDFLAGS		=
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
@@ -34,10 +35,11 @@ FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 # Compilation sources
 MAIN		=	$(F_SOURCES)/Main.cpp
 
-CORE_SRC	=	$(F_SOURCES)/Core/Log.cpp
+CORE_SRC	=	$(F_CORE)/Log.cpp \
+				$(F_CORE)/Variant.cpp
 
-APP_SRC		=	$(F_SOURCES)/App/Item.cpp \
-				$(F_SOURCES)/App/Variant.cpp
+APP_SRC		=	$(F_APP)/Item.cpp \
+				$(F_APP)/Parser.cpp
 
 TSRC		=	$(F_TESTS)/tests_Variant.cpp \
 				$(F_TESTS)/tests_Chrono.cpp
@@ -63,10 +65,10 @@ bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)
 
 debug:
-	make EXTERN_FLAGS="-g3" bin
+	make OPTFLAGS="-g3" bin
 
 tests_run:
-	make EXTERN_FLAGS="-lcriterion --coverage" compile_tests
+	make OPTFLAGS="-lcriterion --coverage" compile_tests
 
 compile_tests: $(OBJ) $(TOBJ)
 	$(CC) -o $(TESTS) $(OBJ) $(TOBJ) $(FLAGS)

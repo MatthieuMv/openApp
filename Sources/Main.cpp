@@ -5,16 +5,11 @@
 ** main
 */
 
-#include "App/Variant.hpp"
-#include "Core/Log.hpp"
+#include "openApp.hpp"
 
 int main(void)
 {
     try {
-        oA::Variant var;
-
-        var = oA::String("123");
-        ++var;
         return 0;
     } catch (const oA::Error &e) {
         oA::cerr << e.what() << oA::endl;

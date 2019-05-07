@@ -7,9 +7,12 @@
 
 #pragma once
 
+// std::variant
 #include <variant>
 
+// Float, Int, ...
 #include "Core/Scalar.hpp"
+// String
 #include "Core/String.hpp"
 
 namespace oA
@@ -33,22 +36,27 @@ public:
     // Initialize a Variant
     Variant(void);
 
-    // Construct any supported VType
     template<typename T>
     Variant(const T &value);
 
-    // Copy another Variant
-    Variant(const Variant &other);
+    // Assignment
+    Variant &operator=(const Variant &other);
+
+    template<typename T>
+    Variant &operator=(const T &value);
 
     // Type identification
     VariantType index(void) const noexcept { return static_cast<VariantType>(_var.index()); }
     bool isSameType(const Variant &other) const noexcept { return index() == other.index(); }
 
     // Retreive any supported types without conversion
-    template<typename T> T &get(void);
-    template<typename T> const T &getConst(void) const;
+    template<typename T>
+    T &get(void);
 
-    // Retreive any supported type with conversion
+    template<typename T>
+    const T &getConst(void) const;
+
+    // Safe type conversion getters
     Float toFloat(void) const noexcept;
     Int toInt(void) const noexcept;
     String toString(void) const noexcept;
@@ -58,7 +66,6 @@ public:
     String getTypeName(VariantType type) const noexcept;
 
     // Operators
-    template<typename T> Variant &operator=(const T &value);
     operator bool(void) const;
     bool operator==(const Variant &other) const;
     bool operator!=(const Variant &other) const;
