@@ -16,17 +16,7 @@ oA::Variant::Variant(void) : _var(0.0f)
 }
 
 template<>
-oA::Variant::Variant(const oA::Float &value) : _var(value)
-{
-}
-
-template<>
 oA::Variant::Variant(const oA::Int &value) : _var(static_cast<oA::Float>(value))
-{
-}
-
-template<>
-oA::Variant::Variant(const oA::String &value) : _var(value)
 {
 }
 
@@ -37,23 +27,9 @@ oA::Variant &oA::Variant::operator=(const oA::Variant &other)
 }
 
 template<>
-oA::Variant &oA::Variant::operator=(const oA::Float &value)
-{
-    _var = value;
-    return *this;
-}
-
-template<>
 oA::Variant &oA::Variant::operator=(const oA::Int &value)
 {
     _var = static_cast<oA::Float>(value);
-    return *this;
-}
-
-template<>
-oA::Variant &oA::Variant::operator=(const oA::String &value)
-{
-    _var = value;
     return *this;
 }
 

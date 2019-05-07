@@ -37,13 +37,16 @@ public:
     Variant(void);
 
     template<typename T>
-    Variant(const T &value);
+    Variant(const T &value) : _var(value) {}
 
     // Assignment
     Variant &operator=(const Variant &other);
 
     template<typename T>
-    Variant &operator=(const T &value);
+    Variant &operator=(const T &value) {
+        _var = value;
+        return *this;
+    }
 
     // Type identification
     VariantType index(void) const noexcept { return static_cast<VariantType>(_var.index()); }

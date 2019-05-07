@@ -27,6 +27,22 @@ class oA::Signal
 public:
     using SignalFunction = Function<Bool(Args...)>;
 
+    Signal(void) = default;
+    Signal(const Signal<Args...> &other) : _slots(other._slots), _idx(other._idx) {}
+    Signal(Signal<Args...> &&other) : _slots(other._slots), _idx(other._idx) {}
+
+    Signal<Args...> &operator=(const Signal<Args...> &other) {
+        _slots = other._slots;
+        _idx = other._idx;
+        return (*this);
+    }
+
+    Signal<Args...> &operator=(Signal<Args...> &&other) {
+        _slots = other._slots;
+        _idx = other._idx;
+        return (*this);
+    }
+
     Uint connect(SignalFunction &&slot) noexcept {
         _slots.insert(std::make_pair(++_idx, std::move(slot)));
         return _idx;

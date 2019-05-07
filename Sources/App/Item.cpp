@@ -25,9 +25,27 @@ oA::Item &oA::Item::addChild(ItemPtr &&child)
 
 void oA::Item::removeChild(const oA::String &id)
 {
-    _childs.removeIf([&id](const ItemPtr &child) {
-        return child->get("id").get().toString() == id;
+    bool removed = false;
+
+    _childs.removeIf([&id, &removed](const ItemPtr &child) {
+        if (child->get("id").get().toString() == id) {
+            removed = true;
+            return true;
+        }
+        return false;
     });
+    if (!removed)
+        throw AccessError("Item", "Couldn't find child with id @" + id + "@");
+}
+
+void oA::Item::removeChild(oA::Uint idx)
+{
+    auto it = _childs.begin();
+
+    if (idx >= childCount())
+        throw AccessError("Item", "Child index out of range @" + oA::ToString(idx) + "@");
+    std::advance(it, idx);
+    _childs.erase(it);
 }
 
 oA::Uint oA::Item::childCount(void) const noexcept
@@ -78,10 +96,10 @@ const oA::Property<oA::Variant> &oA::Item::operator[](const oA::String &name) co
 
 oA::Property<oA::Variant> &oA::Item::operator[](const char *name)
 {
-    return this->operator[](String(name));
+    return (get(name));
 }
 
 const oA::Property<oA::Variant> &oA::Item::operator[](const char *name) const
 {
-    return this->operator[](String(name));
+    return (get(name));
 }

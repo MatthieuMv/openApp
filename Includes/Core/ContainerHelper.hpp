@@ -19,6 +19,8 @@ namespace oA
     class ContainerHelper : public Type
     {
     public:
+        using Type::Type;
+
         /* apply() : apply a const / non-const function to each element */
         void apply(const Function<void(Value &)> &fct) {
             for (auto it = Type::begin(); it != Type::end(); ++it)

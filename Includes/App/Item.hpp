@@ -29,6 +29,7 @@ class oA::Item
 {
 public:
     Item(void) {
+        append("id") = "item";
         append("x") = 0;
         append("y") = 0;
         append("width") = 0;
@@ -39,6 +40,7 @@ public:
     Item &addChild(const ItemPtr &child);
     Item &addChild(ItemPtr &&child);
     void removeChild(const String &id);
+    void removeChild(Uint idx);
     Uint childCount(void) const noexcept;
 
     /* Property */

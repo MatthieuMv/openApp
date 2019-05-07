@@ -42,7 +42,12 @@ APP_SRC		=	$(F_APP)/Item.cpp \
 				$(F_APP)/Parser.cpp
 
 TSRC		=	$(F_TESTS)/tests_Variant.cpp \
-				$(F_TESTS)/tests_Chrono.cpp
+				$(F_TESTS)/tests_Chrono.cpp \
+				$(F_TESTS)/tests_ContainerHelper.cpp \
+				$(F_TESTS)/tests_Error.cpp \
+				$(F_TESTS)/tests_Signal.cpp \
+				$(F_TESTS)/tests_Property.cpp \
+				$(F_TESTS)/tests_Item.cpp
 
 SRC			=	$(CORE_SRC) $(APP_SRC)
 
@@ -73,6 +78,9 @@ tests_run:
 compile_tests: $(OBJ) $(TOBJ)
 	$(CC) -o $(TESTS) $(OBJ) $(TOBJ) $(FLAGS)
 	./$(TESTS)
+
+coverage: tests_run
+	gcovr --exclude $(F_TESTS)
 
 clean:
 	$(RM) $(OBJ) $(TOBJ)

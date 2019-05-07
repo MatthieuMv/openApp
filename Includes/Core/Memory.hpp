@@ -20,4 +20,10 @@ namespace oA
 
     template<typename T>
     using Weak = std::weak_ptr<T>;
+
+    template<typename T>
+    Unique<T> MakeUnique(void) { return Unique<T>(new T); }
+
+    template<typename T>
+    Shared<T> MakeShared(void) { return Shared<T>(new T); }
 }
