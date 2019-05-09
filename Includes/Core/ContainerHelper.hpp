@@ -27,7 +27,7 @@ namespace oA
                 fct(*it);
         }
 
-        void apply(const Function<void(const Value &)> &fct) {
+        void apply(const Function<void(const Value &)> &fct) const {
             for (auto it = Type::begin(); it != Type::end(); ++it)
                 fct(*it);
         }

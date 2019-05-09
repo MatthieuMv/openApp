@@ -12,18 +12,27 @@
 #include <Core/Path.hpp>
 // Parser
 #include "App/Parser.hpp"
+// AppFactory
+#include "App/AppFactory.hpp"
 
-static const oA::String C_PROPERTY_MATCH = "[A-Za-z]*:";
+static const oA::String C_PROPERTY_MATCH = "[A-Za-z]+:";
 static const oA::String C_ITEM_MATCH = "[A-Z][A-Za-z]*";
+
+oA::ItemPtr oA::Parser::ParseFile(const String &path, bool verbose)
+{
+    oA::AppFactory::RegisterBaseItems();
+    return Parser(verbose).parseFile(path);
+}
 
 oA::Parser::Parser(bool verbose)
      : _log(oA::Log::COUT, oA::CSL_LIGHT_GRAY, oA::CSL_LIGHT_GREEN, oA::CSL_LIGHT_YELLOW)
 {
     _log.setEnabled(verbose);
     _matches["import"] = std::bind(&Parser::parseImport, this); // Directory import
-    _matches["property"] = std::bind(&Parser::parseNewProperty, this); // New property
-    _matches[C_PROPERTY_MATCH] = std::bind(&Parser::parseProperty, this); // Existing Property
     _matches[C_ITEM_MATCH] = std::bind(&Parser::parseItem, this); // Item definition
+    _matches[C_PROPERTY_MATCH] = std::bind(&Parser::parseProperty, this); // Existing Property
+    _matches["property"] = std::bind(&Parser::parseNewProperty, this); // New property
+    _matches["id:"] = std::bind(&Parser::parseItemId, this); // New property
 }
 
 oA::ItemPtr oA::Parser::parseFile(const String &path)
@@ -33,8 +42,8 @@ oA::ItemPtr oA::Parser::parseFile(const String &path)
     if (!fs().good())
         throw AccessError("Parser", "Couldn't open file @" + path + "@");
     parseUntil();
+    _log << *ctx().root << endl;
     return ctx().root;
-
 }
 
 void oA::Parser::parseUntil(const String &except)
@@ -56,6 +65,10 @@ bool oA::Parser::readToken(void)
 {
     if (!fs().good() || !(fs() >> _token))
         return false;
+    if (_token == "//") {
+        readLine();
+        return readToken();
+    }
     return true;
 }
 
@@ -98,20 +111,35 @@ void oA::Parser::parseItem(void)
 
 void oA::Parser::parseRootItem(const String &type)
 {
-    _log << "Instancing root item @" + type + "@" << endl;
-    ctx().root = ItemPtr(new Item);
+    _log << tab() << "Instancing root item @" + type + "@" << endl;
+    ++_indent;
+    ctx().root = resolveType(type);
     parseUntil("}");
+    if (readToken())
+        throw LogicError("Parser", "Unexpected token @" + _token + "@ (#" + ctx().path + "#)");
+    --_indent;
 }
 
 void oA::Parser::parseChildItem(const String &type)
 {
-    _log << "Instancing child item @" + type + "@" << endl;
+    auto &rootCtx = ctx();
+
+    _log << tab() << "Instancing child item @" + type + "@" << endl;
+    ++_indent;
     _contexts.emplace(ctx().path);
-    ctx().root = ItemPtr(new Item);
+    ctx().root = resolveType(type);
+    rootCtx.root->addChild(ctx().root);
     parseUntil("}");
     _contexts.pop();
+    --_indent;
 }
 
+oA::ItemPtr oA::Parser::resolveType(const String &type)
+{
+    if (oA::AppFactory::Exists(type))
+        return oA::AppFactory::Instanciate(type);
+    throw SyntaxError("Parser", "Couldn't find item type @" + type + "@ (#" + ctx().path + "#)");
+}
 
 void oA::Parser::parseNewProperty(void)
 {
@@ -123,7 +151,7 @@ void oA::Parser::parseNewProperty(void)
         throw LogicError("Parser", "Property @" + name + "@ must be in item definition (#" + ctx().path + "#)");
     name = _token;
     name.pop_back();
-    _log << "Adding new property @" + _token + "@" << endl;
+    _log << tab() << "Adding new property #" + _token + "#" << endl;
     ctx().root->append(_token);
     parseProperty();
 }
@@ -137,5 +165,13 @@ void oA::Parser::parseProperty(void)
         throw LogicError("Parser", "Property @" + name + "@ must be in item definition (#" + ctx().path + "#)");
     if (!readLine())
         throw SyntaxError("Parser", "Expecting @expression@ after symbol @" + name + "@ (#" + ctx().path + "#)");
-    _log << "Property @" + name + "@ set to @" + _token + "@" << endl;
+    _log << tab() << "Property #" + name + "# set to " << _token << endl;
+}
+
+void oA::Parser::parseItemId(void)
+{
+    if (!readToken())
+        throw SyntaxError("Parser", "Expecting @expression@ after symbol @id@ (#" + ctx().path + "#)");
+    ctx().root->get("id") = _token;
+    _log << tab() << "Property #id# set to " + ctx().root->get("id")->getConst<String>() << endl;
 }

@@ -7,7 +7,6 @@
 
 // AccessError
 #include "Core/Error.hpp"
-
 // Item
 #include "App/Item.hpp"
 
@@ -28,7 +27,7 @@ void oA::Item::removeChild(const String &id)
     bool removed = false;
 
     _childs.removeIf([&id, &removed](const ItemPtr &child) {
-        if (child->get("id").get().toString() == id) {
+        if (child->get("id")->get<String>() == id) {
             removed = true;
             return true;
         }
@@ -55,8 +54,8 @@ oA::Uint oA::Item::childCount(void) const noexcept
 
 oA::Property<oA::Variant> &oA::Item::append(const String &name)
 {
-    _properties.emplace(std::make_pair(name, Property<Variant>()));
-    return ((*this)[name]);
+    _properties[name] = std::make_shared<Expression<Variant>>();
+    return (get(name));
 }
 
 void oA::Item::remove(const String &name)
@@ -72,7 +71,7 @@ oA::Property<oA::Variant> &oA::Item::get(const String &name)
 
     if (it == _properties.end())
         throw AccessError("Item", "Couldn't find property @" + name + "@");
-    return (it->second);
+    return (*it->second);
 }
 
 const oA::Property<oA::Variant> &oA::Item::get(const String &name) const
@@ -81,7 +80,7 @@ const oA::Property<oA::Variant> &oA::Item::get(const String &name) const
 
     if (it == _properties.end())
         throw AccessError("Item", "Couldn't find property @" + name + "@");
-    return (it->second);
+    return (*it->second);
 }
 
 oA::Property<oA::Variant> &oA::Item::operator[](const String &name)
@@ -102,4 +101,30 @@ oA::Property<oA::Variant> &oA::Item::operator[](const Char *name)
 const oA::Property<oA::Variant> &oA::Item::operator[](const Char *name) const
 {
     return (get(name));
+}
+
+void oA::Item::show(Uint indent) const noexcept
+{
+    return showWith(indent, cout);
+}
+
+void oA::Item::showWith(Uint indent, Log &log) const noexcept
+{
+    log << repeat(indent) << '\t' << "@" + getName() + "@:\t" << get("id")->toString() << endl;
+    ++indent;
+    _properties.apply([indent, &log](const auto &pair) {
+        if (pair.first == "id")
+            return;
+        log << repeat(indent) << '\t' << "#" + pair.first + "#: " << pair.second->get().toString() << endl;
+    });
+    _childs.apply([indent, &log](const auto &child) {
+        log << endl;
+        child->showWith(indent, log);
+    });
+}
+
+oA::Log &operator<<(oA::Log &log, const oA::Item &item)
+{
+    item.showWith(0, log);
+    return (log);
 }

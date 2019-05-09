@@ -13,6 +13,7 @@ Test(Item, Properties)
     oA::Item itm;
     bool crashed = false;
 
+    cr_assert_eq(itm.getName(), "Item");
     itm.append("z") = 42;
     cr_assert_eq(itm["z"]->toString(), "42");
     itm.remove("z");

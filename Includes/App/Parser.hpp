@@ -44,16 +44,20 @@ class oA::Parser
 
 public:
     /* Global static parser */
-    static ItemPtr ParseFile(const String &path, bool verbose = false) { return Parser(verbose).parseFile(path); }
+    static ItemPtr ParseFile(const String &path, bool verbose = false);
 
 private:
     ContextMatches _matches; // Regex token matches
     Stack<Context> _contexts; // Context stack
     Stack<IFStream> _ifstreams; // FileStream stack
     String _token; // Temporary buffer (avoid stack overflow in recursion)
-    Log _log; // Custom parsing logger (can be disabled for speed)
+    mutable Log _log; // Custom parsing logger (can be disabled for speed)
+    Uint _indent = 0;
 
-    Parser(bool verbose = true);
+    Parser(bool verbose = false);
+
+    /* Log helper */
+    Char tab(void) const noexcept { _log << repeat(_indent) << '\t'; return 0; }
 
     /* Context stack access */
     inline Context &ctx(void) noexcept { return (_contexts.top()); }
@@ -80,7 +84,10 @@ private:
     void parseItem(void);
     void parseRootItem(const String &type);
     void parseChildItem(const String &type);
-    // Property
+    ItemPtr resolveType(const String &type);
+    // Properties
     void parseNewProperty(void);
     void parseProperty(void);
+    // Special properties
+    void parseItemId(void);
 };

@@ -1,0 +1,7 @@
+Item {
+    id: myItem
+    x: 1
+    y: 2
+    width: 3
+    height: 4
+}

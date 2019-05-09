@@ -11,8 +11,8 @@
 // Log
 #include "Core/Log.hpp"
 
-const oA::Log oA::cout(oA::Log::COUT, oA::CSL_WHITE, oA::CSL_LIGHT_BLUE, oA::CSL_LIGHT_MAGENTA);
-const oA::Log oA::cerr(oA::Log::CERR, oA::CSL_LIGHT_YELLOW, oA::CSL_LIGHT_RED, oA::CSL_CYAN);
+oA::Log oA::cout(oA::Log::COUT, oA::CSL_WHITE, oA::CSL_LIGHT_BLUE, oA::CSL_LIGHT_MAGENTA);
+oA::Log oA::cerr(oA::Log::CERR, oA::CSL_LIGHT_YELLOW, oA::CSL_LIGHT_RED, oA::CSL_CYAN);
 const oA::Log::Repeater oA::repeat;
 const oA::Log::Endl oA::endl;
 
@@ -89,9 +89,10 @@ const oA::Log &oA::Log::log(const String &value) const noexcept
     formatConsoleString(str);
     if (!getEnabled())
         return (*this);
-    do {
+    while (repeat()) {
         getStream() << str;
-    } while (repeat());
+    }
+    _repeat = 1;
     return (*this);
 }
 
@@ -116,7 +117,7 @@ const oA::Log &operator<<(const oA::Log &log, const char * const &raw)
     return (log);
 }
 
-const oA::Log::Repeater &oA::Log::Repeater::operator()(Int x) const noexcept
+const oA::Log::Repeater &oA::Log::Repeater::operator()(Uint x) const noexcept
 {
     _x = x;
     return (*this);

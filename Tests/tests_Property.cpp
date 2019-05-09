@@ -21,7 +21,7 @@ Test(Property, Basics)
     cr_assert_eq(x.get(), 12);
     x = 0;
     x.connect([&x] { x.get() += 420; return true; });
-    x.depends(y);
+    y.connect([&x] { x.emit(); return true; });
     y = 3;
     y = 3;
     cr_assert_eq(y.get(), 3);

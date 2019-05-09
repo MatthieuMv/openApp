@@ -60,15 +60,16 @@ public:
     const Log &log(const T &value) const noexcept {
         if (!getEnabled())
             return (*this);
-        do {
+        while (repeat()) {
             getStream() << value;
-        } while (repeat());
+        }
+        _repeat = 1;
         return (*this);
     }
 
 private:
     OStream &_stream;
-    mutable Uint _repeat = 0;
+    mutable Uint _repeat = 1;
     bool _enabled = true;
     ConsoleColor _text;
     ConsoleColor _quote[2];
@@ -86,7 +87,7 @@ class oA::Log::Repeater
 public:
     Repeater(void) = default;
 
-    const Repeater &operator()(int x) const noexcept;
+    const Repeater &operator()(Uint x) const noexcept;
     Uint get(void) const noexcept;
 
 private:
@@ -109,8 +110,8 @@ const oA::Log &operator<<(const oA::Log &log, const char * const &raw);
 
 namespace oA
 {
-    extern const oA::Log cout;
-    extern const oA::Log cerr;
+    extern oA::Log cout;
+    extern oA::Log cerr;
     extern const oA::Log::Repeater repeat;
     extern const oA::Log::Endl endl;
 }

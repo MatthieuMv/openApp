@@ -9,10 +9,20 @@
 
 // Signal
 #include "Core/Signal.hpp"
-// Shared
+// Shared, Weak
 #include "Core/Memory.hpp"
 
-namespace oA { template<typename T> class Property; }
+namespace oA
+{
+    template<typename T>
+    class Property;
+
+    template<typename T>
+    using PropertyPtr = Shared<Property<T>>;
+
+    template<typename T>
+    using PropertyRef = Weak<Property<T>>;
+}
 
 /*
     A Property is acts like a custom getter / setter and add signal slot to the variable
@@ -48,14 +58,6 @@ public:
     Property<T> &operator=(const T &value) { set(value); return (*this); }
     Property<T> &operator=(const Property<T> &other) { set(other.get()); return (*this); }
     Property<T> &operator=(Property<T> &&other) { Signal<>::operator=(other); _value = other._value; return (*this); }
-
-    template<typename U>
-    void depends(Property<U> &other) noexcept {
-        other.connect([this] {
-            this->emit();
-            return true;
-        });
-    }
 
 private:
     T _value = T();

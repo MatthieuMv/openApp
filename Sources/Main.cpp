@@ -10,7 +10,7 @@
 int main(void)
 {
     try {
-        oA::Parser::ParseFile("Resources/Test.oA", true);
+        auto itm = oA::Parser::ParseFile("Resources/Easy.oA", true);
         return 0;
     } catch (const oA::Error &e) {
         oA::cerr << e.what() << oA::endl;

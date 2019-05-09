@@ -1,13 +1,13 @@
 import Resources
 
-Window {
-    id: mainWnd
+MyItem {
+    id: myItem
     width: 100
     height: 100
 
     Item {
         id: childItm
-        width: mainWnd.width / 2
-        height: mainWnd.height / 2
+        width: mainWnd.width / 2 - width / 2
+        height: mainWnd.height / 2 - height / 2
     }
 }

@@ -13,16 +13,19 @@
 #include "Core/UMap.hpp"
 // Shared
 #include "Core/Memory.hpp"
-// Property
-#include "Core/Property.hpp"
+// Expression, Property
+#include "Core/Expression.hpp"
 // Variant
 #include "Core/Variant.hpp"
+// Log
+#include "Core/Log.hpp"
 
 namespace oA
 {
     class Item;
 
     using ItemPtr = Shared<Item>;
+    using ItemRef = Weak<Item>;
 }
 
 class oA::Item
@@ -35,6 +38,8 @@ public:
         append("width") = 0;
         append("height") = 0;
     }
+
+    virtual String getName(void) const noexcept { return "Item"; }
 
     /* Child function */
     Item &addChild(const ItemPtr &child);
@@ -53,7 +58,13 @@ public:
     Property<Variant> &operator[](const char *name);
     const Property<Variant> &operator[](const char *name) const;
 
+    /* Verbose */
+    void show(Uint indent = 0) const noexcept;
+    void showWith(Uint indent, Log &log) const noexcept;
+
 protected:
     List<ItemPtr> _childs;
-    UMap<String, Property<Variant>> _properties;
+    UMap<String, ExpressionPtr<Variant>> _properties;
 };
+
+oA::Log &operator<<(oA::Log &log, const oA::Item &item);

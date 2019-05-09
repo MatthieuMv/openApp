@@ -12,3 +12,6 @@
 
 /* Parser */
 #include "App/Parser.hpp"
+
+/* Factory */
+#include "App/AppFactory.hpp"

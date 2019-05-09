@@ -17,7 +17,7 @@ namespace oA
     template<typename T>
     String ToString(const T &value) {
         auto res = std::to_string(value);
-        while (res.back() == '0' || res.back() == '.')
+        while (res.length() != 1 && (res.back() == '0' || res.back() == '.'))
             res.pop_back();
         return res;
     }
