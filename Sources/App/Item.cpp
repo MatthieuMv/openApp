@@ -23,7 +23,7 @@ oA::Item &oA::Item::addChild(ItemPtr &&child)
     return (*_childs.back());
 }
 
-void oA::Item::removeChild(const oA::String &id)
+void oA::Item::removeChild(const String &id)
 {
     bool removed = false;
 
@@ -38,7 +38,7 @@ void oA::Item::removeChild(const oA::String &id)
         throw AccessError("Item", "Couldn't find child with id @" + id + "@");
 }
 
-void oA::Item::removeChild(oA::Uint idx)
+void oA::Item::removeChild(Uint idx)
 {
     auto it = _childs.begin();
 
@@ -53,20 +53,20 @@ oA::Uint oA::Item::childCount(void) const noexcept
     return _childs.size();
 }
 
-oA::Property<oA::Variant> &oA::Item::append(const oA::String &name)
+oA::Property<oA::Variant> &oA::Item::append(const String &name)
 {
     _properties.emplace(std::make_pair(name, Property<Variant>()));
     return ((*this)[name]);
 }
 
-void oA::Item::remove(const oA::String &name)
+void oA::Item::remove(const String &name)
 {
     _properties.removeIf([&name](const auto &p) {
         return p.first == name;
     });
 }
 
-oA::Property<oA::Variant> &oA::Item::get(const oA::String &name)
+oA::Property<oA::Variant> &oA::Item::get(const String &name)
 {
     auto it = _properties.find(name);
 
@@ -75,7 +75,7 @@ oA::Property<oA::Variant> &oA::Item::get(const oA::String &name)
     return (it->second);
 }
 
-const oA::Property<oA::Variant> &oA::Item::get(const oA::String &name) const
+const oA::Property<oA::Variant> &oA::Item::get(const String &name) const
 {
     auto it = _properties.find(name);
 
@@ -84,22 +84,22 @@ const oA::Property<oA::Variant> &oA::Item::get(const oA::String &name) const
     return (it->second);
 }
 
-oA::Property<oA::Variant> &oA::Item::operator[](const oA::String &name)
+oA::Property<oA::Variant> &oA::Item::operator[](const String &name)
 {
     return (get(name));
 }
 
-const oA::Property<oA::Variant> &oA::Item::operator[](const oA::String &name) const
+const oA::Property<oA::Variant> &oA::Item::operator[](const String &name) const
 {
     return (get(name));
 }
 
-oA::Property<oA::Variant> &oA::Item::operator[](const char *name)
+oA::Property<oA::Variant> &oA::Item::operator[](const Char *name)
 {
     return (get(name));
 }
 
-const oA::Property<oA::Variant> &oA::Item::operator[](const char *name) const
+const oA::Property<oA::Variant> &oA::Item::operator[](const Char *name) const
 {
     return (get(name));
 }

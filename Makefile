@@ -36,7 +36,8 @@ FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 MAIN		=	$(F_SOURCES)/Main.cpp
 
 CORE_SRC	=	$(F_CORE)/Log.cpp \
-				$(F_CORE)/Variant.cpp
+				$(F_CORE)/Variant.cpp \
+				$(F_CORE)/Path.cpp
 
 APP_SRC		=	$(F_APP)/Item.cpp \
 				$(F_APP)/Parser.cpp
@@ -47,7 +48,8 @@ TSRC		=	$(F_TESTS)/tests_Variant.cpp \
 				$(F_TESTS)/tests_Error.cpp \
 				$(F_TESTS)/tests_Signal.cpp \
 				$(F_TESTS)/tests_Property.cpp \
-				$(F_TESTS)/tests_Item.cpp
+				$(F_TESTS)/tests_Item.cpp \
+				$(F_TESTS)/tests_Path.cpp
 
 SRC			=	$(CORE_SRC) $(APP_SRC)
 

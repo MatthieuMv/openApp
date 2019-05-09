@@ -7,7 +7,7 @@
 
 #pragma once
 
-// Bool, Uint
+// Uint
 #include "Core/Scalar.hpp"
 // LogicError
 #include "Core/Error.hpp"
@@ -25,7 +25,7 @@ template<typename... Args>
 class oA::Signal
 {
 public:
-    using SignalFunction = Function<Bool(Args...)>;
+    using SignalFunction = Function<bool(Args...)>;
 
     Signal(void) = default;
     Signal(const Signal<Args...> &other) : _slots(other._slots), _idx(other._idx) {}

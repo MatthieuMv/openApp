@@ -7,8 +7,8 @@
 
 #pragma once
 
-/* Parser */
-#include "App/AppParser.hpp"
-
 /* Items */
 #include "App/Item.hpp"
+
+/* Parser */
+#include "App/Parser.hpp"

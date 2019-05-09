@@ -32,7 +32,7 @@ oA::OStream &oA::Log::getStream(void) const noexcept
     return _stream;
 }
 
-oA::Bool oA::Log::repeat(void) const noexcept
+bool oA::Log::repeat(void) const noexcept
 {
     return _repeat ? --_repeat, true : false;
 }
@@ -42,27 +42,27 @@ void oA::Log::setRepeat(oA::Uint value) const noexcept
     _repeat = value;
 }
 
-oA::Bool oA::Log::getEnabled(void) const noexcept
+bool oA::Log::getEnabled(void) const noexcept
 {
     return _enabled;
 }
 
-void oA::Log::setEnabled(oA::Bool value) noexcept
+void oA::Log::setEnabled(bool value) noexcept
 {
     _enabled = value;
 }
 
-void oA::Log::formatConsoleString(oA::String &str) const noexcept
+void oA::Log::formatConsoleString(String &str) const noexcept
 {
     formatQuote(str, _inQuote[0], _quote[0], OA_QUOTE_CHAR);
     formatQuote(str, _inQuote[1], _quote[1], OA_QUOTE_CHAR2);
 }
 
-void oA::Log::formatQuote(oA::String &str, bool &inQuote, oA::ConsoleColor quote, char separator) const noexcept
+void oA::Log::formatQuote(String &str, bool &inQuote, ConsoleColor quote, char separator) const noexcept
 {
     bool hasColor = false;
-    auto end = oA::String::npos;
-    oA::ConsoleColor color;
+    auto end = String::npos;
+    ConsoleColor color;
 
 #ifdef CONSOLE_HAS_COLOR
     hasColor = true;
@@ -70,21 +70,21 @@ void oA::Log::formatQuote(oA::String &str, bool &inQuote, oA::ConsoleColor quote
     for (auto pos = str.find(separator); pos != end; pos = str.find(separator, pos + 1)) {
         inQuote = !inQuote;
         if (hasColor)
-            color = inQuote ? quote : oA::CSL_RESET + _text;
+            color = inQuote ? quote : CSL_RESET + _text;
         else
             color = '\'';
         str.replace(str.begin() + pos, str.begin() + pos + 1, color);
     }
     if (hasColor) {
         str.insert(0, _text);
-        str.insert(str.length(), oA::CSL_RESET);
+        str.insert(str.length(), CSL_RESET);
     }
 }
 
 template<>
-const oA::Log &oA::Log::log(const oA::String &value) const noexcept
+const oA::Log &oA::Log::log(const String &value) const noexcept
 {
-    oA::String str = value;
+    String str = value;
 
     formatConsoleString(str);
     if (!getEnabled())
@@ -116,7 +116,7 @@ const oA::Log &operator<<(const oA::Log &log, const char * const &raw)
     return (log);
 }
 
-const oA::Log::Repeater &oA::Log::Repeater::operator()(int x) const noexcept
+const oA::Log::Repeater &oA::Log::Repeater::operator()(Int x) const noexcept
 {
     _x = x;
     return (*this);

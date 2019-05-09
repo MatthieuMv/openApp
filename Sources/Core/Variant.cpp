@@ -16,20 +16,20 @@ oA::Variant::Variant(void) : _var(0.0f)
 }
 
 template<>
-oA::Variant::Variant(const oA::Int &value) : _var(static_cast<oA::Float>(value))
+oA::Variant::Variant(const Int &value) : _var(static_cast<Float>(value))
 {
 }
 
-oA::Variant &oA::Variant::operator=(const oA::Variant &other)
+oA::Variant &oA::Variant::operator=(const Variant &other)
 {
     _var = other._var;
     return *this;
 }
 
 template<>
-oA::Variant &oA::Variant::operator=(const oA::Int &value)
+oA::Variant &oA::Variant::operator=(const Int &value)
 {
-    _var = static_cast<oA::Float>(value);
+    _var = static_cast<Float>(value);
     return *this;
 }
 
@@ -202,7 +202,7 @@ bool oA::Variant::operator>=(const Variant &other) const
 }
 
 
-oA::Variant oA::Variant::operator+(const oA::Variant &other) const
+oA::Variant oA::Variant::operator+(const Variant &other) const
 {
     if (!isSameType(other))
         throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ + @" + other.getTypeName() + "@");
@@ -216,7 +216,7 @@ oA::Variant oA::Variant::operator+(const oA::Variant &other) const
     }
 }
 
-oA::Variant &oA::Variant::operator+=(const oA::Variant &other)
+oA::Variant &oA::Variant::operator+=(const Variant &other)
 {
     return (*this = *this + other);
 }
@@ -232,7 +232,7 @@ oA::Variant &oA::Variant::operator++(void)
     }
 }
 
-oA::Variant oA::Variant::operator-(const oA::Variant &other) const
+oA::Variant oA::Variant::operator-(const Variant &other) const
 {
     if (!isSameType(other))
         throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ - @" + other.getTypeName() + "@");
@@ -244,7 +244,7 @@ oA::Variant oA::Variant::operator-(const oA::Variant &other) const
     }
 }
 
-oA::Variant &oA::Variant::operator-=(const oA::Variant &other)
+oA::Variant &oA::Variant::operator-=(const Variant &other)
 {
     return (*this = *this - other);
 }
@@ -260,7 +260,7 @@ oA::Variant &oA::Variant::operator--(void)
     }
 }
 
-oA::Variant oA::Variant::operator*(const oA::Variant &other) const
+oA::Variant oA::Variant::operator*(const Variant &other) const
 {
     if (!isSameType(other))
         throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ * @" + other.getTypeName() + "@");
@@ -272,12 +272,12 @@ oA::Variant oA::Variant::operator*(const oA::Variant &other) const
     }
 }
 
-oA::Variant &oA::Variant::operator*=(const oA::Variant &other)
+oA::Variant &oA::Variant::operator*=(const Variant &other)
 {
     return (*this = *this * other);
 }
 
-oA::Variant oA::Variant::operator/(const oA::Variant &other) const
+oA::Variant oA::Variant::operator/(const Variant &other) const
 {
     if (!isSameType(other))
         throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ / @" + other.getTypeName() + "@");
@@ -289,12 +289,12 @@ oA::Variant oA::Variant::operator/(const oA::Variant &other) const
     }
 }
 
-oA::Variant &oA::Variant::operator/=(const oA::Variant &other)
+oA::Variant &oA::Variant::operator/=(const Variant &other)
 {
     return (*this = *this / other);
 }
 
-oA::Variant oA::Variant::operator%(const oA::Variant &other) const
+oA::Variant oA::Variant::operator%(const Variant &other) const
 {
     if (!isSameType(other))
         throw LogicError("Variant", "Invalid operation @" + getTypeName() + "@ % @" + other.getTypeName() + "@");
@@ -306,12 +306,12 @@ oA::Variant oA::Variant::operator%(const oA::Variant &other) const
     }
 }
 
-oA::Variant &oA::Variant::operator%=(const oA::Variant &other)
+oA::Variant &oA::Variant::operator%=(const Variant &other)
 {
     return (*this = *this % other);
 }
 
-void oA::Variant::assertType(oA::VariantType type) const
+void oA::Variant::assertType(VariantType type) const
 {
     if (index() != type)
         throw AccessError("Variant", "Can't retreive @" + getTypeName(type) + "@ from @" + getTypeName() + "@");

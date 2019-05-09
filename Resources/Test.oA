@@ -1,4 +1,4 @@
-import Window
+import Resources
 
 Window {
     id: mainWnd

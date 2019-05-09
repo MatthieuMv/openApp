@@ -11,7 +11,7 @@
     #define CONSOLE_HAS_COLOR
 #endif
 
-// Bool, Uint...
+// Uint
 #include "Scalar.hpp"
 // String
 #include "String.hpp"
@@ -51,10 +51,10 @@ public:
         ConsoleColor quote2 = ConsoleColor());
 
     OStream &getStream(void) const noexcept;
-    Bool repeat(void) const noexcept;
+    bool repeat(void) const noexcept;
     void setRepeat(Uint value) const noexcept;
-    Bool getEnabled(void) const noexcept;
-    void setEnabled(Bool value) noexcept;
+    bool getEnabled(void) const noexcept;
+    void setEnabled(bool value) noexcept;
 
     template<typename T>
     const Log &log(const T &value) const noexcept {
@@ -69,7 +69,7 @@ public:
 private:
     OStream &_stream;
     mutable Uint _repeat = 0;
-    Bool _enabled = true;
+    bool _enabled = true;
     ConsoleColor _text;
     ConsoleColor _quote[2];
     mutable bool _inQuote[2] = { false, false };

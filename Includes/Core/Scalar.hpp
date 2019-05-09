@@ -12,7 +12,13 @@
 
 namespace oA
 {
-    using Bool = bool;
+    /* 8 Bits */
+    using Byte = int8_t;
+    using UByte = uint8_t;
+
+    /* 16 Bits */
+    using Short = int16_t;
+    using UShort = uint16_t;
 
     /* 32 Bits */
     using Int = int32_t;
@@ -24,6 +30,8 @@ namespace oA
     using ULong = uint64_t;
     using Double = double;
 
-    /* Specific */
+    /* Other */
+    using Char = char;
+    using UChar = unsigned char;
     using Size = unsigned int;
 }
