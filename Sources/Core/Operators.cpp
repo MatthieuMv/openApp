@@ -10,6 +10,8 @@
 // AccessError
 #include "Core/Error.hpp"
 
+static bool MatchOperator(oA::String &expr, const oA::String &op, oA::String::iterator &it, const oA::String::iterator last);
+
 static const oA::OperatorMap C_OPERATORS = {
     { "(",  { oA::LP,       oA::LeftToRight, 2  } },
     { ")",  { oA::RP,       oA::LeftToRight, 2  } },
@@ -43,4 +45,35 @@ const oA::Operator &oA::GetOperator(const String &op)
     if (it == C_OPERATORS.end())
         throw AccessError("Operators", "Coudldn't find operator @" + op + "@");
     return (it->second);
+}
+
+void oA::FormatExpression(String &expr)
+{
+    auto last = expr.begin();
+
+    for (auto it = expr.begin(); last != expr.end() && it != expr.end(); ++it) {
+        for (const auto &op : C_OPERATORS) {
+            if (MatchOperator(expr, op.first, it, last))
+                break;
+        }
+        last = it;
+    }
+}
+
+static bool MatchOperator(oA::String &expr, const oA::String &op, oA::String::iterator &it, const oA::String::iterator last)
+{
+    auto i = it;
+    for (auto c : op) {
+        if (*i != c)
+            return false;
+        ++i;
+    }
+    if (!std::isspace(*last)) {
+        it = expr.insert(it, ' ');
+        ++it;
+    }
+    std::advance(it, op.length());
+    if (it != expr.end() && !std::isspace(*it))
+        it = expr.insert(it, ' ');
+    return true;
 }

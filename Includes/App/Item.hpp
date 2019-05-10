@@ -58,6 +58,9 @@ public:
     Property<Variant> &operator[](const char *name);
     const Property<Variant> &operator[](const char *name) const;
 
+    /* Expression */
+    void makeExpression(const String &name, String expr);
+
     /* Verbose */
     void show(Uint indent = 0, Log &log = cout) const noexcept;
 

@@ -42,4 +42,5 @@ namespace oA
 
     bool OperatorExists(const String &op);
     const Operator &GetOperator(const String &op);
+    void FormatExpression(String &expr);
 }

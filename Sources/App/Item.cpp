@@ -103,6 +103,13 @@ const oA::Property<oA::Variant> &oA::Item::operator[](const Char *name) const
     return (get(name));
 }
 
+void oA::Item::makeExpression(const String &name, String expr)
+{
+    FormatExpression(expr);
+    (void)(name);
+}
+
+
 void oA::Item::show(Uint indent, Log &log) const noexcept
 {
     log << repeat(indent) << '\t' << "@" + getName() + "@:\t" << get("id")->toString() << endl;

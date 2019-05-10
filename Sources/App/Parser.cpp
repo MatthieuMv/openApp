@@ -202,6 +202,7 @@ void oA::Parser::parseProperty(void)
         throw LogicError("Parser", "Property @" + name + "@ must be in item definition (#" + ctx().path + "#)");
     if (!readLine())
         throw SyntaxError("Parser", "Expecting @expression@ after symbol @" + name + "@ (#" + ctx().path + "#)");
+    ctx().root->makeExpression(name, _token);
     _log << tab() << "Property #" + name + "# set to " << _token << endl;
 }
 
