@@ -59,8 +59,7 @@ public:
     const Property<Variant> &operator[](const char *name) const;
 
     /* Verbose */
-    void show(Uint indent = 0) const noexcept;
-    void showWith(Uint indent, Log &log) const noexcept;
+    void show(Uint indent = 0, Log &log = cout) const noexcept;
 
 protected:
     List<ItemPtr> _childs;

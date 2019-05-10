@@ -15,7 +15,7 @@
 // AppFactory
 #include "App/AppFactory.hpp"
 
-static const oA::String C_PROPERTY_MATCH = "[A-Za-z]+:";
+static const oA::String C_PROPERTY_MATCH = "[A-Za-z]+[:]";
 static const oA::String C_ITEM_MATCH = "[A-Z][A-Za-z]*";
 
 oA::ItemPtr oA::Parser::ParseFile(const String &path, bool verbose)
@@ -28,22 +28,26 @@ oA::Parser::Parser(bool verbose)
      : _log(oA::Log::COUT, oA::CSL_LIGHT_GRAY, oA::CSL_LIGHT_GREEN, oA::CSL_LIGHT_YELLOW)
 {
     _log.setEnabled(verbose);
-    _matches["import"] = std::bind(&Parser::parseImport, this); // Directory import
     _matches[C_ITEM_MATCH] = std::bind(&Parser::parseItem, this); // Item definition
     _matches[C_PROPERTY_MATCH] = std::bind(&Parser::parseProperty, this); // Existing Property
+    _matches["import"] = std::bind(&Parser::parseImport, this); // Directory import
     _matches["property"] = std::bind(&Parser::parseNewProperty, this); // New property
     _matches["id:"] = std::bind(&Parser::parseItemId, this); // New property
 }
 
 oA::ItemPtr oA::Parser::parseFile(const String &path)
 {
-    _contexts.emplace(path);
-    _ifstreams.emplace(path);
+    ItemPtr root;
+
+    _contexts.emplace_back(path);
+    _ifstreams.emplace_back(path);
     if (!fs().good())
         throw AccessError("Parser", "Couldn't open file @" + path + "@");
     parseUntil();
-    _log << *ctx().root << endl;
-    return ctx().root;
+    root.swap(ctx().root);
+    _contexts.pop_back();
+    _ifstreams.pop_back();
+    return root;
 }
 
 void oA::Parser::parseUntil(const String &except)
@@ -112,8 +116,8 @@ void oA::Parser::parseItem(void)
 void oA::Parser::parseRootItem(const String &type)
 {
     _log << tab() << "Instancing root item @" + type + "@" << endl;
-    ++_indent;
     ctx().root = resolveType(type);
+    ++_indent;
     parseUntil("}");
     if (readToken())
         throw LogicError("Parser", "Unexpected token @" + _token + "@ (#" + ctx().path + "#)");
@@ -126,19 +130,52 @@ void oA::Parser::parseChildItem(const String &type)
 
     _log << tab() << "Instancing child item @" + type + "@" << endl;
     ++_indent;
-    _contexts.emplace(ctx().path);
+    _contexts.emplace_back();
+    _contexts.back().path = rootCtx.path;
+    _contexts.back().imports = rootCtx.imports;
     ctx().root = resolveType(type);
     rootCtx.root->addChild(ctx().root);
     parseUntil("}");
-    _contexts.pop();
+    _contexts.pop_back();
     --_indent;
 }
 
 oA::ItemPtr oA::Parser::resolveType(const String &type)
 {
+    String path;
+
+    if (getContextName() != type && resolveImportType(type, path))
+        return parseFile(path);
     if (oA::AppFactory::Exists(type))
         return oA::AppFactory::Instanciate(type);
     throw SyntaxError("Parser", "Couldn't find item type @" + type + "@ (#" + ctx().path + "#)");
+}
+
+oA::String oA::Parser::getContextName(void) const noexcept
+{
+    String res = ctx().path;
+    auto pos = res.find_last_of('/');
+
+    if (pos != res.npos)
+        res.erase(0, pos);
+    pos = res.find_last_of('.');
+    if (pos != res.npos)
+        res.erase(pos);
+    return res;
+}
+
+bool oA::Parser::resolveImportType(const String &type, String &path) const noexcept
+{
+    for (String p : ctx().imports) {
+        if (p.back() != '/')
+            p.push_back('/');
+        p += type + ".oA";
+        if (Path::FileExists(p)) {
+            path.swap(p);
+            return true;
+        }
+    }
+    return false;
 }
 
 void oA::Parser::parseNewProperty(void)

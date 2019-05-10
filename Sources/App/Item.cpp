@@ -103,12 +103,7 @@ const oA::Property<oA::Variant> &oA::Item::operator[](const Char *name) const
     return (get(name));
 }
 
-void oA::Item::show(Uint indent) const noexcept
-{
-    return showWith(indent, cout);
-}
-
-void oA::Item::showWith(Uint indent, Log &log) const noexcept
+void oA::Item::show(Uint indent, Log &log) const noexcept
 {
     log << repeat(indent) << '\t' << "@" + getName() + "@:\t" << get("id")->toString() << endl;
     ++indent;
@@ -119,12 +114,12 @@ void oA::Item::showWith(Uint indent, Log &log) const noexcept
     });
     _childs.apply([indent, &log](const auto &child) {
         log << endl;
-        child->showWith(indent, log);
+        child->show(indent, log);
     });
 }
 
 oA::Log &operator<<(oA::Log &log, const oA::Item &item)
 {
-    item.showWith(0, log);
+    item.show(0, log);
     return (log);
 }

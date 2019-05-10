@@ -13,8 +13,8 @@
 
 oA::Log oA::cout(oA::Log::COUT, oA::CSL_WHITE, oA::CSL_LIGHT_BLUE, oA::CSL_LIGHT_MAGENTA);
 oA::Log oA::cerr(oA::Log::CERR, oA::CSL_LIGHT_YELLOW, oA::CSL_LIGHT_RED, oA::CSL_CYAN);
-const oA::Log::Repeater oA::repeat;
-const oA::Log::Endl oA::endl;
+oA::Log::Repeater oA::repeat;
+oA::Log::Endl oA::endl;
 
 oA::Log::Log(Output out, ConsoleColor text, ConsoleColor quote, ConsoleColor quote2)
     : _stream(out == CERR ? std::cerr : std::cout), _text(text), _quote({quote, quote2})
@@ -32,12 +32,12 @@ oA::OStream &oA::Log::getStream(void) const noexcept
     return _stream;
 }
 
-bool oA::Log::repeat(void) const noexcept
+bool oA::Log::repeat(void) noexcept
 {
     return _repeat ? --_repeat, true : false;
 }
 
-void oA::Log::setRepeat(oA::Uint value) const noexcept
+void oA::Log::setRepeat(oA::Uint value) noexcept
 {
     _repeat = value;
 }
@@ -52,14 +52,15 @@ void oA::Log::setEnabled(bool value) noexcept
     _enabled = value;
 }
 
-void oA::Log::formatConsoleString(String &str) const noexcept
+void oA::Log::formatConsoleString(String &str) noexcept
 {
-    formatQuote(str, _inQuote[0], _quote[0], OA_QUOTE_CHAR);
-    formatQuote(str, _inQuote[1], _quote[1], OA_QUOTE_CHAR2);
+    formatQuote(str, _quote[0], OA_QUOTE_CHAR);
+    formatQuote(str, _quote[1], OA_QUOTE_CHAR2);
 }
 
-void oA::Log::formatQuote(String &str, bool &inQuote, ConsoleColor quote, char separator) const noexcept
+void oA::Log::formatQuote(String &str, ConsoleColor quote, char separator) noexcept
 {
+    bool inQuote = false;
     bool hasColor = false;
     auto end = String::npos;
     ConsoleColor color;
@@ -82,7 +83,7 @@ void oA::Log::formatQuote(String &str, bool &inQuote, ConsoleColor quote, char s
 }
 
 template<>
-const oA::Log &oA::Log::log(const String &value) const noexcept
+oA::Log &oA::Log::log(const String &value) noexcept
 {
     String str = value;
 
@@ -96,13 +97,13 @@ const oA::Log &oA::Log::log(const String &value) const noexcept
     return (*this);
 }
 
-const oA::Log &operator<<(const oA::Log &log, const oA::Log::Repeater &repeater)
+oA::Log &operator<<(oA::Log &log, const oA::Log::Repeater &repeater)
 {
     log.setRepeat(repeater.get());
     return (log);
 }
 
-const oA::Log &operator<<(const oA::Log &log, const oA::Log::Endl &endl)
+oA::Log &operator<<(oA::Log &log, const oA::Log::Endl &endl)
 {
     (void)(endl);
     if (!log.getEnabled())
@@ -111,13 +112,13 @@ const oA::Log &operator<<(const oA::Log &log, const oA::Log::Endl &endl)
     return (log);
 }
 
-const oA::Log &operator<<(const oA::Log &log, const char * const &raw)
+oA::Log &operator<<(oA::Log &log, const char * const &raw)
 {
     log.log(oA::String(raw));
     return (log);
 }
 
-const oA::Log::Repeater &oA::Log::Repeater::operator()(Uint x) const noexcept
+oA::Log::Repeater &oA::Log::Repeater::operator()(Uint x) noexcept
 {
     _x = x;
     return (*this);

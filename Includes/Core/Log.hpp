@@ -51,13 +51,13 @@ public:
         ConsoleColor quote2 = ConsoleColor());
 
     OStream &getStream(void) const noexcept;
-    bool repeat(void) const noexcept;
-    void setRepeat(Uint value) const noexcept;
+    bool repeat(void) noexcept;
+    void setRepeat(Uint value) noexcept;
     bool getEnabled(void) const noexcept;
     void setEnabled(bool value) noexcept;
 
     template<typename T>
-    const Log &log(const T &value) const noexcept {
+    Log &log(const T &value) noexcept {
         if (!getEnabled())
             return (*this);
         while (repeat()) {
@@ -69,29 +69,28 @@ public:
 
 private:
     OStream &_stream;
-    mutable Uint _repeat = 1;
+    Uint _repeat = 1;
     bool _enabled = true;
     ConsoleColor _text;
     ConsoleColor _quote[2];
-    mutable bool _inQuote[2] = { false, false };
 
-    void formatConsoleString(String &string) const noexcept;
-    void formatQuote(String &str, bool &inQuote, ConsoleColor color, char separator) const noexcept;
+    void formatConsoleString(String &string) noexcept;
+    void formatQuote(String &str, ConsoleColor color, char separator) noexcept;
 };
 
 template<>
-const oA::Log &oA::Log::log(const oA::String &value) const noexcept;
+oA::Log &oA::Log::log(const oA::String &value) noexcept;
 
 class oA::Log::Repeater
 {
 public:
     Repeater(void) = default;
 
-    const Repeater &operator()(Uint x) const noexcept;
+    Repeater &operator()(Uint x) noexcept;
     Uint get(void) const noexcept;
 
 private:
-    mutable Uint _x = 0;
+    Uint _x = 0;
 };
 
 class oA::Log::Endl
@@ -99,19 +98,19 @@ class oA::Log::Endl
 };
 
 template<typename T>
-const oA::Log &operator<<(const oA::Log &log, const T &value) {
+oA::Log &operator<<(oA::Log &log, const T &value) {
     log.log(value);
     return (log);
 }
 
-const oA::Log &operator<<(const oA::Log &log, const oA::Log::Repeater &repeater);
-const oA::Log &operator<<(const oA::Log &log, const oA::Log::Endl &endl);
-const oA::Log &operator<<(const oA::Log &log, const char * const &raw);
+oA::Log &operator<<(oA::Log &log, const oA::Log::Repeater &repeater);
+oA::Log &operator<<(oA::Log &log, const oA::Log::Endl &endl);
+oA::Log &operator<<(oA::Log &log, const char * const &raw);
 
 namespace oA
 {
     extern oA::Log cout;
     extern oA::Log cerr;
-    extern const oA::Log::Repeater repeat;
-    extern const oA::Log::Endl endl;
+    extern oA::Log::Repeater repeat;
+    extern oA::Log::Endl endl;
 }

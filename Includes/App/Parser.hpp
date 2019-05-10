@@ -15,10 +15,8 @@
 #include "Core/UMap.hpp"
 // Log
 #include "Core/Log.hpp"
-// Vector
-#include "Core/Vector.hpp"
-// Stack
-#include "Core/Stack.hpp"
+// List
+#include "Core/List.hpp"
 // ItemPtr
 #include "App/Item.hpp"
 
@@ -32,11 +30,12 @@ class oA::Parser
     */
     struct Context
     {
+        Context(void) = default;
         Context(const String &filename) : path(filename) {}
 
-        const String path; // Context file path
+        String path; // Context file path
         ItemPtr root; // Context item
-        Vector<String> imports; // Context import paths
+        List<String> imports; // Context import paths
     };
 
     using ContextFct = Function<void(void)>;
@@ -48,8 +47,8 @@ public:
 
 private:
     ContextMatches _matches; // Regex token matches
-    Stack<Context> _contexts; // Context stack
-    Stack<IFStream> _ifstreams; // FileStream stack
+    List<Context> _contexts; // Context stack
+    List<IFStream> _ifstreams; // FileStream stack
     String _token; // Temporary buffer (avoid stack overflow in recursion)
     mutable Log _log; // Custom parsing logger (can be disabled for speed)
     Uint _indent = 0;
@@ -60,10 +59,10 @@ private:
     Char tab(void) const noexcept { _log << repeat(_indent) << '\t'; return 0; }
 
     /* Context stack access */
-    inline Context &ctx(void) noexcept { return (_contexts.top()); }
-    inline const Context &ctx(void) const noexcept { return (_contexts.top()); }
-    inline IFStream &fs(void) noexcept { return (_ifstreams.top()); }
-    inline const IFStream &fs(void) const noexcept { return (_ifstreams.top()); }
+    inline Context &ctx(void) noexcept { return (_contexts.back()); }
+    inline const Context &ctx(void) const noexcept { return (_contexts.back()); }
+    inline IFStream &fs(void) noexcept { return (_ifstreams.back()); }
+    inline const IFStream &fs(void) const noexcept { return (_ifstreams.back()); }
 
     /* Parsing loop */
     ItemPtr parseFile(const String &path);
@@ -85,6 +84,8 @@ private:
     void parseRootItem(const String &type);
     void parseChildItem(const String &type);
     ItemPtr resolveType(const String &type);
+    String getContextName(void) const noexcept;
+    bool resolveImportType(const String &type, String &path) const noexcept;
     // Properties
     void parseNewProperty(void);
     void parseProperty(void);
