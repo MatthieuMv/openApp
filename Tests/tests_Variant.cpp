@@ -67,3 +67,137 @@ Test(Variant, TypeConversion)
     cr_assert_eq(var.toFloat(), 0.0f);
     cr_assert_eq(var.toInt(), 0);
 }
+
+Test(Variant, NumberOperators)
+{
+    oA::Variant x(3), y(4);
+
+    cr_assert_eq((x + y).toInt(), 7);
+    cr_assert_eq((x - y).toInt(), -1);
+    cr_assert_eq((x * y).toInt(), 12);
+    cr_assert_eq((x / y).toInt(), 0);
+    cr_assert_eq((x % y).toInt(), 3);
+    cr_assert_not(x == y);
+    cr_assert(x != y);
+    cr_assert_not(x > y);
+    cr_assert_not(x >= y);
+    cr_assert(x < y);
+    cr_assert(x <= y);
+    cr_assert(x && y);
+    cr_assert(x || y);
+    cr_assert(x);
+    cr_assert_not(!x);
+    cr_assert_eq((++x).toInt(), 4);
+    cr_assert_eq((--x).toInt(), 3);
+    cr_assert_eq((x += y).toInt(), 7);
+    cr_assert_eq((x -= y).toInt(), 3);
+    cr_assert_eq((x *= y).toInt(), 12);
+    cr_assert_eq((x /= y).toInt(), 3);
+    cr_assert_eq((x %= y).toInt(), 3);
+}
+
+Test(Variant, StringOperators)
+{
+    oA::Variant x("Hello"), y("World"), z;
+    bool crashed = false;
+
+    z = x;
+    z += " ";
+    z += y;
+    cr_assert_eq((x + y).toString(), "HelloWorld");
+    cr_assert_eq((z).toString(), "Hello World");
+    cr_assert_not(x == y);
+    cr_assert(x != y);
+    cr_assert(x && y);
+    cr_assert(x || y);
+    cr_assert(x);
+    cr_assert_not(!x);
+    try { (x - y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x * y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x / y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x % y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x > y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x >= y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x < y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x <= y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (++x); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (--x); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x -= y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x *= y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x /= y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x %= y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+}
+
+Test(Variant, CrossTypeOperators)
+{
+    oA::Variant x(12), y("World");
+
+    cr_assert_not(x == y);
+    cr_assert(x != y);
+    cr_assert(x && y);
+    cr_assert(x || y);
+    cr_assert(x);
+    cr_assert_not(!x);
+}
+
+Test(Variant, OperatorErrors)
+{
+    oA::Variant x(12), y("World");
+    bool crashed = false;
+
+    try { (x + y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x - y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x * y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x / y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x % y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x > y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x >= y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x < y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+    try { (x <= y); } catch (...) { crashed = true; }
+    cr_assert(crashed);
+    crashed = false;
+}

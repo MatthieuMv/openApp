@@ -32,7 +32,7 @@ Test(ContainerHelper, VectorHelper)
 Test(ContainerHelper, ListApply)
 {
     oA::List<oA::Int> v = { 0, 1, 2 };
-    oA::List<oA::Int> &constRef = v;
+    const oA::List<oA::Int> &constRef = v;
 
     v.apply([](oA::Int &x) {
         ++x;
@@ -47,4 +47,27 @@ Test(ContainerHelper, ListApply)
     constRef.apply([](const oA::Int &x) {
         cr_assert_eq(x, 5);
     });
+}
+
+Test(ContainerHelper, FindIf)
+{
+    oA::List<oA::Int> v = { 0, 1, 2 };
+    const oA::List<oA::Int> &constRef = v;
+
+    auto it = v.findIf([](const auto &x) {
+        return x == 0;
+    });
+    cr_assert_eq(it, v.begin());
+    auto it2 = constRef.findIf([](const auto &x) {
+        return x == 1;
+    });
+    cr_assert_eq(it2, ++constRef.begin());
+    auto it3 = v.findIf([](const auto &x) {
+        return x == 4;
+    });
+    cr_assert_eq(it3, v.end());
+    auto it4 = constRef.findIf([](const auto &x) {
+        return x == 4;
+    });
+    cr_assert_eq(it4, constRef.end());
 }

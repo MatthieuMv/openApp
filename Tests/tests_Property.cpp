@@ -10,11 +10,13 @@
 
 Test(Property, Basics)
 {
-    oA::Property<oA::Int> x(32), y(x), tmp, z(std::move(tmp));
+    int val = 3;
+    oA::Property<oA::Int> x(32), y(x), tmp, z(std::move(tmp)), n(val);
 
     cr_assert_eq(x.get(), 32);
     cr_assert_eq(y.get(), 32);
     cr_assert_eq(z.get(), 0);
+    cr_assert_eq(n.get(), val);
     x = 1;
     cr_assert_eq(x.get(), 1);
     x.set(12);

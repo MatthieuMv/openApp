@@ -58,7 +58,8 @@ TSRC		=	$(F_TESTS)/tests_Variant.cpp \
 				$(F_TESTS)/tests_Factory.cpp \
 				$(F_TESTS)/tests_AppFactory.cpp \
 				$(F_TESTS)/tests_Parser.cpp \
-				$(F_TESTS)/tests_Operators.cpp
+				$(F_TESTS)/tests_Operators.cpp \
+				$(F_TESTS)/tests_STL.cpp
 
 SRC			=	$(CORE_SRC) $(APP_SRC)
 

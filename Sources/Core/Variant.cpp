@@ -69,12 +69,9 @@ oA::Float oA::Variant::toFloat(void) const noexcept
             return getConst<Float>();
         case VString:
             return std::stof(getConst<String>());
-        default:
-            return 0.0f;
         }
-    } catch (const std::invalid_argument &) {
-        return 0.0f;
-    }
+    } catch (const std::invalid_argument &) {}
+    return 0.0f;
 }
 
 oA::Int oA::Variant::toInt(void) const noexcept
@@ -85,12 +82,9 @@ oA::Int oA::Variant::toInt(void) const noexcept
             return static_cast<Int>(getConst<Float>());
         case VString:
             return std::stoi(getConst<String>());
-        default:
-            return 0;
         }
-    } catch (const std::invalid_argument &) {
-        return 0;
-    }
+    } catch (const std::invalid_argument &) {}
+    return 0;
 }
 
 oA::String oA::Variant::toString(void) const noexcept
@@ -100,9 +94,8 @@ oA::String oA::Variant::toString(void) const noexcept
         return ToString(getConst<Float>());
     case VString:
         return getConst<String>();
-    default:
-        return String();
     }
+    return String();
 }
 
 oA::String oA::Variant::getTypeName(void) const noexcept
@@ -117,9 +110,8 @@ oA::String oA::Variant::getTypeName(oA::VariantType type) const noexcept
         return "Number";
     case VString:
         return "String";
-    default:
-        return "None";
     }
+    return "None";
 }
 
 oA::Variant::operator bool(void) const
@@ -129,9 +121,8 @@ oA::Variant::operator bool(void) const
         return getConst<Float>();
     case VString:
         return !getConst<String>().empty();
-    default:
-        throw TypeError("Variant", "Invalid variant type for @operator b@ool");
     }
+    return false;
 }
 
 bool oA::Variant::operator==(const Variant &other) const
@@ -143,9 +134,8 @@ bool oA::Variant::operator==(const Variant &other) const
         return getConst<Float>() == other.getConst<Float>();
     case VString:
         return getConst<String>() == other.getConst<String>();
-    default:
-        throw LogicError("Variant", "Invalid variant type for @operator ==@");
     }
+    return false;
 }
 
 bool oA::Variant::operator!=(const Variant &other) const
@@ -211,9 +201,8 @@ oA::Variant oA::Variant::operator+(const Variant &other) const
         return getConst<Float>() + other.getConst<Float>();
     case VString:
         return getConst<String>() + other.getConst<String>();
-    default:
-        throw LogicError("Variant", "@Operator +@ not implemented for @" + getTypeName() + "@");
     }
+    return Variant();
 }
 
 oA::Variant &oA::Variant::operator+=(const Variant &other)
