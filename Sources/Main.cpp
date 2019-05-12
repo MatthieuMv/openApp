@@ -10,9 +10,7 @@
 int main(void)
 {
     try {
-        auto itm = oA::Parser::ParseFile("Resources/Test.oA", true);
-        oA::cout << *itm;
-        return 0;
+        oA::ItemPtr ptr = oA::Parser::ParseFile("Resources/Test.oA");
     } catch (const oA::Error &e) {
         oA::cerr << e.what() << oA::endl;
         return 84;

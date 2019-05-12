@@ -17,6 +17,8 @@
 #include "Core/Operators.hpp"
 // Pair
 #include "Core/Pair.hpp"
+// Log
+#include "Core/Log.hpp"
 
 namespace oA
 {
@@ -83,6 +85,21 @@ public:
         Property<T>::set(stack.top());
     }
 
+    void show(const Function<String(const T &)> &typeDesc) const {
+        auto i = 0;
+        cout << "Expression: ";
+        for (const auto &p : _expr) {
+            if (i)
+                cout << " ";
+            ++i;
+            if (p.second.op)
+                cout << '#' + GetOperatorString(p.second.op) + '#';
+            else
+                cout << '@' + typeDesc(p.second.property->get()) + '@';
+        }
+        cout << endl;
+    }
+
 private:
     Vector<Pair<Uint, Node>> _expr;
 
@@ -114,7 +131,7 @@ private:
     static T extract(Stack<T> &stack) {
             T res;
             if (stack.empty())
-                throw LogicError("Expression", "Couldn't compute expression");
+                throw LogicError("Expression", "Couldn't extract operands");
             res = stack.top();
             stack.pop();
             return res;

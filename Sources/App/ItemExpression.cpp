@@ -101,9 +101,9 @@ static void CheckOp(oA::Expression<oA::Variant> &target, oA::Item::OperatorStack
         return stack.push(op);
     p1 = op.priority;
     p2 = stack.top().priority;
-    if (p1 > p2 || (p1 == p2 && op.flow == oA::LeftToRight))
+    if (p1 < p2 || (p1 == p2 && op.flow == oA::LeftToRight))
         return stack.push(op);
-    while (p1 < p2 || (p1 == p2 && op.flow == oA::RightToLeft)) {
+    while (p1 > p2 || (p1 == p2 && op.flow == oA::RightToLeft)) {
         target.addNode(oA::Expression<oA::Variant>::Node(stack.top().type));
         stack.pop();
         if (stack.empty())

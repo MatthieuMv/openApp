@@ -18,6 +18,7 @@ oA::Item &oA::Item::addChild(const ItemPtr &child)
 oA::Item &oA::Item::addChild(ItemPtr &&child)
 {
     _childs.emplace_back(std::move(child));
+    _childs.back()->_parent = this;
     return (*_childs.back());
 }
 

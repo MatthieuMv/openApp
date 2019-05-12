@@ -64,3 +64,47 @@ Test(Item, Children)
     }
     cr_assert(crashed);
 }
+
+Test(Item, Expression1)
+{
+    oA::Item item;
+    auto &child = item.addChild(oA::MakeShared<oA::Item>());
+
+    child["id"] = "child";
+    item.makeExpression("x", "child.width > 100 ? 42 : 420");
+    cr_assert_eq(item["x"]->toInt(), 420);
+    child["width"] = 101;
+    cr_assert_eq(item["x"]->toInt(), 42);
+}
+
+Test(Item, Expression2)
+{
+    oA::Item item;
+
+    item.makeExpression("x", "width > 100 ? 1 : (width <= 50 ? 2 : (width >= 75 ? 3 : 4))");
+    item["width"] = 101;
+    cr_assert_eq(item["x"]->toInt(), 1);
+    item["width"] = 50;
+    cr_assert_eq(item["x"]->toInt(), 2);
+    item["width"] = 75;
+    cr_assert_eq(item["x"]->toInt(), 3);
+    item["width"] = 65;
+    cr_assert_eq(item["x"]->toInt(), 4);
+}
+
+Test(Item, Find)
+{
+    oA::Item root;
+    oA::Item &child = root.addChild(oA::MakeShared<oA::Item>());
+    oA::Item &sub = child.addChild(oA::MakeShared<oA::Item>());
+
+    root["id"] = "root";
+    child["id"] = "child";
+    sub["id"] = "sub";
+    cr_assert_eq(root.find("child"), &child);
+    cr_assert_eq(root.find("sub"), &sub);
+    cr_assert_eq(child.find("root"), &root);
+    cr_assert_eq(child.find("sub"), &sub);
+    cr_assert_eq(sub.find("root"), &root);
+    cr_assert_eq(sub.find("child"), &child);
+}

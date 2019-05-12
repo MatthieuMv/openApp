@@ -53,6 +53,7 @@ TSRC		=	$(F_TESTS)/tests_Variant.cpp \
 				$(F_TESTS)/tests_Error.cpp \
 				$(F_TESTS)/tests_Signal.cpp \
 				$(F_TESTS)/tests_Property.cpp \
+				$(F_TESTS)/tests_Expression.cpp \
 				$(F_TESTS)/tests_Item.cpp \
 				$(F_TESTS)/tests_Path.cpp \
 				$(F_TESTS)/tests_Factory.cpp \
