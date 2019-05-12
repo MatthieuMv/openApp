@@ -25,9 +25,6 @@ namespace oA
 
     template<typename T>
     using ExpressionPtr = Shared<Expression<T>>;
-
-    template<typename T>
-    using ExpressionRef = Weak<Expression<T>>;
 }
 
 /*
@@ -38,32 +35,52 @@ template<typename T>
 class oA::Expression : public Property<T>
 {
     using ExpressionFct = Function<void(Stack<T> &)>;
+public:
+    using Property<T>::Property;
+
+    virtual ~Expression(void) {}
 
     struct Node
     {
-        Node(const Operator &holdOp) : op(holdOp) {}
+        Node(const OperatorType &opType) : op(opType) {}
         Node(const PropertyPtr<T> &holdProperty) : property(holdProperty) {}
 
-        Operator op = None; // Node operator (can be null)
-        PropertyRef<T> property; // Pointer to property (can be null)
+        PropertyPtr<T> property; // Pointer to property (can be null)
+        OperatorType op = None; // Node operator (can be null)
     };
-
-public:
-    using Property<T>::Property;
 
     void addNode(const Node &node) {
         Uint idx = 0;
         if (node.property)
-            idx = depends(node.property);
-        _expr.push_back(std::make_pair(idx, node));
+            idx = depends(*node.property);
+        _expr.push_back(MakePair(idx, node));
+    }
+
+    void addNode(const T &value) {
+        _expr.push_back(MakePair(0, MakeShared<Property<T>>(value)));
     }
 
     void clear(void) {
         for (auto &pair : _expr) {
-            if (pair.second.property)
-                pair.second.property.disconnect(pair.first);
+            if (pair.first && pair.second.property)
+                pair.second.property->disconnect(pair.first);
         }
         _expr.clear();
+    }
+
+    void compute(void) {
+        Stack<T> stack;
+        if (_expr.empty())
+            throw LogicError("Expression", "Couldn't compute empty expression");
+        for (auto &node : _expr) {
+            if (node.second.op != None)
+                processOperator(stack, node.second);
+            else
+                stack.push(node.second.property->get());
+        }
+        if (stack.size() != 1)
+            throw LogicError("Expression", "Couldn't compute invalid expression");
+        Property<T>::set(stack.top());
     }
 
 private:
@@ -77,24 +94,8 @@ private:
         });
     }
 
-    void compute(void) {
-        Stack<T> stack;
-
-        if (_expr.empty())
-            throw LogicError("Expression", "Couldn't compute empty expression");
-        for (Node &node : _expr) {
-            if (node.op != None)
-                processOperator(stack, node);
-            else
-                stack.push(*node.property);
-        }
-        if (stack.size() != 1)
-            throw LogicError("Expression", "Couldn't compute invalid expression");
-        Property<T>::set(stack.top());
-    }
-
     void processOperator(Stack<T> &stack, const Node &node) {
-        static const UMap<String, ExpressionFct> fcts = {
+        static const UMap<Uint, ExpressionFct> fcts = {
             { Add, processAddition }, { Sub, processSubstraction },
             { Mult, processMultiplication }, { Div, processDivision }, { Mod, processModulo },
             { Not, processNot }, { And, processAnd }, { Or, processOr },
@@ -104,7 +105,10 @@ private:
             { If, processTernary }
         };
 
-        fcts[node.op - 1](stack);
+        auto f = fcts.find(node.op);
+        if (f != fcts.end())
+            return f->second(stack);
+        throw LogicError("Expression", "Couldn't find operator processing function");
     }
 
     static T extract(Stack<T> &stack) {

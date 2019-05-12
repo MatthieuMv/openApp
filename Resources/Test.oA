@@ -7,7 +7,7 @@ MyItem {
 
     Item {
         id: childItm
-        width: mainWnd.width / 2 - width / 2
-        height: mainWnd.height / 2 - height / 2
+        width: myItem.customProp / 2
+        height: myItem.customProp / 3
     }
 }

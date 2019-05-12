@@ -32,6 +32,23 @@ namespace oA
                 fct(*it);
         }
 
+        /* findIf() : find a const / non-const element matching a predicate */
+        auto findIf(const Function<bool(const Value &)> &predicate) {
+            for (auto it = Type::begin(); it != Type::end(); ++it) {
+                if (predicate(*it))
+                    return it;
+            }
+            return Type::end();
+        }
+
+        auto findIf(const Function<bool(const Value &)> &predicate) const {
+            for (auto it = Type::begin(); it != Type::end(); ++it) {
+                if (predicate(*it))
+                    return it;
+            }
+            return Type::end();
+        }
+
         /* removeIf() : remove elements matching a value, or a predicate */
         void removeIf(const Value &valueToRemove) {
             for (auto it = Type::begin(); it != Type::end();) {

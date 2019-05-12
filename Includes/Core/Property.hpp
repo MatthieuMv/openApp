@@ -9,7 +9,7 @@
 
 // Signal
 #include "Core/Signal.hpp"
-// Shared, Weak
+// Shared
 #include "Core/Memory.hpp"
 
 namespace oA
@@ -19,9 +19,6 @@ namespace oA
 
     template<typename T>
     using PropertyPtr = Shared<Property<T>>;
-
-    template<typename T>
-    using PropertyRef = Weak<Property<T>>;
 }
 
 /*
@@ -36,6 +33,7 @@ public:
     Property(T &&value) : Signal<>(), _value(value) {}
     Property(const Property<T> &other) : Signal<>(other), _value(other._value) {}
     Property(Property<T> &&other) : Signal<>(other), _value(other._value) {}
+    virtual ~Property(void) {}
 
     T &get(void) noexcept { return _value; }
     const T &get(void) const noexcept { return _value; }

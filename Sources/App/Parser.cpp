@@ -80,9 +80,9 @@ bool oA::Parser::readLine(Char delim)
 {
     if (!std::getline(fs(), _token, delim))
         return false;
-    while (std::isspace(_token.front()))
+    while (!_token.empty() && std::isspace(_token.front()))
         _token.erase(_token.begin());
-    while (std::isspace(_token.back()))
+    while (!_token.empty() && std::isspace(_token.back()))
         _token.pop_back();
     return true;
 }
@@ -189,6 +189,8 @@ void oA::Parser::parseNewProperty(void)
     name = _token;
     name.pop_back();
     _log << tab() << "Adding new property #" + _token + "#" << endl;
+    if (_token.back() == ':')
+        _token.pop_back();
     ctx().root->append(_token);
     parseProperty();
 }
@@ -197,7 +199,8 @@ void oA::Parser::parseProperty(void)
 {
     String name = _token;
 
-    name.pop_back();
+    if (name.back() == ':')
+        name.pop_back();
     if (!ctx().root)
         throw LogicError("Parser", "Property @" + name + "@ must be in item definition (#" + ctx().path + "#)");
     if (!readLine())

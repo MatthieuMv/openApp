@@ -21,9 +21,9 @@ namespace oA
     template<typename T>
     using Weak = std::weak_ptr<T>;
 
-    template<typename T>
-    Unique<T> MakeUnique(void) { return Unique<T>(new T); }
+    template<typename T, typename ...Args>
+    Unique<T> MakeUnique(Args&&... args) { return std::make_unique<T>(std::forward<Args>(args)...); }
 
-    template<typename T>
-    Shared<T> MakeShared(void) { return Shared<T>(new T); }
+    template<typename T, typename ...Args>
+    Shared<T> MakeShared(Args&&... args) { return std::make_shared<T>(std::forward<Args>(args)...); }
 }

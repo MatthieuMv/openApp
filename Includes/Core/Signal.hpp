@@ -30,6 +30,7 @@ public:
     Signal(void) = default;
     Signal(const Signal<Args...> &other) : _slots(other._slots), _idx(other._idx) {}
     Signal(Signal<Args...> &&other) : _slots(other._slots), _idx(other._idx) {}
+    virtual ~Signal(void) {}
 
     Signal<Args...> &operator=(const Signal<Args...> &other) {
         _slots = other._slots;

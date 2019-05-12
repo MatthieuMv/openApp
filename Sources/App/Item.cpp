@@ -5,14 +5,13 @@
 ** Item
 */
 
-// AccessError
-#include "Core/Error.hpp"
 // Item
 #include "App/Item.hpp"
 
 oA::Item &oA::Item::addChild(const ItemPtr &child)
 {
     _childs.push_back(child);
+    _childs.back()->_parent = this;
     return (*_childs.back());
 }
 
@@ -27,7 +26,7 @@ void oA::Item::removeChild(const String &id)
     bool removed = false;
 
     _childs.removeIf([&id, &removed](const ItemPtr &child) {
-        if (child->get("id")->get<String>() == id) {
+        if (child->get("id")->getConst<String>() == id) {
             removed = true;
             return true;
         }
@@ -52,63 +51,46 @@ oA::Uint oA::Item::childCount(void) const noexcept
     return _childs.size();
 }
 
-oA::Property<oA::Variant> &oA::Item::append(const String &name)
+oA::Item &oA::Item::getChild(const String &id)
 {
-    _properties[name] = std::make_shared<Expression<Variant>>();
-    return (get(name));
-}
-
-void oA::Item::remove(const String &name)
-{
-    _properties.removeIf([&name](const auto &p) {
-        return p.first == name;
+    auto it = _childs.findIf([&id](const ItemPtr &child) {
+        return child->get("id")->getConst<String>() == id;
     });
+
+    if (it == _childs.end())
+        throw AccessError("Item", "Couldn't find child @" + id + "@");
+    return (*it->get());
 }
 
-oA::Property<oA::Variant> &oA::Item::get(const String &name)
+oA::Item &oA::Item::getChild(Uint idx)
 {
-    auto it = _properties.find(name);
+    auto it = _childs.begin();
 
-    if (it == _properties.end())
-        throw AccessError("Item", "Couldn't find property @" + name + "@");
-    return (*it->second);
+    if (_childs.size() <= idx)
+        throw AccessError("Item", "Child index @" + ToString(idx) + "@ out of range");
+    std::advance(it, idx);
+    return (*it->get());
 }
 
-const oA::Property<oA::Variant> &oA::Item::get(const String &name) const
+oA::ItemPtr oA::Item::getChildPtr(const String &id)
 {
-    auto it = _properties.find(name);
+    auto it = _childs.findIf([&id](const ItemPtr &child) {
+        return child->get("id")->getConst<String>() == id;
+    });
 
-    if (it == _properties.end())
-        throw AccessError("Item", "Couldn't find property @" + name + "@");
-    return (*it->second);
+    if (it != _childs.end())
+        return *it;
+    return oA::ItemPtr();
 }
 
-oA::Property<oA::Variant> &oA::Item::operator[](const String &name)
+bool oA::Item::childExists(const String &id)
 {
-    return (get(name));
-}
+    auto it = _childs.findIf([&id](const ItemPtr &child) {
+        return child->get("id")->getConst<String>() == id;
+    });
 
-const oA::Property<oA::Variant> &oA::Item::operator[](const String &name) const
-{
-    return (get(name));
+    return it != _childs.end();
 }
-
-oA::Property<oA::Variant> &oA::Item::operator[](const Char *name)
-{
-    return (get(name));
-}
-
-const oA::Property<oA::Variant> &oA::Item::operator[](const Char *name) const
-{
-    return (get(name));
-}
-
-void oA::Item::makeExpression(const String &name, String expr)
-{
-    FormatExpression(expr);
-    (void)(name);
-}
-
 
 void oA::Item::show(Uint indent, Log &log) const noexcept
 {

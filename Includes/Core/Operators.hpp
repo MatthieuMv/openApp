@@ -35,7 +35,7 @@ namespace oA
     {
         const OperatorType type;
         const OperatorFlow flow;
-        const Uint priority;
+        const UByte priority;
     };
 
     using OperatorMap = UMap<String, Operator>;

@@ -1,4 +1,6 @@
 Item {
+    property customProp: 420
+
     x: 100
     y: 100
 }

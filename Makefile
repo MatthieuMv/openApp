@@ -41,6 +41,9 @@ CORE_SRC	=	$(F_CORE)/Log.cpp \
 				$(F_CORE)/Operators.cpp
 
 APP_SRC		=	$(F_APP)/Item.cpp \
+				$(F_APP)/ItemProperty.cpp \
+				$(F_APP)/ItemExpression.cpp \
+				$(F_APP)/ItemFind.cpp \
 				$(F_APP)/Parser.cpp \
 				$(F_APP)/AppFactory.cpp
 
@@ -78,10 +81,10 @@ bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)
 
 debug:
-	make OPTFLAGS="-g3" bin
+	$(MAKE) OPTFLAGS="-g3" bin
 
 tests_run:
-	make OPTFLAGS="-lcriterion --coverage" compile_tests
+	$(MAKE) OPTFLAGS="-lcriterion --coverage" compile_tests
 
 compile_tests: $(OBJ) $(TOBJ)
 	$(CC) -o $(TESTS) $(OBJ) $(TOBJ) $(FLAGS)

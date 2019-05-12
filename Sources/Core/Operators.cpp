@@ -13,9 +13,11 @@
 static bool MatchOperator(oA::String &expr, const oA::String &op, oA::String::iterator &it, const oA::String::iterator last);
 
 static const oA::OperatorMap C_OPERATORS = {
-    { "(",  { oA::LP,       oA::LeftToRight, 2  } },
-    { ")",  { oA::RP,       oA::LeftToRight, 2  } },
-    { "!",  { oA::Not,      oA::RightToLeft, 5  } },
+    { "(",  { oA::LP,       oA::LeftToRight, 1  } },
+    { ")",  { oA::RP,       oA::LeftToRight, 1  } },
+    { "?",  { oA::If,       oA::RightToLeft, 2  } },
+    { ":",  { oA::Else,     oA::RightToLeft, 2  } },
+    { "!",  { oA::Not,      oA::RightToLeft, 4  } },
     { "*",  { oA::Mult,     oA::LeftToRight, 5  } },
     { "/",  { oA::Div,      oA::LeftToRight, 5  } },
     { "%",  { oA::Mod,      oA::LeftToRight, 5  } },
@@ -28,9 +30,7 @@ static const oA::OperatorMap C_OPERATORS = {
     { "==", { oA::Eq,       oA::LeftToRight, 9  } },
     { "!=", { oA::Diff,     oA::LeftToRight, 9  } },
     { "&&", { oA::And,      oA::LeftToRight, 13 } },
-    { "||", { oA::Or,       oA::LeftToRight, 14 } },
-    { "?",  { oA::If,       oA::RightToLeft, 15 } },
-    { ":",  { oA::Else,     oA::RightToLeft, 15 } }
+    { "||", { oA::Or,       oA::LeftToRight, 14 } }
 };
 
 bool oA::OperatorExists(const String &op)
