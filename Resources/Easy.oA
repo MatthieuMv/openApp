@@ -1,3 +1,14 @@
+// Single line comment
+/*
+    Multi
+    line
+    comment
+*/
+
+
+// Useless space
+
+
 Item {
     id: easyItem
 }

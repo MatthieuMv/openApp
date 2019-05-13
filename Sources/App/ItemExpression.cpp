@@ -38,7 +38,7 @@ const oA::Expression<oA::Variant> &oA::Item::getExpr(const String &name) const
 
 void oA::Item::makeExpression(const String &name, const String &targetExpr)
 {
-    auto expr = targetExpr;
+    auto expr = targetExpr, tmp = String();
     auto &target = getExpr(name);
 
     target.clear();
@@ -48,16 +48,21 @@ void oA::Item::makeExpression(const String &name, const String &targetExpr)
         OperatorStack stack;
 
         while (ss >> expr) {
+            if (expr.front() == '"' && expr.back() != '"') {
+                std::getline(ss, tmp, '"');
+                expr += tmp;
+                expr.push_back('"');
+            }
             if (OperatorExists(expr))
                 insertOperator(target, stack, expr);
             else
-                insertOperand(target, expr);
+                insertOperand(name, target, expr);
         }
         PopUntil(target, stack, None);
         target.compute();
     } catch (const Error &e) {
         target.clear();
-        throw RuntimeError("Item", "Expression @" + name + "@: " + targetExpr + " #(" + e.what() + ")#");
+        throw RuntimeError("Item", "Expression @" + name + "@: " + targetExpr + "\n\t-> " + e.what());
     }
 }
 
@@ -113,8 +118,10 @@ static void CheckOp(oA::Expression<oA::Variant> &target, oA::Item::OperatorStack
     stack.push(op);
 }
 
-void oA::Item::insertOperand(Expression<Variant> &target, String &operand)
+void oA::Item::insertOperand(const String &name, Expression<Variant> &target, String &operand)
 {
+    if (name == operand)
+        throw LogicError("Item", "Expression @" + name + "@ can't depends to itself");
     if (IsString(operand))
         return target.addNode(FormatString(operand));
     else if (IsNumber(operand))

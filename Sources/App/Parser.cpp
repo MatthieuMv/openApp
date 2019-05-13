@@ -20,8 +20,12 @@ static const oA::String C_ITEM_MATCH = "[A-Z][A-Za-z]*";
 
 oA::ItemPtr oA::Parser::ParseFile(const String &path, bool verbose)
 {
+    Parser p(verbose);
+
     oA::AppFactory::RegisterBaseItems();
-    return Parser(verbose).parseFile(path);
+    auto itm = p.parseFile(path);
+    p.resolveUnassigned();
+    return itm;
 }
 
 oA::Parser::Parser(bool verbose)
@@ -65,12 +69,23 @@ void oA::Parser::parseToken(void)
     throw SyntaxError("Parser", "Couldn't parse token @" + _token + "@ #(" + ctx().path + ")#");
 }
 
+void oA::Parser::resolveUnassigned(void)
+{
+    for (auto &u : _unassigned) {
+        u.item->makeExpression(u.property, u.expression);
+    }
+    _unassigned.clear();
+}
+
 bool oA::Parser::readToken(void)
 {
     if (!fs().good() || !(fs() >> _token))
         return false;
     if (_token == "//") {
         readLine();
+        return readToken();
+    } else if (_token == "/*") {
+        while (readToken() && _token != "*/");
         return readToken();
     }
     return true;
@@ -96,9 +111,23 @@ void oA::Parser::parseImport(void)
 {
     if (!readLine())
         throw AccessError("Parser", "Expected symbol @dirname@ after token @import@ #(" + ctx().path + ")#");
-    if (!Path::DirExists(_token))
+    if (!resolveImportPath(_token))
         throw AccessError("Parser", "Couldn't find directory to import @" + _token + "@ #(" + ctx().path + ")#");
     ctx().imports.push_back(_token);
+}
+
+bool oA::Parser::resolveImportPath(String &path) const noexcept
+{
+    String tmp;
+
+    if (Path::DirExists(path))
+        return true;
+    tmp = tmp = getContextPath() + path;
+    if (Path::DirExists(tmp)) {
+        path.swap(tmp);
+        return true;
+    }
+    return false;
 }
 
 void oA::Parser::parseItem(void)
@@ -157,21 +186,39 @@ oA::String oA::Parser::getContextName(void) const noexcept
     auto pos = res.find_last_of('/');
 
     if (pos != res.npos)
-        res.erase(0, pos);
+        res.erase(0, pos + 1);
     pos = res.find_last_of('.');
     if (pos != res.npos)
         res.erase(pos);
     return res;
 }
 
+oA::String oA::Parser::getContextPath(void) const noexcept
+{
+    String res = ctx().path;
+    auto pos = res.find_last_of('/');
+
+    if (pos == res.npos)
+        return String();
+    res.erase(pos + 1);
+    return res;
+}
+
 bool oA::Parser::resolveImportType(const String &type, String &path) const noexcept
 {
-    for (String p : ctx().imports) {
-        if (p.back() != '/')
-            p.push_back('/');
-        p += type + ".oA";
-        if (Path::FileExists(p)) {
-            path.swap(p);
+    String tmp = getContextPath() + type +".oA";
+
+    if (Path::FileExists(tmp)) {
+        path.swap(tmp);
+        return true;
+    }
+    for (const String &p : ctx().imports) {
+        tmp = p;
+        if (tmp.back() != '/')
+            tmp.push_back('/');
+        tmp += type + ".oA";
+        if (Path::FileExists(tmp)) {
+            path.swap(tmp);
             return true;
         }
     }
@@ -205,8 +252,16 @@ void oA::Parser::parseProperty(void)
         throw LogicError("Parser", "Property @" + name + "@ must be in item definition (#" + ctx().path + "#)");
     if (!readLine())
         throw SyntaxError("Parser", "Expecting @expression@ after symbol @" + name + "@ (#" + ctx().path + "#)");
-    ctx().root->makeExpression(name, _token);
-    _log << tab() << "Property #" + name + "# set to " << _token << endl;
+    try {
+        ctx().root->makeExpression(name, _token);
+        _log << tab() << "Property #" + name + "# set to " << _token << endl;
+    } catch (...) {
+        Unassigned unassigned;
+        unassigned.item = ctx().root;
+        unassigned.property.swap(name);
+        unassigned.expression.swap(_token);
+        _unassigned.push_back(unassigned);
+    }
 }
 
 void oA::Parser::parseItemId(void)

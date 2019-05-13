@@ -38,6 +38,13 @@ class oA::Parser
         List<String> imports; // Context import paths
     };
 
+    struct Unassigned
+    {
+        ItemPtr item;
+        String property;
+        String expression;
+    };
+
     using ContextFct = Function<void(void)>;
     using ContextMatches = UMap<String, ContextFct>;
 
@@ -51,7 +58,8 @@ private:
     List<IFStream> _ifstreams; // FileStream stack
     String _token; // Temporary buffer (avoid stack overflow in recursion)
     mutable Log _log; // Custom parsing logger (can be disabled for speed)
-    Uint _indent = 0;
+    Uint _indent = 0; // Log indentation
+    List<Unassigned> _unassigned; // Unassigned properties
 
     Parser(bool verbose = false);
 
@@ -69,6 +77,9 @@ private:
     void parseUntil(const String &except = String());
     void parseToken(void);
 
+    /* Resolve */
+    void resolveUnassigned(void);
+
     /* Input Utils */
     bool readToken(void);
     bool readLine(Char delim = '\n');
@@ -79,12 +90,14 @@ private:
     /* Context parsing functions */
     // Import
     void parseImport(void);
+    bool resolveImportPath(String &path) const noexcept;
     // Item (Root && Childs)
     void parseItem(void);
     void parseRootItem(const String &type);
     void parseChildItem(const String &type);
     ItemPtr resolveType(const String &type);
     String getContextName(void) const noexcept;
+    String getContextPath(void) const noexcept;
     bool resolveImportType(const String &type, String &path) const noexcept;
     // Properties
     void parseNewProperty(void);

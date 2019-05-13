@@ -85,17 +85,17 @@ public:
         Property<T>::set(stack.top());
     }
 
-    void show(const Function<String(const T &)> &typeDesc) const {
+    void show(void) const {
         auto i = 0;
-        cout << "Expression: ";
+        cout << "#Expression#: ";
         for (const auto &p : _expr) {
             if (i)
                 cout << " ";
             ++i;
             if (p.second.op)
-                cout << '#' + GetOperatorString(p.second.op) + '#';
+                cout << '@' + GetOperatorString(p.second.op) + '@';
             else
-                cout << '@' + typeDesc(p.second.property->get()) + '@';
+                cout << p.second.property->get();
         }
         cout << endl;
     }

@@ -93,7 +93,7 @@ private:
 
     /* Item Expression */
     void insertOperator(Expression<Variant> &target, OperatorStack &stack, const String &str);
-    void insertOperand(Expression<Variant> &target, String &operand);
+    void insertOperand(const String &name, Expression<Variant> &target, String &operand);
 };
 
 oA::Log &operator<<(oA::Log &log, const oA::Item &item);
