@@ -29,7 +29,7 @@ oA::ItemPtr oA::Parser::ParseFile(const String &path, bool verbose)
 }
 
 oA::Parser::Parser(bool verbose)
-     : _log(oA::Log::COUT, oA::CSL_LIGHT_GRAY, oA::CSL_LIGHT_GREEN, oA::CSL_LIGHT_YELLOW)
+     : _log(oA::Log::Stdout, oA::CSL_LIGHT_GRAY, oA::CSL_LIGHT_GREEN, oA::CSL_LIGHT_YELLOW)
 {
     _log.setEnabled(verbose);
     _matches[C_ITEM_MATCH] = std::bind(&Parser::parseItem, this); // Item definition

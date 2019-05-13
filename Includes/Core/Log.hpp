@@ -7,7 +7,7 @@
 
 #pragma once
 
-#if !defined(WIN32) && !defined(_WIN32)
+#if !defined(WIN32) && !defined(_WIN32) && !defined(OA_NO_COLOR)
     #define CONSOLE_HAS_COLOR
 #endif
 
@@ -43,11 +43,11 @@ public:
     class Endl;
 
     enum Output {
-        COUT = 0,
-        CERR
+        Stdout = 0,
+        Stderr
     };
 
-    Log(Output out = COUT,
+    Log(Output out = Stdout,
         ConsoleColor text = ConsoleColor(),
         ConsoleColor quote = ConsoleColor(),
         ConsoleColor quote2 = ConsoleColor());

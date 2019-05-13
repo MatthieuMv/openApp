@@ -61,3 +61,14 @@ Test(Operators, FormatExpr2)
     oA::FormatExpression(expr);
     cr_assert_eq(expr, "1 + 2 * 3 > 2 ? 3 :");
 }
+
+Test(Operators, GetOperatorString)
+{
+    cr_assert_eq(oA::GetOperatorString(oA::Add), "+");
+    cr_assert_eq(oA::GetOperatorString(oA::Mod), "%");
+    cr_assert_eq(oA::GetOperatorString(oA::LP), "(");
+    cr_assert_eq(oA::GetOperatorString(oA::InfEq), "<=");
+    cr_assert_eq(oA::GetOperatorString(oA::If), "?");
+    cr_assert_eq(oA::GetOperatorString(oA::Else), ":");
+    cr_assert_eq(oA::GetOperatorString(oA::None), "");
+}

@@ -11,13 +11,13 @@
 // Log
 #include "Core/Log.hpp"
 
-oA::Log oA::cout(oA::Log::COUT, oA::CSL_WHITE, oA::CSL_LIGHT_BLUE, oA::CSL_LIGHT_MAGENTA);
-oA::Log oA::cerr(oA::Log::CERR, oA::CSL_LIGHT_YELLOW, oA::CSL_LIGHT_RED, oA::CSL_CYAN);
+oA::Log oA::cout(oA::Log::Stdout, oA::CSL_WHITE, oA::CSL_LIGHT_BLUE, oA::CSL_LIGHT_MAGENTA);
+oA::Log oA::cerr(oA::Log::Stderr, oA::CSL_LIGHT_YELLOW, oA::CSL_LIGHT_RED, oA::CSL_CYAN);
 oA::Log::Repeater oA::repeat;
 oA::Log::Endl oA::endl;
 
 oA::Log::Log(Output out, ConsoleColor text, ConsoleColor quote, ConsoleColor quote2)
-    : _stream(out == CERR ? std::cerr : std::cout), _text(text), _quote({quote, quote2})
+    : _stream(out == Stderr ? std::cerr : std::cout), _text(text), _quote({quote, quote2})
 {
     if (_text.empty())
         _text = oA::CSL_WHITE;
