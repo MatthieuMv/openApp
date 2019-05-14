@@ -11,14 +11,7 @@
 // Variant
 #include "Core/Variant.hpp"
 
-oA::Variant::Variant(void) : _var(0.0f)
-{
-}
-
-template<>
-oA::Variant::Variant(const Int &value) : _var(static_cast<Float>(value))
-{
-}
+oA::Variant::Variant(void) : _var(0.0f) {}
 
 oA::Variant &oA::Variant::operator=(const Variant &other)
 {

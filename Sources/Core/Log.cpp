@@ -112,7 +112,7 @@ oA::Log &operator<<(oA::Log &log, const oA::Log::Endl &endl)
     return (log);
 }
 
-oA::Log &operator<<(oA::Log &log, const char * const &raw)
+oA::Log &operator<<(oA::Log &log, const oA::Char * const &raw)
 {
     log.log(oA::String(raw));
     return (log);

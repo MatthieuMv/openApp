@@ -63,8 +63,8 @@ public:
     PropertyPtr<Variant> getPtr(const String &name);
     Property<Variant> &operator[](const String &name);
     const Property<Variant> &operator[](const String &name) const;
-    Property<Variant> &operator[](const char *name);
-    const Property<Variant> &operator[](const char *name) const;
+    Property<Variant> &operator[](const Char *name);
+    const Property<Variant> &operator[](const Char *name) const;
 
     /* Verbose */
     void show(Uint indent = 0, Log &log = cout) const noexcept;

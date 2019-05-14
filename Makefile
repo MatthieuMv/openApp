@@ -8,6 +8,7 @@
 # File names
 OA_STATIC	=	openApp.a
 OA_DYNAMIC	=	openApp.so
+OA_WDYNAMIC	=	openApp.dll
 BINARY		=	bin
 TESTS		=	run_tests
 
@@ -27,7 +28,7 @@ RM			=	rm -f
 
 # Compilation flags
 OPTFLAGS	=
-CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(OPTFLAGS) -Wno-ignored-qualifiers
+CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(OPTFLAGS) -Wno-ignored-qualifiers -Wno-unused-parameter
 CPPFLAGS	=	-I $(F_INCLUDES)
 LDFLAGS		=
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
@@ -71,6 +72,12 @@ TOBJ		=	$(TSRC:.cpp=.o)
 
 # Compilation rules
 all: compile
+
+win: shared
+	mv $(OA_DYNAMIC) $(OA_WDYNAMIC)
+
+example:
+	$(CC) -o ex Temp/Example.cpp -L. -lIrrlicht -L. -lopenApp -I C:\irrlicht-1.8.4\include $(FLAGS)
 
 compile: $(OBJ) static dynamic
 
