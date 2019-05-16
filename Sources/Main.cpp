@@ -10,7 +10,11 @@
 int main(void)
 {
     try {
-        oA::ItemPtr ptr = oA::Parser::ParseFile("Resources/Ultimate.oA", true);
+        oA::String path = "Resources/Ultimate.oA";
+        auto itm = oA::Parser::ParseFile(path, true);
+        if (!itm)
+            return 84;
+        oA::cout << oA::endl << "#" + path + "#" << ":" << oA::endl << *itm;
     } catch (const oA::Error &e) {
         oA::cerr << e.what() << oA::endl;
         return 84;

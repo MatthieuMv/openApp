@@ -19,6 +19,10 @@
 #include "Core/Variant.hpp"
 // Log
 #include "Core/Log.hpp"
+// Context
+#include "App/Context.hpp"
+// IRenderer
+#include "App/IRenderer.hpp"
 
 namespace oA
 {
@@ -30,6 +34,8 @@ namespace oA
 class oA::Item
 {
 public:
+    using OperatorStack = Stack<Operator>;
+
     Item(void) {
         append("id") = "item";
         append("x") = 0;
@@ -37,11 +43,31 @@ public:
         append("width") = 0;
         append("height") = 0;
     }
+
     virtual ~Item(void) {}
 
     virtual String getName(void) const noexcept { return "Item"; }
 
-    using OperatorStack = Stack<Operator>;
+    /* Drawing functions :
+        render(r) - draw the item and its children
+        draw(r) - draw only the item to the renderer
+    */
+    void render(IRenderer &renderer) {
+        draw(renderer);
+        for (auto &child : _childs) {
+            child->render(renderer);
+        }
+    }
+
+    virtual void draw(IRenderer &) {}
+
+    /* Item Context */
+    void getItemContext(ItemContext &ctx) const {
+        ctx.x = get("x")->getConst<Float>();
+        ctx.y = get("y")->getConst<Float>();
+        ctx.width = get("width")->getConst<Float>();
+        ctx.height = get("height")->getConst<Float>();
+    }
 
     /* Child function */
     Item &addChild(const ItemPtr &child);

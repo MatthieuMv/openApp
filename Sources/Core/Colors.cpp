@@ -1,0 +1,50 @@
+/*
+** EPITECH PROJECT, 2019
+** openApp
+** File description:
+** Colors
+*/
+
+// Color
+#include "Core/Colors.hpp"
+// UMap
+#include "Core/UMap.hpp"
+// LogicError
+#include "Core/Error.hpp"
+
+static const oA::UMap<oA::String, oA::Color> C_COLORS = {
+    { "black",          oA::Color(0, 0, 0)          },
+    { "white",          oA::Color(255, 255, 255)    },
+    { "red",            oA::Color(255, 0, 0)        },
+    { "lightred",       oA::Color(255, 75, 75)      },
+    { "darkred",        oA::Color(125, 0, 0)        },
+    { "green",          oA::Color(0, 255, 0)        },
+    { "lightgreen",     oA::Color(75, 255, 75)      },
+    { "darkgreen",      oA::Color(0, 125, 0)        },
+    { "blue",           oA::Color(0, 0, 255)        },
+    { "lightblue",      oA::Color(75, 75, 255)      },
+    { "darkblue",       oA::Color(0, 0, 125)        },
+    { "cyan",           oA::Color(0, 255, 255)      },
+    { "lightcyan",      oA::Color(100, 255, 255)    },
+    { "darkcyan",       oA::Color(0, 125, 125)      },
+    { "magenta",        oA::Color(255, 0, 255)      },
+    { "lightmagenta",   oA::Color(255, 100, 255)    },
+    { "darkmagenta",    oA::Color(125, 0, 125)      },
+    { "yellow",         oA::Color(255, 255, 0)      },
+    { "lightyellow",    oA::Color(255, 255, 100)    },
+    { "darkyellow",     oA::Color(125, 125, 0)      }
+};
+
+oA::Color oA::Color::RetreiveColor(const oA::String &color)
+{
+    auto it = C_COLORS.find(color);
+
+    if (it == C_COLORS.end())
+        throw LogicError("Color", "Invalid color name @" + color + "@");
+    return it->second;
+}
+
+oA::Uint oA::Color::Pack(Byte r, Byte g, Byte b, Byte a)
+{
+    return ((a & 0xff) << 24) | ((r & 0xff) << 16) | ((g & 0xff) << 8) | (b & 0xff);
+}

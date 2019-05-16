@@ -55,7 +55,7 @@ public:
 private:
     ContextMatches _matches; // Regex token matches
     List<Context> _contexts; // Context stack
-    List<IFStream> _ifstreams; // FileStream stack
+    UMap<String, IFStream> _ifstreams; // FileStream stack
     String _token; // Temporary buffer (avoid stack overflow in recursion)
     mutable Log _log; // Custom parsing logger (can be disabled for speed)
     Uint _indent = 0; // Log indentation
@@ -69,8 +69,7 @@ private:
     /* Context stack access */
     inline Context &ctx(void) noexcept { return (_contexts.back()); }
     inline const Context &ctx(void) const noexcept { return (_contexts.back()); }
-    inline IFStream &fs(void) noexcept { return (_ifstreams.back()); }
-    inline const IFStream &fs(void) const noexcept { return (_ifstreams.back()); }
+    inline IFStream &fs(void) noexcept { return (_ifstreams[ctx().path]); }
 
     /* Parsing loop */
     ItemPtr parseFile(const String &path);

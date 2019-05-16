@@ -9,7 +9,7 @@
 #include <regex>
 
 // DirExists
-#include <Core/Path.hpp>
+#include "Core/Path.hpp"
 // Parser
 #include "App/Parser.hpp"
 // AppFactory
@@ -36,7 +36,7 @@ oA::Parser::Parser(bool verbose)
     _matches[C_PROPERTY_MATCH] = std::bind(&Parser::parseProperty, this); // Existing Property
     _matches["import"] = std::bind(&Parser::parseImport, this); // Directory import
     _matches["property"] = std::bind(&Parser::parseNewProperty, this); // New property
-    _matches["id:"] = std::bind(&Parser::parseItemId, this); // New property
+    _matches["id:"] = std::bind(&Parser::parseItemId, this); // Item id
 }
 
 oA::ItemPtr oA::Parser::parseFile(const String &path)
@@ -44,13 +44,15 @@ oA::ItemPtr oA::Parser::parseFile(const String &path)
     ItemPtr root;
 
     _contexts.emplace_back(path);
-    _ifstreams.emplace_back(path);
+    if (_ifstreams.find(path) == _ifstreams.end())
+        _ifstreams.insert(MakePair(path, path));
+    else
+        _ifstreams[path].seekg(0, std::ios::beg);
     if (!fs().good())
-        throw AccessError("Parser", "Couldn't open file @" + path + "@");
+        throw AccessError("Parser", "Couldn't access file @" + path + "@");
     parseUntil();
     root.swap(ctx().root);
     _contexts.pop_back();
-    _ifstreams.pop_back();
     return root;
 }
 
