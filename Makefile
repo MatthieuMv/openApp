@@ -39,7 +39,8 @@ MAIN		=	$(F_SOURCES)/Main.cpp
 CORE_SRC	=	$(F_CORE)/Log.cpp \
 				$(F_CORE)/Variant.cpp \
 				$(F_CORE)/Path.cpp \
-				$(F_CORE)/Operators.cpp
+				$(F_CORE)/Operators.cpp \
+				$(F_CORE)/Colors.cpp
 
 APP_SRC		=	$(F_APP)/Item.cpp \
 				$(F_APP)/ItemProperty.cpp \
@@ -76,9 +77,6 @@ all: compile
 win: shared
 	mv $(OA_DYNAMIC) $(OA_WDYNAMIC)
 
-example:
-	$(CC) -o ex Temp/Example.cpp -L. -lIrrlicht -L. -lopenApp -I C:\irrlicht-1.8.4\include $(FLAGS)
-
 compile: $(OBJ) static dynamic
 
 static:
@@ -89,6 +87,9 @@ dynamic:
 
 bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)
+
+irrlicht: $(OBJ)
+	$(CC) -o $(BINARY) $(OBJ) $(FLAGS) -lIrrlicht Renderer/Irrlicht/Irrlicht.cpp IrrlichtMain.cpp
 
 debug:
 	$(MAKE) OPTFLAGS="-g3" bin
