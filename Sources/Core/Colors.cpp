@@ -15,6 +15,9 @@
 static const oA::UMap<oA::String, oA::Color> C_COLORS = {
     { "black",          oA::Color(0, 0, 0)          },
     { "white",          oA::Color(255, 255, 255)    },
+    { "grey",           oA::Color(125, 125, 125)    },
+    { "lightgrey",      oA::Color(200, 200, 200)    },
+    { "darkgrey",       oA::Color(75, 75, 75)       },
     { "red",            oA::Color(255, 0, 0)        },
     { "lightred",       oA::Color(255, 75, 75)      },
     { "darkred",        oA::Color(125, 0, 0)        },

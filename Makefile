@@ -20,15 +20,18 @@ F_APP		=	$(F_SOURCES)/App
 F_INCLUDES	=	Includes
 F_MEDIAS	=	Medias
 F_TESTS		=	Tests
+F_RENDERER	=
 
 # Command aliases
 CC			=	g++
 CSTATIC		=	ar -cvq
 RM			=	rm -f
 
+#-Wno-ignored-qualifiers -Wno-unused-parameter
 # Compilation flags
 OPTFLAGS	=
-CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(OPTFLAGS) -Wno-ignored-qualifiers -Wno-unused-parameter
+RFLAGS		=
+CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(OPTFLAGS)
 CPPFLAGS	=	-I $(F_INCLUDES)
 LDFLAGS		=
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
@@ -67,11 +70,15 @@ TSRC		=	$(F_TESTS)/tests_Var.cpp \
 				$(F_TESTS)/tests_STL.cpp \
 				$(F_TESTS)/tests_Log.cpp
 
+RSRC		=	$(F_RENDERER)/*.cpp
+
 SRC			=	$(CORE_SRC) $(APP_SRC)
 
 OBJ			=	$(SRC:.cpp=.o)
 
 TOBJ		=	$(TSRC:.cpp=.o)
+
+ROBJ		=	$(RSRC:.cpp=.o)
 
 # Compilation rules
 all: compile
@@ -79,19 +86,25 @@ all: compile
 win: shared
 	mv $(OA_DYNAMIC) $(OA_WDYNAMIC)
 
-compile: $(OBJ) static dynamic
+irrlicht:
+	make F_RENDERER="Renderer/Irrlicht" RFLAGS="-l Irrlicht -Wno-unused-parameter" staticRenderer dynamicRenderer
+
+compile: $(OBJ) $(ROBJ) static dynamic
 
 static:
-	$(CSTATIC) -o $(OA_STATIC) $(OBJ)
+	$(CSTATIC) -o $(OA_STATIC) $(OBJ) $(ROBJ)
 
 dynamic:
-	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(FLAGS)
+	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(ROBJ) $(FLAGS)
+
+staticRenderer:
+	$(CSTATIC) -o $(OA_STATIC) $(OBJ) $(ROBJ)
+
+dynamicRenderer:
+	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(ROBJ) $(FLAGS)
 
 bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)
-
-irrlicht: $(OBJ)
-	$(CC) -o $(BINARY) $(OBJ) $(FLAGS) -lIrrlicht Renderer/Irrlicht/*.cpp IrrlichtMain.cpp
 
 debug:
 	$(MAKE) OPTFLAGS="-g3" bin
@@ -117,4 +130,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all compile static dynamic bin debug clean fclean re
+.PHONY: all win irrlicht bin debug tests_run clean fclean re

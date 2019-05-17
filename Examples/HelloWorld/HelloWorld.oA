@@ -1,0 +1,15 @@
+Window {
+    id: mainWnd
+    color: "lightgrey"
+    resizable: true
+
+    ImageButton {
+        id: btn
+        font: "font.xml"
+        text: "Hello world !"
+        source: pressed ? "btn2.png" : "btn.png"
+        relativePos: 0.5, 0.5
+        relativeSize: 0.5, 0.5
+        center: true
+    }
+}
