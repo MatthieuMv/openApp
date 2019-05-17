@@ -19,8 +19,6 @@
 #include "Core/Stream.hpp"
 // ConsoleColor
 #include "Core/Console.hpp"
-// Variant
-#include "Core/Variant.hpp"
 
 #ifndef OA_QUOTE_CHAR
     #define OA_QUOTE_CHAR ('@')
@@ -108,7 +106,6 @@ oA::Log &operator<<(oA::Log &log, const T &value) {
 oA::Log &operator<<(oA::Log &log, const oA::Log::Repeater &repeater);
 oA::Log &operator<<(oA::Log &log, const oA::Log::Endl &endl);
 oA::Log &operator<<(oA::Log &log, const char * const &raw);
-oA::Log &operator<<(oA::Log &log, const oA::Variant &var);
 
 namespace oA
 {

@@ -50,9 +50,9 @@ oA::Item *oA::Item::findInChildrens(const String &name)
     return nullptr;
 }
 
-oA::PropertyPtr<oA::Variant> oA::Item::findProperty(const String &name)
+oA::PropertyPtr<oA::Var> oA::Item::findProperty(const String &name)
 {
-    PropertyPtr<Variant> res;
+    PropertyPtr<Var> res;
     String token, left = SplitExpression(name, token);
 
     if (!token.empty() && token == get("id")->getConst<String>())
@@ -62,7 +62,7 @@ oA::PropertyPtr<oA::Variant> oA::Item::findProperty(const String &name)
     auto ptr = find(token);
     if (ptr)
         return ptr->findProperty(left);
-    return PropertyPtr<Variant>();
+    return PropertyPtr<Var>();
 }
 
 static oA::String SplitExpression(const oA::String &expr, oA::String &token)

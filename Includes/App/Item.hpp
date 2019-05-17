@@ -15,8 +15,8 @@
 #include "Core/Memory.hpp"
 // Expression, Property
 #include "Core/Expression.hpp"
-// Variant
-#include "Core/Variant.hpp"
+// Var
+#include "App/Var.hpp"
 // Log
 #include "Core/Log.hpp"
 // Context
@@ -42,6 +42,8 @@ public:
         append("y") = 0;
         append("width") = 0;
         append("height") = 0;
+        append("screenX") = 0;
+        append("screenY") = 0;
     }
 
     virtual ~Item(void) {}
@@ -50,28 +52,31 @@ public:
 
     /* Drawing functions :
         render(r) - draw the item and its children
-        draw(r) - draw only the item to the renderer
+        draw(r) - virtual method drawing only the item to the renderer
     */
-    void render(IRenderer &renderer) {
-        draw(renderer);
-        for (auto &child : _childs) {
-            child->render(renderer);
-        }
-    }
-
+    void render(IRenderer &renderer);
     virtual void draw(IRenderer &) {}
 
-    /* Item Context */
-    void getItemContext(ItemContext &ctx) const {
-        ctx.x = get("x")->getConst<Float>();
-        ctx.y = get("y")->getConst<Float>();
-        ctx.width = get("width")->getConst<Float>();
-        ctx.height = get("height")->getConst<Float>();
-    }
+    /* Event functions :
+        propagate(evt) - propagate an event until an item returns true, starts at the end of item's tree
+        onEvent(evt) - virtual method of the item's event handling
+    */
+    bool propagate(Event &evt);
+    virtual bool onEvent(Event &) { return false; }
 
-    /* Child function */
+    /* Items helper */
+    bool contains(Float x, Float y) const noexcept;
+
+    /* Item Context */
+    void getItemContext(ItemContext &ctx) const;
+
+    /* Verbose */
+    void show(Uint indent = 0, Log &log = cout) const noexcept;
+
+    /* Childs function */
     Item &addChild(const ItemPtr &child);
     Item &addChild(ItemPtr &&child);
+    Item &setupChild(ItemPtr &child);
     void removeChild(const String &id);
     void removeChild(Uint idx);
     Uint childCount(void) const noexcept;
@@ -81,35 +86,32 @@ public:
     bool childExists(const String &id);
 
     /* Property */
-    Property<Variant> &append(const String &name);
+    Property<Var> &append(const String &name);
     void remove(const String &name);
     bool exists(const String &name);
-    Property<Variant> &get(const String &name);
-    const Property<Variant> &get(const String &name) const;
-    PropertyPtr<Variant> getPtr(const String &name);
-    Property<Variant> &operator[](const String &name);
-    const Property<Variant> &operator[](const String &name) const;
-    Property<Variant> &operator[](const Char *name);
-    const Property<Variant> &operator[](const Char *name) const;
+    Property<Var> &get(const String &name);
+    const Property<Var> &get(const String &name) const;
+    PropertyPtr<Var> getPtr(const String &name);
+    Property<Var> &operator[](const String &name);
+    const Property<Var> &operator[](const String &name) const;
+    Property<Var> &operator[](const Char *name);
+    const Property<Var> &operator[](const Char *name) const;
 
-    /* Verbose */
-    void show(Uint indent = 0, Log &log = cout) const noexcept;
+    /* Item Expression */
+    Expression<Var> &getExpr(const String &name);
+    const Expression<Var> &getExpr(const String &name) const;
+    void makeExpression(const String &name, const String &targetExpr);
 
     /* Find a relative item :
         find() : find an item from parents and childrens
         findProperty() : find an item's property from parent and children
     */
     Item *find(const String &name);
-    PropertyPtr<Variant> findProperty(const String &name);
-
-    /* Item Expression */
-    Expression<Variant> &getExpr(const String &name);
-    const Expression<Variant> &getExpr(const String &name) const;
-    void makeExpression(const String &name, const String &targetExpr);
+    PropertyPtr<Var> findProperty(const String &name);
 
 private:
     List<ItemPtr> _childs;
-    UMap<String, ExpressionPtr<Variant>> _properties;
+    UMap<String, ExpressionPtr<Var>> _properties;
 
     Item *_parent = nullptr;
 
@@ -118,8 +120,8 @@ private:
     Item *findInChildrens(const String &name);
 
     /* Item Expression */
-    void insertOperator(Expression<Variant> &target, OperatorStack &stack, const String &str);
-    void insertOperand(const String &name, Expression<Variant> &target, String &operand);
+    void insertOperator(Expression<Var> &target, OperatorStack &stack, const String &str);
+    void insertOperand(const String &name, Expression<Var> &target, String &operand);
 };
 
 oA::Log &operator<<(oA::Log &log, const oA::Item &item);

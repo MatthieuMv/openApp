@@ -10,15 +10,11 @@
 // IStringStream
 #include "Core/StringStream.hpp"
 
-static void PopUntil(oA::Expression<oA::Variant> &target, oA::Item::OperatorStack &stack, oA::OperatorType type);
-static void CheckOp(oA::Expression<oA::Variant> &target, oA::Item::OperatorStack &stack, const oA::Operator &op);
-static bool IsString(const oA::String &str);
-static bool IsNumber(const oA::String &str);
-static bool IsBoolean(const oA::String &str);
+static void PopUntil(oA::Expression<oA::Var> &target, oA::Item::OperatorStack &stack, oA::OperatorType type);
+static void CheckOp(oA::Expression<oA::Var> &target, oA::Item::OperatorStack &stack, const oA::Operator &op);
 static oA::String &FormatString(oA::String &str);
-static oA::Variant FromBoolean(const oA::String &str);
 
-oA::Expression<oA::Variant> &oA::Item::getExpr(const String &name)
+oA::Expression<oA::Var> &oA::Item::getExpr(const String &name)
 {
     auto it = _properties.find(name);
 
@@ -27,7 +23,7 @@ oA::Expression<oA::Variant> &oA::Item::getExpr(const String &name)
     return (*it->second);
 }
 
-const oA::Expression<oA::Variant> &oA::Item::getExpr(const String &name) const
+const oA::Expression<oA::Var> &oA::Item::getExpr(const String &name) const
 {
     auto it = _properties.find(name);
 
@@ -66,7 +62,7 @@ void oA::Item::makeExpression(const String &name, const String &targetExpr)
     }
 }
 
-void oA::Item::insertOperator(Expression<Variant> &target, OperatorStack &stack, const String &str)
+void oA::Item::insertOperator(Expression<Var> &target, OperatorStack &stack, const String &str)
 {
     const auto op = GetOperator(str);
     switch (op.type) {
@@ -79,7 +75,7 @@ void oA::Item::insertOperator(Expression<Variant> &target, OperatorStack &stack,
     }
 }
 
-static void PopUntil(oA::Expression<oA::Variant> &target, oA::Item::OperatorStack &stack, oA::OperatorType type)
+static void PopUntil(oA::Expression<oA::Var> &target, oA::Item::OperatorStack &stack, oA::OperatorType type)
 {
     if (stack.empty() && type == oA::None)
         return;
@@ -89,14 +85,14 @@ static void PopUntil(oA::Expression<oA::Variant> &target, oA::Item::OperatorStac
             stack.pop();
             return;
         }
-        target.addNode(oA::Expression<oA::Variant>::Node(op.type));
+        target.addNode(oA::Expression<oA::Var>::Node(op.type));
         stack.pop();
     }
     if (type != oA::None)
         throw oA::LogicError("Couldn't find left parenthesis");
 }
 
-static void CheckOp(oA::Expression<oA::Variant> &target, oA::Item::OperatorStack &stack, const oA::Operator &op)
+static void CheckOp(oA::Expression<oA::Var> &target, oA::Item::OperatorStack &stack, const oA::Operator &op)
 {
     oA::UByte p1 = 0, p2 = 0;
 
@@ -109,7 +105,7 @@ static void CheckOp(oA::Expression<oA::Variant> &target, oA::Item::OperatorStack
     if (p1 < p2 || (p1 == p2 && op.flow == oA::LeftToRight))
         return stack.push(op);
     while (p1 > p2 || (p1 == p2 && op.flow == oA::RightToLeft)) {
-        target.addNode(oA::Expression<oA::Variant>::Node(stack.top().type));
+        target.addNode(oA::Expression<oA::Var>::Node(stack.top().type));
         stack.pop();
         if (stack.empty())
             break;
@@ -118,7 +114,7 @@ static void CheckOp(oA::Expression<oA::Variant> &target, oA::Item::OperatorStack
     stack.push(op);
 }
 
-void oA::Item::insertOperand(const String &name, Expression<Variant> &target, String &operand)
+void oA::Item::insertOperand(const String &name, Expression<Var> &target, String &operand)
 {
     if (name == operand)
         throw LogicError("Item", "Expression @" + name + "@ can't depends to itself");
@@ -131,32 +127,7 @@ void oA::Item::insertOperand(const String &name, Expression<Variant> &target, St
     auto p = findProperty(operand);
     if (!p)
         throw AccessError("Couldn't insert operand @" + operand + "@");
-    target.addNode(Expression<Variant>::Node(p));
-}
-
-static bool IsString(const oA::String &str)
-{
-    return str.front() == '"' && str.back() == '"';
-}
-
-static bool IsNumber(const oA::String &str)
-{
-    bool dot = false;
-
-    for (auto c : str) {
-        if (c == '.' || c == ',') {
-            if (dot)
-                return false;
-            dot = true;
-        } else if (c < '0' || c > '9')
-            return false;
-    }
-    return true;
-}
-
-static bool IsBoolean(const oA::String &str)
-{
-    return str == "True" || str == "true" || str == "False" || str == "false";
+    target.addNode(Expression<Var>::Node(p));
 }
 
 static oA::String &FormatString(oA::String &str)
@@ -164,9 +135,4 @@ static oA::String &FormatString(oA::String &str)
     str.erase(str.begin());
     str.pop_back();
     return (str);
-}
-
-static oA::Variant FromBoolean(const oA::String &str)
-{
-    return oA::Variant(str[0] == 'T' || str[0] == 't');
 }

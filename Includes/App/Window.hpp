@@ -25,6 +25,16 @@ public:
 
     virtual String getName(void) const noexcept { return "Window"; }
 
+    virtual void draw(IRenderer &renderer) {
+        if (*get("resizable")) {
+            WindowContext ctx;
+            renderer.pullWindow(ctx);
+            get("width") = ctx.width;
+            get("height") = ctx.height;
+        }
+        Rectangle::draw(renderer);
+    }
+
     void getWindowContext(WindowContext &ctx) const {
         ctx.width = get("width")->toInt();
         ctx.height = get("height")->toInt();

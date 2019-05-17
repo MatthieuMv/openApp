@@ -118,12 +118,6 @@ oA::Log &operator<<(oA::Log &log, const oA::Char * const &raw)
     return (log);
 }
 
-oA::Log &operator<<(oA::Log &log, const oA::Variant &var)
-{
-    log.log(var.toString());
-    return (log);
-}
-
 oA::Log::Repeater &oA::Log::Repeater::operator()(Uint x) noexcept
 {
     _x = x;

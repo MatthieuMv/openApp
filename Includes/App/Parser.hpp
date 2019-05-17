@@ -46,7 +46,7 @@ class oA::Parser
     };
 
     using ContextFct = Function<void(void)>;
-    using ContextMatches = UMap<String, ContextFct>;
+    using ContextMatches = List<Pair<String, ContextFct>>;
 
 public:
     /* Global static parser */
@@ -62,6 +62,9 @@ private:
     List<Unassigned> _unassigned; // Unassigned properties
 
     Parser(bool verbose = false);
+
+    /* Matches */
+    void addMatchFct(const String &match, void(Parser::*fct)(void)) { _matches.emplace_back(MakePair(match, std::bind(fct, this))); }
 
     /* Log helper */
     Char tab(void) const noexcept { _log << repeat(_indent) << '\t'; return 0; }
@@ -103,4 +106,7 @@ private:
     void parseProperty(void);
     // Special properties
     void parseItemId(void);
+    void parseRelativePos(void);
+    void parseRelativeSize(void);
+    void parseCenter(void);
 };

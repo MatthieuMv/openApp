@@ -2,16 +2,16 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** Stack
+** Queue
 */
 
 #pragma once
 
-// std::stack
-#include <stack>
+// std::queue
+#include <queue>
 
 namespace oA
 {
     template<typename T>
-    using Stack = std::stack<T>;
+    using Queue = std::queue<T>;
 }

@@ -2,17 +2,17 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** tests_Variant
+** tests_Var
 */
 
 #include <criterion/criterion.h>
 #include "Core/Error.hpp"
-#include "Core/Variant.hpp"
+#include "App/Var.hpp"
 
-Test(Variant, Basics)
+Test(Var, Basics)
 {
     oA::Int x = 1;
-    oA::Variant var(x);
+    oA::Var var(x);
 
     cr_assert_eq(var.index(), oA::VNumber);
     cr_assert_eq(var.get<oA::Float>(), 1.0f);
@@ -23,9 +23,9 @@ Test(Variant, Basics)
     cr_assert_eq(var.getConst<oA::String>(), "Hello");
 }
 
-Test(Variant, Advanced)
+Test(Var, Advanced)
 {
-    oA::Variant v1("1"), v2(2.0f);
+    oA::Var v1("1"), v2(2.0f);
 
     cr_assert_not(v1.isSameType(v2));
     cr_assert_eq(v1.toString(), "1");
@@ -38,9 +38,9 @@ Test(Variant, Advanced)
 
 }
 
-Test(Variant, TypeConversion)
+Test(Var, TypeConversion)
 {
-    oA::Variant var;
+    oA::Var var;
     bool invalidCall = false;
 
     var = 1.2f;
@@ -68,9 +68,9 @@ Test(Variant, TypeConversion)
     cr_assert_eq(var.toInt(), 0);
 }
 
-Test(Variant, NumberOperators)
+Test(Var, NumberOperators)
 {
-    oA::Variant x(3), y(4);
+    oA::Var x(3), y(4);
 
     cr_assert_eq((x + y).toInt(), 7);
     cr_assert_eq((x - y).toInt(), -1);
@@ -96,9 +96,9 @@ Test(Variant, NumberOperators)
     cr_assert_eq((x %= y).toInt(), 3);
 }
 
-Test(Variant, StringOperators)
+Test(Var, StringOperators)
 {
-    oA::Variant x("Hello"), y("World"), z;
+    oA::Var x("Hello"), y("World"), z;
     bool crashed = false;
 
     z = x;
@@ -156,9 +156,9 @@ Test(Variant, StringOperators)
     crashed = false;
 }
 
-Test(Variant, CrossTypeOperators)
+Test(Var, CrossTypeOperators)
 {
-    oA::Variant x(12), y("World");
+    oA::Var x(12), y("World");
 
     cr_assert_not(x == y);
     cr_assert(x != y);
@@ -168,9 +168,9 @@ Test(Variant, CrossTypeOperators)
     cr_assert_not(!x);
 }
 
-Test(Variant, OperatorErrors)
+Test(Var, OperatorErrors)
 {
-    oA::Variant x(12), y("World");
+    oA::Var x(12), y("World");
     bool crashed = false;
 
     try { (x + y); } catch (...) { crashed = true; }

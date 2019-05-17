@@ -7,32 +7,23 @@
 
 #pragma once
 
-// irrlicht
-#include <irrlicht/irrlicht.h>
 // IRenderer
 #include "App/IRenderer.hpp"
 // Vector
 #include "Core/Vector.hpp"
-// UMap
-#include "Core/UMap.hpp"
 
+// EventHandler
+#include "EventHandler.hpp"
+
+/* Irrlicht is an IRenderer3D's implementation :
+    It can be used from 2D gui to 3D games for Linux, Windows and OSX
+    ! Not compatible with multiple windows, use App::parseFile 1 time !
+    ! Irrlicht doesn't suppport dynamic text size so load a single file per size !
+*/
 class Irrlicht : public oA::IRenderer
 {
 public:
-    struct Context
-    {
-        Context(const oA::WindowContext &ctx);
-
-        irr::IrrlichtDevice *device = nullptr;
-        irr::video::IVideoDriver *driver = nullptr;
-        irr::scene::ISceneManager *manager = nullptr;
-        irr::gui::IGUIEnvironment *gui = nullptr;
-        oA::UMap<oA::String, irr::gui::IGUIFont *> fonts;
-        oA::UMap<oA::String, irr::video::ITexture *> textures;
-        bool resizable = false;
-    };
-
-    Irrlicht(void) = default;
+    Irrlicht(void) {}
     virtual ~Irrlicht(void);
 
     /* Virtual functions */
@@ -47,10 +38,11 @@ public:
     virtual void drawImage(const oA::ImageContext &ctx, oA::Uint idx = 0);
 
 private:
-    oA::Vector<Context> _ctxs;
+    oA::Vector<IrrlichtContext> _ctxs;
+    oA::Unique<EventHandler> _handler;
 
-    Context &context(oA::Uint index);
-    const Context &context(oA::Uint index) const;
+    IrrlichtContext &context(oA::Uint index);
+    const IrrlichtContext &context(oA::Uint index) const;
     irr::gui::IGUIFont *getFont(const oA::String &path, oA::Uint index);
     irr::video::ITexture *getTexture(const oA::String &path, oA::Uint index);
     irr::core::recti toRect(const oA::ItemContext &ctx) const noexcept;

@@ -8,89 +8,38 @@
 // Item
 #include "App/Item.hpp"
 
-oA::Item &oA::Item::addChild(const ItemPtr &child)
+void oA::Item::render(IRenderer &renderer)
 {
-    _childs.push_back(child);
-    _childs.back()->_parent = this;
-    return (*_childs.back());
+    draw(renderer);
+    for (auto &child : _childs) {
+        child->render(renderer);
+    }
 }
 
-oA::Item &oA::Item::addChild(ItemPtr &&child)
+bool oA::Item::propagate(Event &evt)
 {
-    _childs.emplace_back(std::move(child));
-    _childs.back()->_parent = this;
-    return (*_childs.back());
-}
-
-void oA::Item::removeChild(const String &id)
-{
-    bool removed = false;
-
-    _childs.removeIf([&id, &removed](const ItemPtr &child) {
-        if (child->get("id")->getConst<String>() == id) {
-            removed = true;
+    for (auto &child : _childs) {
+        if (child->propagate(evt))
             return true;
-        }
-        return false;
-    });
-    if (!removed)
-        throw AccessError("Item", "Couldn't find child with id @" + id + "@");
+    }
+    return onEvent(evt);
 }
 
-void oA::Item::removeChild(Uint idx)
+bool oA::Item::contains(Float x, Float y) const noexcept
 {
-    auto it = _childs.begin();
-
-    if (idx >= childCount())
-        throw AccessError("Item", "Child index out of range @" + oA::ToString(idx) + "@");
-    std::advance(it, idx);
-    _childs.erase(it);
+    auto screenX = get("screenX")->getConst<Float>(), screenY = get("screenY")->getConst<Float>();
+    return (
+        x >= screenX && x <= (screenX + get("width")->getConst<Float>()) &&
+        y >= screenY && y <= (screenY + get("height")->getConst<Float>())
+    );
 }
 
-oA::Uint oA::Item::childCount(void) const noexcept
+void oA::Item::getItemContext(ItemContext &ctx) const
 {
-    return _childs.size();
-}
-
-oA::Item &oA::Item::getChild(const String &id)
-{
-    auto it = _childs.findIf([&id](const ItemPtr &child) {
-        return child->get("id")->getConst<String>() == id;
-    });
-
-    if (it == _childs.end())
-        throw AccessError("Item", "Couldn't find child @" + id + "@");
-    return (*it->get());
-}
-
-oA::Item &oA::Item::getChild(Uint idx)
-{
-    auto it = _childs.begin();
-
-    if (_childs.size() <= idx)
-        throw AccessError("Item", "Child index @" + ToString(idx) + "@ out of range");
-    std::advance(it, idx);
-    return (*it->get());
-}
-
-oA::ItemPtr oA::Item::getChildPtr(const String &id)
-{
-    auto it = _childs.findIf([&id](const ItemPtr &child) {
-        return child->get("id")->getConst<String>() == id;
-    });
-
-    if (it != _childs.end())
-        return *it;
-    return oA::ItemPtr();
-}
-
-bool oA::Item::childExists(const String &id)
-{
-    auto it = _childs.findIf([&id](const ItemPtr &child) {
-        return child->get("id")->getConst<String>() == id;
-    });
-
-    return it != _childs.end();
+    ctx.x = get("x")->getConst<Float>();
+    ctx.y = get("y")->getConst<Float>();
+    ctx.width = get("width")->getConst<Float>();
+    ctx.height = get("height")->getConst<Float>();
 }
 
 void oA::Item::show(Uint indent, Log &log) const noexcept

@@ -29,3 +29,6 @@
 
 /* Factory */
 #include "App/AppFactory.hpp"
+
+/* Var */
+#include "App/Var.hpp"

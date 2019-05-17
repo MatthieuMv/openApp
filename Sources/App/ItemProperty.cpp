@@ -8,11 +8,11 @@
 // Item
 #include "App/Item.hpp"
 
-oA::Property<oA::Variant> &oA::Item::append(const String &name)
+oA::Property<oA::Var> &oA::Item::append(const String &name)
 {
     if (exists(name))
         throw LogicError("Item", "Can't append @" + name + "@, property already exists");
-    _properties[name] = MakeShared<Expression<Variant>>();
+    _properties[name] = MakeShared<Expression<Var>>();
     return (get(name));
 }
 
@@ -28,7 +28,7 @@ bool oA::Item::exists(const String &name)
     return _properties.find(name) != _properties.end();
 }
 
-oA::Property<oA::Variant> &oA::Item::get(const String &name)
+oA::Property<oA::Var> &oA::Item::get(const String &name)
 {
     auto it = _properties.find(name);
 
@@ -37,7 +37,7 @@ oA::Property<oA::Variant> &oA::Item::get(const String &name)
     return (*it->second);
 }
 
-const oA::Property<oA::Variant> &oA::Item::get(const String &name) const
+const oA::Property<oA::Var> &oA::Item::get(const String &name) const
 {
     auto it = _properties.find(name);
 
@@ -46,31 +46,31 @@ const oA::Property<oA::Variant> &oA::Item::get(const String &name) const
     return (*it->second);
 }
 
-oA::PropertyPtr<oA::Variant> oA::Item::getPtr(const String &name)
+oA::PropertyPtr<oA::Var> oA::Item::getPtr(const String &name)
 {
     auto it = _properties.find(name);
 
     if (it == _properties.end())
-        return PropertyPtr<Variant>();
+        return PropertyPtr<Var>();
     return (it->second);
 }
 
-oA::Property<oA::Variant> &oA::Item::operator[](const String &name)
+oA::Property<oA::Var> &oA::Item::operator[](const String &name)
 {
     return (get(name));
 }
 
-const oA::Property<oA::Variant> &oA::Item::operator[](const String &name) const
+const oA::Property<oA::Var> &oA::Item::operator[](const String &name) const
 {
     return (get(name));
 }
 
-oA::Property<oA::Variant> &oA::Item::operator[](const Char *name)
+oA::Property<oA::Var> &oA::Item::operator[](const Char *name)
 {
     return (get(name));
 }
 
-const oA::Property<oA::Variant> &oA::Item::operator[](const Char *name) const
+const oA::Property<oA::Var> &oA::Item::operator[](const Char *name) const
 {
     return (get(name));
 }

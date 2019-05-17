@@ -39,19 +39,9 @@ public:
     /* Run the app, receiving events and drawing its elements until every windows are closed */
     virtual void run(void) {
         setRunning(true);
-        for (auto i = 0; isRunning(); i = 0) {
-            bool appActive = false;
-            for (auto root : _roots) {
-                if (!_renderer->isRunning(i))
-                    continue;
-                appActive = true;
-                _renderer->clear(i);
-                root->render(*_renderer);
-                _renderer->draw(i);
-                ++i;
-            }
-            if (!appActive)
-                setRunning(false);
+        while (isRunning()) {
+            update();
+            draw();
         }
     }
 
@@ -78,4 +68,31 @@ protected:
     bool _verbose = false;
 
     void setRunning(bool value) noexcept { _running = value; }
+
+    void update(void) {
+        auto i = 0;
+        oA::Event evt;
+        for (auto &root : _roots) {
+            while (_renderer->pullEvent(evt, i)) {
+                root->propagate(evt);
+            }
+            ++i;
+        }
+    }
+
+    void draw(void) {
+        auto i = 0;
+        auto appActive = false;
+        for (auto root : _roots) {
+            if (!_renderer->isRunning(i))
+                continue;
+            appActive = true;
+            _renderer->clear(i);
+            root->render(*_renderer);
+            _renderer->draw(i);
+            ++i;
+        }
+        if (!appActive)
+            setRunning(false);
+    }
 };

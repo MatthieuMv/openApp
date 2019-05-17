@@ -32,11 +32,14 @@ oA::Parser::Parser(bool verbose)
      : _log(oA::Log::Stdout, oA::CSL_LIGHT_GRAY, oA::CSL_LIGHT_GREEN, oA::CSL_LIGHT_YELLOW)
 {
     _log.setEnabled(verbose);
-    _matches[C_ITEM_MATCH] = std::bind(&Parser::parseItem, this); // Item definition
-    _matches[C_PROPERTY_MATCH] = std::bind(&Parser::parseProperty, this); // Existing Property
-    _matches["import"] = std::bind(&Parser::parseImport, this); // Directory import
-    _matches["property"] = std::bind(&Parser::parseNewProperty, this); // New property
-    _matches["id:"] = std::bind(&Parser::parseItemId, this); // Item id
+    addMatchFct("import", &Parser::parseImport); // Directory import
+    addMatchFct("property", &Parser::parseNewProperty); // New property
+    addMatchFct("id:", &Parser::parseItemId); // Item id
+    addMatchFct("relativePos:", &Parser::parseRelativePos); // Relative pos
+    addMatchFct("relativeSize:", &Parser::parseRelativeSize); // Relative size
+    addMatchFct("center:", &Parser::parseCenter); // Relative size
+    addMatchFct(C_ITEM_MATCH, &Parser::parseItem); // Item definition
+    addMatchFct(C_PROPERTY_MATCH, &Parser::parseProperty); // Existing Property
 }
 
 oA::ItemPtr oA::Parser::parseFile(const String &path)
@@ -231,10 +234,10 @@ void oA::Parser::parseNewProperty(void)
 {
     String name;
 
-    if (!readToken() || !match(C_PROPERTY_MATCH, _token))
-        throw SyntaxError("Parser", "Expecting symbol @name:@ after keyword @property@ (#" + ctx().path + "#)");
     if (!ctx().root)
         throw LogicError("Parser", "Property @" + name + "@ must be in item definition (#" + ctx().path + "#)");
+    if (!readToken() || !match(C_PROPERTY_MATCH, _token))
+        throw SyntaxError("Parser", "Expecting symbol @name:@ after keyword @property@ (#" + ctx().path + "#)");
     name = _token;
     name.pop_back();
     _log << tab() << "Adding new property #" + _token + "#" << endl;
@@ -248,10 +251,10 @@ void oA::Parser::parseProperty(void)
 {
     String name = _token;
 
-    if (name.back() == ':')
-        name.pop_back();
     if (!ctx().root)
         throw LogicError("Parser", "Property @" + name + "@ must be in item definition (#" + ctx().path + "#)");
+    if (name.back() == ':')
+        name.pop_back();
     if (!readLine())
         throw SyntaxError("Parser", "Expecting @expression@ after symbol @" + name + "@ (#" + ctx().path + "#)");
     try {
@@ -268,8 +271,57 @@ void oA::Parser::parseProperty(void)
 
 void oA::Parser::parseItemId(void)
 {
+    if (!ctx().root)
+        throw LogicError("Parser", "Property @id@ must be in item definition (#" + ctx().path + "#)");
     if (!readToken())
         throw SyntaxError("Parser", "Expecting @expression@ after symbol @id@ (#" + ctx().path + "#)");
     ctx().root->get("id") = _token;
     _log << tab() << "Property #id# set to " + ctx().root->get("id")->getConst<String>() << endl;
+}
+
+void oA::Parser::parseRelativePos(void)
+{
+    String x, y;
+
+    if (!ctx().root)
+        throw LogicError("Parser", "Property @relativePos@ must be in item definition (#" + ctx().path + "#)");
+    if (!readToken() || _token.back() != ',')
+        throw SyntaxError("Parser", "Invalid relativePos @x@ token (#" + ctx().path + "#)");
+    _token.pop_back();
+    x.swap(_token);
+    if (!readToken())
+        throw SyntaxError("Parser", "Invalid relativePos @y@ token (#" + ctx().path + "#)");
+    y.swap(_token);
+    ctx().root->makeExpression("x", "parent.width * " + x + " - width / 2");
+    ctx().root->makeExpression("y", "parent.height * " + y + " - height / 2");
+}
+
+void oA::Parser::parseRelativeSize(void)
+{
+    String width, height;
+
+    if (!ctx().root)
+        throw LogicError("Parser", "Property @relativeSize@ must be in item definition (#" + ctx().path + "#)");
+    if (!readToken() || _token.back() != ',')
+        throw SyntaxError("Parser", "Invalid relativeSize @x@ token (#" + ctx().path + "#)");
+    _token.pop_back();
+    width.swap(_token);
+    if (!readToken())
+        throw SyntaxError("Parser", "Invalid relativeSize @y@ token (#" + ctx().path + "#)");
+    height.swap(_token);
+    ctx().root->makeExpression("width", "parent.width * " + width);
+    ctx().root->makeExpression("height", "parent.height * " + height);
+}
+
+void oA::Parser::parseCenter(void)
+{
+    String res;
+
+    if (!ctx().root)
+        throw LogicError("Parser", "Property @center@ must be in item definition (#" + ctx().path + "#)");
+    if (!readToken() || !IsBoolean(_token))
+        throw SyntaxError("Parser", "Can't interpret expression @center@ (#" + ctx().path + "#)");
+    res = FromBoolean(_token) ? "true" : "false";
+    ctx().root->makeExpression("hCenter", res);
+    ctx().root->makeExpression("vCenter", res);
 }

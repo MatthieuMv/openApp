@@ -25,4 +25,9 @@ namespace oA
             res.pop_back();
         return res;
     }
+
+    bool IsString(const oA::String &str);
+    bool IsNumber(const oA::String &str);
+    bool IsBoolean(const oA::String &str);
+    bool FromBoolean(const oA::String &str);
 }

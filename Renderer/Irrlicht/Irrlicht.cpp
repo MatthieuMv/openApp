@@ -10,18 +10,6 @@
 // Irrlicht
 #include "Irrlicht.hpp"
 
-Irrlicht::Context::Context(const oA::WindowContext &ctx)
-{
-    device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2du(ctx.width, ctx.height));
-    if (!device)
-        throw oA::RuntimeError("Irrlicht", "Couldn't open @device@");
-    resizable = ctx.resizable;
-    device->setResizable(resizable);
-    driver = device->getVideoDriver();
-    manager = device->getSceneManager();
-    gui = device->getGUIEnvironment();
-}
-
 Irrlicht::~Irrlicht(void)
 {
     for (auto &c : _ctxs) {
@@ -52,14 +40,20 @@ void Irrlicht::draw(oA::Uint index)
 
 bool Irrlicht::pullEvent(oA::Event &evt, oA::Uint index)
 {
-    (void)(evt);
-    (void)(index);
-    return false;
+    auto &events = context(index).events;
+
+    if (events.empty())
+        return false;
+    evt = events.front();
+    events.pop();
+    return true;
 }
 
 oA::Uint Irrlicht::pushWindow(const oA::WindowContext &ctx)
 {
     _ctxs.emplace_back(ctx);
+    _handler = oA::MakeUnique<EventHandler>(_ctxs.back());
+    _ctxs.back().device->setEventReceiver(_handler.get());
     return _ctxs.size() - 1;
 }
 
@@ -71,6 +65,8 @@ void Irrlicht::pullWindow(oA::WindowContext &ctx, oA::Uint index)
     const auto &size = wnd.driver->getScreenSize();
     ctx.width = size.Width;
     ctx.height = size.Height;
+    if (!ctx.width || !ctx.height)
+        throw oA::LogicError("Irrlicht", "Invalid @window@ size");
     ctx.resizable = wnd.resizable;
 }
 
@@ -86,7 +82,8 @@ void Irrlicht::drawText(const oA::TextContext &ctx, oA::Uint index)
 {
     getFont(ctx.font, index)->draw(
         ctx.text.c_str(),
-        toRect(ctx), ctx.fontColor.getValue(),
+        toRect(ctx),
+        ctx.fontColor.getValue(),
         ctx.hCenter,
         ctx.vCenter
     );
@@ -104,18 +101,21 @@ void Irrlicht::drawImage(const oA::ImageContext &ctx, oA::Uint index)
     context(index).driver->draw2DImage(
         t,
         toRect(ctx),
-        rect
+        rect,
+        nullptr,
+        nullptr,
+        true
     );
 }
 
-Irrlicht::Context &Irrlicht::context(oA::Uint index)
+IrrlichtContext &Irrlicht::context(oA::Uint index)
 {
     if (index >= _ctxs.size())
         throw oA::AccessError("Irrlicht", "Invalid context index @" + oA::ToString(index) + "@");
     return (_ctxs[index]);
 }
 
-const Irrlicht::Context &Irrlicht::context(oA::Uint index) const
+const IrrlichtContext &Irrlicht::context(oA::Uint index) const
 {
     if (index >= _ctxs.size())
         throw oA::AccessError("Irrlicht", "Invalid context index @" + oA::ToString(index) + "@");

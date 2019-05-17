@@ -37,19 +37,21 @@ FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 MAIN		=	$(F_SOURCES)/Main.cpp
 
 CORE_SRC	=	$(F_CORE)/Log.cpp \
-				$(F_CORE)/Variant.cpp \
 				$(F_CORE)/Path.cpp \
 				$(F_CORE)/Operators.cpp \
-				$(F_CORE)/Colors.cpp
+				$(F_CORE)/Colors.cpp \
+				$(F_CORE)/String.cpp
 
 APP_SRC		=	$(F_APP)/Item.cpp \
+				$(F_APP)/ItemChilds.cpp \
 				$(F_APP)/ItemProperty.cpp \
 				$(F_APP)/ItemExpression.cpp \
 				$(F_APP)/ItemFind.cpp \
 				$(F_APP)/Parser.cpp \
+				$(F_APP)/Var.cpp \
 				$(F_APP)/AppFactory.cpp
 
-TSRC		=	$(F_TESTS)/tests_Variant.cpp \
+TSRC		=	$(F_TESTS)/tests_Var.cpp \
 				$(F_TESTS)/tests_Chrono.cpp \
 				$(F_TESTS)/tests_ContainerHelper.cpp \
 				$(F_TESTS)/tests_Error.cpp \
@@ -89,7 +91,7 @@ bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)
 
 irrlicht: $(OBJ)
-	$(CC) -o $(BINARY) $(OBJ) $(FLAGS) -lIrrlicht Renderer/Irrlicht/Irrlicht.cpp IrrlichtMain.cpp
+	$(CC) -o $(BINARY) $(OBJ) $(FLAGS) -lIrrlicht Renderer/Irrlicht/*.cpp IrrlichtMain.cpp
 
 debug:
 	$(MAKE) OPTFLAGS="-g3" bin
