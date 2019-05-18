@@ -100,6 +100,9 @@ bool oA::Parser::readLine(Char delim)
 {
     if (!std::getline(fs(), _token, delim))
         return false;
+    auto comment = _token.find("//");
+    if (comment != _token.npos)
+        _token.erase(comment);
     while (!_token.empty() && std::isspace(_token.front()))
         _token.erase(_token.begin());
     while (!_token.empty() && std::isspace(_token.back()))

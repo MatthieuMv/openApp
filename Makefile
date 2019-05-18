@@ -71,9 +71,10 @@ TSRC		=	$(F_TESTS)/tests_Var.cpp \
 
 SRC			=	$(CORE_SRC) $(APP_SRC)
 
-RSRC		=
+RENDER_SRC	=
 
-OBJ			=	$(SRC:.cpp=.o) $(RSRC.cpp=.o)
+OBJ			=	$(SRC:.cpp=.o) \
+				$(RENDER_SRC:.cpp=.o)
 
 TOBJ		=	$(TSRC:.cpp=.o)
 
@@ -84,7 +85,7 @@ win: shared
 	mv $(OA_DYNAMIC) $(OA_WDYNAMIC)
 
 irrlicht:
-	make compileRenderer F_RENDERER="Renderer/Irrlicht" RFLAGS="-lIrrlicht" RSRC="Renderer/Irrlicht/Irrlicht.cpp Renderer/Irrlicht/EventHandler.cpp"
+	make compileRenderer F_RENDERER="Renderer/Irrlicht" RFLAGS="-lIrrlicht" RENDER_SRC="Renderer/Irrlicht/Irrlicht.cpp Renderer/Irrlicht/EventHandler.cpp"
 
 compile: $(OBJ) static dynamic
 
@@ -97,10 +98,10 @@ dynamic:
 	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(FLAGS)
 
 staticRenderer:
-	$(CSTATIC) -o $(OA_STATIC) $(OBJ) $(RSRC)
+	$(CSTATIC) -o $(OA_STATIC) $(OBJ)
 
 dynamicRenderer:
-	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(RSRC) $(FLAGS)
+	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(FLAGS)
 
 bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)

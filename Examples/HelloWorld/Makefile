@@ -20,9 +20,9 @@ RM			=	rm -f
 
 # Compilation flags
 OPTFLAGS	=
-CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 $(OPTFLAGS)
+CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 $(OPTFLAGS) -L $(OA_ROOT) -lopenApp
 CPPFLAGS	=	-I $(F_INCLUDES)
-LDFLAGS		=	-L $(OA_ROOT) -lopenApp
+LDFLAGS		=	-lIrrlicht
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 # Compilation sources
