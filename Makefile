@@ -6,8 +6,8 @@
 ##
 
 # File names
-OA_STATIC	=	openApp.a
-OA_DYNAMIC	=	openApp.so
+OA_STATIC	=	libopenApp.a
+OA_DYNAMIC	=	libopenApp.so
 OA_WDYNAMIC	=	openApp.dll
 BINARY		=	bin
 TESTS		=	run_tests
@@ -27,11 +27,10 @@ CC			=	g++
 CSTATIC		=	ar -cvq
 RM			=	rm -f
 
-#-Wno-ignored-qualifiers -Wno-unused-parameter
 # Compilation flags
 OPTFLAGS	=
 RFLAGS		=
-CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(OPTFLAGS)
+CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 -fPIC $(OPTFLAGS) $(RFLAGS)
 CPPFLAGS	=	-I $(F_INCLUDES)
 LDFLAGS		=
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
@@ -68,17 +67,15 @@ TSRC		=	$(F_TESTS)/tests_Var.cpp \
 				$(F_TESTS)/tests_Parser.cpp \
 				$(F_TESTS)/tests_Operators.cpp \
 				$(F_TESTS)/tests_STL.cpp \
-				$(F_TESTS)/tests_Log.cpp
-
-RSRC		=	$(F_RENDERER)/*.cpp
+				$(F_TESTS)/tests_Log.cp
 
 SRC			=	$(CORE_SRC) $(APP_SRC)
 
-OBJ			=	$(SRC:.cpp=.o)
+RSRC		=
+
+OBJ			=	$(SRC:.cpp=.o) $(RSRC.cpp=.o)
 
 TOBJ		=	$(TSRC:.cpp=.o)
-
-ROBJ		=	$(RSRC:.cpp=.o)
 
 # Compilation rules
 all: compile
@@ -87,21 +84,23 @@ win: shared
 	mv $(OA_DYNAMIC) $(OA_WDYNAMIC)
 
 irrlicht:
-	make F_RENDERER="Renderer/Irrlicht" RFLAGS="-l Irrlicht -Wno-unused-parameter" staticRenderer dynamicRenderer
+	make compileRenderer F_RENDERER="Renderer/Irrlicht" RFLAGS="-lIrrlicht" RSRC="Renderer/Irrlicht/Irrlicht.cpp Renderer/Irrlicht/EventHandler.cpp"
 
-compile: $(OBJ) $(ROBJ) static dynamic
+compile: $(OBJ) static dynamic
+
+compileRenderer: $(OBJ) staticRenderer dynamicRenderer
 
 static:
-	$(CSTATIC) -o $(OA_STATIC) $(OBJ) $(ROBJ)
+	$(CSTATIC) -o $(OA_STATIC) $(OBJ)
 
 dynamic:
-	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(ROBJ) $(FLAGS)
+	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(FLAGS)
 
 staticRenderer:
-	$(CSTATIC) -o $(OA_STATIC) $(OBJ) $(ROBJ)
+	$(CSTATIC) -o $(OA_STATIC) $(OBJ) $(RSRC)
 
 dynamicRenderer:
-	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(ROBJ) $(FLAGS)
+	$(CC) -o $(OA_DYNAMIC) -shared $(OBJ) $(RSRC) $(FLAGS)
 
 bin: $(OBJ)
 	$(CC) -o $(BINARY) $(MAIN) $(OBJ) $(FLAGS)
@@ -120,10 +119,10 @@ coverage: tests_run
 	gcovr --exclude $(F_TESTS)
 
 clean:
-	$(RM) $(OBJ) $(TOBJ)
 	find . -type f -name '*.gcno' -delete
 	find . -type f -name '*.gcda' -delete
 	find . -type f -name 'vgcore.*' -delete
+	find . -type f -name '*.o' -delete
 
 fclean: clean
 	$(RM) $(OA_DYNAMIC) $(OA_STATIC) $(BINARY) $(TESTS)

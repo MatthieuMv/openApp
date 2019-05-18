@@ -8,7 +8,7 @@
 #pragma once
 
 // Irrlicht
-#include "Renderer/Irrlicht/Irrlicht.hpp"
+#include "../Renderer/Irrlicht/Irrlicht.hpp"
 // App
 #include "App/App.hpp"
 

@@ -22,11 +22,11 @@ RM			=	rm -f
 OPTFLAGS	=
 CXXFLAGS	=	-Wall -Werror -Wextra -std=c++17 $(OPTFLAGS)
 CPPFLAGS	=	-I $(F_INCLUDES)
-LDFLAGS		=	-L $(OA_ROOT) -l openApp
+LDFLAGS		=	-L $(OA_ROOT) -lopenApp
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 # Compilation sources
-SRC			=	$(F_SOURCES)/HelloWord.cpp
+SRC			=	$(F_SOURCES)/HelloWorld.cpp
 
 OBJ			=	$(SRC:.cpp=.o)
 
@@ -47,4 +47,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all compile static dynamic bin debug clean fclean re
+.PHONY: all debug clean fclean re

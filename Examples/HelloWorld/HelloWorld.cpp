@@ -12,7 +12,7 @@ int main(void)
     try {
         oA::IrrlichtApp app(true); // Enable verbose to show parsing log
 
-        app.parseFile("HelloWord.oA"); // Parse class 'HelloWord'
+        app.parseFile("HelloWorld.oA"); // Parse class 'HelloWord'
         app.run(); // Run the HelloWorld App
         return 0;
     } catch (const oA::Error &e) {
