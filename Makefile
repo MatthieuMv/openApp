@@ -51,7 +51,8 @@ APP_SRC		=	$(F_APP)/Item.cpp \
 				$(F_APP)/ItemFind.cpp \
 				$(F_APP)/Parser.cpp \
 				$(F_APP)/Var.cpp \
-				$(F_APP)/AppFactory.cpp
+				$(F_APP)/AppFactory.cpp \
+				$(F_APP)/Event.cpp
 
 TSRC		=	$(F_TESTS)/tests_Var.cpp \
 				$(F_TESTS)/tests_Chrono.cpp \

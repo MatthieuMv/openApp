@@ -16,15 +16,24 @@ class oA::EventArea : virtual public oA::Item
 {
 public:
     EventArea(void) {
+        auto &focused = append("focused");
+        focused = false;
+        focused.connect([this, &focused]{
+            if (*focused)
+                onFocused();
+            else
+                onDefocused();
+            return true;
+        });
         append("pressed") = false;
         append("hovered") = false;
-        append("focused") = false;
     }
 
     virtual ~EventArea(void) {}
 
     virtual String getName(void) const noexcept { return "EventArea"; }
 
+    /* Override these functions to add custom events behaviors */
     virtual bool onEvent(Event &evt) override {
         if (evt.type() == Mouse)
             return onMouse(evt.mouse());
@@ -34,25 +43,30 @@ public:
     }
 
     virtual bool onMouse(MouseEvent &evt) {
+        auto &pressed = get("pressed");
         if (contains(evt.x, evt.y)) {
             get("hovered") = true;
-            if (evt.state == MousePressed)
-                get("pressed") = true;
-            if (evt.state == MouseReleased) {
-                get("pressed") = false;
+            if (evt.state == MousePressed) {
+                pressed = true;
+                onPressed();
+            } else if (*pressed && evt.state == MouseReleased) {
+                pressed = false;
+                onReleased();
                 get("focused") = true;
             }
-            return true;
         } else {
             get("hovered") = false;
-            get("pressed") = false;
-            if (*get("focused") && evt.state == MousePressed)
+            pressed = false;
+            if (evt.state != MouseMove)
                 get("focused") = false;
         }
         return false;
     }
 
-    virtual bool onKeyboard(KeyboardEvent &) {
-        return false;
-    }
+    virtual bool onKeyboard(KeyboardEvent &) { return false; }
+
+    virtual void onPressed(void) {}
+    virtual void onReleased(void) {}
+    virtual void onFocused(void) {}
+    virtual void onDefocused(void) {}
 };

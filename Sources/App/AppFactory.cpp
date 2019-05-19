@@ -20,4 +20,5 @@ void oA::AppFactory::RegisterBaseItems(void)
     Register<Button>();
     Register<Image>();
     Register<ImageButton>();
+    Register<TextInput>();
 }

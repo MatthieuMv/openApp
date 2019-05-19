@@ -44,6 +44,8 @@ struct oA::KeyboardEvent
     Key key = KeyNull;
     KeyState state = KeyPressed;
     bool shift = false, control = false;
+
+    char convetToKey(void) const noexcept;
 };
 
 class oA::Event

@@ -23,6 +23,7 @@
 #include "App/EventArea.hpp"
 #include "App/Button.hpp"
 #include "App/ImageButton.hpp"
+#include "App/TextInput.hpp"
 
 /* Parser */
 #include "App/Parser.hpp"
