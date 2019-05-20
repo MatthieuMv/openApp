@@ -11,7 +11,7 @@ Window {
         relativePos: 0.5, 0.5
         relativeSize: 0.3, 0.1
         font: "font.xml"
-        maxLength: 0
+        maxLength: 6
     }
 
     Text {
