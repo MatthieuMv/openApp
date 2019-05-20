@@ -36,8 +36,8 @@ bool oA::Item::contains(Float x, Float y) const noexcept
 
 void oA::Item::getItemContext(ItemContext &ctx) const
 {
-    ctx.x = get("x")->getConst<Float>();
-    ctx.y = get("y")->getConst<Float>();
+    ctx.x = get("screenX")->getConst<Float>();
+    ctx.y = get("screenY")->getConst<Float>();
     ctx.width = get("width")->getConst<Float>();
     ctx.height = get("height")->getConst<Float>();
 }

@@ -46,7 +46,7 @@ public:
 private:
     bool interpretCharKey(KeyboardEvent &keyboard) {
         auto &text = get("text");
-        oA::Uint max = get("maxLength")->toInt();
+        Uint max = get("maxLength")->toInt();
         char c = keyboard.convetToKey();
         if (c && (!max || text->get<String>().length() != max)) {
             text->get<String>().push_back(c);
