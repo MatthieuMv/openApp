@@ -33,5 +33,5 @@ struct oA::V2
         return (*this);
     }
 
-    bool operator==(const oA::V2<T> &other) { return x == other.x && y == other.y; }
+    bool operator==(const oA::V2<T> &other) const noexcept { return x == other.x && y == other.y; }
 };
