@@ -37,17 +37,19 @@ public:
     using OperatorStack = Stack<Operator>;
 
     Item(void) {
-        append("id") = "item";
-        append("x") = 0;
-        append("y") = 0;
-        append("width") = 0;
-        append("height") = 0;
-        append("screenX") = 0;
-        append("screenY") = 0;
+        append("id") = "item"; // ID of the Item
+        append("x") = 0; // Item parent-relative X
+        append("y") = 0; // Item parent-relative Y
+        append("width") = 0; // Item width
+        append("height") = 0; // Item height
+        append("screenX") = 0; // Item screen-relative X
+        append("screenY") = 0; // Item screen-relative Y
+        append("visible") = true; // Set if the item (and its children) should draw
     }
 
     virtual ~Item(void) {}
 
+    /* You MUST override this function with the name of your custom class */
     virtual String getName(void) const noexcept { return "Item"; }
 
     /* Drawing functions :

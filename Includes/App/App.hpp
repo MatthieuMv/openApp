@@ -39,11 +39,17 @@ public:
     /* Run the app, receiving events and drawing its elements until every windows are closed */
     virtual void run(void) {
         setRunning(true);
+        onRun();
         while (isRunning()) {
             update();
             draw();
         }
+        onStop();
     }
+
+    /* App event virtual functions */
+    virtual void onRun(void) {}
+    virtual void onStop(void) {}
 
     /* Each parseFile call will add a new root item, creating a new window */
     void parseFile(const String &path) {

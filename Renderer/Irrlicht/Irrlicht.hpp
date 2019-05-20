@@ -8,7 +8,7 @@
 #pragma once
 
 // IRenderer
-#include "App/IRenderer.hpp"
+#include "App/IRenderer3D.hpp"
 // Vector
 #include "Core/Vector.hpp"
 
@@ -20,7 +20,7 @@
     ! Not compatible with multiple windows, use App::parseFile 1 time !
     ! Irrlicht doesn't suppport dynamic text size so load a single file per size !
 */
-class Irrlicht : public oA::IRenderer
+class Irrlicht : public oA::IRenderer3D
 {
 public:
     Irrlicht(void) {}
@@ -36,6 +36,8 @@ public:
     virtual void drawRectangle(const oA::RectangleContext &ctx, oA::Uint idx = 0);
     virtual void drawText(const oA::TextContext &ctx, oA::Uint idx = 0);
     virtual void drawImage(const oA::ImageContext &ctx, oA::Uint idx = 0);
+
+    virtual bool supports3D(void) const noexcept { return true; }
 
 private:
     oA::Vector<IrrlichtContext> _ctxs;

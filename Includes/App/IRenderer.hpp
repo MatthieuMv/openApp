@@ -53,4 +53,7 @@ public:
     virtual void drawRectangle(const RectangleContext &ctx, Uint idx = 0) = 0;
     virtual void drawText(const TextContext &ctx, Uint idx = 0) = 0;
     virtual void drawImage(const ImageContext &ctx, Uint idx = 0) = 0;
+
+    /* Utils */
+    virtual bool supports3D(void) const noexcept = 0;
 };

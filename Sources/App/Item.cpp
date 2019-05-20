@@ -10,6 +10,8 @@
 
 void oA::Item::render(IRenderer &renderer)
 {
+    if (!*get("visible"))
+        return;
     draw(renderer);
     for (auto &child : _childs) {
         child->render(renderer);

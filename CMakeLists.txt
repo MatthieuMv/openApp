@@ -67,6 +67,7 @@ set(HEADERS
     ${HCORE}/UMap.hpp
     ${HCORE}/Variant.hpp
     ${HCORE}/Vector.hpp
+    ${HCORE}/V2.hpp
 )
 
 set(SOURCES
