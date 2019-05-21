@@ -26,7 +26,7 @@ LDFLAGS		=	-lIrrlicht
 FLAGS		=	$(CXXFLAGS) $(CPPFLAGS) $(LDFLAGS)
 
 # Compilation sources
-SRC			=	$(F_SOURCES)/HelloWorld.cpp
+SRC			=	$(F_SOURCES)/Scene3D.cpp
 
 OBJ			=	$(SRC:.cpp=.o)
 

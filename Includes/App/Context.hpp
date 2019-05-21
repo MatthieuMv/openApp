@@ -38,6 +38,7 @@ struct oA::ItemContext
 
 struct oA::WindowContext : public oA::ItemContext
 {
+    String title;
     bool resizable = false;
 };
 

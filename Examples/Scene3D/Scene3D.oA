@@ -1,0 +1,23 @@
+// This is a simple 3D openApp example
+
+Window {
+    id: mainWnd
+    color: "lightgrey"
+    resizable: true
+    title: "Scene3D"
+    width: 500
+    height: 500
+
+    MyScene {
+        id: scene
+        relativeSize: 1, 1
+    }
+
+    Text {
+        text: "openApp 3D Map"
+        font: "font.xml"
+        fontColor: "blue"
+        relativeSize: 1, 0.2
+        center: true
+    }
+}

@@ -34,6 +34,7 @@ void Irrlicht::clear(oA::Uint index)
 
 void Irrlicht::draw(oA::Uint index)
 {
+    context(index).manager->drawAll();
     if (!context(index).driver->endScene())
         throw oA::RuntimeError("Irrlicht", "Couldn't begin @driver@ scene");
 }
@@ -54,6 +55,9 @@ oA::Uint Irrlicht::pushWindow(const oA::WindowContext &ctx)
     _ctxs.emplace_back(ctx);
     _handler = oA::MakeUnique<EventHandler>(_ctxs.back());
     _ctxs.back().device->setEventReceiver(_handler.get());
+    irr::core::stringw str;
+    str.append(ctx.title.c_str());
+    _ctxs.back().device->setWindowCaption(str.c_str());
     return _ctxs.size() - 1;
 }
 
@@ -164,4 +168,9 @@ irr::core::recti Irrlicht::toRect(const oA::ItemContext &ctx) const noexcept
         static_cast<irr::s32>(ctx.x + ctx.width),
         static_cast<irr::s32>(ctx.y + ctx.height)
     );
+}
+
+bool Irrlicht::supports3D(void) const noexcept
+{
+    return true;
 }

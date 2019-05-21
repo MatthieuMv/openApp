@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** Vector
+** V2
 */
 
 #pragma once
@@ -23,7 +23,9 @@ namespace oA
 template <typename T>
 struct oA::V2
 {
+    V2(void) = default;
     V2(const V2<T> &other) : x(other.x), y(other.y) {}
+    V3(const T X, const T Y) : x(X), y(Y) {}
 
     T x = T(), y = T();
 
@@ -33,5 +35,7 @@ struct oA::V2
         return (*this);
     }
 
-    bool operator==(const oA::V2<T> &other) const noexcept { return x == other.x && y == other.y; }
+    bool operator==(const oA::V2<T> &other) const noexcept {
+        return x == other.x && y == other.y;
+    }
 };

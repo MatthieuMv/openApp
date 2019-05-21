@@ -17,6 +17,7 @@ class oA::Window : virtual public oA::Rectangle
 public:
     Window(void) {
         append("resizable") = false;
+        append("title") = "openApp";
         get("width") = 720;
         get("height") = 480;
     }
@@ -39,5 +40,6 @@ public:
         ctx.width = get("width")->toInt();
         ctx.height = get("height")->toInt();
         ctx.resizable = *get("resizable");
+        ctx.title = get("title")->getConst<String>();
     }
 };

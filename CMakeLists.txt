@@ -22,16 +22,20 @@ set(HEADERS
     ${HAPP}/App.hpp
     ${HAPP}/Button.hpp
     ${HAPP}/Context.hpp
+    ${HAPP}/Context3D.hpp
     ${HAPP}/EventArea.hpp
     ${HAPP}/Event.hpp
     ${HAPP}/IApp.hpp
     ${HAPP}/ImageButton.hpp
     ${HAPP}/Image.hpp
     ${HAPP}/IRenderer.hpp
+    ${HAPP}/IRenderer3D.hpp
     ${HAPP}/Item.hpp
     ${HAPP}/Keys.hpp
     ${HAPP}/Parser.hpp
     ${HAPP}/Rectangle.hpp
+    ${HAPP}/Switch.hpp
+    ${HAPP}/Scene3D.hpp
     ${HAPP}/Text.hpp
     ${HAPP}/TextInput.hpp
     ${HAPP}/Var.hpp
@@ -68,6 +72,7 @@ set(HEADERS
     ${HCORE}/Variant.hpp
     ${HCORE}/Vector.hpp
     ${HCORE}/V2.hpp
+    ${HCORE}/V3.hpp
 )
 
 set(SOURCES
@@ -92,6 +97,7 @@ set(GRAPHIC
     ${RENDER}/Irrlicht/EventHandler.hpp
     ${RENDER}/Irrlicht/IrrlichtContext.hpp
     ${RENDER}/Irrlicht/Irrlicht.cpp
+    ${RENDER}/Irrlicht/Irrlicht3D.cpp
     ${RENDER}/Irrlicht/EventHandler.cpp
 )
 
