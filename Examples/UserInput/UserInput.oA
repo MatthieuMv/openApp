@@ -6,12 +6,22 @@ Window {
     id: wnd
     color: "grey"
 
+    Switch {
+        id: switch
+        relativePos: 0.5, 0.25
+        relativeSize: 0.1, 0.1
+        font: "font.xml"
+        text: "This is a control switch"
+        circleColor: state ? "green" : "red"
+    }
+
     TextInput {
         id: input
         relativePos: 0.5, 0.5
         relativeSize: 0.3, 0.1
         font: "font.xml"
         maxLength: 6
+        visible: switch.state
     }
 
     Text {
@@ -22,5 +32,6 @@ Window {
         font: "font.xml"
         fontColor: "red"
         text: input.text
+        visible: switch.state
     }
 }

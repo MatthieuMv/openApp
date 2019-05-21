@@ -36,6 +36,7 @@ public:
     virtual void drawRectangle(const oA::RectangleContext &ctx, oA::Uint idx = 0);
     virtual void drawText(const oA::TextContext &ctx, oA::Uint idx = 0);
     virtual void drawImage(const oA::ImageContext &ctx, oA::Uint idx = 0);
+    virtual void drawCircle(const oA::CircleContext &ctx, oA::Uint idx = 0);
 
     virtual bool supports3D(void) const noexcept { return true; }
 

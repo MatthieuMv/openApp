@@ -108,6 +108,28 @@ void Irrlicht::drawImage(const oA::ImageContext &ctx, oA::Uint index)
     );
 }
 
+void Irrlicht::drawCircle(const oA::CircleContext &ctx, oA::Uint index)
+{
+    auto radius = ctx.radius;
+    auto side = ((ctx.radius * 2) / std::sqrt(2)) / 2;
+    auto driver = context(index).driver;
+
+    if (ctx.filled)
+        driver->draw2DRectangle(
+            ctx.color.getValue(),
+            irr::core::recti(ctx.x - side, ctx.y - side, ctx.x + side, ctx.y + side)
+        );
+    do {
+        driver->draw2DPolygon(
+            irr::core::vector2di(ctx.x, ctx.y),
+            radius,
+            ctx.color.getValue(),
+            10
+        );
+        radius -= 0.2;
+    } while (ctx.filled && radius > side);
+}
+
 IrrlichtContext &Irrlicht::context(oA::Uint index)
 {
     if (index >= _ctxs.size())

@@ -24,6 +24,7 @@
 #include "App/Button.hpp"
 #include "App/ImageButton.hpp"
 #include "App/TextInput.hpp"
+#include "App/Switch.hpp"
 
 /* Parser */
 #include "App/Parser.hpp"

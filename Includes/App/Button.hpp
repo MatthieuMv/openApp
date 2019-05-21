@@ -19,7 +19,10 @@ namespace oA { class Button; }
 class oA::Button : virtual public oA::Rectangle, virtual public oA::Text, virtual public oA::EventArea
 {
 public:
-    Button(void) {}
+    Button(void) {
+        get("hCenter") = true;
+        get("vCenter") = true;
+    }
 
     virtual ~Button(void) {}
 

@@ -26,6 +26,8 @@ namespace oA
     struct RectangleContext;
     struct TextContext;
     struct ImageContext;
+    struct LineContext;
+    struct CircleContext;
 }
 
 struct oA::ItemContext
@@ -56,4 +58,11 @@ struct oA::ImageContext : public oA::ItemContext
 {
     String source;
     ItemContext sourceSize;
+};
+
+struct oA::CircleContext
+{
+    Float x = 0, y = 0, radius = 0;
+    Color color;
+    bool filled = true;
 };
