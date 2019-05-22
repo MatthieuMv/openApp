@@ -26,6 +26,7 @@
 #include "App/TextInput.hpp"
 #include "App/Switch.hpp"
 #include "App/Scene3D.hpp"
+#include "App/MenuHandler.hpp"
 
 /* Parser */
 #include "App/Parser.hpp"

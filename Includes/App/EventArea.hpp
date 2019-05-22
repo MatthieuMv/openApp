@@ -44,7 +44,7 @@ public:
 
     virtual bool onMouse(MouseEvent &evt) {
         auto &pressed = get("pressed");
-        if (contains(evt.x, evt.y)) {
+        if (contains(evt.pos)) {
             get("hovered") = true;
             if (evt.state == MousePressed) {
                 pressed = true;

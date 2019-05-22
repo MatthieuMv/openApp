@@ -23,6 +23,8 @@
 #include "App/Context.hpp"
 // IRenderer
 #include "App/IRenderer.hpp"
+// V2
+#include "Core/V2.hpp"
 
 namespace oA
 {
@@ -66,8 +68,8 @@ public:
     bool propagate(Event &evt);
     virtual bool onEvent(Event &) { return false; }
 
-    /* Items helper */
-    bool contains(Float x, Float y) const noexcept;
+    /* Items geometry helper */
+    bool contains(const V2f &pos) const noexcept;
 
     /* Item Context */
     void getItemContext(ItemContext &ctx) const;
@@ -86,6 +88,10 @@ public:
     Item &getChild(Uint idx);
     ItemPtr getChildPtr(const String &id);
     bool childExists(const String &id);
+
+    /* Childs events */
+    virtual void onChildAdded(void) {}
+    virtual void onChildRemoved(void) {}
 
     /* Property */
     Property<Var> &append(const String &name);
@@ -111,7 +117,7 @@ public:
     Item *find(const String &name);
     PropertyPtr<Var> findProperty(const String &name);
 
-private:
+protected:
     List<ItemPtr> _childs;
     UMap<String, ExpressionPtr<Var>> _properties;
 
@@ -121,6 +127,7 @@ private:
     Item *findInParents(const String &name);
     Item *findInChildrens(const String &name);
 
+private:
     /* Item Expression */
     void insertOperator(Expression<Var> &target, OperatorStack &stack, const String &str);
     void insertOperand(const String &name, Expression<Var> &target, String &operand);

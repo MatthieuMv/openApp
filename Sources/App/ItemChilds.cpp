@@ -25,6 +25,7 @@ oA::Item &oA::Item::setupChild(ItemPtr &child)
     child->_parent = this;
     child->makeExpression("screenX", "parent.screenX + x");
     child->makeExpression("screenY", "parent.screenY + y");
+    onChildAdded();
     return (*child);
 }
 
@@ -41,6 +42,7 @@ void oA::Item::removeChild(const String &id)
     });
     if (!removed)
         throw AccessError("Item", "Couldn't find child with id @" + id + "@");
+    onChildRemoved();
 }
 
 void oA::Item::removeChild(Uint idx)

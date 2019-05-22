@@ -9,6 +9,8 @@
 
 // Scalar types
 #include "Core/Scalar.hpp"
+// V2f
+#include "Core/V2.hpp"
 // Variant
 #include "Core/Variant.hpp"
 // Shared
@@ -33,7 +35,8 @@ namespace oA
 
 struct oA::MouseEvent
 {
-    Float x = 0, y = 0, wheel = 0;
+    V2f pos;
+    Float wheel = 0;
     MouseKey key = MouseNull;
     MouseState state = MousePressed;
     bool shift = false, control = false;

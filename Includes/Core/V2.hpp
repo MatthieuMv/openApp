@@ -25,7 +25,7 @@ struct oA::V2
 {
     V2(void) = default;
     V2(const V2<T> &other) : x(other.x), y(other.y) {}
-    V3(const T X, const T Y) : x(X), y(Y) {}
+    V2(const T X, const T Y) : x(X), y(Y) {}
 
     T x = T(), y = T();
 

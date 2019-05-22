@@ -27,12 +27,12 @@ bool oA::Item::propagate(Event &evt)
     return onEvent(evt);
 }
 
-bool oA::Item::contains(Float x, Float y) const noexcept
+bool oA::Item::contains(const V2f &pos) const noexcept
 {
     auto screenX = get("screenX")->getConst<Float>(), screenY = get("screenY")->getConst<Float>();
     return (
-        x >= screenX && x <= (screenX + get("width")->getConst<Float>()) &&
-        y >= screenY && y <= (screenY + get("height")->getConst<Float>())
+        pos.x >= screenX && pos.x <= (screenX + get("width")->getConst<Float>()) &&
+        pos.y >= screenY && pos.y <= (screenY + get("height")->getConst<Float>())
     );
 }
 

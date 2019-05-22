@@ -4,6 +4,7 @@ Window {
     id: mainWnd
     color: "lightgrey" // window clear color
     resizable: true // activate user resize
+    title: "Hello world"
 
     Text {
         id: title

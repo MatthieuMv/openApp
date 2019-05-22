@@ -77,8 +77,8 @@ void EventHandler::convertMouseEvent(oA::Event &target, const irr::SEvent &event
         return;
     }
     target.setType(oA::Mouse);
-    mouse.x = event.MouseInput.X;
-    mouse.y = event.MouseInput.Y;
+    mouse.pos.x = event.MouseInput.X;
+    mouse.pos.y = event.MouseInput.Y;
     mouse.shift = event.MouseInput.Shift;
     mouse.control = event.MouseInput.Control;
 }

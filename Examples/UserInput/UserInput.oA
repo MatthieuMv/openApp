@@ -5,6 +5,7 @@
 Window {
     id: wnd
     color: "grey"
+    title: "User inputs"
 
     Switch {
         id: switch
