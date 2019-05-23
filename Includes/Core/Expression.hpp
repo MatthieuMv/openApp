@@ -7,16 +7,12 @@
 
 #pragma once
 
-// Property
-#include "Core/Property.hpp"
-// Stack
-#include "Core/Stack.hpp"
 // Vector
 #include "Core/Vector.hpp"
-// Operator
-#include "Core/Operators.hpp"
 // Pair
 #include "Core/Pair.hpp"
+// Operator
+#include "Core/ExpressionStack.hpp"
 // Log
 #include "Core/Log.hpp"
 
@@ -24,65 +20,80 @@ namespace oA
 {
     template<typename T>
     class Expression;
-
-    template<typename T>
-    using ExpressionPtr = Shared<Expression<T>>;
 }
 
 /*
     An Expression is a Property which depends on other properties
     If a dependency changes, the whole expression is re-computed
+    It can also hold events, which are other expression called on emit(),
+    these can be interpreted as runtime events functions.
 */
 template<typename T>
 class oA::Expression : public Property<T>
 {
-    using ExpressionFct = Function<void(Stack<T> &)>;
 public:
     using Property<T>::Property;
+    using Node = ExpressionNode<T>;
 
     virtual ~Expression(void) {}
 
-    struct Node
-    {
-        Node(const OperatorType &opType) : op(opType) {}
-        Node(const PropertyPtr<T> &holdProperty) : property(holdProperty) {}
-
-        PropertyPtr<T> property; // Pointer to property (can be null)
-        OperatorType op = None; // Node operator (can be null)
-    };
-
-    void addNode(const Node &node) {
-        Uint idx = 0;
-        if (node.property)
-            idx = depends(*node.property);
-        _expr.push_back(MakePair(idx, node));
+    void addNode(OperatorType op) {
+        _expr.emplace_back(MakePair(0, Node(op)));
     }
 
     void addNode(const T &value) {
-        _expr.push_back(MakePair(0, MakeShared<Property<T>>(value)));
+        _expr.emplace_back(MakePair(0, Node(value)));
+    }
+
+    void addNode(const ExpressionPtr<T> &property, bool hasDependencies = true) {
+        Uint idx = 0;
+        if (hasDependencies && property.get() != this)
+            idx = depends(*property);
+        _expr.emplace_back(MakePair(idx, Node(property)));
     }
 
     void clear(void) {
         for (auto &pair : _expr) {
-            if (pair.first && pair.second.property)
-                pair.second.property->disconnect(pair.first);
+            if (pair.first && pair.second.isExpression())
+                pair.second.getExpression()->disconnect(pair.first);
         }
         _expr.clear();
     }
 
+    template<typename U>
+    Uint depends(Property<U> &other) noexcept {
+        return other.connect([this] {
+            this->compute();
+            return true;
+        });
+    }
+
     void compute(void) {
-        Stack<T> stack;
+        ExpressionStack<T> stack;
         if (_expr.empty())
-            throw LogicError("Expression", "Couldn't compute empty expression");
-        for (auto &node : _expr) {
-            if (node.second.op != None)
-                processOperator(stack, node.second);
+            return;
+        for (auto &pair : _expr) {
+            if (pair.second.isOperator())
+                stack.processOperator(pair.second.getOperator());
             else
-                stack.push(node.second.property->get());
+                stack.push(pair.second);
         }
         if (stack.size() != 1)
-            throw LogicError("Expression", "Couldn't compute invalid expression");
-        Property<T>::set(stack.top());
+            throw LogicError("Expression", "Non-null expression must have only @1 return value@");
+        Property<T>::set(stack.top().getValue());
+    }
+
+    Expression<T> &addEvent(void) {
+        _events.emplace_back(MakeShared<Expression<T>>());
+        return (*_events.back());
+    }
+
+    void popEvent(void) {
+        _events.pop_back();
+    }
+
+    void clearEvents(void) {
+        _events.clear();
     }
 
     void show(void) const {
@@ -100,115 +111,14 @@ public:
         cout << endl;
     }
 
+    virtual void emit(void) override {
+        Property<T>::emit();
+        for (auto &event : _events) {
+            event->compute();
+        }
+    }
+
 private:
     Vector<Pair<Uint, Node>> _expr;
-
-    template<typename U>
-    Uint depends(Property<U> &other) noexcept {
-        return other.connect([this] {
-            this->compute();
-            return true;
-        });
-    }
-
-    void processOperator(Stack<T> &stack, const Node &node) {
-        static const UMap<Uint, ExpressionFct> fcts = {
-            { Add, processAddition }, { Sub, processSubstraction },
-            { Mult, processMultiplication }, { Div, processDivision }, { Mod, processModulo },
-            { Not, processNot }, { And, processAnd }, { Or, processOr },
-            { Eq, processEqual }, { Diff, processNotEqual },
-            { Sup, processSuperior }, { SupEq, processEqual },
-            { Inf, processInferior }, { InfEq, processInferiorEq },
-            { If, processTernary }
-        };
-
-        auto f = fcts.find(node.op);
-        if (f != fcts.end())
-            return f->second(stack);
-        throw LogicError("Expression", "Couldn't find operator processing function");
-    }
-
-    static T extract(Stack<T> &stack) {
-            T res;
-            if (stack.empty())
-                throw LogicError("Expression", "Couldn't extract operands");
-            res = stack.top();
-            stack.pop();
-            return res;
-    }
-
-    static void processAddition(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 + op2);
-    }
-
-    static void processSubstraction(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 - op2);
-    }
-
-    static void processMultiplication(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 * op2);
-    }
-
-    static void processDivision(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 / op2);
-    }
-
-    static void processModulo(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 % op2);
-    }
-
-    static void processNot(Stack<T> &stack) {
-        T op1 = extract(stack);
-        stack.push(!op1);
-    }
-
-    static void processEqual(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 == op2);
-    }
-
-    static void processNotEqual(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 != op2);
-    }
-
-    static void processAnd(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 && op2);
-    }
-
-    static void processOr(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 || op2);
-    }
-
-    static void processInferior(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 < op2);
-    }
-
-    static void processInferiorEq(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 <= op2);
-    }
-
-    static void processSuperior(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 > op2);
-    }
-
-    static void processSuperiorEq(Stack<T> &stack) {
-        T op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 >= op2);
-    }
-
-    static void processTernary(Stack<T> &stack) {
-        T op3 = extract(stack), op2 = extract(stack), op1 = extract(stack);
-        stack.push(op1 ? op2 : op3);
-    }
+    Vector<ExpressionPtr<T>> _events;
 };

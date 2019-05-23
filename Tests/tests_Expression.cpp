@@ -11,11 +11,11 @@
 Test(Expression, Basics)
 {
     oA::Expression<int> expr;
-    oA::PropertyPtr<int> p = oA::MakeShared<oA::Property<int>>(2);
+    oA::ExpressionPtr<int> p = oA::MakeShared<oA::Expression<int>>(2);
 
     expr.addNode(1);
     expr.addNode(p);
-    expr.addNode(oA::Expression<int>::Node(oA::Add));
+    expr.addNode(oA::Addition);
     expr.compute();
     cr_assert_eq(expr.get(), 3);
     expr.clear();
@@ -37,7 +37,7 @@ Test(Expression, Errors)
         oA::Expression<int> expr;
         expr.addNode(1);
         expr.addNode(2);
-        expr.addNode(oA::Expression<int>::Node(oA::LP));
+        expr.addNode(oA::LeftParenthesis);
         expr.compute();
     } catch (...) {
         crashed = true;
@@ -46,7 +46,7 @@ Test(Expression, Errors)
     crashed = false;
     try {
         oA::Expression<int> expr;
-        expr.addNode(oA::Expression<int>::Node(oA::Add));
+        expr.addNode(oA::Addition);
         expr.compute();
     } catch (...) {
         crashed = true;

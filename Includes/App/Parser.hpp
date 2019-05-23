@@ -40,6 +40,7 @@ class oA::Parser
 
     struct Unassigned
     {
+        bool event = false;
         ItemPtr item;
         String property;
         String expression;
@@ -79,7 +80,9 @@ private:
     void parseUntil(const String &except = String());
     void parseToken(void);
 
-    /* Resolve */
+    /* Unassigned */
+    void addUnassigned(const String &name, const String &expr);
+    void addUnassignedEvent(const String &name, const String &expr);
     void resolveUnassigned(void);
 
     /* Input Utils */
@@ -109,4 +112,6 @@ private:
     void parseRelativePos(void);
     void parseRelativeSize(void);
     void parseCenter(void);
+    // Events
+    void parseEvent(void);
 };

@@ -36,8 +36,8 @@ Test(Operators, GetOperator)
 {
     bool crashed = false;
 
-    cr_assert_eq(oA::GetOperator("+").type, oA::Add);
-    cr_assert_eq(oA::GetOperator("==").type, oA::Eq);
+    cr_assert_eq(oA::GetOperator("+").type, oA::Addition);
+    cr_assert_eq(oA::GetOperator("==").type, oA::Equal);
     try {
         oA::GetOperator("?:");
     } catch (...) {
@@ -64,10 +64,10 @@ Test(Operators, FormatExpr2)
 
 Test(Operators, GetOperatorString)
 {
-    cr_assert_eq(oA::GetOperatorString(oA::Add), "+");
-    cr_assert_eq(oA::GetOperatorString(oA::Mod), "%");
-    cr_assert_eq(oA::GetOperatorString(oA::LP), "(");
-    cr_assert_eq(oA::GetOperatorString(oA::InfEq), "<=");
+    cr_assert_eq(oA::GetOperatorString(oA::Addition), "+");
+    cr_assert_eq(oA::GetOperatorString(oA::Modulo), "%");
+    cr_assert_eq(oA::GetOperatorString(oA::LeftParenthesis), "(");
+    cr_assert_eq(oA::GetOperatorString(oA::InferiorEqual), "<=");
     cr_assert_eq(oA::GetOperatorString(oA::If), "?");
     cr_assert_eq(oA::GetOperatorString(oA::Else), ":");
     cr_assert_eq(oA::GetOperatorString(oA::None), "");

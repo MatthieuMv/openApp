@@ -54,3 +54,4 @@
 
 /* Property */
 #include "Core/Property.hpp"
+#include "Core/Expression.hpp"

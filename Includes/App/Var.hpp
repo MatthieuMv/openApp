@@ -80,9 +80,11 @@ public:
     Var operator+(const Var &other) const;
     Var &operator+=(const Var &other);
     Var &operator++(void);
+    Var operator++(int);
     Var operator-(const Var &other) const;
     Var &operator-=(const Var &other);
     Var &operator--(void);
+    Var operator--(int);
     Var operator*(const Var &other) const;
     Var &operator*=(const Var &other);
     Var operator/(const Var &other) const;

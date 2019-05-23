@@ -27,6 +27,7 @@ public:
         });
         append("pressed") = false;
         append("hovered") = false;
+        append("released"); // Released signal
     }
 
     virtual ~EventArea(void) {}
@@ -51,6 +52,7 @@ public:
                 onPressed();
             } else if (*pressed && evt.state == MouseReleased) {
                 pressed = false;
+                get("released").emit();
                 onReleased();
                 get("focused") = true;
             }

@@ -34,6 +34,7 @@ oA::Parser::Parser(bool verbose)
     _log.setEnabled(verbose);
     addMatchFct("import", &Parser::parseImport); // Directory import
     addMatchFct("property", &Parser::parseNewProperty); // New property
+    addMatchFct("on", &Parser::parseEvent); // Directory import
     addMatchFct("id:", &Parser::parseItemId); // Item id
     addMatchFct("relativePos:", &Parser::parseRelativePos); // Relative pos
     addMatchFct("relativeSize:", &Parser::parseRelativeSize); // Relative size
@@ -74,10 +75,27 @@ void oA::Parser::parseToken(void)
     throw SyntaxError("Parser", "Couldn't parse token @" + _token + "@ #(" + ctx().path + ")#");
 }
 
+void oA::Parser::addUnassigned(const oA::String &name, const oA::String &expr)
+{
+    auto &last = _unassigned.emplace_back();
+
+    last.item = ctx().root;
+    last.property = name;
+    last.expression = expr;
+}
+void oA::Parser::addUnassignedEvent(const oA::String &name, const oA::String &expr)
+{
+    addUnassigned(name, expr);
+    _unassigned.back().event = true;
+}
+
 void oA::Parser::resolveUnassigned(void)
 {
     for (auto &u : _unassigned) {
-        u.item->makeExpression(u.property, u.expression);
+        if (!u.event)
+            u.item->makeExpression(u.property, u.expression);
+        else
+            u.item->addExpressionEvent(u.property, u.expression);
     }
     _unassigned.clear();
 }
@@ -264,11 +282,7 @@ void oA::Parser::parseProperty(void)
         ctx().root->makeExpression(name, _token);
         _log << tab() << "Property #" + name + "# set to " << _token << endl;
     } catch (...) {
-        Unassigned unassigned;
-        unassigned.item = ctx().root;
-        unassigned.property.swap(name);
-        unassigned.expression.swap(_token);
-        _unassigned.push_back(unassigned);
+        addUnassigned(name, _token);
     }
 }
 
@@ -284,7 +298,7 @@ void oA::Parser::parseItemId(void)
 
 void oA::Parser::parseRelativePos(void)
 {
-    String x, y;
+    String x, y, xExpr, yExpr;
 
     if (!ctx().root)
         throw LogicError("Parser", "Property @relativePos@ must be in item definition (#" + ctx().path + "#)");
@@ -295,13 +309,21 @@ void oA::Parser::parseRelativePos(void)
     if (!readToken())
         throw SyntaxError("Parser", "Invalid relativePos @y@ token (#" + ctx().path + "#)");
     y.swap(_token);
-    ctx().root->makeExpression("x", "parent.width * " + x + " - width / 2");
-    ctx().root->makeExpression("y", "parent.height * " + y + " - height / 2");
+    xExpr = "parent.width * " + x + " - width / 2";
+    yExpr = "parent.height * " + y + " - height / 2";
+    try {
+        ctx().root->makeExpression("x", xExpr);
+        ctx().root->makeExpression("y", yExpr);
+       _log << tab() << "Item #relativePosition# set to " << x + ", " + y << endl;
+    } catch (...) {
+        addUnassigned("x", xExpr);
+        addUnassigned("y", yExpr);
+    }
 }
 
 void oA::Parser::parseRelativeSize(void)
 {
-    String width, height;
+    String width, height, wExpr, hExpr;
 
     if (!ctx().root)
         throw LogicError("Parser", "Property @relativeSize@ must be in item definition (#" + ctx().path + "#)");
@@ -312,8 +334,16 @@ void oA::Parser::parseRelativeSize(void)
     if (!readToken())
         throw SyntaxError("Parser", "Invalid relativeSize @y@ token (#" + ctx().path + "#)");
     height.swap(_token);
-    ctx().root->makeExpression("width", "parent.width * " + width);
-    ctx().root->makeExpression("height", "parent.height * " + height);
+    wExpr = "parent.width * " + width;
+    hExpr = "parent.height * " + height;
+    try {
+        ctx().root->makeExpression("width", wExpr);
+        ctx().root->makeExpression("height", hExpr);
+       _log << tab() << "Item @relativeSize@ set to #" << width + ", " + height + "#" << endl;
+    } catch (...) {
+        addUnassigned("width", wExpr);
+        addUnassigned("height", hExpr);
+    }
 }
 
 void oA::Parser::parseCenter(void)
@@ -327,4 +357,24 @@ void oA::Parser::parseCenter(void)
     res = FromBoolean(_token) ? "true" : "false";
     ctx().root->makeExpression("hCenter", res);
     ctx().root->makeExpression("vCenter", res);
+    _log << tab() << "Properties #hCenter# and #vCenter# set to " << _token << endl;
+}
+
+void oA::Parser::parseEvent(void)
+{
+    String target;
+
+    if (!ctx().root)
+        throw LogicError("Parser", "@Events@ must be in item definition (#" + ctx().path + "#)");
+    if (!readToken() || !ctx().root->exists(_token))
+        throw SyntaxError("Parser", "Invalid @target@ after token @on@ (#" + ctx().path + "#)");
+    target = _token;
+    if (!readToken() || _token != "{" || !readLine('}'))
+        throw LogicError("Parser", "Excepted token @{@ after event declaration (#" + ctx().path + "#)");
+    try {
+        ctx().root->addExpressionEvent(target, _token);
+        _log << tab() << "Property #" + target + "# event added " << endl;
+    } catch (...) {
+        addUnassignedEvent(target, _token);
+    }
 }

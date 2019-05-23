@@ -50,19 +50,19 @@ oA::Item *oA::Item::findInChildrens(const String &name)
     return nullptr;
 }
 
-oA::PropertyPtr<oA::Var> oA::Item::findProperty(const String &name)
+oA::ExpressionPtr<oA::Var> oA::Item::findExpression(const String &name)
 {
-    PropertyPtr<Var> res;
+    ExpressionPtr<Var> res;
     String token, left = SplitExpression(name, token);
 
     if (!token.empty() && token == get("id")->getConst<String>())
-        return findProperty(left);
+        return findExpression(left);
     if (left.empty())
-        return getPtr(name);
+        return getExprPtr(name);
     auto ptr = find(token);
     if (ptr)
-        return ptr->findProperty(left);
-    return PropertyPtr<Var>();
+        return ptr->findExpression(left);
+    return ExpressionPtr<Var>();
 }
 
 static oA::String SplitExpression(const oA::String &expr, oA::String &token)

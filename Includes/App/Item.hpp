@@ -108,14 +108,16 @@ public:
     /* Item Expression */
     Expression<Var> &getExpr(const String &name);
     const Expression<Var> &getExpr(const String &name) const;
+    ExpressionPtr<Var> getExprPtr(const String &name);
     void makeExpression(const String &name, const String &targetExpr);
+    void addExpressionEvent(const oA::String &name, const oA::String &targetExpr);
 
     /* Find a relative item :
         find() : find an item from parents and childrens
-        findProperty() : find an item's property from parent and children
+        findExpression() : find an item's expression from parent and children
     */
     Item *find(const String &name);
-    PropertyPtr<Var> findProperty(const String &name);
+    ExpressionPtr<Var> findExpression(const String &name);
 
 protected:
     List<ItemPtr> _childs;
@@ -129,8 +131,9 @@ protected:
 
 private:
     /* Item Expression */
+    void makeExpression(Expression<Var> &target, const String &targetExpr, bool hasDependencies, bool compute);
     void insertOperator(Expression<Var> &target, OperatorStack &stack, const String &str);
-    void insertOperand(const String &name, Expression<Var> &target, String &operand);
+    void insertOperand(Expression<Var> &target, String &operand, bool hasDependencies);
 };
 
 oA::Log &operator<<(oA::Log &log, const oA::Item &item);

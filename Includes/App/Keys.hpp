@@ -95,7 +95,7 @@ namespace oA
         KeyNumpad8,     // Numeric keypad 8 key
         KeyNumpad9,     // Numeric keypad 9 key
         KeyMultiply,    // Multiply key
-        KeyAdd,         // Add key
+        KeyAdd,         // Addition key
         KeySeparator,   // Separator key
         KeySubtract,    // Subtract key
         KeyDecimal,     // Decimal key

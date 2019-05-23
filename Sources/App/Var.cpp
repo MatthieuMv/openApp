@@ -207,7 +207,18 @@ oA::Var &oA::Var::operator++(void)
 {
     switch (index()) {
     case VNumber:
-        get<Float>()++;
+        ++get<Float>();
+        return (*this);
+    default:
+        throw LogicError("Var", "@Operator ++@ not implemented for @" + getTypeName() + "@");
+    }
+}
+
+oA::Var oA::Var::operator++(int)
+{
+    switch (index()) {
+    case VNumber:
+        ++get<Float>();
         return (*this);
     default:
         throw LogicError("Var", "@Operator ++@ not implemented for @" + getTypeName() + "@");
@@ -236,6 +247,17 @@ oA::Var &oA::Var::operator--(void)
     switch (index()) {
     case VNumber:
         get<Float>()--;
+        return (*this);
+    default:
+        throw LogicError("Var", "@Operator --@ not implemented for @" + getTypeName() + "@");
+    }
+}
+
+oA::Var oA::Var::operator--(int)
+{
+    switch (index()) {
+    case VNumber:
+        --get<Float>();
         return (*this);
     default:
         throw LogicError("Var", "@Operator --@ not implemented for @" + getTypeName() + "@");

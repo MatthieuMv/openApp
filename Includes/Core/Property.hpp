@@ -38,6 +38,7 @@ public:
     T &get(void) noexcept { return _value; }
     const T &get(void) const noexcept { return _value; }
 
+    /* These setters will call emit on change */
     bool set(const Property<T> &other) { return set(other.get()); }
     bool set(const T &value) {
         if (value == _value)
@@ -46,6 +47,9 @@ public:
         this->emit();
         return true;
     }
+
+    /* This setter won't call emit on change */
+    void silentSet(const T &value) { _value = value; }
 
     T *operator->(void) noexcept { return &get(); }
     const T *operator->(void) const noexcept { return &get(); }

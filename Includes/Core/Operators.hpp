@@ -18,12 +18,17 @@ namespace oA
 {
     enum OperatorType {
         None = 0,
-        LP, RP, // ( )
-        Add, Sub, Mult, Div, Mod, // + - * / %
+        LeftParenthesis, RightParenthesis, // ( )
+        Addition, Substraction, Multiplication, Division, Modulo, // + - * / %
         Not, And, Or, // ! && ||
-        Eq, Diff, // == !=
-        Sup, SupEq, Inf, InfEq, // > >= < <=
-        If, Else
+        Equal, Diff, // == !=
+        Superior, SuperiorEqual, Inferior, InferiorEqual, // > >= < <=
+        If, Else, // ? :
+        Assign, // =
+        AdditionAssign, SubstractionAssign, MultiplicationAssign, DivisionAssign, ModuloAssign, // += -= *= /= %=
+        PrefixIncrement, PrefixDecrement, SuffixIncrement, SuffixDecrement, // ++. --. .++ .--
+        Call, // ()
+        Separator // ;
     };
 
     enum OperatorFlow {

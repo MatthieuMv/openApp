@@ -47,6 +47,8 @@ set(HEADERS
     ${HCORE}/ContainerHelper.hpp
     ${HCORE}/Error.hpp
     ${HCORE}/Expression.hpp
+    ${HCORE}/ExpressionStack.hpp
+    ${HCORE}/ExpressionNode.hpp
     ${HCORE}/Factory.hpp
     ${HCORE}/FStream.hpp
     ${HCORE}/Function.hpp

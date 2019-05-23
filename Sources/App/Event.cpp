@@ -62,7 +62,7 @@ static const oA::Map<oA::Key, char> C_KEYS = {
         { oA::KeyNumpad8,       '8'     },  // Numeric keypad 8 key
         { oA::KeyNumpad9,       '9'     },  // Numeric keypad 9 key
         { oA::KeyMultiply,      '*'     },  // Multiply key
-        { oA::KeyAdd,           '+'     },  // Add key
+        { oA::KeyAdd,           '+'     },  // Addition key
         { oA::KeySeparator,     '\n'    },  // Separator key
         { oA::KeySubtract,      '-'     },  // Subtract key
         { oA::KeyDecimal,       '.'     },  // Decimal key
