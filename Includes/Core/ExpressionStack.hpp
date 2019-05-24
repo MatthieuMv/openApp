@@ -194,7 +194,10 @@ private:
     }
 
     static void ProcessSeparator(ExpressionStack<T> &stack) {
+        ExpressionNode<T> last;
+        stack.extract(last);
         while (!stack.empty())
             stack.pop();
+        stack.push(std::move(last));
     }
 };
