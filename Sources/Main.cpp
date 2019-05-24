@@ -10,11 +10,8 @@
 int main(void)
 {
     try {
-        oA::String path = "Resources/Ultimate.oA";
-        auto itm = oA::Parser::ParseFile(path, true);
-        if (!itm)
-            return 84;
-        oA::cout << oA::endl << "#" + path + "#" << ":" << oA::endl << *itm;
+        oA::Item item;
+        item.makeExpression("x", "width > 100 ? 1 : (width <= 50 ? 2 : (width >= 75 ? 3 : 4))");
     } catch (const oA::Error &e) {
         oA::cerr << e.what() << oA::endl;
         return 84;

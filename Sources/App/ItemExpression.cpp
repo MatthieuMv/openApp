@@ -86,6 +86,8 @@ void oA::Item::insertOperator(Expression<Var> &target, OperatorStack &stack, con
         return stack.push(op);
     case RightParenthesis: // right parenthesis
         return PopUntil(target, stack, LeftParenthesis);
+    case Else:
+        return;
     default:
         return CheckOp(target, stack, op);
     }
@@ -112,8 +114,6 @@ static void CheckOp(oA::Expression<oA::Var> &target, oA::Item::OperatorStack &st
 {
     oA::UByte p1 = 0, p2 = 0;
 
-    if (op.type == oA::Else)
-        return;
     if (stack.empty() || stack.top().type == oA::LeftParenthesis)
         return stack.push(op);
     p1 = op.priority;

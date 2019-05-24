@@ -12,54 +12,43 @@
 
 static bool MatchOperator(oA::String &expr, const oA::String &op, oA::String::iterator &it, const oA::String::iterator last);
 
-/*
-    Assign, // =
-    AddAssign, SubAssign, MultAssign, DivAssign, ModAssign, // += -= *= /= %=
-    PreInc, PreDec, PostInc, PostDec, // ++X --X X++ X--
-    Separator // ;
-*/
-
 static const oA::OperatorMap C_OPERATORS = {
-    { ";",  { oA::LeftParenthesis,      oA::LeftToRight, 0  } },
-    { "(",  { oA::LeftParenthesis,      oA::LeftToRight, 0  } },
-    { ")",  { oA::RightParenthesis,     oA::LeftToRight, 0  } },
-    { "()", { oA::Call,                 oA::LeftToRight, 1  } },
-    { "++", { oA::SuffixIncrement,      oA::LeftToRight, 1  } },
-    { "--", { oA::SuffixDecrement,      oA::LeftToRight, 1  } },
-    { "++", { oA::PrefixIncrement,      oA::RightToLeft, 2  } },
-    { "--", { oA::PrefixDecrement,      oA::RightToLeft, 2  } },
-    { "!",  { oA::Not,                  oA::RightToLeft, 2  } },
-    { "*",  { oA::Multiplication,       oA::LeftToRight, 3  } },
-    { "/",  { oA::Division,             oA::LeftToRight, 3  } },
-    { "%",  { oA::Modulo,               oA::LeftToRight, 3  } },
-    { "+",  { oA::Addition,             oA::LeftToRight, 4  } },
-    { "-",  { oA::Substraction,         oA::LeftToRight, 4  } },
-    { ">",  { oA::Superior,             oA::LeftToRight, 6  } },
-    { "<",  { oA::Inferior,             oA::LeftToRight, 6  } },
-    { ">=", { oA::SuperiorEqual,        oA::LeftToRight, 6  } },
-    { "<=", { oA::InferiorEqual,        oA::LeftToRight, 6  } },
-    { "==", { oA::Equal,                oA::LeftToRight, 7  } },
-    { "!=", { oA::Diff,                 oA::LeftToRight, 7  } },
-    { "&&", { oA::And,                  oA::LeftToRight, 11 } },
-    { "||", { oA::Or,                   oA::LeftToRight, 12 } },
-    { "?",  { oA::If,                   oA::RightToLeft, 13 } },
-    { ":",  { oA::Else,                 oA::RightToLeft, 13 } },
-    { "=",  { oA::Assign,               oA::RightToLeft, 14 } },
-    { "+=", { oA::AdditionAssign,       oA::RightToLeft, 14 } },
-    { "-=", { oA::SubstractionAssign,   oA::RightToLeft, 14 } },
-    { "*=", { oA::MultiplicationAssign, oA::RightToLeft, 14 } },
-    { "/=", { oA::DivisionAssign,       oA::RightToLeft, 14 } },
-    { "%=", { oA::ModuloAssign,         oA::RightToLeft, 14 } }
+    { ";",  { oA::Separator,            oA::RightToLeft, 80 } },
+    { "(",  { oA::LeftParenthesis,      oA::LeftToRight, 80 } },
+    { ")",  { oA::RightParenthesis,     oA::LeftToRight, 80 } },
+    { "()", { oA::Call,                 oA::LeftToRight, 80 } },
+    { "+=", { oA::AdditionAssign,       oA::RightToLeft, 70 } },
+    { "-=", { oA::SubstractionAssign,   oA::RightToLeft, 70 } },
+    { "*=", { oA::MultiplicationAssign, oA::RightToLeft, 70 } },
+    { "/=", { oA::DivisionAssign,       oA::RightToLeft, 70 } },
+    { "%=", { oA::ModuloAssign,         oA::RightToLeft, 70 } },
+    { "==", { oA::Equal,                oA::LeftToRight, 40 } },
+    { "!=", { oA::Diff,                 oA::LeftToRight, 40 } },
+    { "&&", { oA::And,                  oA::LeftToRight, 50 } },
+    { "||", { oA::Or,                   oA::LeftToRight, 50 } },
+    { "?",  { oA::If,                   oA::RightToLeft, 60 } },
+    { ":",  { oA::Else,                 oA::RightToLeft, 60 } },
+    { "=",  { oA::Assign,               oA::RightToLeft, 70 } },
+    { "!",  { oA::Not,                  oA::RightToLeft, 5  } },
+    { "*",  { oA::Multiplication,       oA::LeftToRight, 10 } },
+    { "/",  { oA::Division,             oA::LeftToRight, 10 } },
+    { "%",  { oA::Modulo,               oA::LeftToRight, 10 } },
+    { "+",  { oA::Addition,             oA::LeftToRight, 20 } },
+    { "-",  { oA::Substraction,         oA::LeftToRight, 20 } },
+    { ">=", { oA::SuperiorEqual,        oA::LeftToRight, 30 } },
+    { "<=", { oA::InferiorEqual,        oA::LeftToRight, 30 } },
+    { ">",  { oA::Superior,             oA::LeftToRight, 30 } },
+    { "<",  { oA::Inferior,             oA::LeftToRight, 30 } }
 };
 
 bool oA::OperatorExists(const String &op)
 {
-    return C_OPERATORS.find(op) != C_OPERATORS.end();
+    return C_OPERATORS.findIf([&op](auto &pair) { return pair.first == op; }) != C_OPERATORS.end();
 }
 
 const oA::Operator &oA::GetOperator(const String &op)
 {
-    auto it = C_OPERATORS.find(op);
+    auto it = C_OPERATORS.findIf([&op](auto &pair) { return pair.first == op; });
 
     if (it == C_OPERATORS.end())
         throw AccessError("Operators", "Coudldn't find operator @" + op + "@");

@@ -34,8 +34,6 @@ public:
             { Assign, ProcessAssign },
             { AdditionAssign, ProcessAdditionAssign }, { SubstractionAssign, ProcessSubstractionAssign },
             { MultiplicationAssign, ProcessMultiplicationAssign }, { DivisionAssign, ProcessDivisionAssign }, { ModuloAssign, ProcessModuloAssign },
-            { PrefixIncrement, ProcessPrefixIncrement }, { PrefixDecrement, ProcessPrefixDecrement },
-            { SuffixIncrement, ProcessSuffixIncrement }, { SuffixDecrement, ProcessSuffixDecrement },
             { Call, ProcessCall },
             { Separator, ProcessSeparator }
         };
@@ -187,30 +185,6 @@ private:
         auto op1 = stack.extractExpression();
         op1->set(op1->get() % op2);
         stack.push(op1);
-    }
-
-    static void ProcessPrefixIncrement(ExpressionStack<T> &stack) {
-        auto op = stack.extractExpression();
-        ++(op->get());
-        stack.push(op);
-    }
-
-    static void ProcessPrefixDecrement(ExpressionStack<T> &stack) {
-        auto op = stack.extractExpression();
-        --(op->get());
-        stack.push(op);
-    }
-
-    static void ProcessSuffixIncrement(ExpressionStack<T> &stack) {
-        auto op = stack.extractExpression();
-        (op->get())++;
-        stack.push(op);
-    }
-
-    static void ProcessSuffixDecrement(ExpressionStack<T> &stack) {
-        auto op = stack.extractExpression();
-        (op->get())--;
-        stack.push(op);
     }
 
     static void ProcessCall(ExpressionStack<T> &stack) {

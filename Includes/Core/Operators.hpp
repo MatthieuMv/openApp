@@ -11,8 +11,10 @@
 #include "Core/Scalar.hpp"
 // String
 #include "Core/String.hpp"
-// UMap
-#include "Core/UMap.hpp"
+// Vector
+#include "Core/Vector.hpp"
+// Pair
+#include "Core/Pair.hpp"
 
 namespace oA
 {
@@ -26,7 +28,6 @@ namespace oA
         If, Else, // ? :
         Assign, // =
         AdditionAssign, SubstractionAssign, MultiplicationAssign, DivisionAssign, ModuloAssign, // += -= *= /= %=
-        PrefixIncrement, PrefixDecrement, SuffixIncrement, SuffixDecrement, // ++. --. .++ .--
         Call, // ()
         Separator // ;
     };
@@ -43,7 +44,7 @@ namespace oA
         const UByte priority;
     };
 
-    using OperatorMap = UMap<String, Operator>;
+    using OperatorMap = Vector<Pair<String, Operator>>;
 
     bool OperatorExists(const String &op);
     const Operator &GetOperator(const String &op);

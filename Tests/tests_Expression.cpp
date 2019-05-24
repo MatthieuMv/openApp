@@ -31,7 +31,7 @@ Test(Expression, Errors)
     } catch (...) {
         crashed = true;
     }
-    cr_assert(crashed);
+    cr_assert_not(crashed);
     crashed = false;
     try {
         oA::Expression<int> expr;
