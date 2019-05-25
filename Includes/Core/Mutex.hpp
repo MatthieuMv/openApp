@@ -13,4 +13,6 @@
 namespace oA
 {
     using Mutex = std::mutex;
+
+    using UniqueLock = std::unique_lock<Mutex>;
 }
