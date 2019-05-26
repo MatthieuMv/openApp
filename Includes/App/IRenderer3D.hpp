@@ -26,5 +26,7 @@ public:
     virtual void clearScene(void) = 0;
     virtual void addCube(const CubeContext &ctx) = 0;
     virtual void addCamera(const CameraContext &ctx) = 0;
+    virtual void addModel(const ModelContext &ctx) = 0;
+    virtual Uint addAnimatedModel(const ModelContext &ctx) = 0;
     virtual void drawScene(void) = 0;
 };

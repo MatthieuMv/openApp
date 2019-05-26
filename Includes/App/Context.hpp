@@ -13,6 +13,8 @@
 #include "Core/String.hpp"
 // Color
 #include "Core/Colors.hpp"
+// V2
+#include "Core/V2.hpp"
 
 namespace oA
 {
@@ -32,8 +34,7 @@ namespace oA
 
 struct oA::ItemContext
 {
-    Float x = 0.0f, y = 0.0f;
-    Float width = 0.0f, height = 0.0f;
+    V2f pos, size;
 };
 
 struct oA::WindowContext : public oA::ItemContext
@@ -63,7 +64,8 @@ struct oA::ImageContext : public oA::ItemContext
 
 struct oA::CircleContext
 {
-    Float x = 0, y = 0, radius = 0;
+    V2f pos;
+    Float radius = 0;
     Color color;
     bool filled = true;
 };

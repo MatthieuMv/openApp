@@ -39,10 +39,10 @@ bool oA::Item::contains(const V2f &pos) const noexcept
 
 void oA::Item::getItemContext(ItemContext &ctx) const
 {
-    ctx.x = get("screenX")->getConst<Float>();
-    ctx.y = get("screenY")->getConst<Float>();
-    ctx.width = get("width")->getConst<Float>();
-    ctx.height = get("height")->getConst<Float>();
+    ctx.pos.x = get("screenX")->getConst<Float>();
+    ctx.pos.y = get("screenY")->getConst<Float>();
+    ctx.size.x = get("width")->getConst<Float>();
+    ctx.size.y = get("height")->getConst<Float>();
 }
 
 void oA::Item::show(Uint indent, Log &log) const noexcept

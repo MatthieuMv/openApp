@@ -25,7 +25,10 @@ struct IrrlichtContext
 {
     IrrlichtContext(const oA::WindowContext &ctx)
     {
-        device = irr::createDevice(irr::video::EDT_OPENGL, irr::core::dimension2du(ctx.width, ctx.height));
+        device = irr::createDevice(
+            irr::video::EDT_OPENGL,
+            irr::core::dimension2du(ctx.size.x, ctx.size.y)
+        );
         if (!device)
             throw oA::RuntimeError("Irrlicht", "Couldn't open @device@");
         resizable = ctx.resizable;

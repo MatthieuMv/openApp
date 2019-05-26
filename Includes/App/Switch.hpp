@@ -47,9 +47,9 @@ public:
 private:
     void getBarContext(RectangleContext &ctx) const {
         getRectangleContext(ctx);
-        auto height = ctx.height / 4;
-        ctx.y += ctx.height / 2 - height / 2;
-        ctx.height = height;
+        auto height = ctx.size.y / 4;
+        ctx.pos.y += ctx.size.y / 2 - height / 2;
+        ctx.size.y = height;
     }
 
     void getCircleContext(CircleContext &ctx) const {
@@ -59,15 +59,15 @@ private:
         auto h = get("height")->getConst<Float>();
         auto r = h / 3;
         bool active = *get("state");
-        ctx.x = active ? x + w - r : x + r;
-        ctx.y = y + h / 2;
+        ctx.pos.x = active ? x + w - r : x + r;
+        ctx.pos.y = y + h / 2;
         ctx.radius = r;
         ctx.color = Color::RetreiveColor(get("circleColor")->getConst<String>());
     }
 
     void getSwitchTextContext(TextContext &ctx) const {
         getTextContext(ctx);
-        ctx.y += ctx.height;
-        ctx.height /= 2;
+        ctx.pos.y += ctx.size.y;
+        ctx.size.y /= 2;
     }
 };

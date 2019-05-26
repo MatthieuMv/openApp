@@ -78,9 +78,9 @@ void Irrlicht::pullWindow(oA::WindowContext &ctx)
     const auto &wnd = context();
     const auto &size = wnd.driver->getScreenSize();
 
-    ctx.width = size.Width;
-    ctx.height = size.Height;
-    if (!ctx.width || !ctx.height)
+    ctx.size.x = size.Width;
+    ctx.size.y = size.Height;
+    if (!ctx.size.x || !ctx.size.y)
         throw oA::LogicError("Irrlicht", "Invalid @window@ size");
     ctx.resizable = wnd.resizable;
 }
@@ -132,11 +132,11 @@ void Irrlicht::drawCircle(const oA::CircleContext &ctx)
     if (ctx.filled)
         driver->draw2DRectangle(
             ctx.color.getValue(),
-            irr::core::recti(ctx.x - side, ctx.y - side, ctx.x + side, ctx.y + side)
+            irr::core::recti(ctx.pos.x - side, ctx.pos.y - side, ctx.pos.x + side, ctx.pos.y + side)
         );
     do {
         driver->draw2DPolygon(
-            irr::core::vector2di(ctx.x, ctx.y),
+            irr::core::vector2di(ctx.pos.x, ctx.pos.y),
             radius,
             ctx.color.getValue(),
             10
@@ -163,21 +163,27 @@ irr::gui::IGUIFont *Irrlicht::getFont(const oA::String &path)
 {
     if (path.empty())
         return context().gui->getBuiltInFont();
-    return context().gui->getFont(path.c_str());
+    auto font = context().gui->getFont(path.c_str());
+    if (!font)
+        throw oA::RuntimeError("Irrlicht", "Couldn't load font @" + path + "@");
+    return font;
 }
 
 irr::video::ITexture *Irrlicht::getTexture(const oA::String &path)
 {
-    return context().driver->getTexture(path.c_str());
+    auto texture = context().driver->getTexture(path.c_str());
+    if (!texture)
+        throw oA::RuntimeError("Irrlicht", "Couldn't load texture @" + path + "@");
+    return texture;
 }
 
 irr::core::recti Irrlicht::toRect(const oA::ItemContext &ctx) const noexcept
 {
     return irr::core::recti(
-        static_cast<irr::s32>(ctx.x),
-        static_cast<irr::s32>(ctx.y),
-        static_cast<irr::s32>(ctx.x + ctx.width),
-        static_cast<irr::s32>(ctx.y + ctx.height)
+        static_cast<irr::s32>(ctx.pos.x),
+        static_cast<irr::s32>(ctx.pos.y),
+        static_cast<irr::s32>(ctx.pos.x + ctx.size.x),
+        static_cast<irr::s32>(ctx.pos.y + ctx.size.y)
     );
 }
 

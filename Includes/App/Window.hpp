@@ -30,15 +30,15 @@ public:
         if (*get("resizable")) {
             WindowContext ctx;
             renderer.pullWindow(ctx);
-            get("width") = ctx.width;
-            get("height") = ctx.height;
+            get("width") = ctx.size.x;
+            get("height") = ctx.size.y;
         }
         Rectangle::draw(renderer);
     }
 
     void getWindowContext(WindowContext &ctx) const {
-        ctx.width = get("width")->toInt();
-        ctx.height = get("height")->toInt();
+        ctx.size.x = get("width")->toInt();
+        ctx.size.y = get("height")->toInt();
         ctx.resizable = *get("resizable");
         ctx.title = get("title")->getConst<String>();
     }

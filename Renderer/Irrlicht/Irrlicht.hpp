@@ -45,6 +45,8 @@ public:
     virtual void clearScene(void);
     virtual void addCube(const oA::CubeContext &ctx);
     virtual void addCamera(const oA::CameraContext &ctx);
+    virtual void addModel(const oA::ModelContext &ctx);
+    virtual oA::Uint addAnimatedModel(const oA::ModelContext &ctx);
     virtual void drawScene(void);
 
 private:
@@ -52,9 +54,14 @@ private:
     oA::Unique<EventHandler> _handler;
     oA::Uint _idx = 0;
 
+    /* Utils */
     IrrlichtContext &context(void);
     const IrrlichtContext &context(void) const;
+    /* 2D Utils */
     irr::gui::IGUIFont *getFont(const oA::String &path);
     irr::video::ITexture *getTexture(const oA::String &path);
     irr::core::recti toRect(const oA::ItemContext &ctx) const noexcept;
+    /* 3D Utils */
+    irr::scene::IMesh *getMesh(const oA::String &path);
+    irr::scene::IAnimatedMesh *getAnimatedMesh(const oA::String &path);
 };

@@ -82,7 +82,10 @@ void oA::Item::insertOperator(Expression<Var> &target, OperatorStack &stack, con
 {
     const auto op = GetOperator(str);
     switch (op.type) {
-    case RightParenthesis: // right parenthesis
+    case LeftParenthesis:
+        stack.push(op);
+        return;
+    case RightParenthesis:
         return PopUntil(target, stack, LeftParenthesis);
     case Else:
         return;

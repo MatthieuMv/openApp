@@ -21,6 +21,7 @@ namespace oA
     */
     struct CameraContext;
     struct CubeContext;
+    struct ModelContext;
 }
 
 struct oA::CameraContext
@@ -30,7 +31,13 @@ struct oA::CameraContext
 
 struct oA::CubeContext
 {
-    V3f pos, rotation;
+    V3f pos, rotation, scale;
     Float size = 0.0f;
     String texture;
+};
+
+struct oA::ModelContext
+{
+    V3f pos, rotation, scale;
+    String mesh, texture;
 };
