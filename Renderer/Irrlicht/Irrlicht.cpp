@@ -17,35 +17,43 @@ Irrlicht::~Irrlicht(void)
     }
 }
 
-bool Irrlicht::isRunning(oA::Uint index) const
+bool Irrlicht::setTargetContext(oA::Uint idx)
 {
-    auto device = context(index).device;
+    if (idx >= _ctxs.size())
+        return false;
+    _idx = idx;
+    return true;
+}
+
+bool Irrlicht::isRunning(void) const
+{
+    auto device = context().device;
 
     if (!device->isWindowActive())
         device->yield();
     return device->run();
 }
 
-void Irrlicht::clear(oA::Uint index)
+void Irrlicht::clear(void)
 {
-    if (!context(index).driver->beginScene())
+    if (!context().driver->beginScene())
         throw oA::RuntimeError("Irrlicht", "Couldn't begin @driver@ scene");
 }
 
-void Irrlicht::draw(oA::Uint index)
+void Irrlicht::draw(void)
 {
-    if (!context(index).driver->endScene())
+    if (!context().driver->endScene())
         throw oA::RuntimeError("Irrlicht", "Couldn't begin @driver@ scene");
 }
 
-void Irrlicht::drawScene(oA::Uint index)
+void Irrlicht::drawScene(void)
 {
-    context(index).manager->drawAll();
+    context().manager->drawAll();
 }
 
-bool Irrlicht::pullEvent(oA::Event &evt, oA::Uint index)
+bool Irrlicht::pullEvent(oA::Event &evt)
 {
-    auto &events = context(index).events;
+    auto &events = context().events;
 
     if (events.empty())
         return false;
@@ -65,12 +73,11 @@ oA::Uint Irrlicht::pushWindow(const oA::WindowContext &ctx)
     return _ctxs.size() - 1;
 }
 
-void Irrlicht::pullWindow(oA::WindowContext &ctx, oA::Uint index)
+void Irrlicht::pullWindow(oA::WindowContext &ctx)
 {
-    if (index >= _ctxs.size())
-        throw oA::LogicError("Irrlicht", "Can't pull invalid index @" + oA::ToString(index) + "@");
-    const auto &wnd = context(index);
+    const auto &wnd = context();
     const auto &size = wnd.driver->getScreenSize();
+
     ctx.width = size.Width;
     ctx.height = size.Height;
     if (!ctx.width || !ctx.height)
@@ -78,17 +85,17 @@ void Irrlicht::pullWindow(oA::WindowContext &ctx, oA::Uint index)
     ctx.resizable = wnd.resizable;
 }
 
-void Irrlicht::drawRectangle(const oA::RectangleContext &ctx, oA::Uint index)
+void Irrlicht::drawRectangle(const oA::RectangleContext &ctx)
 {
-    context(index).driver->draw2DRectangle(
+    context().driver->draw2DRectangle(
         ctx.color.getValue(),
         toRect(ctx)
     );
 }
 
-void Irrlicht::drawText(const oA::TextContext &ctx, oA::Uint index)
+void Irrlicht::drawText(const oA::TextContext &ctx)
 {
-    getFont(ctx.font, index)->draw(
+    getFont(ctx.font)->draw(
         ctx.text.c_str(),
         toRect(ctx),
         ctx.fontColor.getValue(),
@@ -97,16 +104,16 @@ void Irrlicht::drawText(const oA::TextContext &ctx, oA::Uint index)
     );
 }
 
-void Irrlicht::drawImage(const oA::ImageContext &ctx, oA::Uint index)
+void Irrlicht::drawImage(const oA::ImageContext &ctx)
 {
-    auto t = getTexture(ctx.source, index);
+    auto t = getTexture(ctx.source);
     auto rect = toRect(ctx.sourceSize);
 
     if (!rect.getWidth() && !rect.getHeight()) {
         const auto &s = t->getOriginalSize();
         rect = irr::core::recti({ 0, 0 }, s);
     }
-    context(index).driver->draw2DImage(
+    context().driver->draw2DImage(
         t,
         toRect(ctx),
         rect,
@@ -116,11 +123,11 @@ void Irrlicht::drawImage(const oA::ImageContext &ctx, oA::Uint index)
     );
 }
 
-void Irrlicht::drawCircle(const oA::CircleContext &ctx, oA::Uint index)
+void Irrlicht::drawCircle(const oA::CircleContext &ctx)
 {
     auto radius = ctx.radius;
     auto side = ((ctx.radius * 2) / std::sqrt(2)) / 2;
-    auto driver = context(index).driver;
+    auto driver = context().driver;
 
     if (ctx.filled)
         driver->draw2DRectangle(
@@ -138,30 +145,30 @@ void Irrlicht::drawCircle(const oA::CircleContext &ctx, oA::Uint index)
     } while (ctx.filled && radius > side);
 }
 
-IrrlichtContext &Irrlicht::context(oA::Uint index)
+IrrlichtContext &Irrlicht::context(void)
 {
-    if (index >= _ctxs.size())
-        throw oA::AccessError("Irrlicht", "Invalid context index @" + oA::ToString(index) + "@");
-    return (_ctxs[index]);
+    if (_idx >= _ctxs.size())
+        throw oA::AccessError("Irrlicht", "Invalid context index @" + oA::ToString(_idx) + "@");
+    return (_ctxs[_idx]);
 }
 
-const IrrlichtContext &Irrlicht::context(oA::Uint index) const
+const IrrlichtContext &Irrlicht::context(void) const
 {
-    if (index >= _ctxs.size())
-        throw oA::AccessError("Irrlicht", "Invalid context index @" + oA::ToString(index) + "@");
-    return (_ctxs[index]);
+    if (_idx >= _ctxs.size())
+        throw oA::AccessError("Irrlicht", "Invalid context index @" + oA::ToString(_idx) + "@");
+    return (_ctxs[_idx]);
 }
 
-irr::gui::IGUIFont *Irrlicht::getFont(const oA::String &path, oA::Uint index)
+irr::gui::IGUIFont *Irrlicht::getFont(const oA::String &path)
 {
     if (path.empty())
-        return context(index).gui->getBuiltInFont();
-    return context(index).gui->getFont(path.c_str());
+        return context().gui->getBuiltInFont();
+    return context().gui->getFont(path.c_str());
 }
 
-irr::video::ITexture *Irrlicht::getTexture(const oA::String &path, oA::Uint index)
+irr::video::ITexture *Irrlicht::getTexture(const oA::String &path)
 {
-    return context(index).driver->getTexture(path.c_str());
+    return context().driver->getTexture(path.c_str());
 }
 
 irr::core::recti Irrlicht::toRect(const oA::ItemContext &ctx) const noexcept
@@ -172,6 +179,11 @@ irr::core::recti Irrlicht::toRect(const oA::ItemContext &ctx) const noexcept
         static_cast<irr::s32>(ctx.x + ctx.width),
         static_cast<irr::s32>(ctx.y + ctx.height)
     );
+}
+
+bool Irrlicht::supportsMultiContexts(void) const noexcept
+{
+    return false;
 }
 
 bool Irrlicht::supports3D(void) const noexcept

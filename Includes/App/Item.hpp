@@ -46,7 +46,7 @@ public:
         append("height") = 0; // Item height
         append("screenX") = 0; // Item screen-relative X
         append("screenY") = 0; // Item screen-relative Y
-        append("visible") = true; // Set if the item (and its children) should draw
+        append("visible") = true; // Condition for an item (and children) to be updated and draw
     }
 
     virtual ~Item(void) {}
@@ -54,12 +54,14 @@ public:
     /* You MUST override this function with the name of your custom class */
     virtual String getName(void) const noexcept { return "Item"; }
 
-    /* Drawing functions :
+    /* Render functions :
         render(r) - draw the item and its children
+        update(renderer) - custom update function
         draw(r) - virtual method drawing only the item to the renderer
     */
     void render(IRenderer &renderer);
     virtual void draw(IRenderer &) {}
+    virtual void update(IRenderer &) {}
 
     /* Event functions :
         propagate(evt) - propagate an event until an item returns true, starts at the end of item's tree

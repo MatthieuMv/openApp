@@ -29,32 +29,35 @@ public:
     virtual ~IRenderer(void) = default;
 
     /* Core:
-        isRunning(wnd) - return the state of a window
-        clear(wnd) - clear a window
-        draw() - render a window
-        pullEvent(evt, wnd) - try to retreive an oA::Event from a window
+        setTargetContext(idx) - set the target context used in other functions
+        isRunning() - return the state of the target context
+        clear() - clear the target context
+        draw() - render the target context
+        pullEvent(evt) - try to retreive an oA::Event from the target context
 
     */
-    virtual bool isRunning(Uint idx = 0) const = 0;
-    virtual void clear(Uint idx = 0) = 0;
-    virtual void draw(Uint idx = 0) = 0;
-    virtual bool pullEvent(Event &evt, Uint idx = 0) = 0;
+    virtual bool setTargetContext(Uint idx) = 0;
+    virtual bool isRunning(void) const = 0;
+    virtual void clear(void) = 0;
+    virtual void draw(void) = 0;
+    virtual bool pullEvent(Event &evt) = 0;
 
     /* Window handling:
         pushWindow(ctw, wnd) - push a window creating it and returning its idx
         pullWindow(ctw, wnd) - pull a window's context creating it if not existing
      */
     virtual oA::Uint pushWindow(const WindowContext &ctx) = 0;
-    virtual void pullWindow(WindowContext &ctx, Uint idx = 0) = 0;
+    virtual void pullWindow(WindowContext &ctx) = 0;
 
     /* Drawer:
         draw a single element in window buffer or
     */
-    virtual void drawRectangle(const RectangleContext &ctx, Uint idx = 0) = 0;
-    virtual void drawText(const TextContext &ctx, Uint idx = 0) = 0;
-    virtual void drawImage(const ImageContext &ctx, Uint idx = 0) = 0;
-    virtual void drawCircle(const CircleContext &ctx, Uint idx = 0) = 0;
+    virtual void drawRectangle(const RectangleContext &ctx) = 0;
+    virtual void drawText(const TextContext &ctx) = 0;
+    virtual void drawImage(const ImageContext &ctx) = 0;
+    virtual void drawCircle(const CircleContext &ctx) = 0;
 
     /* Utils */
+    virtual bool supportsMultiContexts(void) const noexcept = 0;
     virtual bool supports3D(void) const noexcept = 0;
 };

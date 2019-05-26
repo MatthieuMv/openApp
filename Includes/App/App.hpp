@@ -42,7 +42,7 @@ public:
         onRun();
         while (isRunning()) {
             update();
-            draw();
+            render();
         }
         onStop();
     }
@@ -79,23 +79,24 @@ protected:
         auto i = 0;
         oA::Event evt;
         for (auto &root : _roots) {
-            while (_renderer->pullEvent(evt, i)) {
+            _renderer->setTargetContext(i);
+            while (_renderer->pullEvent(evt)) {
                 root->propagate(evt);
             }
             ++i;
         }
     }
 
-    void draw(void) {
+    void render(void) {
         auto i = 0;
         auto appActive = false;
         for (auto root : _roots) {
-            if (!_renderer->isRunning(i))
+            if (!_renderer->setTargetContext(i) || !_renderer->isRunning())
                 continue;
             appActive = true;
-            _renderer->clear(i);
+            _renderer->clear();
             root->render(*_renderer);
-            _renderer->draw(i);
+            _renderer->draw();
             ++i;
         }
         if (!appActive)

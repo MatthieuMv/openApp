@@ -27,31 +27,34 @@ public:
     virtual ~Irrlicht(void);
 
     /* Virtual 2D functions */
-    virtual bool isRunning(oA::Uint index = 0) const;
-    virtual void clear(oA::Uint index = 0);
-    virtual void draw(oA::Uint index = 0);
-    virtual bool pullEvent(oA::Event &evt, oA::Uint index = 0);
-    oA::Uint pushWindow(const oA::WindowContext &ctx);
-    virtual void pullWindow(oA::WindowContext &ctx, oA::Uint index = 0);
-    virtual void drawRectangle(const oA::RectangleContext &ctx, oA::Uint index = 0);
-    virtual void drawText(const oA::TextContext &ctx, oA::Uint index = 0);
-    virtual void drawImage(const oA::ImageContext &ctx, oA::Uint index = 0);
-    virtual void drawCircle(const oA::CircleContext &ctx, oA::Uint index = 0);
+    virtual bool setTargetContext(oA::Uint idx);
+    virtual bool isRunning(void) const;
+    virtual void clear(void);
+    virtual void draw(void);
+    virtual bool pullEvent(oA::Event &evt);
+    virtual oA::Uint pushWindow(const oA::WindowContext &ctx);
+    virtual void pullWindow(oA::WindowContext &ctx);
+    virtual void drawRectangle(const oA::RectangleContext &ctx);
+    virtual void drawText(const oA::TextContext &ctx);
+    virtual void drawImage(const oA::ImageContext &ctx);
+    virtual void drawCircle(const oA::CircleContext &ctx);
     virtual bool supports3D(void) const noexcept;
+    virtual bool supportsMultiContexts(void) const noexcept;
 
     /* Virtual 3D functions */
-    virtual void clearScene(oA::Uint index = 0);
-    virtual void addCube(const oA::CubeContext &ctx, oA::Uint index = 0);
-    virtual void addCamera(const oA::CameraContext &ctx, oA::Uint index = 0);
-    virtual void drawScene(oA::Uint index = 0);
+    virtual void clearScene(void);
+    virtual void addCube(const oA::CubeContext &ctx);
+    virtual void addCamera(const oA::CameraContext &ctx);
+    virtual void drawScene(void);
 
 private:
     oA::Vector<IrrlichtContext> _ctxs;
     oA::Unique<EventHandler> _handler;
+    oA::Uint _idx = 0;
 
-    IrrlichtContext &context(oA::Uint index);
-    const IrrlichtContext &context(oA::Uint index) const;
-    irr::gui::IGUIFont *getFont(const oA::String &path, oA::Uint index);
-    irr::video::ITexture *getTexture(const oA::String &path, oA::Uint index);
+    IrrlichtContext &context(void);
+    const IrrlichtContext &context(void) const;
+    irr::gui::IGUIFont *getFont(const oA::String &path);
+    irr::video::ITexture *getTexture(const oA::String &path);
     irr::core::recti toRect(const oA::ItemContext &ctx) const noexcept;
 };

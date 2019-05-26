@@ -86,7 +86,7 @@ win: shared
 	mv $(OA_DYNAMIC) $(OA_WDYNAMIC)
 
 irrlicht:
-	$(MAKE) compileRenderer F_RENDERER="Renderer/Irrlicht" RFLAGS="-lIrrlicht" RENDER_SRC="Renderer/Irrlicht/Irrlicht.cpp Renderer/Irrlicht/EventHandler.cpp"
+	$(MAKE) compileRenderer F_RENDERER="Renderer/Irrlicht" RFLAGS="-lIrrlicht" RENDER_SRC="Renderer/Irrlicht/Irrlicht.cpp Renderer/Irrlicht/Irrlicht3D.cpp Renderer/Irrlicht/EventHandler.cpp"
 
 compile: $(OBJ) static dynamic
 

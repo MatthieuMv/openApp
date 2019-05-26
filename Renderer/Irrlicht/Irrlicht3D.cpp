@@ -8,23 +8,23 @@
 // Irrlicht
 #include "Irrlicht.hpp"
 
-void Irrlicht::clearScene(oA::Uint index)
+void Irrlicht::clearScene(void)
 {
-    context(index).manager->clear();
+    context().manager->clear();
 }
 
-void Irrlicht::addCamera(const oA::CameraContext &ctx, oA::Uint index)
+void Irrlicht::addCamera(const oA::CameraContext &ctx)
 {
-    context(index).manager->addCameraSceneNode(
+    context().manager->addCameraSceneNode(
         nullptr,
         irr::core::vector3df(ctx.pos.x, ctx.pos.y, ctx.pos.z),
         irr::core::vector3df(ctx.lookAt.x, ctx.lookAt.y, ctx.lookAt.z)
     );
 }
 
-void Irrlicht::addCube(const oA::CubeContext &ctx, oA::Uint index)
+void Irrlicht::addCube(const oA::CubeContext &ctx)
 {
-    auto &wnd = context(index);
+    auto &wnd = context();
     auto cube = wnd.manager->addCubeSceneNode(
         ctx.size,
         nullptr,
