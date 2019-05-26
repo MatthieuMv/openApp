@@ -33,7 +33,8 @@ namespace oA
     };
 
     enum OperatorFlow {
-        RightToLeft = 0,
+        NoneFlow = 0,
+        RightToLeft,
         LeftToRight
     };
 

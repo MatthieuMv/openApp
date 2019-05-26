@@ -34,9 +34,13 @@ void Irrlicht::clear(oA::Uint index)
 
 void Irrlicht::draw(oA::Uint index)
 {
-    context(index).manager->drawAll();
     if (!context(index).driver->endScene())
         throw oA::RuntimeError("Irrlicht", "Couldn't begin @driver@ scene");
+}
+
+void Irrlicht::drawScene(oA::Uint index)
+{
+    context(index).manager->drawAll();
 }
 
 bool Irrlicht::pullEvent(oA::Event &evt, oA::Uint index)

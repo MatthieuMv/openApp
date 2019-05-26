@@ -26,4 +26,5 @@ public:
     virtual void clearScene(Uint index = 0) = 0;
     virtual void addCube(const CubeContext &ctx, Uint index = 0) = 0;
     virtual void addCamera(const CameraContext &ctx, Uint index = 0) = 0;
+    virtual void drawScene(oA::Uint index = 0) = 0;
 };

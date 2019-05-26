@@ -61,7 +61,6 @@ void oA::Item::makeExpression(Expression<Var> &target, const String &targetExpr,
     FormatExpression(expr);
     IStringStream ss(expr);
     OperatorStack stack;
-
     while (ss >> expr) {
         if (expr.front() == '"' && expr.back() != '"') {
             std::getline(ss, tmp, '"');
@@ -74,6 +73,7 @@ void oA::Item::makeExpression(Expression<Var> &target, const String &targetExpr,
             insertOperand(target, expr, hasDependencies);
     }
     PopUntil(target, stack, None);
+    target.show();
     if (compute)
         target.compute();
 }
@@ -82,8 +82,6 @@ void oA::Item::insertOperator(Expression<Var> &target, OperatorStack &stack, con
 {
     const auto op = GetOperator(str);
     switch (op.type) {
-    case LeftParenthesis: // left parenthesis
-        return stack.push(op);
     case RightParenthesis: // right parenthesis
         return PopUntil(target, stack, LeftParenthesis);
     case Else:
@@ -118,8 +116,6 @@ static void CheckOp(oA::Expression<oA::Var> &target, oA::Item::OperatorStack &st
         return stack.push(op);
     p1 = op.priority;
     p2 = stack.top().priority;
-    if (p1 < p2 || (p1 == p2 && op.flow == oA::LeftToRight))
-        return stack.push(op);
     while (p1 > p2 || (p1 == p2 && op.flow == oA::RightToLeft)) {
         target.addNode(stack.top().type);
         stack.pop();

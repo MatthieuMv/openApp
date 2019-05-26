@@ -29,7 +29,9 @@ public:
     virtual void draw(IRenderer &renderer) {
         if (!renderer.supports3D())
             throw LogicError("Scene3D", "Given @renderer@ doesn't support 3D");
-        draw3D(dynamic_cast<IRenderer3D &>(renderer));
+        auto &r3D = dynamic_cast<IRenderer3D &>(renderer);
+        draw3D(r3D);
+        r3D.drawScene();
     }
 
     // Override to draw your scene

@@ -103,10 +103,10 @@ public:
             if (i)
                 cout << " ";
             ++i;
-            if (p.second.op)
-                cout << '@' + GetOperatorString(p.second.op) + '@';
+            if (p.second.isOperator())
+                cout << '@' + GetOperatorString(p.second.getOperator()) + '@';
             else
-                cout << p.second.property->get();
+                cout << p.second.getValue();
         }
         cout << endl;
     }

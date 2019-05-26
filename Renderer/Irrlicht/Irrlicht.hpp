@@ -43,6 +43,7 @@ public:
     virtual void clearScene(oA::Uint index = 0);
     virtual void addCube(const oA::CubeContext &ctx, oA::Uint index = 0);
     virtual void addCamera(const oA::CameraContext &ctx, oA::Uint index = 0);
+    virtual void drawScene(oA::Uint index = 0);
 
 private:
     oA::Vector<IrrlichtContext> _ctxs;

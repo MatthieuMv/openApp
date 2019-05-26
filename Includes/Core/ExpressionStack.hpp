@@ -41,7 +41,7 @@ public:
         auto f = fcts.find(op);
         if (f != fcts.end())
             return f->second(*this);
-        throw LogicError("Expression", "Couldn't find operator processing function");
+        throw LogicError("Expression", "Couldn't find operator processing function @" + ToString(op) + "@");
     }
 
     void extract(ExpressionNode<T> &target) {

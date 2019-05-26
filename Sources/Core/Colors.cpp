@@ -35,10 +35,11 @@ static const oA::UMap<oA::String, oA::Color> C_COLORS = {
     { "darkmagenta",    oA::Color(125, 0, 125)      },
     { "yellow",         oA::Color(255, 255, 0)      },
     { "lightyellow",    oA::Color(255, 255, 100)    },
-    { "darkyellow",     oA::Color(125, 125, 0)      }
+    { "darkyellow",     oA::Color(125, 125, 0)      },
+    { "transparent",    oA::Color(0, 0, 0, 0)       }
 };
 
-oA::Color oA::Color::RetreiveColor(const oA::String &color)
+oA::Color oA::Color::RetreiveColor(const String &color)
 {
     auto it = C_COLORS.find(color);
 

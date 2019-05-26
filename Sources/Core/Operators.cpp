@@ -13,10 +13,12 @@
 static bool MatchOperator(oA::String &expr, const oA::String &op, oA::String::iterator &it, const oA::String::iterator last);
 
 static const oA::OperatorMap C_OPERATORS = {
-    { ";",  { oA::Separator,            oA::RightToLeft, 80 } },
-    { "(",  { oA::LeftParenthesis,      oA::LeftToRight, 80 } },
-    { ")",  { oA::RightParenthesis,     oA::LeftToRight, 80 } },
+    { ";",  { oA::Separator,            oA::NoneFlow,    90 } },
     { "()", { oA::Call,                 oA::LeftToRight, 80 } },
+    { "(",  { oA::LeftParenthesis,      oA::NoneFlow,    90 } },
+    { ")",  { oA::RightParenthesis,     oA::NoneFlow,    90 } },
+    { "?",  { oA::If,                   oA::NoneFlow,    90 } },
+    { ":",  { oA::Else,                 oA::NoneFlow,    90 } },
     { "+=", { oA::AdditionAssign,       oA::RightToLeft, 70 } },
     { "-=", { oA::SubstractionAssign,   oA::RightToLeft, 70 } },
     { "*=", { oA::MultiplicationAssign, oA::RightToLeft, 70 } },
@@ -26,8 +28,6 @@ static const oA::OperatorMap C_OPERATORS = {
     { "!=", { oA::Diff,                 oA::LeftToRight, 40 } },
     { "&&", { oA::And,                  oA::LeftToRight, 50 } },
     { "||", { oA::Or,                   oA::LeftToRight, 50 } },
-    { "?",  { oA::If,                   oA::RightToLeft, 60 } },
-    { ":",  { oA::Else,                 oA::RightToLeft, 60 } },
     { "=",  { oA::Assign,               oA::RightToLeft, 70 } },
     { "!",  { oA::Not,                  oA::RightToLeft, 5  } },
     { "*",  { oA::Multiplication,       oA::LeftToRight, 10 } },
@@ -61,10 +61,8 @@ void oA::FormatExpression(String &expr)
     bool quote = false;
 
     for (auto it = expr.begin(); last != expr.end() && it != expr.end(); ++it) {
-        if (*it == '"') {
+        if (*it == '"')
             quote = !quote;
-            continue;
-        }
         if (quote)
             continue;
         for (const auto &op : C_OPERATORS) {
