@@ -73,7 +73,6 @@ void oA::Item::makeExpression(Expression<Var> &target, const String &targetExpr,
             insertOperand(target, expr, hasDependencies);
     }
     PopUntil(target, stack, None);
-    target.show();
     if (compute)
         target.compute();
 }
