@@ -38,7 +38,8 @@ void Irrlicht::addCube(const oA::CubeContext &ctx)
 
 void Irrlicht::addModel(const oA::ModelContext &ctx)
 {
-    auto model = context().manager->addMeshSceneNode(getMesh(ctx.mesh),
+    auto model = context().manager->addMeshSceneNode(
+        getMesh(ctx.mesh),
         nullptr,
         -1,
         irr::core::vector3df(ctx.pos.x, ctx.pos.y, ctx.pos.z),
@@ -46,7 +47,8 @@ void Irrlicht::addModel(const oA::ModelContext &ctx)
         irr::core::vector3df(ctx.scale.x, ctx.scale.y, ctx.scale.z)
     );
     model->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-    model->setMaterialTexture(0, getTexture(ctx.texture.c_str()));
+    if (!ctx.texture.empty())
+        model->setMaterialTexture(0, getTexture(ctx.texture.c_str()));
 }
 
 oA::Uint Irrlicht::addAnimatedModel(const oA::ModelContext &ctx)
@@ -60,7 +62,8 @@ oA::Uint Irrlicht::addAnimatedModel(const oA::ModelContext &ctx)
         irr::core::vector3df(ctx.scale.x, ctx.scale.y, ctx.scale.z)
     );
     model->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-    model->setMaterialTexture(0, getTexture(ctx.texture.c_str()));
+    if (!ctx.texture.empty())
+        model->setMaterialTexture(0, getTexture(ctx.texture.c_str()));
     return 0;
 }
 

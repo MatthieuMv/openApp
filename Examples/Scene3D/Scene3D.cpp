@@ -46,8 +46,16 @@ private:
                     renderer.addCube(ctx);
                 }
             }
-            _reloadMap = false;
         }
+        {
+            oA::ModelContext ctx;
+            ctx.pos.z = 50;
+            ctx.scale = oA::V3f(100, 100, 100);
+            ctx.mesh = "mesh.b3d";
+            //ctx.texture = "PlayerColorSetOne.png";
+            renderer.addModel(ctx);
+        }
+        _reloadMap = false;
     }
 };
 

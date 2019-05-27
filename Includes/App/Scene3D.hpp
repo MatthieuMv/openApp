@@ -26,6 +26,13 @@ public:
 
     virtual String getName(void) const noexcept { return "Scene3D"; }
 
+    virtual void update(IRenderer &renderer) {
+        if (!renderer.supports3D())
+            throw LogicError("Scene3D", "Given @renderer@ doesn't support 3D");
+        auto &r3D = dynamic_cast<IRenderer3D &>(renderer);
+        update3D(r3D);
+    }
+
     virtual void draw(IRenderer &renderer) {
         if (!renderer.supports3D())
             throw LogicError("Scene3D", "Given @renderer@ doesn't support 3D");
@@ -36,5 +43,6 @@ public:
 
     // Override to draw your scene
     virtual void draw3D(IRenderer3D &) {}
+    virtual void update3D(IRenderer3D &) {}
 
 };

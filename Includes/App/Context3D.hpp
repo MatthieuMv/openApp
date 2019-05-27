@@ -31,13 +31,13 @@ struct oA::CameraContext
 
 struct oA::CubeContext
 {
-    V3f pos, rotation, scale;
+    V3f pos, rotation, scale = { 1.0f, 1.0f, 1.0f };
     Float size = 0.0f;
     String texture;
 };
 
 struct oA::ModelContext
 {
-    V3f pos, rotation, scale;
+    V3f pos, rotation, scale = { 1.0f, 1.0f, 1.0f };
     String mesh, texture;
 };
