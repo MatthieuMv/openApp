@@ -46,4 +46,6 @@ struct IrrlichtContext
     oA::UMap<oA::String, irr::video::ITexture *> textures;
     bool resizable = false;
     oA::Queue<oA::Event> events;
+    oA::UMap<oA::Uint, irr::scene::ISceneNode *> nodes;
+    oA::Uint maxNodeIdx = 0;
 };

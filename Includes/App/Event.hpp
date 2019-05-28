@@ -22,9 +22,9 @@
 
 namespace oA
 {
+    struct Event;
     struct MouseEvent;
     struct KeyboardEvent;
-    struct Event;
 
     enum EventType {
         NullEvent = 0,

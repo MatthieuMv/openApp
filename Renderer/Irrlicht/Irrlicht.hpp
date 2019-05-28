@@ -43,16 +43,17 @@ public:
 
     /* Virtual 3D functions */
     virtual void clearScene(void);
-    virtual void addCube(const oA::CubeContext &ctx);
-    virtual void addCamera(const oA::CameraContext &ctx);
-    virtual void addModel(const oA::ModelContext &ctx);
-    virtual oA::Uint addAnimatedModel(const oA::ModelContext &ctx);
     virtual void drawScene(void);
+    virtual oA::Uint addCube(const oA::CubeContext &ctx);
+    virtual oA::Uint addCamera(const oA::CameraContext &ctx);
+    virtual oA::Uint addModel(const oA::ModelContext &ctx);
+    virtual oA::Uint addAnimatedModel(const oA::ModelContext &ctx);
+    virtual void applyAnimation(oA::Uint node, const oA::Animation3D &anim);
 
 private:
-    oA::Vector<IrrlichtContext> _ctxs;
-    oA::Unique<EventHandler> _handler;
-    oA::Uint _idx = 0;
+    oA::Vector<IrrlichtContext> _ctxs; // Context list
+    oA::Unique<EventHandler> _handler; // EventHandler instance
+    oA::Uint _idx = 0; // Context index
 
     /* Utils */
     IrrlichtContext &context(void);
@@ -64,4 +65,5 @@ private:
     /* 3D Utils */
     irr::scene::IMesh *getMesh(const oA::String &path);
     irr::scene::IAnimatedMesh *getAnimatedMesh(const oA::String &path);
+    oA::Uint insertNode(irr::scene::ISceneNode *node);
 };

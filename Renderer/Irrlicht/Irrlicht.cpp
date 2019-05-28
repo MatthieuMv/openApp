@@ -46,11 +46,6 @@ void Irrlicht::draw(void)
         throw oA::RuntimeError("Irrlicht", "Couldn't begin @driver@ scene");
 }
 
-void Irrlicht::drawScene(void)
-{
-    context().manager->drawAll();
-}
-
 bool Irrlicht::pullEvent(oA::Event &evt)
 {
     auto &events = context().events;
