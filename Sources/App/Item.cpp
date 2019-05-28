@@ -21,6 +21,8 @@ void oA::Item::render(IRenderer &renderer)
 
 bool oA::Item::propagate(Event &evt)
 {
+    if (!*get("visible"))
+        return;
     for (auto &child : _childs) {
         if (child->propagate(evt))
             return true;
