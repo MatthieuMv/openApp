@@ -61,22 +61,22 @@ public:
     void initAsKeyboard(void) noexcept { _var = KeyboardEvent(); }
 
     MouseEvent &mouse(void) {
-        try { return std::get<MouseEvent>(_var); }
+        try { return Get<MouseEvent>(_var); }
         catch (...) { throw LogicError("Event", "Event is not a @MouseEvent@"); }
     }
 
     const MouseEvent &mouse(void) const {
-        try { return std::get<MouseEvent>(_var); }
+        try { return Get<MouseEvent>(_var); }
         catch (...) { throw LogicError("Event", "Event is not a @MouseEvent@"); }
     }
 
     KeyboardEvent &keyboard(void) {
-        try { return std::get<KeyboardEvent>(_var); }
+        try { return Get<KeyboardEvent>(_var); }
         catch (...) { throw LogicError("Event", "Event is not a @KeyboardEvent@"); }
     }
 
     const KeyboardEvent &keyboard(void) const {
-        try { return std::get<KeyboardEvent>(_var); }
+        try { return Get<KeyboardEvent>(_var); }
         catch (...) { throw LogicError("Event", "Event is not a @KeyboardEvent@"); }
     }
 

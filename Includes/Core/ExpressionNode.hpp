@@ -51,7 +51,7 @@ public:
     OperatorType getOperator(void) const {
         if (!isOperator())
             throw AccessError("ExpressionNode", "Node is not an operator");
-        return std::get<OperatorType>(_data);
+        return oA::Get<OperatorType>(_data);
     }
 
     T &getValue(void) {
@@ -59,7 +59,7 @@ public:
             return getExpression()->get();
         if (!isValue())
             throw AccessError("ExpressionNode", "Node is not a value");
-        return std::get<T>(_data);
+        return oA::Get<T>(_data);
     }
 
     const T &getValue(void) const {
@@ -67,19 +67,19 @@ public:
             return getExpression()->get();
         if (!isValue())
             throw AccessError("ExpressionNode", "Node is not a value");
-        return std::get<T>(_data);
+        return oA::Get<T>(_data);
     }
 
     ExpressionPtr<T> &getExpression(void) {
         if (!isExpression())
             throw AccessError("ExpressionNode", "Node is not an expression");
-        return std::get<ExpressionPtr<T>>(_data);
+        return oA::Get<ExpressionPtr<T>>(_data);
     }
 
     const ExpressionPtr<T> &getExpression(void) const {
         if (!isExpression())
             throw AccessError("ExpressionNode", "Node is not an expression");
-        return std::get<ExpressionPtr<T>>(_data);
+        return oA::Get<ExpressionPtr<T>>(_data);
     }
 
 private:

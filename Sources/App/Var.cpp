@@ -30,28 +30,28 @@ template<>
 oA::Float &oA::Var::get(void)
 {
     assertType(VNumber);
-    return std::get<Float>(_var);
+    return oA::Get<Float>(_var);
 }
 
 template<>
 oA::String &oA::Var::get(void)
 {
     assertType(VString);
-    return std::get<String>(_var);
+    return oA::Get<String>(_var);
 }
 
 template<>
 const oA::Float &oA::Var::getConst(void) const
 {
     assertType(VNumber);
-    return std::get<Float>(_var);
+    return oA::Get<Float>(_var);
 }
 
 template<>
 const oA::String &oA::Var::getConst(void) const
 {
     assertType(VString);
-    return std::get<String>(_var);
+    return oA::Get<String>(_var);
 }
 
 oA::Float oA::Var::toFloat(void) const noexcept

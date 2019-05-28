@@ -86,7 +86,7 @@ void Irrlicht::applyAnimation(oA::Uint node, const oA::Animation3D &anim)
     if (node > wnd.maxNodeIdx)
         throw oA::LogicError("Irrlicht", "Scene node index @out of range@");
     auto n = wnd.nodes[node];
-    oA::Visit(oA::Overload{
+    anim.visit(oA::Overload{
         [n](const oA::PositionAnim &anim) {
             n->setPosition(irr::core::vector3df(anim.pos.x, anim.pos.y, anim.pos.z));
         },
@@ -107,7 +107,7 @@ void Irrlicht::applyAnimation(oA::Uint node, const oA::Animation3D &anim)
             nMesh->setFrameLoop(anim.from, anim.to);
             nMesh->setAnimationSpeed(anim.speed);
         }
-    }, anim);
+    });
 }
 
 irr::scene::IMesh *Irrlicht::getMesh(const oA::String &path)

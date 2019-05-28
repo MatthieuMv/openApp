@@ -18,6 +18,7 @@ set(HEADERS
     ${INC}/App.hpp
     ${INC}/Core.hpp
     ${INC}/openApp.hpp
+    ${HAPP}/Animation3D.hpp
     ${HAPP}/AppFactory.hpp
     ${HAPP}/App.hpp
     ${HAPP}/Button.hpp
