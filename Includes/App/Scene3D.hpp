@@ -42,7 +42,7 @@ public:
     }
 
     // Override to draw your scene
-    virtual void draw3D(IRenderer3D &) {}
     virtual void update3D(IRenderer3D &) {}
+    virtual void draw3D(IRenderer3D &) {}
 
 };
