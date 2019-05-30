@@ -50,7 +50,7 @@ oA::Uint Irrlicht::addCube(const oA::CubeContext &ctx)
 oA::Uint Irrlicht::addModel(const oA::ModelContext &ctx)
 {
     auto model = context().manager->addMeshSceneNode(
-        getMesh(ctx.mesh),
+        getAnimatedMesh(ctx.mesh),
         nullptr,
         -1,
         irr::core::vector3df(ctx.pos.x, ctx.pos.y, ctx.pos.z),
@@ -82,10 +82,11 @@ oA::Uint Irrlicht::addAnimatedModel(const oA::ModelContext &ctx)
 void Irrlicht::applyAnimation(oA::Uint node, const oA::Animation3D &anim)
 {
     auto &wnd = context();
+    auto it = wnd.nodes.find(node);
 
-    if (node > wnd.maxNodeIdx)
+    if (it == wnd.nodes.end())
         throw oA::LogicError("Irrlicht", "Scene node index @out of range@");
-    auto n = wnd.nodes[node];
+    auto n = it->second;
     anim.visit(oA::Overload{
         [n](const oA::PositionAnim &anim) {
             n->setPosition(irr::core::vector3df(anim.pos.x, anim.pos.y, anim.pos.z));
@@ -101,7 +102,7 @@ void Irrlicht::applyAnimation(oA::Uint node, const oA::Animation3D &anim)
             n->setRotation(irr::core::vector3df(anim.rotation.x, anim.rotation.y, anim.rotation.z));
         },
         [n](const oA::MeshAnim &anim) {
-            auto nMesh = dynamic_cast<irr::scene::IAnimatedMeshSceneNode *>(n);
+            auto *nMesh = (irr::scene::IAnimatedMeshSceneNode *)(n);
             if (!nMesh)
                 throw oA::LogicError("Irrlicht::AnimationVisitor", "Target not is not an @animated mesh@");
             nMesh->setFrameLoop(anim.from, anim.to);

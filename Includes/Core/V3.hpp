@@ -29,6 +29,13 @@ struct oA::V3
 
     T x = T(), y = T(), z = T();
 
+    V3<T> &operator=(oA::V3<T> &&other) {
+        x = other.x;
+        y = other.y;
+        z = other.z;
+        return (*this);
+    }
+
     V3<T> &operator=(const oA::V3<T> &other) {
         x = other.x;
         y = other.y;

@@ -29,6 +29,12 @@ struct oA::V2
 
     T x = T(), y = T();
 
+    V2<T> &operator=(oA::V2<T> &&other) {
+        x = other.x;
+        y = other.y;
+        return (*this);
+    }
+
     V2<T> &operator=(const oA::V2<T> &other) {
         x = other.x;
         y = other.y;
