@@ -36,4 +36,6 @@ public:
     virtual Uint addModel(const ModelContext &ctx) = 0;
     virtual Uint addAnimatedModel(const ModelContext &ctx) = 0;
     virtual void applyAnimation(oA::Uint node, const Animation3D &anim) = 0;
+    virtual oA::V3f getNodePosition(oA::Uint node) const = 0;
+    virtual oA::V3f getNodeRotation(oA::Uint node) const = 0;
 };

@@ -111,6 +111,22 @@ void Irrlicht::applyAnimation(oA::Uint node, const oA::Animation3D &anim)
     });
 }
 
+oA::V3f Irrlicht::getNodePosition(oA::Uint node) const
+{
+    auto n = getNode(node);
+    const auto &r = n->getPosition();
+
+    return oA::V3f(r.X, r.Y, r.Z);
+}
+
+oA::V3f Irrlicht::getNodeRotation(oA::Uint node) const
+{
+    auto n = getNode(node);
+    const auto &r = n->getRotation();
+
+    return oA::V3f(r.X, r.Y, r.Z);
+}
+
 irr::scene::IMesh *Irrlicht::getMesh(const oA::String &path)
 {
     auto mesh = context().manager->getMesh(path.c_str());
@@ -133,4 +149,24 @@ oA::Uint Irrlicht::insertNode(irr::scene::ISceneNode *node)
     ++wnd.maxNodeIdx;
     wnd.nodes[wnd.maxNodeIdx] = node;
     return wnd.maxNodeIdx;
+}
+
+irr::scene::ISceneNode *Irrlicht::getNode(oA::Uint node)
+{
+    auto &wnd = context();
+    auto it = wnd.nodes.find(node);
+
+    if (it == wnd.nodes.end())
+        throw oA::AccessError("Irrlicht", "Node index @out of range@");
+    return (it->second);
+}
+
+const irr::scene::ISceneNode *Irrlicht::getNode(oA::Uint node) const
+{
+    auto &wnd = context();
+    auto it = wnd.nodes.find(node);
+
+    if (it == wnd.nodes.end())
+        throw oA::AccessError("Irrlicht", "Node index @out of range@");
+    return (it->second);
 }

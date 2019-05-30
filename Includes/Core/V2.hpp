@@ -44,4 +44,69 @@ struct oA::V2
     bool operator==(const oA::V2<T> &other) const noexcept {
         return x == other.x && y == other.y;
     }
+
+    V2<T> &operator+=(const oA::V2<T> &other) {
+        x += other.x;
+        y += other.y;
+        return (*this);
+    }
+
+    V2<T> &operator-=(const oA::V2<T> &other) {
+        x -= other.x;
+        y -= other.y;
+        return (*this);
+    }
+
+    V2<T> &operator*=(const oA::V2<T> &other) {
+        x *= other.x;
+        y *= other.y;
+        return (*this);
+    }
+
+    V2<T> &operator/=(const oA::V2<T> &other) {
+        x /= other.x;
+        y /= other.y;
+        return (*this);
+    }
+
+    V2<T> &operator%=(const oA::V2<T> &other) {
+        x %= other.x;
+        y %= other.y;
+        return (*this);
+    }
+
+    V2<T> operator+(const oA::V2<T> &other) {
+        return oA::V2<T>(
+            x + other.x,
+            y + other.y
+        );
+    }
+
+    V2<T> operator-(const oA::V2<T> &other) {
+        return oA::V2<T>(
+            x - other.x,
+            y - other.y
+        );
+    }
+
+    V2<T> operator*(const oA::V2<T> &other) {
+        return oA::V2<T>(
+            x * other.x,
+            y * other.y
+        );
+    }
+
+    V2<T> operator/(const oA::V2<T> &other) {
+        return oA::V2<T>(
+            x / other.x,
+            y / other.y
+        );
+    }
+
+    V2<T> operator%(const oA::V2<T> &other) {
+        return oA::V2<T>(
+            x % other.x,
+            y % other.y
+        );
+    }
 };

@@ -44,6 +44,81 @@ struct oA::V3
     }
 
     bool operator==(const oA::V3<T> &other) const noexcept {
-        return x == other.x && y == other.y && y == other.y;
+        return x == other.x && y == other.y && y == other.y && z == other.z;
+    }
+
+    V3<T> &operator+=(const oA::V3<T> &other) {
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        return (*this);
+    }
+
+    V3<T> &operator-=(const oA::V3<T> &other) {
+        x -= other.x;
+        y -= other.y;
+        z -= other.z;
+        return (*this);
+    }
+
+    V3<T> &operator*=(const oA::V3<T> &other) {
+        x *= other.x;
+        y *= other.y;
+        z *= other.z;
+        return (*this);
+    }
+
+    V3<T> &operator/=(const oA::V3<T> &other) {
+        x /= other.x;
+        y /= other.y;
+        z /= other.z;
+        return (*this);
+    }
+
+    V3<T> &operator%=(const oA::V3<T> &other) {
+        x %= other.x;
+        y %= other.y;
+        z %= other.z;
+        return (*this);
+    }
+
+    V3<T> operator+(const oA::V3<T> &other) {
+        return oA::V3<T>(
+            x + other.x,
+            y + other.y,
+            z + other.z
+        );
+    }
+
+    V3<T> operator-(const oA::V3<T> &other) {
+        return oA::V3<T>(
+            x - other.x,
+            y - other.y,
+            z - other.z
+        );
+    }
+
+    V3<T> operator*(const oA::V3<T> &other) {
+        return oA::V3<T>(
+            x * other.x,
+            y * other.y,
+            z * other.z
+        );
+    }
+
+    V3<T> operator/(const oA::V3<T> &other) {
+        return oA::V3<T>(
+            x / other.x,
+            y / other.y,
+            z / other.z
+        );
+    }
+
+    V3<T> operator%(const oA::V3<T> &other) {
+        return oA::V3<T>(
+            x % other.x,
+            y % other.y,
+            z % other.z
+        );
     }
 };

@@ -49,6 +49,8 @@ public:
     virtual oA::Uint addModel(const oA::ModelContext &ctx);
     virtual oA::Uint addAnimatedModel(const oA::ModelContext &ctx);
     virtual void applyAnimation(oA::Uint node, const oA::Animation3D &anim);
+    virtual oA::V3f getNodePosition(oA::Uint node) const;
+    virtual oA::V3f getNodeRotation(oA::Uint node) const;
 
 private:
     oA::Vector<IrrlichtContext> _ctxs; // Context list
@@ -66,4 +68,6 @@ private:
     irr::scene::IMesh *getMesh(const oA::String &path);
     irr::scene::IAnimatedMesh *getAnimatedMesh(const oA::String &path);
     oA::Uint insertNode(irr::scene::ISceneNode *node);
+    irr::scene::ISceneNode *getNode(oA::Uint node);
+    const irr::scene::ISceneNode *getNode(oA::Uint node) const;
 };
