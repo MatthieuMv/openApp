@@ -79,36 +79,66 @@ oA::Uint Irrlicht::addAnimatedModel(const oA::ModelContext &ctx)
     return insertNode(model);
 }
 
-void Irrlicht::applyAnimation(oA::Uint node, const oA::Animation3D &anim)
+void Irrlicht::removeSceneNode(oA::Uint node)
 {
     auto &wnd = context();
-    auto it = wnd.nodes.find(node);
+    wnd.manager->addToDeletionQueue(getNode(node));
+    wnd.nodes.erase(node);
+}
 
-    if (it == wnd.nodes.end())
-        throw oA::LogicError("Irrlicht", "Scene node index @out of range@");
-    auto n = it->second;
-    anim.visit(oA::Overload{
-        [n](const oA::PositionAnim &anim) {
-            n->setPosition(irr::core::vector3df(anim.pos.x, anim.pos.y, anim.pos.z));
-        },
-        [n](const oA::MovementAnim &anim) {
-            auto pos = n->getPosition();
-            pos.X += anim.move.x;
-            pos.Y += anim.move.y;
-            pos.Z += anim.move.z;
-            n->setPosition(pos);
-        },
-        [n](const oA::RotationAnim &anim) {
-            n->setRotation(irr::core::vector3df(anim.rotation.x, anim.rotation.y, anim.rotation.z));
-        },
-        [n](const oA::MeshAnim &anim) {
-            auto *nMesh = (irr::scene::IAnimatedMeshSceneNode *)(n);
-            if (!nMesh)
-                throw oA::LogicError("Irrlicht::AnimationVisitor", "Target not is not an @animated mesh@");
-            nMesh->setFrameLoop(anim.from, anim.to);
-            nMesh->setAnimationSpeed(anim.speed);
-        }
-    });
+void Irrlicht::moveNode(oA::Uint node, const oA::V3f &move)
+{
+    auto n = getNode(node);
+    auto pos = n->getPosition();
+
+    pos.X += move.x;
+    pos.Y += move.y;
+    pos.Z += move.z;
+    n->setPosition(pos);
+}
+
+void Irrlicht::setNodePosition(oA::Uint node, const oA::V3f &position)
+{
+    auto n = getNode(node);
+    irr::core::vector3df res;
+
+    res.X = position.x;
+    res.Y = position.y;
+    res.Z = position.z;
+    n->setPosition(res);
+}
+
+void Irrlicht::setNodeRotation(oA::Uint node, const oA::V3f &rotation)
+{
+    auto n = getNode(node);
+    irr::core::vector3df res;
+
+    res.X = rotation.x;
+    res.Y = rotation.y;
+    res.Z = rotation.z;
+    n->setRotation(res);
+}
+
+void Irrlicht::setNodeScale(oA::Uint node, const oA::V3f &scale)
+{
+    auto n = getNode(node);
+    irr::core::vector3df res;
+
+    res.X = scale.x;
+    res.Y = scale.y;
+    res.Z = scale.z;
+    n->setScale(res);
+}
+
+void Irrlicht::setNodeAnimation(oA::Uint node, oA::Uint from, oA::Uint to, oA::Uint speed)
+{
+    auto n = getNode(node);
+    auto *nMesh = (irr::scene::IAnimatedMeshSceneNode *)(n);
+
+    if (!nMesh)
+        throw oA::LogicError("Irrlicht::AnimationVisitor", "Target not is not an @animated mesh@");
+    nMesh->setFrameLoop(from, to);
+    nMesh->setAnimationSpeed(speed);
 }
 
 oA::V3f Irrlicht::getNodePosition(oA::Uint node) const
@@ -123,6 +153,14 @@ oA::V3f Irrlicht::getNodeRotation(oA::Uint node) const
 {
     auto n = getNode(node);
     const auto &r = n->getRotation();
+
+    return oA::V3f(r.X, r.Y, r.Z);
+}
+
+oA::V3f Irrlicht::getNodeScale(oA::Uint node) const
+{
+    auto n = getNode(node);
+    const auto &r = n->getScale();
 
     return oA::V3f(r.X, r.Y, r.Z);
 }

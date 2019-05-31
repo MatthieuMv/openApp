@@ -48,9 +48,15 @@ public:
     virtual oA::Uint addCamera(const oA::CameraContext &ctx);
     virtual oA::Uint addModel(const oA::ModelContext &ctx);
     virtual oA::Uint addAnimatedModel(const oA::ModelContext &ctx);
-    virtual void applyAnimation(oA::Uint node, const oA::Animation3D &anim);
+    virtual void removeSceneNode(oA::Uint node);
+    virtual void moveNode(oA::Uint node, const oA::V3f &move);
+    virtual void setNodePosition(oA::Uint node, const oA::V3f &position);
+    virtual void setNodeRotation(oA::Uint node, const oA::V3f &rotation);
+    virtual void setNodeScale(oA::Uint node, const oA::V3f &scale);
+    virtual void setNodeAnimation(oA::Uint node, oA::Uint from, oA::Uint to, oA::Uint speed);
     virtual oA::V3f getNodePosition(oA::Uint node) const;
     virtual oA::V3f getNodeRotation(oA::Uint node) const;
+    virtual oA::V3f getNodeScale(oA::Uint node) const;
 
 private:
     oA::Vector<IrrlichtContext> _ctxs; // Context list

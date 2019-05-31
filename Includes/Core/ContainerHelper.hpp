@@ -67,5 +67,14 @@ namespace oA
                     ++it;
             }
         }
+
+        void applyAndRemoveIf(const Function<bool(Value &)> &predicate) {
+            for (auto it = Type::begin(); it != Type::end();) {
+                if (predicate(*it))
+                    it = Type::erase(it);
+                else
+                    ++it;
+            }
+        }
     };
 }

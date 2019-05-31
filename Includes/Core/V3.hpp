@@ -47,6 +47,10 @@ struct oA::V3
         return x == other.x && y == other.y && y == other.y && z == other.z;
     }
 
+    bool operator!=(const oA::V3<T> &other) const noexcept {
+        return !(*this == other);
+    }
+
     V3<T> &operator+=(const oA::V3<T> &other) {
         x += other.x;
         y += other.y;

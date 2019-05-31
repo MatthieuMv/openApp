@@ -45,6 +45,10 @@ struct oA::V2
         return x == other.x && y == other.y;
     }
 
+    bool operator!=(const oA::V2<T> &other) const noexcept {
+        return !(*this == other);
+    }
+
     V2<T> &operator+=(const oA::V2<T> &other) {
         x += other.x;
         y += other.y;
