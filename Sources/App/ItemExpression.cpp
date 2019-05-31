@@ -151,13 +151,15 @@ static oA::String &FormatString(oA::String &str)
 
 void oA::Item::addExpressionEvent(const oA::String &name, const oA::String &targetExpr)
 {
+    auto expr = targetExpr;
     auto p = getExprPtr(name);
 
+    std::for_each(expr.begin(), expr.end(), [](char &c) { if (c == '\n') c = ';'; });
     if (!p)
         throw AccessError("Item", "Expression @" + name + "@ doesn't exists");
     auto &evt = p->addEvent();
     try {
-        makeExpression(evt, targetExpr, false, false);
+        makeExpression(evt, expr, false, false);
     } catch (const Error &e) {
         p->popEvent();
         throw RuntimeError("Item", "Expression event @" + name + "@: " + targetExpr + "\n\t-> " + e.what());

@@ -13,6 +13,7 @@
 #include "Core/Error.hpp"
 
 static const oA::UMap<oA::String, oA::Color> C_COLORS = {
+    { "transparent",    oA::Color(0, 0, 0, 0)       },
     { "black",          oA::Color(0, 0, 0)          },
     { "white",          oA::Color(255, 255, 255)    },
     { "grey",           oA::Color(125, 125, 125)    },
@@ -36,7 +37,9 @@ static const oA::UMap<oA::String, oA::Color> C_COLORS = {
     { "yellow",         oA::Color(255, 255, 0)      },
     { "lightyellow",    oA::Color(255, 255, 100)    },
     { "darkyellow",     oA::Color(125, 125, 0)      },
-    { "transparent",    oA::Color(0, 0, 0, 0)       }
+    { "lightorange",    oA::Color(255, 195, 0)      },
+    { "orange",         oA::Color(255, 165, 0)      },
+    { "darkorange",     oA::Color(255, 140, 0)      }
 };
 
 oA::Color oA::Color::RetreiveColor(const String &color)

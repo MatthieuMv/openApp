@@ -36,7 +36,7 @@ public:
 
     void getTextContext(TextContext &ctx) const {
         getItemContext(ctx);
-        ctx.text = get("text")->getConst<String>();
+        ctx.text = get("text")->toString();
         ctx.font = get("font")->getConst<String>();
         ctx.fontColor = oA::Color::RetreiveColor(get("fontColor")->getConst<String>());
         ctx.fontSize = get("fontSize")->toInt();
