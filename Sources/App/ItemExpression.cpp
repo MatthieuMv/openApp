@@ -62,7 +62,7 @@ void oA::Item::makeExpression(Expression<Var> &target, const String &targetExpr,
     IStringStream ss(expr);
     OperatorStack stack;
     while (ss >> expr) {
-        if (expr.front() == '"' && expr.back() != '"') {
+        if (expr.front() == '"' && (expr.size() == 1 || expr.back() != '"')) {
             std::getline(ss, tmp, '"');
             expr += tmp;
             expr.push_back('"');
@@ -144,8 +144,10 @@ void oA::Item::insertOperand(Expression<Var> &target, String &operand, bool hasD
 
 static oA::String &FormatString(oA::String &str)
 {
-    str.erase(str.begin());
-    str.pop_back();
+    if (!str.empty())
+        str.erase(str.begin());
+    if (!str.empty())
+        str.pop_back();
     return (str);
 }
 

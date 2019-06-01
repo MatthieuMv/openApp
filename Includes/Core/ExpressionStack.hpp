@@ -189,7 +189,7 @@ private:
 
     static void ProcessCall(ExpressionStack<T> &stack) {
         auto op = stack.extractExpression();
-        op->compute();
+        op->call();
         stack.push(op);
     }
 

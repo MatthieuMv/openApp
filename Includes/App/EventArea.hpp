@@ -65,6 +65,7 @@ public:
         return false;
     }
 
+    /* Returns true if should stop propagate */
     virtual bool onKeyboard(KeyboardEvent &) { return false; }
 
     virtual void onPressed(void) {}

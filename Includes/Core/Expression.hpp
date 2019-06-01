@@ -68,7 +68,7 @@ public:
         });
     }
 
-    void compute(void) {
+    void compute(bool setResult = true) {
         ExpressionStack<T> stack;
         if (_expr.empty())
             return;
@@ -80,7 +80,8 @@ public:
         }
         if (stack.size() != 1)
             throw LogicError("Expression", "Non-null expression must have only @1 return value@");
-        Property<T>::set(stack.top().getValue());
+        if (setResult)
+            Property<T>::set(stack.top().getValue());
     }
 
     Expression<T> &addEvent(void) {
@@ -116,6 +117,11 @@ public:
         for (auto &event : _events) {
             event->compute();
         }
+    }
+
+    virtual void call(void) {
+        compute(false);
+        emit();
     }
 
 private:

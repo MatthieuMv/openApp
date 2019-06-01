@@ -121,7 +121,7 @@ oA::Var::operator bool(void) const
 bool oA::Var::operator==(const Var &other) const
 {
     if (!isSameType(other))
-        return false;
+        return toString() == other.toString();
     switch (index()) {
     case VNumber:
         return getConst<Float>() == other.getConst<Float>();
@@ -188,7 +188,7 @@ bool oA::Var::operator>=(const Var &other) const
 oA::Var oA::Var::operator+(const Var &other) const
 {
     if (!isSameType(other))
-        throw LogicError("Var", "Invalid operation @" + getTypeName() + "@ + @" + other.getTypeName() + "@");
+        return toString() + other.toString();
     switch (index()) {
     case VNumber:
         return getConst<Float>() + other.getConst<Float>();
