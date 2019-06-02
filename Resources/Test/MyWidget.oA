@@ -1,8 +1,0 @@
-Item {
-    id: widget
-
-    MyButton {
-        padding: 5
-        text: "Hello world !"
-    }
-}
