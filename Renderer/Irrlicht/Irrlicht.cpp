@@ -101,6 +101,8 @@ void Irrlicht::drawText(const oA::TextContext &ctx)
 
 void Irrlicht::drawImage(const oA::ImageContext &ctx)
 {
+    if (ctx.source.empty())
+        return;
     auto t = getTexture(ctx.source);
     auto rect = toRect(ctx.sourceSize);
 
