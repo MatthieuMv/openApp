@@ -1,5 +1,5 @@
-mkdir -p Build
-cd Build
+mkdir -p BuildTests
+cd BuildTests
 cmake ../Library/Tests
 make
 ./run_tests
