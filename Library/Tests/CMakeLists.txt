@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(openApp VERSION 1.0.0)
 
-set(oAPath ../openApp)
+set(oAPath ..)
 
 include(../openApp.cmake)
 

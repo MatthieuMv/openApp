@@ -3,23 +3,30 @@ project(openApp)
 
 # This file need the variable 'oAPath' to be set !
 
+set(oARoot ${oAPath}/openApp)
+set(oATypes ${oARoot}/Types)
+set(oACore ${oARoot}/Core)
+set(oAContainers ${oARoot}/Containers)
+set(oAMemory ${oARoot}/Memory)
+set(oANetwork ${oARoot}/Network)
+
 set(Types
-    ${oAPath}/Types/Scalars.hpp
-    ${oAPath}/Types/Function.hpp
-    ${oAPath}/Types/String.hpp
-    ${oAPath}/Types/String.cpp
+    ${oATypes}/Scalars.hpp
+    ${oATypes}/Function.hpp
+    ${oATypes}/String.hpp
+    ${oATypes}/String.cpp
+    ${oATypes}/Error.hpp
 )
 
 set(Core
-    ${oAPath}/Core/Error.hpp
 )
 
 set(Containers
-    ${oAPath}/Containers/ContainerHelper.hpp
-    ${oAPath}/Containers/Pair.hpp
-    ${oAPath}/Containers/Map.hpp
-    ${oAPath}/Containers/UMap.hpp
-    ${oAPath}/Containers/Vector.hpp
+    ${oAContainers}/ContainerHelper.hpp
+    ${oAContainers}/Pair.hpp
+    ${oAContainers}/Map.hpp
+    ${oAContainers}/UMap.hpp
+    ${oAContainers}/Vector.hpp
 )
 
 set(Memory

@@ -10,7 +10,7 @@
 // std::string
 #include <string>
 
-#include "Types/Scalars.hpp"
+#include <openApp/Types/Scalars.hpp>
 
 namespace oA { class String; }
 

@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include "Types/String.hpp"
+#include <openApp/Types/String.hpp>
 
 namespace oA
 {

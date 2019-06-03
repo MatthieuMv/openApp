@@ -6,8 +6,8 @@
 */
 
 #include <criterion/criterion.h>
-#include "Types/Scalars.hpp"
-#include "Types/String.hpp"
+#include <openApp/Types/Scalars.hpp>
+#include <openApp/Types/String.hpp>
 
 Test(String, Basics)
 {

@@ -5,8 +5,8 @@
 ** String
 */
 
-#include "Core/Error.hpp"
-#include "Types/String.hpp"
+#include <openApp/Types/Error.hpp>
+#include <openApp/Types/String.hpp>
 
 bool oA::String::toBool(void) const
 {

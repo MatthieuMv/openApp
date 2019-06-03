@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include "Core/Error.hpp"
+#include <openApp/Types/Error.hpp>
 
 Test(Error, Basics)
 {
