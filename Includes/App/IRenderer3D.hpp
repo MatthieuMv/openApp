@@ -41,7 +41,7 @@ public:
     virtual void setNodePosition(oA::Uint node, const oA::V3f &position) = 0;
     virtual void setNodeRotation(oA::Uint node, const oA::V3f &rotation) = 0;
     virtual void setNodeScale(oA::Uint node, const oA::V3f &scale) = 0;
-    virtual void setNodeAnimation(oA::Uint node, oA::Uint from, oA::Uint to, oA::Uint speed) = 0;
+    virtual void setNodeAnimation(oA::Uint node, oA::Uint from, oA::Uint to, oA::Uint speed, bool loop) = 0;
     virtual oA::V3f getNodePosition(oA::Uint node) const = 0;
     virtual oA::V3f getNodeRotation(oA::Uint node) const = 0;
     virtual oA::V3f getNodeScale(oA::Uint node) const = 0;

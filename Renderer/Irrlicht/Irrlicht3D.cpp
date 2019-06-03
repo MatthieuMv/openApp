@@ -130,7 +130,7 @@ void Irrlicht::setNodeScale(oA::Uint node, const oA::V3f &scale)
     n->setScale(res);
 }
 
-void Irrlicht::setNodeAnimation(oA::Uint node, oA::Uint from, oA::Uint to, oA::Uint speed)
+void Irrlicht::setNodeAnimation(oA::Uint node, oA::Uint from, oA::Uint to, oA::Uint speed, bool loop)
 {
     auto n = getNode(node);
     auto *nMesh = (irr::scene::IAnimatedMeshSceneNode *)(n);
@@ -139,6 +139,7 @@ void Irrlicht::setNodeAnimation(oA::Uint node, oA::Uint from, oA::Uint to, oA::U
         throw oA::LogicError("Irrlicht::AnimationVisitor", "Target not is not an @animated mesh@");
     nMesh->setFrameLoop(from, to);
     nMesh->setAnimationSpeed(speed);
+    nMesh->setLoopMode(loop);
 }
 
 oA::V3f Irrlicht::getNodePosition(oA::Uint node) const
