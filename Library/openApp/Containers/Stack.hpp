@@ -12,6 +12,11 @@
 
 namespace oA
 {
+    /**
+     * @brief A std::stack extended by ContainerHelper
+     *
+     * @tparam Value Contained type
+     */
     template<typename Value>
     using Stack = std::stack<Value>;
 }

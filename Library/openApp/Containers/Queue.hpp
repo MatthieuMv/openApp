@@ -12,6 +12,11 @@
 
 namespace oA
 {
+    /**
+     * @brief A std::queue extended by ContainerHelper
+     *
+     * @tparam Value Contained type
+     */
     template<typename Value>
     using Queue = std::queue<Value>;
 }

@@ -25,6 +25,7 @@ set(Types
     ${oATypes}/Mutex.hpp
     ${oATypes}/Color.hpp
     ${oATypes}/Color.cpp
+    ${oATypes}/Variant.hpp
 )
 
 set(Core

@@ -14,6 +14,11 @@
 
 namespace oA
 {
+    /**
+     * @brief A std::list extended by ContainerHelper
+     *
+     * @tparam Value Contained type
+     */
     template<typename Value>
     using List = ContainerHelper<std::list<Value>, Value>;
 }

@@ -15,6 +15,12 @@
 
 namespace oA
 {
-    template<typename Value, oA::Uint size>
-    using Array = ContainerHelper<std::array<Value, size>, Value>;
+    /**
+     * @brief A std::array extended by ContainerHelper
+     *
+     * @tparam Value Contained type
+     * @tparam Size Array lenght
+     */
+    template<typename Value, oA::Uint Size>
+    using Array = ContainerHelper<std::array<Value, Size>, Value>;
 }

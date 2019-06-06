@@ -14,6 +14,11 @@
 
 namespace oA
 {
+    /**
+     * @brief A std::vector extended by ContainerHelper
+     *
+     * @tparam Value Contained type
+     */
     template<typename Value>
     using Vector = ContainerHelper<std::vector<Value>, Value>;
 }
