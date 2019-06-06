@@ -15,6 +15,7 @@ var hierarchy =
       [ "oA::ContainerHelper< Quote >", "classo_a_1_1_container_helper.html", null ]
     ] ],
     [ "oA::Repeat", "classo_a_1_1_repeat.html", null ],
+    [ "oA::Signal", "classo_a_1_1_signal.html", null ],
     [ "string", null, [
       [ "oA::ContainerHelper< std::string, char >", "classo_a_1_1_container_helper.html", [
         [ "oA::String", "classo_a_1_1_string.html", null ]

@@ -59,8 +59,8 @@ public:
     /**
      * @brief Returns internal enabled state
      *
-     * @return true Log will forward output to internal #OStream
-     * @return false Log will not forward to internal #OStream
+     * @return true Log will forward output to internal OStream
+     * @return false Log will not forward to internal OStream
      */
     bool isEnabled(void) const noexcept;
 
@@ -72,12 +72,12 @@ public:
     void setEnabled(bool value) noexcept;
 
     /**
-     * @brief Call the flush method of internal #OStream
+     * @brief Call the flush method of internal OStream
      */
     void flush(void) noexcept;
 
     /**
-     * @brief Indicate if #Log is using color insertions
+     * @brief Indicate if Log is using color insertions
      *
      * @return bool Color state
      */
@@ -110,12 +110,12 @@ private:
     void formatQuotedString(String &str);
 
     /**
-     * @brief Init #OStream default color
+     * @brief Init OStream default color
      */
     void initColor(void) noexcept;
 
     /**
-     * @brief Reset #OStream color
+     * @brief Reset OStream color
      */
     void closeColor(void) noexcept;
 

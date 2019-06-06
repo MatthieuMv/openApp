@@ -5,6 +5,8 @@ var searchData=
   ['setenabled',['setEnabled',['../classo_a_1_1_log.html#a7c4699ea7ad0c8b910b4a3fc57ba5afe',1,'oA::Log']]],
   ['settransparency',['setTransparency',['../classo_a_1_1_color.html#afa261cb70221d211e94a29b8f0484a02',1,'oA::Color']]],
   ['short',['Short',['../namespaceo_a.html#a17d2753cd7febb25f447b0cff6cec6eb',1,'oA']]],
+  ['signal',['Signal',['../classo_a_1_1_signal.html',1,'oA']]],
+  ['signal_2ehpp',['Signal.hpp',['../_signal_8hpp.html',1,'']]],
   ['sstream_2ehpp',['SStream.hpp',['../_s_stream_8hpp.html',1,'']]],
   ['stack',['Stack',['../namespaceo_a.html#a992ff8d32ca8c60ad68cbd56834bbeec',1,'oA']]],
   ['stack_2ehpp',['Stack.hpp',['../_stack_8hpp.html',1,'']]],

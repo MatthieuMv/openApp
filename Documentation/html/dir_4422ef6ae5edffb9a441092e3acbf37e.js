@@ -8,5 +8,8 @@ var dir_4422ef6ae5edffb9a441092e3acbf37e =
     [ "Log.hpp", "_log_8hpp.html", "_log_8hpp" ],
     [ "LogUtils.hpp", "_log_utils_8hpp.html", "_log_utils_8hpp" ],
     [ "Path.cpp", "_path_8cpp.html", null ],
-    [ "Path.hpp", "_path_8hpp.html", "_path_8hpp" ]
+    [ "Path.hpp", "_path_8hpp.html", "_path_8hpp" ],
+    [ "Signal.hpp", "_signal_8hpp.html", [
+      [ "Signal", "classo_a_1_1_signal.html", null ]
+    ] ]
 ];

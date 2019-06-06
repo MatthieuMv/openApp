@@ -194,7 +194,7 @@ public:
      * @brief Replace each occurence of a given sequence with the result of a lambda
      *
      * @param from To replace sequence
-     * @param to Lambda function returing a #String
+     * @param to Lambda function returing a String
      */
     void replaceWith(const String &from, const Function<String(void)> &to);
 };
@@ -202,7 +202,7 @@ public:
 namespace oA
 {
     /**
-     * @brief Convert T to #String
+     * @brief Convert T to String
      *
      * @tparam T Type to convert
      * @param value Value to convert
@@ -222,13 +222,13 @@ namespace oA
 }
 
 /**
- * @brief Hash used for STL containers with #String
+ * @brief Hash used for STL containers with String
  */
 template<>
 struct std::hash<oA::String>
 {
     /**
-     * @brief Return a std::hash<std::string> out of a #String
+     * @brief Return a std::hash<std::string> out of a String
      *
      * @param key String to convert
      * @return std::size_t Hashed string

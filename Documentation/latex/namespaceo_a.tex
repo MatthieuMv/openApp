@@ -17,7 +17,7 @@ class \mbox{\hyperlink{classo_a_1_1_color}{Color}}
 class \mbox{\hyperlink{classo_a_1_1_container_helper}{Container\+Helper}}
 \begin{DoxyCompactList}\small\item\em Standard container extender. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{classo_a_1_1_endl}{Endl}}
-\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classo_a_1_1_endl}{Endl}} is used to insert a newline and flush into a \#\+Log. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classo_a_1_1_endl}{Endl}} is used to insert a newline and flush into a \mbox{\hyperlink{classo_a_1_1_log}{Log}}. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{classo_a_1_1_error}{Error}}
 \begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classo_a_1_1_error}{Error}} exception base. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{classo_a_1_1_log}{Log}}
@@ -29,7 +29,9 @@ struct \mbox{\hyperlink{structo_a_1_1_overload}{Overload}}
 class \mbox{\hyperlink{classo_a_1_1_quote}{Quote}}
 \begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classo_a_1_1_quote}{Quote}} contains a matching symbol and a color. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{classo_a_1_1_repeat}{Repeat}}
-\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classo_a_1_1_repeat}{Repeat}} is used to repeat a \#\+Log stream operation. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classo_a_1_1_repeat}{Repeat}} is used to repeat a \mbox{\hyperlink{classo_a_1_1_log}{Log}} stream operation. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classo_a_1_1_signal}{Signal}}
+\begin{DoxyCompactList}\small\item\em A lightweight \mbox{\hyperlink{classo_a_1_1_signal}{Signal}} class that contains Slot functionscalled on emit. \end{DoxyCompactList}\item 
 class \mbox{\hyperlink{classo_a_1_1_string}{String}}
 \begin{DoxyCompactList}\small\item\em An extended std\+::string with \mbox{\hyperlink{classo_a_1_1_container_helper}{Container\+Helper}} and various helper functions. \end{DoxyCompactList}\item 
 struct \mbox{\hyperlink{structo_a_1_1_v2}{V2}}
@@ -72,7 +74,7 @@ using \mbox{\hyperlink{namespaceo_a_a1cab4a0d38a6bab1f5d1390d7a4b5b98}{O\+F\+Str
 using \mbox{\hyperlink{namespaceo_a_adc2c4dfe90e78df47ae2e677a4d0f9fa}{Mutex}} = std\+::mutex
 \begin{DoxyCompactList}\small\item\em A simple std\+::mutex. \end{DoxyCompactList}\item 
 using \mbox{\hyperlink{namespaceo_a_a2a6e84e4843983460eace0e5ae899a1e}{Unique\+Lock}} = std\+::unique\+\_\+lock$<$ \mbox{\hyperlink{namespaceo_a_adc2c4dfe90e78df47ae2e677a4d0f9fa}{Mutex}} $>$
-\begin{DoxyCompactList}\small\item\em A simple std\+::unique\+\_\+lock based on \mbox{\hyperlink{namespaceo_a_adc2c4dfe90e78df47ae2e677a4d0f9fa}{Mutex}}. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em A simple std\+::unique\+\_\+lock based on Mutex. \end{DoxyCompactList}\item 
 using \mbox{\hyperlink{namespaceo_a_a2b99671898a8eb4bc6ab35036701d732}{Byte}} = int8\+\_\+t
 \item 
 using \mbox{\hyperlink{namespaceo_a_a8c38e43a304d568b8495770dd8d50513}{U\+Byte}} = uint8\+\_\+t
@@ -121,11 +123,11 @@ using \mbox{\hyperlink{namespaceo_a_ae91b6ba950b8f72e43ee17b69dbfeaad}{V3u}} = \
 \begin{DoxyCompactItemize}
 \item 
 {\footnotesize template$<$typename T $>$ }\\\mbox{\hyperlink{classo_a_1_1_string}{o\+A\+::\+String}} \mbox{\hyperlink{namespaceo_a_ab2db5fe904e4be44ffb651930b97d482}{To\+String}} (T value)
-\begin{DoxyCompactList}\small\item\em Convert T to \#\+String. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Convert T to \mbox{\hyperlink{classo_a_1_1_string}{String}}. \end{DoxyCompactList}\item 
 {\footnotesize template$<$typename T , typename... Args$>$ }\\constexpr T \& \mbox{\hyperlink{namespaceo_a_ad005adf81258b6620b273f6b58be4a42}{Get}} (\mbox{\hyperlink{namespaceo_a_a46a1498e4e673b19327a24fac0018867}{Variant}}$<$ Args... $>$ \&var)
-\begin{DoxyCompactList}\small\item\em Non-\/const getter for \mbox{\hyperlink{namespaceo_a_a46a1498e4e673b19327a24fac0018867}{Variant}}. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Non-\/const getter for Variant. \end{DoxyCompactList}\item 
 {\footnotesize template$<$typename T , typename... Args$>$ }\\constexpr const T \& \mbox{\hyperlink{namespaceo_a_a1d74fafe5226bbc3bc4bcb41f6f24113}{Get}} (const \mbox{\hyperlink{namespaceo_a_a46a1498e4e673b19327a24fac0018867}{Variant}}$<$ Args... $>$ \&var)
-\begin{DoxyCompactList}\small\item\em Const getter for \mbox{\hyperlink{namespaceo_a_a46a1498e4e673b19327a24fac0018867}{Variant}}. \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Const getter for Variant. \end{DoxyCompactList}\item 
 {\footnotesize template$<$typename Visitor , typename... Variants$>$ }\\decltype(auto) constexpr \mbox{\hyperlink{namespaceo_a_a020a0189fb201e2160c2959ddbe0bb7f}{Visit}} (Visitor \&\&visitor, Variants \&\&...variants)
 \begin{DoxyCompactList}\small\item\em A simple std\+::visit wrapper. \end{DoxyCompactList}\item 
 {\footnotesize template$<$class... Args$>$ }\\\mbox{\hyperlink{namespaceo_a_a503e8d88dbf13dedc19801dafc632979}{Overload}} (Args...) -\/$>$ \mbox{\hyperlink{structo_a_1_1_overload}{Overload}}$<$ Args... $>$
@@ -550,7 +552,7 @@ A std\+::unordered\+\_\+map extended by \mbox{\hyperlink{classo_a_1_1_container_
 
 
 
-A simple std\+::unique\+\_\+lock based on \mbox{\hyperlink{namespaceo_a_adc2c4dfe90e78df47ae2e677a4d0f9fa}{Mutex}}. 
+A simple std\+::unique\+\_\+lock based on Mutex. 
 
 \mbox{\Hypertarget{namespaceo_a_a0e8a8217ae95045f36575875dcb54537}\label{namespaceo_a_a0e8a8217ae95045f36575875dcb54537}} 
 \index{oA@{oA}!U\+Short@{U\+Short}}
@@ -638,7 +640,7 @@ constexpr T\& o\+A\+::\+Get (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{nam
 
 
 
-Non-\/const getter for \mbox{\hyperlink{namespaceo_a_a46a1498e4e673b19327a24fac0018867}{Variant}}. 
+Non-\/const getter for Variant. 
 
 
 \begin{DoxyTemplParams}{Template Parameters}
@@ -664,13 +666,13 @@ constexpr const T\& o\+A\+::\+Get (\begin{DoxyParamCaption}\item[{const \mbox{\h
 
 
 
-Const getter for \mbox{\hyperlink{namespaceo_a_a46a1498e4e673b19327a24fac0018867}{Variant}}. 
+Const getter for Variant. 
 
 
 \begin{DoxyTemplParams}{Template Parameters}
 {\em T} & Asked type \\
 \hline
-{\em Args} & \mbox{\hyperlink{namespaceo_a_a46a1498e4e673b19327a24fac0018867}{Variant}} internal types \\
+{\em Args} & Variant internal types \\
 \hline
 \end{DoxyTemplParams}
 
@@ -701,7 +703,7 @@ C++ Magic Trick to construct lambda-\/based visitors.
 
 
 
-Convert T to \#\+String. 
+Convert T to \mbox{\hyperlink{classo_a_1_1_string}{String}}. 
 
 
 \begin{DoxyTemplParams}{Template Parameters}
@@ -733,7 +735,7 @@ A simple std\+::visit wrapper.
 \begin{DoxyTemplParams}{Template Parameters}
 {\em Visitor} & Visitor type \\
 \hline
-{\em Variants} & \mbox{\hyperlink{namespaceo_a_a46a1498e4e673b19327a24fac0018867}{Variant}} inernal types \\
+{\em Variants} & Variant inernal types \\
 \hline
 \end{DoxyTemplParams}
 

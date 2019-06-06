@@ -15,7 +15,7 @@ namespace oA { class Color; }
 /**
  * @brief Abstraction of a concatenated RGBA color
  *
- * Note that the internal value is A.R.G.B shifted in a single #Uint
+ * Note that the internal value is A.R.G.B shifted in a single Uint
  */
 class oA::Color
 {
@@ -83,7 +83,7 @@ public:
     void setTransparency(UByte a);
 
     /**
-     * @brief Retreive a color using a #String identifier
+     * @brief Retreive a color using a String identifier
      *
      * @param color Identifier
      * @return Color Identified color
@@ -94,7 +94,7 @@ private:
     Uint _val = 0;
 
     /**
-     * @brief Pack ARGB values into a single #Uint
+     * @brief Pack ARGB values into a single Uint
      *
      * @param r Red intensity
      * @param g Green intensity

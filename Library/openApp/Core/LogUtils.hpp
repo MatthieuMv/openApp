@@ -23,7 +23,7 @@ namespace oA
 /**
  * @brief Quote contains a matching symbol and a color
  *
- * This class is used to initialize a #Log
+ * This class is used to initialize a Log
  */
 class oA::Quote
 {
@@ -57,7 +57,7 @@ private:
 
 
 /**
- * @brief Repeat is used to repeat a #Log stream operation
+ * @brief Repeat is used to repeat a Log stream operation
  */
 class oA::Repeat
 {
@@ -74,7 +74,7 @@ private:
 };
 
 /**
- * @brief Endl is used to insert a newline and flush into a #Log
+ * @brief Endl is used to insert a newline and flush into a Log
  */
 class oA::Endl
 {

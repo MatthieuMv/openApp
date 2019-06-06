@@ -11,6 +11,7 @@ var namespaceo_a =
     [ "Overload", "structo_a_1_1_overload.html", null ],
     [ "Quote", "classo_a_1_1_quote.html", "classo_a_1_1_quote" ],
     [ "Repeat", "classo_a_1_1_repeat.html", "classo_a_1_1_repeat" ],
+    [ "Signal", "classo_a_1_1_signal.html", null ],
     [ "String", "classo_a_1_1_string.html", "classo_a_1_1_string" ],
     [ "V2", "structo_a_1_1_v2.html", "structo_a_1_1_v2" ],
     [ "V3", "structo_a_1_1_v3.html", "structo_a_1_1_v3" ]

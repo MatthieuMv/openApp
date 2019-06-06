@@ -18,7 +18,7 @@ namespace oA
     using Mutex = std::mutex;
 
     /**
-     * @brief A simple std::unique_lock based on #Mutex
+     * @brief A simple std::unique_lock based on Mutex
      */
     using UniqueLock = std::unique_lock<Mutex>;
 }

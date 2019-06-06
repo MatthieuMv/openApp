@@ -21,7 +21,7 @@ namespace oA
     using Variant = std::variant<Args...>;
 
     /**
-     * @brief Non-const getter for #Variant
+     * @brief Non-const getter for Variant
      *
      * @tparam T Asked type
      * @tparam Args Variant internal types
@@ -32,10 +32,10 @@ namespace oA
     constexpr inline T &Get(Variant<Args...> &var) { return (std::get<T>(var)); }
 
     /**
-     * @brief Const getter for #Variant
+     * @brief Const getter for Variant
      *
      * @tparam T Asked type
-     * @tparam Args #Variant internal types
+     * @tparam Args Variant internal types
      * @param var Value to extract
      * @return constexpr T& Result
      */
@@ -46,7 +46,7 @@ namespace oA
      * @brief A simple std::visit wrapper
      *
      * @tparam Visitor Visitor type
-     * @tparam Variants #Variant inernal types
+     * @tparam Variants Variant inernal types
      * @param visitor Visition instance
      * @param variants Values to extract
      * @return auto Result
