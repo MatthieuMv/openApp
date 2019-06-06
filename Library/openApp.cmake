@@ -19,6 +19,8 @@ set(Types
     ${oATypes}/Stream.hpp
     ${oATypes}/FStream.hpp
     ${oATypes}/SStream.hpp
+    ${oATypes}/V2.hpp
+    ${oATypes}/V3.hpp
 )
 
 set(Core

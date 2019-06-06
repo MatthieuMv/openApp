@@ -13,6 +13,7 @@ namespace oA
 {
     class Error;
     class CastError;
+    class LogicError;
 }
 
 class oA::Error : public std::exception
@@ -28,3 +29,4 @@ private:
 };
 
 class oA::CastError : public oA::Error { public: using Error::Error; };
+class oA::LogicError : public oA::Error { public: using Error::Error; };
