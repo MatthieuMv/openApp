@@ -28,8 +28,13 @@ set(Types
 )
 
 set(Core
+    ${oACore}/Console.hpp
     ${oACore}/Log.hpp
     ${oACore}/Log.cpp
+    ${oACore}/LogUtils.hpp
+    ${oACore}/Chrono.hpp
+    ${oACore}/Path.hpp
+    ${oACore}/Path.cpp
 )
 
 set(Containers
