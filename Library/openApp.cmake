@@ -37,6 +37,7 @@ set(Core
     ${oACore}/Path.hpp
     ${oACore}/Path.cpp
     ${oACore}/Signal.hpp
+    ${oACore}/Property.hpp
 )
 
 set(Containers

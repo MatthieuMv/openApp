@@ -29,7 +29,7 @@ namespace oA
      * @return constexpr T& Result
      */
     template<typename T, typename... Args>
-    constexpr inline T &Get(Variant<Args...> &var) { return (std::get<T>(var)); }
+    constexpr T &Get(Variant<Args...> &var) { return (std::get<T>(var)); }
 
     /**
      * @brief Const getter for Variant
@@ -40,7 +40,7 @@ namespace oA
      * @return constexpr T& Result
      */
     template<typename T, typename... Args>
-    constexpr inline const T &Get(const Variant<Args...> &var) { return (std::get<T>(var)); }
+    constexpr const T &Get(const Variant<Args...> &var) { return (std::get<T>(var)); }
 
     /**
      * @brief A simple std::visit wrapper

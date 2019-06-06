@@ -35,12 +35,17 @@ public:
     Signal(void) = default;
 
     /**
+     * @brief Destroy the Signal object
+     */
+    virtual ~Signal(void) = default;
+
+    /**
      * @brief Construct a new Signal object by move
      *
      * @param other Value to move
      */
-    Signal(Signal &&other) : _index(other._index) {
-        _slots.swap(other._slots);
+    Signal(Signal &&other) {
+        swap(other);
     }
 
     /**
@@ -50,8 +55,7 @@ public:
      * @return Signal& Allow chain operators
      */
     Signal &operator=(Signal &&other) {
-        _slots.swap(other._slots);
-        _index = other._index;
+        swap(other);
         return *this;
     }
 
@@ -93,7 +97,7 @@ public:
      *
      * @param args Slot call arguments
      */
-    virtual void emit(Args ...args) {
+    virtual void emit(Args ...args) const {
         for (auto it = _slots.begin(); it != _slots.end();) {
             if (!it->second(args...))
                 it = _slots.erase(it);
@@ -102,7 +106,17 @@ public:
         }
     }
 
+    /**
+     * @brief Swap two signals
+     *
+     * @param other Value to swap
+     */
+    void swap(Signal &other) noexcept {
+        _slots.swap(other._slots);
+        std::swap(_index, other._index);
+    }
+
 private:
-    UMap<Uint, Slot> _slots;
+    mutable UMap<Uint, Slot> _slots; // Should be mutable to preserve emit constness
     Uint _index = 0;
 };
