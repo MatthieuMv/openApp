@@ -53,7 +53,6 @@ Test(Log, Colors2)
     cr_assert_eq(os.str(), res);
 }
 
-#include <iostream>
 Test(Log, Values)
 {
     oA::OSStream os;
@@ -65,6 +64,5 @@ Test(Log, Values)
     oA::String res = "truea12.242";
 
     log << b << c << d << l;
-    std::cout << "res = " << os.str() << std::endl;
     cr_assert_eq(os.str(), res);
 }

@@ -21,6 +21,10 @@ set(Types
     ${oATypes}/SStream.hpp
     ${oATypes}/V2.hpp
     ${oATypes}/V3.hpp
+    ${oATypes}/Thread.hpp
+    ${oATypes}/Mutex.hpp
+    ${oATypes}/Color.hpp
+    ${oATypes}/Color.cpp
 )
 
 set(Core

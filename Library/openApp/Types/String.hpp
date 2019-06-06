@@ -78,3 +78,13 @@ namespace oA
         return res;
     }
 }
+
+/* Hash used for STL containers */
+template <>
+struct std::hash<oA::String>
+{
+    std::size_t operator()(const oA::String &key) const
+    {
+        return std::hash<std::string>()(key);
+    }
+};
