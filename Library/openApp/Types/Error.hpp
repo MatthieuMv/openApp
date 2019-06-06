@@ -14,6 +14,7 @@ namespace oA
     class Error;
     class CastError;
     class LogicError;
+    class AccessError;
 }
 
 /**
@@ -57,3 +58,8 @@ class oA::CastError : public oA::Error { public: using Error::Error; };
  * @brief Used on function implicit logic error
  */
 class oA::LogicError : public oA::Error { public: using Error::Error; };
+
+/**
+ * @brief Used on access error
+ */
+class oA::AccessError : public oA::Error { public: using Error::Error; };

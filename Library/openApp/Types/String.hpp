@@ -202,7 +202,7 @@ public:
 namespace oA
 {
     /**
-     * @brief Convert T to String
+     * @brief Convert T to String, removing decimal useless digits if any
      *
      * @tparam T Type to convert
      * @param value Value to convert

@@ -27,13 +27,13 @@ oA::Log     oA::cerr(oA::Log::Stdout, oA::CSL_LIGHT_YELLOW, CERR_QUOTES);
 oA::Endl    oA::endl;
 
 oA::Log::Log(Output out, const ConsoleColor &color, const QuoteVector &quotes)
-    : _os(out == Stdout ? std::cout : std::cerr), _color(color), _quotes(quotes)
+    : _os(out == Stdout ? std::cout : std::cerr), _color(color), _quotes(quotes), _repeat(1)
 {
     _useColor = color != CSL_WHITE || _quotes.size();
 }
 
 oA::Log::Log(OStream &os, const ConsoleColor &color, const QuoteVector &quotes)
-    : _os(os), _color(color), _quotes(quotes)
+    : _os(os), _color(color), _quotes(quotes), _repeat(1)
 {
     _useColor = color != CSL_WHITE || _quotes.size();
 }

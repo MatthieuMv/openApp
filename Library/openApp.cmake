@@ -29,13 +29,14 @@ set(Types
 )
 
 set(Core
+    ${oACore}/Chrono.hpp
     ${oACore}/Console.hpp
     ${oACore}/Log.hpp
     ${oACore}/Log.cpp
     ${oACore}/LogUtils.hpp
-    ${oACore}/Chrono.hpp
     ${oACore}/Path.hpp
     ${oACore}/Path.cpp
+    ${oACore}/Signal.hpp
 )
 
 set(Containers
@@ -52,12 +53,17 @@ set(Containers
     ${oAContainers}/Vector.hpp
 )
 
+set(App
+)
+
 set(Network
 )
+
 
 set(oASources
     ${Types}
     ${Core}
     ${Containers}
+    ${App}
     ${Network}
 )

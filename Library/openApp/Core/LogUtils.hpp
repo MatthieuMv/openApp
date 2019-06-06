@@ -69,6 +69,13 @@ public:
      */
     Repeat(Uint times) : _count(times) {}
 
+    /**
+     * @brief Get internal count
+     *
+     * @return Uint& Count
+     */
+    Uint &count(void) noexcept { return _count; }
+
 private:
     Uint _count = 1;
 };
