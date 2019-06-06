@@ -14,7 +14,6 @@ var searchData=
   ['containerhelper_2ehpp',['ContainerHelper.hpp',['../_container_helper_8hpp.html',1,'']]],
   ['containerhelper_3c_20quote_20_3e',['ContainerHelper&lt; Quote &gt;',['../classo_a_1_1_container_helper.html',1,'oA']]],
   ['containerhelper_3c_20std_3a_3astring_2c_20char_20_3e',['ContainerHelper&lt; std::string, char &gt;',['../classo_a_1_1_container_helper.html',1,'oA']]],
-  ['count',['count',['../classo_a_1_1_repeat.html#aae1cd1f736329d24bebd70a050aec29c',1,'oA::Repeat']]],
   ['cout',['cout',['../namespaceo_a.html#ae8c9786d0a7e7a4f39cfe9f820037cb5',1,'oA']]],
   ['csl_5fbg_5fblack',['CSL_BG_BLACK',['../namespaceo_a.html#a8af7010d7cb90b7ac0020d2abd5ea322',1,'oA']]],
   ['csl_5fbg_5fblue',['CSL_BG_BLUE',['../namespaceo_a.html#a66471ac118ea9f366ec5c59b76e3b166',1,'oA']]],

@@ -2,6 +2,11 @@
 \label{classo_a_1_1_log}\index{o\+A\+::\+Log@{o\+A\+::\+Log}}
 
 
+O\+Stream logger with color and quotes features.  
+
+
+
+
 {\ttfamily \#include $<$Log.\+hpp$>$}
 
 \subsection*{Public Types}
@@ -10,26 +15,24 @@
 enum \mbox{\hyperlink{classo_a_1_1_log_a640171dc239ea7befcd640362343f88f}{Output}} \{ \mbox{\hyperlink{classo_a_1_1_log_a640171dc239ea7befcd640362343f88fa6504dea4a3bf34c8734b664b6364a0d9}{Stdout}} = 0, 
 \mbox{\hyperlink{classo_a_1_1_log_a640171dc239ea7befcd640362343f88faa01279ed925a2480f04ad2d89bf1722a}{Stderr}}
  \}
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em \mbox{\hyperlink{classo_a_1_1_log}{Log}} default standard outputs (stdout / stderr) \end{DoxyCompactList}\end{DoxyCompactItemize}
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\hyperlink{classo_a_1_1_log_a8f57798a38bc53782107ee07f2f2caa5}{Log}} (\mbox{\hyperlink{classo_a_1_1_log_a640171dc239ea7befcd640362343f88f}{Output}} out=\mbox{\hyperlink{classo_a_1_1_log_a640171dc239ea7befcd640362343f88fa6504dea4a3bf34c8734b664b6364a0d9}{Stdout}}, const \mbox{\hyperlink{namespaceo_a_a747e07c1977a29f3e1d38683043ec927}{Console\+Color}} \&color=\mbox{\hyperlink{namespaceo_a_a4afb55957ed6dcda70e81d6dd8f07885}{C\+S\+L\+\_\+\+W\+H\+I\+TE}}, const \mbox{\hyperlink{namespaceo_a_a38695044d9ec0b57190f4e3fab0caffd}{Quote\+Vector}} \&quotes=\mbox{\hyperlink{namespaceo_a_a38695044d9ec0b57190f4e3fab0caffd}{Quote\+Vector}}())
-\item 
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classo_a_1_1_log}{Log}} object with a standard output. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{classo_a_1_1_log_a69d8bda8bb1a902606866c757df8c018}{Log}} (\mbox{\hyperlink{namespaceo_a_ab69b2110953f22401259db9c6ddc7905}{O\+Stream}} \&os, const \mbox{\hyperlink{namespaceo_a_a747e07c1977a29f3e1d38683043ec927}{Console\+Color}} \&color=\mbox{\hyperlink{namespaceo_a_a4afb55957ed6dcda70e81d6dd8f07885}{C\+S\+L\+\_\+\+W\+H\+I\+TE}}, const \mbox{\hyperlink{namespaceo_a_a38695044d9ec0b57190f4e3fab0caffd}{Quote\+Vector}} \&quotes=\mbox{\hyperlink{namespaceo_a_a38695044d9ec0b57190f4e3fab0caffd}{Quote\+Vector}}())
-\item 
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classo_a_1_1_log}{Log}} object. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{classo_a_1_1_log_ada21589725c48f82d05893e5936522ea}{is\+Enabled}} (void) const noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Returns internal enabled state. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classo_a_1_1_log_a7c4699ea7ad0c8b910b4a3fc57ba5afe}{set\+Enabled}} (bool value) noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Set the internal enabled state. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classo_a_1_1_log_ae0c062e6cd347b0e74f74c958a05b20d}{flush}} (void) noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Call the flush method of internal \mbox{\hyperlink{namespaceo_a_ab69b2110953f22401259db9c6ddc7905}{O\+Stream}}. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{classo_a_1_1_log_a212bf1558c244679cf0e361fc1cf1e9a}{use\+Color}} (void) const noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Indicate if \mbox{\hyperlink{classo_a_1_1_log_a8f57798a38bc53782107ee07f2f2caa5}{Log}} is using color insertions. \end{DoxyCompactList}\item 
 {\footnotesize template$<$typename T $>$ }\\\mbox{\hyperlink{classo_a_1_1_log}{Log}} \& \mbox{\hyperlink{classo_a_1_1_log_a6ce6d2f750bf3baeda1c2541617e4952}{operator$<$$<$}} (T value)
-\item 
-void \mbox{\hyperlink{classo_a_1_1_log_a8b2af8c62c63699ba4caebafb37e9268}{format\+Quoted\+String}} (\mbox{\hyperlink{classo_a_1_1_string}{String}} \&str)
-\item 
+\begin{DoxyCompactList}\small\item\em Generic stream operator definition. \end{DoxyCompactList}\item 
 {\footnotesize template$<$$>$ }\\\mbox{\hyperlink{classo_a_1_1_log}{o\+A\+::\+Log}} \& \mbox{\hyperlink{classo_a_1_1_log_acfa81696d9db53900bb4d03f278024ee}{operator$<$$<$}} (\mbox{\hyperlink{classo_a_1_1_string}{String}} value)
 \item 
 {\footnotesize template$<$$>$ }\\\mbox{\hyperlink{classo_a_1_1_log}{o\+A\+::\+Log}} \& \mbox{\hyperlink{classo_a_1_1_log_ae274c2ff1bc29ba718265e46fcc6207c}{operator$<$$<$}} (const char $\ast$const value)
@@ -48,12 +51,21 @@ void \mbox{\hyperlink{classo_a_1_1_log_a8b2af8c62c63699ba4caebafb37e9268}{format
 \end{DoxyCompactItemize}
 
 
+\subsection{Detailed Description}
+O\+Stream logger with color and quotes features. 
+
+This class is an improved version of the traditional stream logger (cout / cerr) You can instanciate yours and customize it to accept different quoting char / color combinaison 
+
 \subsection{Member Enumeration Documentation}
 \mbox{\Hypertarget{classo_a_1_1_log_a640171dc239ea7befcd640362343f88f}\label{classo_a_1_1_log_a640171dc239ea7befcd640362343f88f}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!Output@{Output}}
 \index{Output@{Output}!o\+A\+::\+Log@{o\+A\+::\+Log}}
 \subsubsection{\texorpdfstring{Output}{Output}}
 {\footnotesize\ttfamily enum \mbox{\hyperlink{classo_a_1_1_log_a640171dc239ea7befcd640362343f88f}{o\+A\+::\+Log\+::\+Output}}}
+
+
+
+\mbox{\hyperlink{classo_a_1_1_log}{Log}} default standard outputs (stdout / stderr) 
 
 \begin{DoxyEnumFields}{Enumerator}
 \raisebox{\heightof{T}}[0pt][0pt]{\index{Stdout@{Stdout}!o\+A\+::\+Log@{o\+A\+::\+Log}}\index{o\+A\+::\+Log@{o\+A\+::\+Log}!Stdout@{Stdout}}}\mbox{\Hypertarget{classo_a_1_1_log_a640171dc239ea7befcd640362343f88fa6504dea4a3bf34c8734b664b6364a0d9}\label{classo_a_1_1_log_a640171dc239ea7befcd640362343f88fa6504dea4a3bf34c8734b664b6364a0d9}} 
@@ -74,12 +86,38 @@ Stderr&\\
 \subsubsection{\texorpdfstring{Log()}{Log()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
 {\footnotesize\ttfamily o\+A\+::\+Log\+::\+Log (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classo_a_1_1_log_a640171dc239ea7befcd640362343f88f}{Output}}}]{out = {\ttfamily \mbox{\hyperlink{classo_a_1_1_log_a640171dc239ea7befcd640362343f88fa6504dea4a3bf34c8734b664b6364a0d9}{Stdout}}},  }\item[{const \mbox{\hyperlink{namespaceo_a_a747e07c1977a29f3e1d38683043ec927}{Console\+Color}} \&}]{color = {\ttfamily \mbox{\hyperlink{namespaceo_a_a4afb55957ed6dcda70e81d6dd8f07885}{C\+S\+L\+\_\+\+W\+H\+I\+TE}}},  }\item[{const \mbox{\hyperlink{namespaceo_a_a38695044d9ec0b57190f4e3fab0caffd}{Quote\+Vector}} \&}]{quotes = {\ttfamily \mbox{\hyperlink{namespaceo_a_a38695044d9ec0b57190f4e3fab0caffd}{Quote\+Vector}}()} }\end{DoxyParamCaption})}
 
+
+
+Construct a new \mbox{\hyperlink{classo_a_1_1_log}{Log}} object with a standard output. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em out} & Selected standard output \\
+\hline
+{\em color} & text rendering default color \\
+\hline
+{\em quotes} & Vector of text quotes symbols and colors \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{classo_a_1_1_log_a69d8bda8bb1a902606866c757df8c018}\label{classo_a_1_1_log_a69d8bda8bb1a902606866c757df8c018}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!Log@{Log}}
 \index{Log@{Log}!o\+A\+::\+Log@{o\+A\+::\+Log}}
 \subsubsection{\texorpdfstring{Log()}{Log()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
 {\footnotesize\ttfamily o\+A\+::\+Log\+::\+Log (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespaceo_a_ab69b2110953f22401259db9c6ddc7905}{O\+Stream}} \&}]{os,  }\item[{const \mbox{\hyperlink{namespaceo_a_a747e07c1977a29f3e1d38683043ec927}{Console\+Color}} \&}]{color = {\ttfamily \mbox{\hyperlink{namespaceo_a_a4afb55957ed6dcda70e81d6dd8f07885}{C\+S\+L\+\_\+\+W\+H\+I\+TE}}},  }\item[{const \mbox{\hyperlink{namespaceo_a_a38695044d9ec0b57190f4e3fab0caffd}{Quote\+Vector}} \&}]{quotes = {\ttfamily \mbox{\hyperlink{namespaceo_a_a38695044d9ec0b57190f4e3fab0caffd}{Quote\+Vector}}()} }\end{DoxyParamCaption})}
 
+
+
+Construct a new \mbox{\hyperlink{classo_a_1_1_log}{Log}} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em os} & Internal output stream \\
+\hline
+{\em color} & text rendering default color \\
+\hline
+{\em quotes} & Vector of text quotes symbols and colors \\
+\hline
+\end{DoxyParams}
 
 
 \subsection{Member Function Documentation}
@@ -89,11 +127,9 @@ Stderr&\\
 \subsubsection{\texorpdfstring{flush()}{flush()}}
 {\footnotesize\ttfamily void o\+A\+::\+Log\+::flush (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
 
-\mbox{\Hypertarget{classo_a_1_1_log_a8b2af8c62c63699ba4caebafb37e9268}\label{classo_a_1_1_log_a8b2af8c62c63699ba4caebafb37e9268}} 
-\index{o\+A\+::\+Log@{o\+A\+::\+Log}!format\+Quoted\+String@{format\+Quoted\+String}}
-\index{format\+Quoted\+String@{format\+Quoted\+String}!o\+A\+::\+Log@{o\+A\+::\+Log}}
-\subsubsection{\texorpdfstring{format\+Quoted\+String()}{formatQuotedString()}}
-{\footnotesize\ttfamily void o\+A\+::\+Log\+::format\+Quoted\+String (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classo_a_1_1_string}{String}} \&}]{str }\end{DoxyParamCaption})}
+
+
+Call the flush method of internal \mbox{\hyperlink{namespaceo_a_ab69b2110953f22401259db9c6ddc7905}{O\+Stream}}. 
 
 \mbox{\Hypertarget{classo_a_1_1_log_ada21589725c48f82d05893e5936522ea}\label{classo_a_1_1_log_ada21589725c48f82d05893e5936522ea}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!is\+Enabled@{is\+Enabled}}
@@ -101,25 +137,51 @@ Stderr&\\
 \subsubsection{\texorpdfstring{is\+Enabled()}{isEnabled()}}
 {\footnotesize\ttfamily bool o\+A\+::\+Log\+::is\+Enabled (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [noexcept]}}
 
-\mbox{\Hypertarget{classo_a_1_1_log_a6ce6d2f750bf3baeda1c2541617e4952}\label{classo_a_1_1_log_a6ce6d2f750bf3baeda1c2541617e4952}} 
-\index{o\+A\+::\+Log@{o\+A\+::\+Log}!operator$<$$<$@{operator$<$$<$}}
-\index{operator$<$$<$@{operator$<$$<$}!o\+A\+::\+Log@{o\+A\+::\+Log}}
-\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [1/9]}}
-{\footnotesize\ttfamily template$<$typename T $>$ \\
-\mbox{\hyperlink{classo_a_1_1_log}{Log}}\& o\+A\+::\+Log\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{T}]{value }\end{DoxyParamCaption})}
 
+
+Returns internal enabled state. 
+
+\begin{DoxyReturn}{Returns}
+true \mbox{\hyperlink{classo_a_1_1_log}{Log}} will forward output to internal \mbox{\hyperlink{namespaceo_a_ab69b2110953f22401259db9c6ddc7905}{O\+Stream}} 
+
+false \mbox{\hyperlink{classo_a_1_1_log}{Log}} will not forward to internal \mbox{\hyperlink{namespaceo_a_ab69b2110953f22401259db9c6ddc7905}{O\+Stream}} 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classo_a_1_1_log_acfa81696d9db53900bb4d03f278024ee}\label{classo_a_1_1_log_acfa81696d9db53900bb4d03f278024ee}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!operator$<$$<$@{operator$<$$<$}}
 \index{operator$<$$<$@{operator$<$$<$}!o\+A\+::\+Log@{o\+A\+::\+Log}}
-\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [2/9]}}
+\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [1/9]}}
 {\footnotesize\ttfamily \mbox{\hyperlink{classo_a_1_1_log}{o\+A\+::\+Log}} \& o\+A\+::\+Log\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{classo_a_1_1_string}{String}}}]{value }\end{DoxyParamCaption})}
 
 \mbox{\Hypertarget{classo_a_1_1_log_ae274c2ff1bc29ba718265e46fcc6207c}\label{classo_a_1_1_log_ae274c2ff1bc29ba718265e46fcc6207c}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!operator$<$$<$@{operator$<$$<$}}
 \index{operator$<$$<$@{operator$<$$<$}!o\+A\+::\+Log@{o\+A\+::\+Log}}
-\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [3/9]}}
+\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [2/9]}}
 {\footnotesize\ttfamily \mbox{\hyperlink{classo_a_1_1_log}{o\+A\+::\+Log}} \& o\+A\+::\+Log\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{const char $\ast$const}]{value }\end{DoxyParamCaption})}
 
+\mbox{\Hypertarget{classo_a_1_1_log_a6ce6d2f750bf3baeda1c2541617e4952}\label{classo_a_1_1_log_a6ce6d2f750bf3baeda1c2541617e4952}} 
+\index{o\+A\+::\+Log@{o\+A\+::\+Log}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!o\+A\+::\+Log@{o\+A\+::\+Log}}
+\subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [3/9]}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+\mbox{\hyperlink{classo_a_1_1_log}{Log}}\& o\+A\+::\+Log\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{T}]{value }\end{DoxyParamCaption})}
+
+
+
+Generic stream operator definition. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em T} & Type to be log \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parameters}
+{\em value} & Value to be log \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{classo_a_1_1_log}{Log}}\& Allow chain operators 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classo_a_1_1_log_a54dba53cce06861c82dc760d9c809633}\label{classo_a_1_1_log_a54dba53cce06861c82dc760d9c809633}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!operator$<$$<$@{operator$<$$<$}}
 \index{operator$<$$<$@{operator$<$$<$}!o\+A\+::\+Log@{o\+A\+::\+Log}}
@@ -138,12 +200,16 @@ Stderr&\\
 \subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [6/9]}}
 {\footnotesize\ttfamily \mbox{\hyperlink{classo_a_1_1_log}{o\+A\+::\+Log}} \& o\+A\+::\+Log\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespaceo_a_ab34d92c907da3ac86211277a1341c6c2}{o\+A\+::\+Long}}}]{value }\end{DoxyParamCaption})}
 
+Here is the call graph for this function\+:
+% FIG 0
 \mbox{\Hypertarget{classo_a_1_1_log_a59165364886174ee41ef0addd123b216}\label{classo_a_1_1_log_a59165364886174ee41ef0addd123b216}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!operator$<$$<$@{operator$<$$<$}}
 \index{operator$<$$<$@{operator$<$$<$}!o\+A\+::\+Log@{o\+A\+::\+Log}}
 \subsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}\hspace{0.1cm}{\footnotesize\ttfamily [7/9]}}
 {\footnotesize\ttfamily \mbox{\hyperlink{classo_a_1_1_log}{o\+A\+::\+Log}} \& o\+A\+::\+Log\+::operator$<$$<$ (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{namespaceo_a_a2bcc976232176d2dcf8b9df1fa33c038}{o\+A\+::\+Double}}}]{value }\end{DoxyParamCaption})}
 
+Here is the call graph for this function\+:
+% FIG 1
 \mbox{\Hypertarget{classo_a_1_1_log_af5330fde11ac127dba6a6091e5e12b69}\label{classo_a_1_1_log_af5330fde11ac127dba6a6091e5e12b69}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!operator$<$$<$@{operator$<$$<$}}
 \index{operator$<$$<$@{operator$<$$<$}!o\+A\+::\+Log@{o\+A\+::\+Log}}
@@ -162,12 +228,28 @@ Stderr&\\
 \subsubsection{\texorpdfstring{set\+Enabled()}{setEnabled()}}
 {\footnotesize\ttfamily void o\+A\+::\+Log\+::set\+Enabled (\begin{DoxyParamCaption}\item[{bool}]{value }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [noexcept]}}
 
+
+
+Set the internal enabled state. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em value} & Enabled state \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{classo_a_1_1_log_a212bf1558c244679cf0e361fc1cf1e9a}\label{classo_a_1_1_log_a212bf1558c244679cf0e361fc1cf1e9a}} 
 \index{o\+A\+::\+Log@{o\+A\+::\+Log}!use\+Color@{use\+Color}}
 \index{use\+Color@{use\+Color}!o\+A\+::\+Log@{o\+A\+::\+Log}}
 \subsubsection{\texorpdfstring{use\+Color()}{useColor()}}
 {\footnotesize\ttfamily bool o\+A\+::\+Log\+::use\+Color (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [noexcept]}}
 
+
+
+Indicate if \mbox{\hyperlink{classo_a_1_1_log_a8f57798a38bc53782107ee07f2f2caa5}{Log}} is using color insertions. 
+
+\begin{DoxyReturn}{Returns}
+bool \mbox{\hyperlink{classo_a_1_1_color}{Color}} state 
+\end{DoxyReturn}
 
 
 The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}

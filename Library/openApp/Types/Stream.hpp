@@ -14,7 +14,13 @@
 
 namespace oA
 {
+    /**
+     * @brief A simple std::istream
+     */
     using IStream = std::istream;
 
+    /**
+     * @brief A simple std::ostream
+     */
     using OStream = std::ostream;
 }

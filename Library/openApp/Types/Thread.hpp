@@ -12,5 +12,8 @@
 
 namespace oA
 {
+    /**
+     * @brief A Simple std::thread
+     */
     using Thread = std::thread;
 }

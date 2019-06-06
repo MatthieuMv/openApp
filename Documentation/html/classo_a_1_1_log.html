@@ -28,12 +28,11 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">openApp
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">C++ 17 Cross platform application framework</div>
+   <div id="projectbrief">C++ 17 Light Application Framework</div>
   </td>
  </tr>
  </tbody>
@@ -97,6 +96,9 @@ $(document).ready(function(){initNavTree('classo_a_1_1_log.html','');});
 </div><!--header-->
 <div class="contents">
 
+<p>OStream logger with color and quotes features.  
+ <a href="classo_a_1_1_log.html#details">More...</a></p>
+
 <p><code>#include &lt;<a class="el" href="_log_8hpp_source.html">Log.hpp</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
@@ -104,27 +106,33 @@ Public Types</h2></td></tr>
 <tr class="memitem:a640171dc239ea7befcd640362343f88f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#a640171dc239ea7befcd640362343f88f">Output</a> { <a class="el" href="classo_a_1_1_log.html#a640171dc239ea7befcd640362343f88fa6504dea4a3bf34c8734b664b6364a0d9">Stdout</a> = 0, 
 <a class="el" href="classo_a_1_1_log.html#a640171dc239ea7befcd640362343f88faa01279ed925a2480f04ad2d89bf1722a">Stderr</a>
  }</td></tr>
+<tr class="memdesc:a640171dc239ea7befcd640362343f88f"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a> default standard outputs (stdout / stderr)  <a href="classo_a_1_1_log.html#a640171dc239ea7befcd640362343f88f">More...</a><br /></td></tr>
 <tr class="separator:a640171dc239ea7befcd640362343f88f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a8f57798a38bc53782107ee07f2f2caa5"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#a8f57798a38bc53782107ee07f2f2caa5">Log</a> (<a class="el" href="classo_a_1_1_log.html#a640171dc239ea7befcd640362343f88f">Output</a> out=<a class="el" href="classo_a_1_1_log.html#a640171dc239ea7befcd640362343f88fa6504dea4a3bf34c8734b664b6364a0d9">Stdout</a>, const <a class="el" href="namespaceo_a.html#a747e07c1977a29f3e1d38683043ec927">ConsoleColor</a> &amp;color=<a class="el" href="namespaceo_a.html#a4afb55957ed6dcda70e81d6dd8f07885">CSL_WHITE</a>, const <a class="el" href="namespaceo_a.html#a38695044d9ec0b57190f4e3fab0caffd">QuoteVector</a> &amp;quotes=<a class="el" href="namespaceo_a.html#a38695044d9ec0b57190f4e3fab0caffd">QuoteVector</a>())</td></tr>
+<tr class="memdesc:a8f57798a38bc53782107ee07f2f2caa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a> object with a standard output.  <a href="#a8f57798a38bc53782107ee07f2f2caa5">More...</a><br /></td></tr>
 <tr class="separator:a8f57798a38bc53782107ee07f2f2caa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a69d8bda8bb1a902606866c757df8c018"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#a69d8bda8bb1a902606866c757df8c018">Log</a> (<a class="el" href="namespaceo_a.html#ab69b2110953f22401259db9c6ddc7905">OStream</a> &amp;os, const <a class="el" href="namespaceo_a.html#a747e07c1977a29f3e1d38683043ec927">ConsoleColor</a> &amp;color=<a class="el" href="namespaceo_a.html#a4afb55957ed6dcda70e81d6dd8f07885">CSL_WHITE</a>, const <a class="el" href="namespaceo_a.html#a38695044d9ec0b57190f4e3fab0caffd">QuoteVector</a> &amp;quotes=<a class="el" href="namespaceo_a.html#a38695044d9ec0b57190f4e3fab0caffd">QuoteVector</a>())</td></tr>
+<tr class="memdesc:a69d8bda8bb1a902606866c757df8c018"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a new <a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a> object.  <a href="#a69d8bda8bb1a902606866c757df8c018">More...</a><br /></td></tr>
 <tr class="separator:a69d8bda8bb1a902606866c757df8c018"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ada21589725c48f82d05893e5936522ea"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#ada21589725c48f82d05893e5936522ea">isEnabled</a> (void) const noexcept</td></tr>
+<tr class="memdesc:ada21589725c48f82d05893e5936522ea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns internal enabled state.  <a href="#ada21589725c48f82d05893e5936522ea">More...</a><br /></td></tr>
 <tr class="separator:ada21589725c48f82d05893e5936522ea"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c4699ea7ad0c8b910b4a3fc57ba5afe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#a7c4699ea7ad0c8b910b4a3fc57ba5afe">setEnabled</a> (bool value) noexcept</td></tr>
+<tr class="memdesc:a7c4699ea7ad0c8b910b4a3fc57ba5afe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the internal enabled state.  <a href="#a7c4699ea7ad0c8b910b4a3fc57ba5afe">More...</a><br /></td></tr>
 <tr class="separator:a7c4699ea7ad0c8b910b4a3fc57ba5afe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0c062e6cd347b0e74f74c958a05b20d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#ae0c062e6cd347b0e74f74c958a05b20d">flush</a> (void) noexcept</td></tr>
+<tr class="memdesc:ae0c062e6cd347b0e74f74c958a05b20d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Call the flush method of internal <a class="el" href="namespaceo_a.html#ab69b2110953f22401259db9c6ddc7905" title="A simple std::ostream. ">OStream</a>.  <a href="#ae0c062e6cd347b0e74f74c958a05b20d">More...</a><br /></td></tr>
 <tr class="separator:ae0c062e6cd347b0e74f74c958a05b20d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a212bf1558c244679cf0e361fc1cf1e9a"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#a212bf1558c244679cf0e361fc1cf1e9a">useColor</a> (void) const noexcept</td></tr>
+<tr class="memdesc:a212bf1558c244679cf0e361fc1cf1e9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate if <a class="el" href="classo_a_1_1_log.html#a8f57798a38bc53782107ee07f2f2caa5" title="Construct a new Log object with a standard output. ">Log</a> is using color insertions.  <a href="#a212bf1558c244679cf0e361fc1cf1e9a">More...</a><br /></td></tr>
 <tr class="separator:a212bf1558c244679cf0e361fc1cf1e9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6ce6d2f750bf3baeda1c2541617e4952"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a6ce6d2f750bf3baeda1c2541617e4952"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classo_a_1_1_log.html">Log</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#a6ce6d2f750bf3baeda1c2541617e4952">operator&lt;&lt;</a> (T value)</td></tr>
+<tr class="memdesc:a6ce6d2f750bf3baeda1c2541617e4952"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generic stream operator definition.  <a href="#a6ce6d2f750bf3baeda1c2541617e4952">More...</a><br /></td></tr>
 <tr class="separator:a6ce6d2f750bf3baeda1c2541617e4952"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b2af8c62c63699ba4caebafb37e9268"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#a8b2af8c62c63699ba4caebafb37e9268">formatQuotedString</a> (<a class="el" href="classo_a_1_1_string.html">String</a> &amp;str)</td></tr>
-<tr class="separator:a8b2af8c62c63699ba4caebafb37e9268"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acfa81696d9db53900bb4d03f278024ee"><td class="memTemplParams" colspan="2">template&lt;&gt; </td></tr>
 <tr class="memitem:acfa81696d9db53900bb4d03f278024ee"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classo_a_1_1_log.html">oA::Log</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#acfa81696d9db53900bb4d03f278024ee">operator&lt;&lt;</a> (<a class="el" href="classo_a_1_1_string.html">String</a> value)</td></tr>
 <tr class="separator:acfa81696d9db53900bb4d03f278024ee"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -150,7 +158,10 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ace93b1b2eda01f9b9a0c81bc8b23083d"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classo_a_1_1_log.html">oA::Log</a> &amp;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classo_a_1_1_log.html#ace93b1b2eda01f9b9a0c81bc8b23083d">operator&lt;&lt;</a> (<a class="el" href="classo_a_1_1_endl.html">Endl</a>)</td></tr>
 <tr class="separator:ace93b1b2eda01f9b9a0c81bc8b23083d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Enumeration Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>OStream logger with color and quotes features. </p>
+<p>This class is an improved version of the traditional stream logger (cout / cerr) You can instanciate yours and customize it to accept different quoting char / color combinaison </p>
+</div><h2 class="groupheader">Member Enumeration Documentation</h2>
 <a id="a640171dc239ea7befcd640362343f88f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a640171dc239ea7befcd640362343f88f">&#9670;&nbsp;</a></span>Output</h2>
 
@@ -162,6 +173,8 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p><a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a> default standard outputs (stdout / stderr) </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a640171dc239ea7befcd640362343f88fa6504dea4a3bf34c8734b664b6364a0d9"></a>Stdout&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a640171dc239ea7befcd640362343f88faa01279ed925a2480f04ad2d89bf1722a"></a>Stderr&#160;</td><td class="fielddoc"></td></tr>
@@ -202,6 +215,16 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct a new <a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a> object with a standard output. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">out</td><td>Selected standard output </td></tr>
+    <tr><td class="paramname">color</td><td>text rendering default color </td></tr>
+    <tr><td class="paramname">quotes</td><td>Vector of text quotes symbols and colors </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a69d8bda8bb1a902606866c757df8c018"></a>
@@ -236,6 +259,16 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Construct a new <a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a> object. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">os</td><td>Internal output stream </td></tr>
+    <tr><td class="paramname">color</td><td>text rendering default color </td></tr>
+    <tr><td class="paramname">quotes</td><td>Vector of text quotes symbols and colors </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
@@ -263,23 +296,7 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a8b2af8c62c63699ba4caebafb37e9268"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8b2af8c62c63699ba4caebafb37e9268">&#9670;&nbsp;</a></span>formatQuotedString()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void oA::Log::formatQuotedString </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classo_a_1_1_string.html">String</a> &amp;&#160;</td>
-          <td class="paramname"><em>str</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p>Call the flush method of internal <a class="el" href="namespaceo_a.html#ab69b2110953f22401259db9c6ddc7905" title="A simple std::ostream. ">OStream</a>. </p>
 
 </div>
 </div>
@@ -307,30 +324,15 @@ Public Member Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-</div>
-</div>
-<a id="a6ce6d2f750bf3baeda1c2541617e4952"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6ce6d2f750bf3baeda1c2541617e4952">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[1/9]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename T &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classo_a_1_1_log.html">Log</a>&amp; oA::Log::operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype">T&#160;</td>
-          <td class="paramname"><em>value</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
+<p>Returns internal enabled state. </p>
+<dl class="section return"><dt>Returns</dt><dd>true <a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a> will forward output to internal <a class="el" href="namespaceo_a.html#ab69b2110953f22401259db9c6ddc7905" title="A simple std::ostream. ">OStream</a> </dd>
+<dd>
+false <a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a> will not forward to internal <a class="el" href="namespaceo_a.html#ab69b2110953f22401259db9c6ddc7905" title="A simple std::ostream. ">OStream</a> </dd></dl>
 
 </div>
 </div>
 <a id="acfa81696d9db53900bb4d03f278024ee"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acfa81696d9db53900bb4d03f278024ee">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[2/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acfa81696d9db53900bb4d03f278024ee">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[1/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -348,7 +350,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ae274c2ff1bc29ba718265e46fcc6207c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae274c2ff1bc29ba718265e46fcc6207c">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[3/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae274c2ff1bc29ba718265e46fcc6207c">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[2/9]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -362,6 +364,41 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+</div>
+</div>
+<a id="a6ce6d2f750bf3baeda1c2541617e4952"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6ce6d2f750bf3baeda1c2541617e4952">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[3/9]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classo_a_1_1_log.html">Log</a>&amp; oA::Log::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">T&#160;</td>
+          <td class="paramname"><em>value</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generic stream operator definition. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>Type to be log </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>Value to be log </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classo_a_1_1_log.html" title="OStream logger with color and quotes features. ">Log</a>&amp; Allow chain operators </dd></dl>
 
 </div>
 </div>
@@ -416,6 +453,12 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classo_a_1_1_log_a206fea477101843b2eb9cbc71ebd34cd_cgraph.png" border="0" usemap="#classo_a_1_1_log_a206fea477101843b2eb9cbc71ebd34cd_cgraph" alt=""/></div>
+<!-- MAP 0 -->
+</div>
 
 </div>
 </div>
@@ -434,6 +477,12 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+<div class="dynheader">
+Here is the call graph for this function:</div>
+<div class="dyncontent">
+<div class="center"><img src="classo_a_1_1_log_a59165364886174ee41ef0addd123b216_cgraph.png" border="0" usemap="#classo_a_1_1_log_a59165364886174ee41ef0addd123b216_cgraph" alt=""/></div>
+<!-- MAP 1 -->
+</div>
 
 </div>
 </div>
@@ -497,6 +546,14 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
+<p>Set the internal enabled state. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>Enabled state </td></tr>
+  </table>
+  </dd>
+</dl>
+
 </div>
 </div>
 <a id="a212bf1558c244679cf0e361fc1cf1e9a"></a>
@@ -522,6 +579,9 @@ template&lt;typename T &gt; </div>
   </tr>
 </table>
 </div><div class="memdoc">
+
+<p>Indicate if <a class="el" href="classo_a_1_1_log.html#a8f57798a38bc53782107ee07f2f2caa5" title="Construct a new Log object with a standard output. ">Log</a> is using color insertions. </p>
+<dl class="section return"><dt>Returns</dt><dd>bool <a class="el" href="classo_a_1_1_color.html" title="Abstraction of a concatenated RGBA color. ">Color</a> state </dd></dl>
 
 </div>
 </div>

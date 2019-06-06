@@ -2,6 +2,11 @@
 \label{classo_a_1_1_chrono}\index{o\+A\+::\+Chrono@{o\+A\+::\+Chrono}}
 
 
+An easy to use time chronometer.  
+
+
+
+
 {\ttfamily \#include $<$Chrono.\+hpp$>$}
 
 \subsection*{Public Member Functions}
@@ -10,20 +15,23 @@
 \mbox{\hyperlink{classo_a_1_1_chrono_aec5a69450af4387e5d1b2b2344dc2bcd}{Chrono}} (void)
 \item 
 \mbox{\hyperlink{namespaceo_a_abe1d8250226c5cf34f84d7b75fc7922e}{Uint}} \mbox{\hyperlink{classo_a_1_1_chrono_a41692d0d58ca6cfc3570d1b2169b4a96}{get\+Seconds}} (void) const noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Get elapsed time in seconds. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{namespaceo_a_abe1d8250226c5cf34f84d7b75fc7922e}{Uint}} \mbox{\hyperlink{classo_a_1_1_chrono_ad77117d4c523970030eda4cec93add7c}{get\+Milliseconds}} (void) const noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Get elapsed time in milliseconds. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{namespaceo_a_abe1d8250226c5cf34f84d7b75fc7922e}{Uint}} \mbox{\hyperlink{classo_a_1_1_chrono_ac5ed210f5be9e507c95940356338bd88}{get\+Microseconds}} (void) const noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Get elapsed time in microseconds. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classo_a_1_1_chrono_a16943e5e5a0a768cd5b1a7af2deed739}{reset}} (void) noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Reset internal timer. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classo_a_1_1_chrono_a64646924bdd219e72b58999745928fe6}{pause}} (void) noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Pause internal timer. \end{DoxyCompactList}\item 
 void \mbox{\hyperlink{classo_a_1_1_chrono_a2056863ec3fa0a94ed02fa0393b116e9}{resume}} (void) noexcept
-\item 
+\begin{DoxyCompactList}\small\item\em Resume internal timer. \end{DoxyCompactList}\item 
 bool \mbox{\hyperlink{classo_a_1_1_chrono_aeeaed136925a70bd668648b0a99b3f8e}{is\+Paused}} (void) const noexcept
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Return pause internal state. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
+
+\subsection{Detailed Description}
+An easy to use time chronometer. 
 
 \subsection{Constructor \& Destructor Documentation}
 \mbox{\Hypertarget{classo_a_1_1_chrono_aec5a69450af4387e5d1b2b2344dc2bcd}\label{classo_a_1_1_chrono_aec5a69450af4387e5d1b2b2344dc2bcd}} 
@@ -41,29 +49,61 @@ bool \mbox{\hyperlink{classo_a_1_1_chrono_aeeaed136925a70bd668648b0a99b3f8e}{is\
 \subsubsection{\texorpdfstring{get\+Microseconds()}{getMicroseconds()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{namespaceo_a_abe1d8250226c5cf34f84d7b75fc7922e}{Uint}} o\+A\+::\+Chrono\+::get\+Microseconds (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
 
+
+
+Get elapsed time in microseconds. 
+
+\begin{DoxyReturn}{Returns}
+Uint Microseconds 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classo_a_1_1_chrono_ad77117d4c523970030eda4cec93add7c}\label{classo_a_1_1_chrono_ad77117d4c523970030eda4cec93add7c}} 
 \index{o\+A\+::\+Chrono@{o\+A\+::\+Chrono}!get\+Milliseconds@{get\+Milliseconds}}
 \index{get\+Milliseconds@{get\+Milliseconds}!o\+A\+::\+Chrono@{o\+A\+::\+Chrono}}
 \subsubsection{\texorpdfstring{get\+Milliseconds()}{getMilliseconds()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{namespaceo_a_abe1d8250226c5cf34f84d7b75fc7922e}{Uint}} o\+A\+::\+Chrono\+::get\+Milliseconds (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
 
+
+
+Get elapsed time in milliseconds. 
+
+\begin{DoxyReturn}{Returns}
+Uint Milliseconds 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classo_a_1_1_chrono_a41692d0d58ca6cfc3570d1b2169b4a96}\label{classo_a_1_1_chrono_a41692d0d58ca6cfc3570d1b2169b4a96}} 
 \index{o\+A\+::\+Chrono@{o\+A\+::\+Chrono}!get\+Seconds@{get\+Seconds}}
 \index{get\+Seconds@{get\+Seconds}!o\+A\+::\+Chrono@{o\+A\+::\+Chrono}}
 \subsubsection{\texorpdfstring{get\+Seconds()}{getSeconds()}}
 {\footnotesize\ttfamily \mbox{\hyperlink{namespaceo_a_abe1d8250226c5cf34f84d7b75fc7922e}{Uint}} o\+A\+::\+Chrono\+::get\+Seconds (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
 
+
+
+Get elapsed time in seconds. 
+
+\begin{DoxyReturn}{Returns}
+Uint Seconds 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classo_a_1_1_chrono_aeeaed136925a70bd668648b0a99b3f8e}\label{classo_a_1_1_chrono_aeeaed136925a70bd668648b0a99b3f8e}} 
 \index{o\+A\+::\+Chrono@{o\+A\+::\+Chrono}!is\+Paused@{is\+Paused}}
 \index{is\+Paused@{is\+Paused}!o\+A\+::\+Chrono@{o\+A\+::\+Chrono}}
 \subsubsection{\texorpdfstring{is\+Paused()}{isPaused()}}
 {\footnotesize\ttfamily bool o\+A\+::\+Chrono\+::is\+Paused (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
 
+
+
+Return pause internal state. 
+
+\begin{DoxyReturn}{Returns}
+bool Pause state 
+\end{DoxyReturn}
 \mbox{\Hypertarget{classo_a_1_1_chrono_a64646924bdd219e72b58999745928fe6}\label{classo_a_1_1_chrono_a64646924bdd219e72b58999745928fe6}} 
 \index{o\+A\+::\+Chrono@{o\+A\+::\+Chrono}!pause@{pause}}
 \index{pause@{pause}!o\+A\+::\+Chrono@{o\+A\+::\+Chrono}}
 \subsubsection{\texorpdfstring{pause()}{pause()}}
 {\footnotesize\ttfamily void o\+A\+::\+Chrono\+::pause (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Pause internal timer. 
 
 \mbox{\Hypertarget{classo_a_1_1_chrono_a16943e5e5a0a768cd5b1a7af2deed739}\label{classo_a_1_1_chrono_a16943e5e5a0a768cd5b1a7af2deed739}} 
 \index{o\+A\+::\+Chrono@{o\+A\+::\+Chrono}!reset@{reset}}
@@ -71,11 +111,19 @@ bool \mbox{\hyperlink{classo_a_1_1_chrono_aeeaed136925a70bd668648b0a99b3f8e}{is\
 \subsubsection{\texorpdfstring{reset()}{reset()}}
 {\footnotesize\ttfamily void o\+A\+::\+Chrono\+::reset (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
 
+
+
+Reset internal timer. 
+
 \mbox{\Hypertarget{classo_a_1_1_chrono_a2056863ec3fa0a94ed02fa0393b116e9}\label{classo_a_1_1_chrono_a2056863ec3fa0a94ed02fa0393b116e9}} 
 \index{o\+A\+::\+Chrono@{o\+A\+::\+Chrono}!resume@{resume}}
 \index{resume@{resume}!o\+A\+::\+Chrono@{o\+A\+::\+Chrono}}
 \subsubsection{\texorpdfstring{resume()}{resume()}}
 {\footnotesize\ttfamily void o\+A\+::\+Chrono\+::resume (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [noexcept]}}
+
+
+
+Resume internal timer. 
 
 
 

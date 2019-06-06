@@ -2,24 +2,34 @@
 \label{classo_a_1_1_error}\index{o\+A\+::\+Error@{o\+A\+::\+Error}}
 
 
+\mbox{\hyperlink{classo_a_1_1_error}{Error}} exception base.  
+
+
+
+
 {\ttfamily \#include $<$Error.\+hpp$>$}
 
-Inheritance diagram for oA\+:\+:Error\+:\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[height=3.000000cm]{classo_a_1_1_error}
-\end{center}
-\end{figure}
+
+
+Inheritance diagram for oA\+:\+:Error\+:
+% FIG 0
+
+
+Collaboration diagram for oA\+:\+:Error\+:
+% FIG 1
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
 \mbox{\hyperlink{classo_a_1_1_error_a16d10704561d2b756722d71d8703089c}{Error}} (const \mbox{\hyperlink{classo_a_1_1_string}{String}} \&msg)
-\item 
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classo_a_1_1_error}{Error}} object with an error message. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{classo_a_1_1_error_adf66492ca8b03fa14d09e5bba7cdacbd}{Error}} (const \mbox{\hyperlink{classo_a_1_1_string}{String}} \&from, const \mbox{\hyperlink{classo_a_1_1_string}{String}} \&msg)
-\item 
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{classo_a_1_1_error}{Error}} object with a quoted source and an error message. \end{DoxyCompactList}\item 
 virtual const char $\ast$ \mbox{\hyperlink{classo_a_1_1_error_aaef80480c87b91b1a34853c791b649ef}{what}} (void) const noexcept
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Return internal message. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
+
+\subsection{Detailed Description}
+\mbox{\hyperlink{classo_a_1_1_error}{Error}} exception base. 
 
 \subsection{Constructor \& Destructor Documentation}
 \mbox{\Hypertarget{classo_a_1_1_error_a16d10704561d2b756722d71d8703089c}\label{classo_a_1_1_error_a16d10704561d2b756722d71d8703089c}} 
@@ -28,12 +38,32 @@ virtual const char $\ast$ \mbox{\hyperlink{classo_a_1_1_error_aaef80480c87b91b1a
 \subsubsection{\texorpdfstring{Error()}{Error()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
 {\footnotesize\ttfamily o\+A\+::\+Error\+::\+Error (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classo_a_1_1_string}{String}} \&}]{msg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
+
+
+Construct a new \mbox{\hyperlink{classo_a_1_1_error}{Error}} object with an error message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & \mbox{\hyperlink{classo_a_1_1_error}{Error}} message \\
+\hline
+\end{DoxyParams}
 \mbox{\Hypertarget{classo_a_1_1_error_adf66492ca8b03fa14d09e5bba7cdacbd}\label{classo_a_1_1_error_adf66492ca8b03fa14d09e5bba7cdacbd}} 
 \index{o\+A\+::\+Error@{o\+A\+::\+Error}!Error@{Error}}
 \index{Error@{Error}!o\+A\+::\+Error@{o\+A\+::\+Error}}
 \subsubsection{\texorpdfstring{Error()}{Error()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
 {\footnotesize\ttfamily o\+A\+::\+Error\+::\+Error (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classo_a_1_1_string}{String}} \&}]{from,  }\item[{const \mbox{\hyperlink{classo_a_1_1_string}{String}} \&}]{msg }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
 
+
+
+Construct a new \mbox{\hyperlink{classo_a_1_1_error}{Error}} object with a quoted source and an error message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em from} & Source \\
+\hline
+{\em msg} & \mbox{\hyperlink{classo_a_1_1_error}{Error}} message \\
+\hline
+\end{DoxyParams}
 
 
 \subsection{Member Function Documentation}
@@ -43,6 +73,13 @@ virtual const char $\ast$ \mbox{\hyperlink{classo_a_1_1_error_aaef80480c87b91b1a
 \subsubsection{\texorpdfstring{what()}{what()}}
 {\footnotesize\ttfamily virtual const char$\ast$ o\+A\+::\+Error\+::what (\begin{DoxyParamCaption}\item[{void}]{ }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [virtual]}, {\ttfamily [noexcept]}}
 
+
+
+Return internal message. 
+
+\begin{DoxyReturn}{Returns}
+const char$\ast$ \mbox{\hyperlink{classo_a_1_1_error}{Error}} message 
+\end{DoxyReturn}
 
 
 The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}

@@ -20,6 +20,5 @@ var dir_d2355fdbfc045f5d9dbe366e42588713 =
     [ "Thread.hpp", "_thread_8hpp.html", "_thread_8hpp" ],
     [ "V2.hpp", "_v2_8hpp.html", "_v2_8hpp" ],
     [ "V3.hpp", "_v3_8hpp.html", "_v3_8hpp" ],
-    [ "Variant.hpp", "_variant_8hpp.html", "_variant_8hpp" ],
-    [ "Vector.hpp", "_types_2_vector_8hpp.html", null ]
+    [ "Variant.hpp", "_variant_8hpp.html", "_variant_8hpp" ]
 ];

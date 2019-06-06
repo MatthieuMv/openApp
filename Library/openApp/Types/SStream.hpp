@@ -12,7 +12,13 @@
 
 namespace oA
 {
+    /**
+     * @brief A simple std::istringstream
+     */
     using ISStream = std::istringstream;
 
+    /**
+     * @brief A simple std::ostringstream
+     */
     using OSStream = std::ostringstream;
 }

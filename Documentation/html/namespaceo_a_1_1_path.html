@@ -28,12 +28,11 @@
 <table cellspacing="0" cellpadding="0">
  <tbody>
  <tr style="height: 56px;">
-  <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">openApp
    &#160;<span id="projectnumber">1.0</span>
    </div>
-   <div id="projectbrief">C++ 17 Cross platform application framework</div>
+   <div id="projectbrief">C++ 17 Light Application Framework</div>
   </td>
  </tr>
  </tbody>
@@ -94,17 +93,25 @@ $(document).ready(function(){initNavTree('namespaceo_a_1_1_path.html','');});
 <div class="title">oA::Path Namespace Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
+
+<p>This namespace regroup every global path-related functions.  
+<a href="#details">More...</a></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a761a94ba9a50cc164837c4dc4b4c78ae"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceo_a_1_1_path.html#a761a94ba9a50cc164837c4dc4b4c78ae">Exists</a> (const <a class="el" href="classo_a_1_1_string.html">String</a> &amp;path)</td></tr>
+<tr class="memdesc:a761a94ba9a50cc164837c4dc4b4c78ae"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if path is either a file or a directory.  <a href="#a761a94ba9a50cc164837c4dc4b4c78ae">More...</a><br /></td></tr>
 <tr class="separator:a761a94ba9a50cc164837c4dc4b4c78ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af332d947cbb51cf1141c0718169748c3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceo_a_1_1_path.html#af332d947cbb51cf1141c0718169748c3">FileExists</a> (const <a class="el" href="classo_a_1_1_string.html">String</a> &amp;path)</td></tr>
+<tr class="memdesc:af332d947cbb51cf1141c0718169748c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if path is a file.  <a href="#af332d947cbb51cf1141c0718169748c3">More...</a><br /></td></tr>
 <tr class="separator:af332d947cbb51cf1141c0718169748c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8828b311b87426010a6b60192ebf78e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceo_a_1_1_path.html#ae8828b311b87426010a6b60192ebf78e">DirExists</a> (const <a class="el" href="classo_a_1_1_string.html">String</a> &amp;path)</td></tr>
+<tr class="memdesc:ae8828b311b87426010a6b60192ebf78e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if path is a directory.  <a href="#ae8828b311b87426010a6b60192ebf78e">More...</a><br /></td></tr>
 <tr class="separator:ae8828b311b87426010a6b60192ebf78e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Function Documentation</h2>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><p>This namespace regroup every global path-related functions. </p>
+</div><h2 class="groupheader">Function Documentation</h2>
 <a id="ae8828b311b87426010a6b60192ebf78e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae8828b311b87426010a6b60192ebf78e">&#9670;&nbsp;</a></span>DirExists()</h2>
 
@@ -120,6 +127,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Check if path is a directory. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td><a class="el" href="namespaceo_a_1_1_path.html" title="This namespace regroup every global path-related functions. ">Path</a> to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true Given path is a directory </dd>
+<dd>
+false Given path is not a directory </dd></dl>
 
 </div>
 </div>
@@ -139,6 +157,17 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
+<p>Check if path is either a file or a directory. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td><a class="el" href="namespaceo_a_1_1_path.html" title="This namespace regroup every global path-related functions. ">Path</a> to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true Given path is either a file or a directory </dd>
+<dd>
+false Given path doesn't exists </dd></dl>
+
 </div>
 </div>
 <a id="af332d947cbb51cf1141c0718169748c3"></a>
@@ -156,6 +185,17 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Check if path is a file. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">path</td><td><a class="el" href="namespaceo_a_1_1_path.html" title="This namespace regroup every global path-related functions. ">Path</a> to check </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true Given path is a file </dd>
+<dd>
+false Given path is not a file </dd></dl>
 
 </div>
 </div>

@@ -16,17 +16,57 @@
 
 namespace oA { class String; }
 
+/**
+ * @brief An extended std::string with ContainerHelper and various helper functions
+ */
 class oA::String : public ContainerHelper<std::string, char>
 {
-    using Helper = ContainerHelper<std::string, char>;
-
 public:
-    String(void) : Helper() {}
-    String(const String &other) : Helper(other) {}
-    String(String &&other) : Helper(std::move(other)) {}
+    /**
+     * @brief Construct a new String object
+     */
+    String(void) : ContainerHelper<std::string, char>() {}
+
+    /**
+     * @brief Construct a new String object by copy
+     *
+     * @param other Variable to copy
+     */
+    String(const String &other) : ContainerHelper<std::string, char>(other) {}
+
+    /**
+     * @brief Construct a new String object by move
+     *
+     * @param other Variable to move
+     */
+    String(String &&other) : ContainerHelper<std::string, char>(std::move(other)) {}
+
+    /**
+     * @brief Construct a new String object with a std::string by copy
+     *
+     * @param other Variable to copy
+     */
     String(const std::string &other) { *this = other; }
+
+    /**
+     * @brief Construct a new String object with a std::string by move
+     *
+     * @param other Variable to move
+     */
     String(std::string &&other) { *this = std::move(other); }
+
+    /**
+     * @brief Construct a new String object with a char
+     *
+     * @param c Char to insert
+     */
     String(char c) { push_back(c); }
+
+    /**
+     * @brief Construct a new String object with a raw C char pointer
+     *
+     * @param raw C string to copy
+     */
     String(const char * const raw) { *this = raw; }
 
     /* std::string operators */
@@ -35,37 +75,139 @@ public:
     using std::string::operator std::basic_string_view<char, std::char_traits<char>>;
     using std::string::operator[];
 
-    /* String operators */
+    /**
+     * @brief Return internal string state (true if not empty)
+     */
     operator bool(void) const noexcept { return !this->empty(); }
+
+    /**
+     * @brief Copy assignement operator
+     *
+     * @param other Value to copy
+     * @return String& Allow chain operators
+     */
     String &operator=(const String &other) noexcept;
+
+
+    /**
+     * @brief Move assignement operator
+     *
+     * @param other Value to move
+     * @return String& Allow chain operators
+     */
     String &operator=(String &&other) noexcept;
+
+
+    /**
+     * @brief Append operator by copy
+     *
+     * @param other Value to append
+     * @return String& Allow chain operators
+     */
     String &operator+=(const String &other) noexcept;
+
+    /**
+     * @brief Append operator by move
+     *
+     * @param other Value to append
+     * @return String& Allow chain operators
+     */
     String &operator+=(String &&other) noexcept;
 
-    /* String cast :
-        toXYZ : convert current string to XYZ (throw on cast error)
-        isXYZ : return true if the string can be converted into XYZ
-    */
-    bool    toBool(void) const;
-    Int     toInt(void) const;
-    Uint    toUint(void) const;
-    Float   toFloat(void) const;
-    Double  toDouble(void) const;
-    bool    isBoolean(void) const noexcept;
-    bool    isSigned(void) const noexcept;
-    bool    isUnsigned(void) const noexcept;
-    bool    isDecimal(void) const noexcept;
+    /**
+     * @brief Boolean cast
+     *
+     * @return bool Cast result
+     */
+    bool toBool(void) const;
+
+    /**
+     * @brief Int cast
+     *
+     * @return Int Cast result
+     */
+    Int  toInt(void) const;
+
+    /**
+     * @brief Uint cast
+     *
+     * @return Uint Cast result
+     */
+    Uint toUint(void) const;
+
+    /**
+     * @brief Float cast
+     *
+     * @return Float Cast result
+     */
+    Float toFloat(void) const;
+
+    /**
+     * @brief Double cast
+     *
+     * @return Double Cast result
+     */
+    Double toDouble(void) const;
+
+    /**
+     * @brief Boolean check
+     *
+     * @return bool Return if the Boolean cast is possible
+     */
+    bool isBoolean(void) const noexcept;
+
+    /**
+     * @brief Signed check
+     *
+     * @return bool Return if the Signed cast is possible
+     */
+    bool isSigned(void) const noexcept;
+
+    /**
+     * @brief Unsigned check
+     *
+     * @return bool Return if the Unsigned cast is possible
+     */
+    bool isUnsigned(void) const noexcept;
+
+    /**
+     * @brief Decimal check
+     *
+     * @return bool Return if the Decimal cast is possible
+     */
+    bool isDecimal(void) const noexcept;
 
     /* String helper API
         replace : will replace each occurence of a given sequence with another
         replaceWith : will replace each occurence of a given sequence with the result of a lambda
     */
+
+    /**
+     * @brief Replace each occurence of a given sequence with another
+     *
+     * @param from To replace sequence
+     * @param to To insert sequence
+     */
     void replace(const String &from, const String &to);
+
+    /**
+     * @brief Replace each occurence of a given sequence with the result of a lambda
+     *
+     * @param from To replace sequence
+     * @param to Lambda function returing a #String
+     */
     void replaceWith(const String &from, const Function<String(void)> &to);
 };
 
 namespace oA
 {
+    /**
+     * @brief Convert T to #String
+     *
+     * @tparam T Type to convert
+     * @param value Value to convert
+     * @return oA::String Converted result
+     */
     template<typename T>
     oA::String ToString(T value) {
         String res = std::to_string(value);
@@ -79,10 +221,18 @@ namespace oA
     }
 }
 
-/* Hash used for STL containers */
-template <>
+/**
+ * @brief Hash used for STL containers with #String
+ */
+template<>
 struct std::hash<oA::String>
 {
+    /**
+     * @brief Return a std::hash<std::string> out of a #String
+     *
+     * @param key String to convert
+     * @return std::size_t Hashed string
+     */
     std::size_t operator()(const oA::String &key) const
     {
         return std::hash<std::string>()(key);

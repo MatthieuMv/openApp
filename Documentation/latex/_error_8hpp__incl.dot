@@ -1,0 +1,22 @@
+digraph "Library/openApp/Types/Error.hpp"
+{
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node0 [label="Library/openApp/Types\l/Error.hpp",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black"];
+  Node0 -> Node1 [color="midnightblue",fontsize="10",style="solid"];
+  Node1 [label="openApp/Types/String.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_string_8hpp.html"];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid"];
+  Node2 [label="string",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid"];
+  Node3 [label="openApp/Types/Scalars.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_scalars_8hpp.html"];
+  Node3 -> Node4 [color="midnightblue",fontsize="10",style="solid"];
+  Node4 [label="stdint.h",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid"];
+  Node5 [label="openApp/Types/Function.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_function_8hpp.html"];
+  Node5 -> Node6 [color="midnightblue",fontsize="10",style="solid"];
+  Node6 [label="functional",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+  Node1 -> Node7 [color="midnightblue",fontsize="10",style="solid"];
+  Node7 [label="openApp/Containers\l/ContainerHelper.hpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$_container_helper_8hpp.html"];
+  Node7 -> Node8 [color="midnightblue",fontsize="10",style="solid"];
+  Node8 [label="algorithm",height=0.2,width=0.4,color="grey75", fillcolor="white", style="filled"];
+}

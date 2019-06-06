@@ -12,6 +12,11 @@
 
 namespace oA
 {
+    /**
+     * @brief A simple std::function
+     *
+     * @tparam Signature Function's signature
+     */
     template<typename Signature>
     using Function = std::function<Signature>;
 }

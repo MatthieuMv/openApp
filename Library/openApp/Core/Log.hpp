@@ -12,12 +12,17 @@
 #include <openApp/Core/LogUtils.hpp>
 #include <openApp/Containers/Stack.hpp>
 
-namespace oA { class Log; }
+namespace oA
+{
+    class Log;
+}
 
-/* Log
-    This class is an improved version of the traditional stream logger (cout / cerr)
-    You can customize it to accept different quoting char / color combinaison
-*/
+/**
+ * @brief OStream logger with color and quotes features
+ *
+ * This class is an improved version of the traditional stream logger (cout / cerr)
+ * You can instanciate yours and customize it to accept different quoting char / color combinaison
+ */
 class oA::Log
 {
 public:

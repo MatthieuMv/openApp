@@ -2,14 +2,25 @@
 \label{structstd_1_1hash_3_01o_a_1_1_string_01_4}\index{std\+::hash$<$ o\+A\+::\+String $>$@{std\+::hash$<$ o\+A\+::\+String $>$}}
 
 
+Hash used for S\+TL containers with \#\+String.  
+
+
+
+
 {\ttfamily \#include $<$String.\+hpp$>$}
 
 \subsection*{Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
 std\+::size\+\_\+t \mbox{\hyperlink{structstd_1_1hash_3_01o_a_1_1_string_01_4_a6e23a430fd8bccdc9acf379573e16403}{operator()}} (const \mbox{\hyperlink{classo_a_1_1_string}{o\+A\+::\+String}} \&key) const
-\end{DoxyCompactItemize}
+\begin{DoxyCompactList}\small\item\em Return a std\+::hash$<$std\+::string$>$ out of a \#\+String. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
+
+\subsection{Detailed Description}
+\subsubsection*{template$<$$>$\newline
+struct std\+::hash$<$ o\+A\+::\+String $>$}
+
+Hash used for S\+TL containers with \#\+String. 
 
 \subsection{Member Function Documentation}
 \mbox{\Hypertarget{structstd_1_1hash_3_01o_a_1_1_string_01_4_a6e23a430fd8bccdc9acf379573e16403}\label{structstd_1_1hash_3_01o_a_1_1_string_01_4_a6e23a430fd8bccdc9acf379573e16403}} 
@@ -18,6 +29,18 @@ std\+::size\+\_\+t \mbox{\hyperlink{structstd_1_1hash_3_01o_a_1_1_string_01_4_a6
 \subsubsection{\texorpdfstring{operator()()}{operator()()}}
 {\footnotesize\ttfamily std\+::size\+\_\+t std\+::hash$<$ \mbox{\hyperlink{classo_a_1_1_string}{o\+A\+::\+String}} $>$\+::operator() (\begin{DoxyParamCaption}\item[{const \mbox{\hyperlink{classo_a_1_1_string}{o\+A\+::\+String}} \&}]{key }\end{DoxyParamCaption}) const\hspace{0.3cm}{\ttfamily [inline]}}
 
+
+
+Return a std\+::hash$<$std\+::string$>$ out of a \#\+String. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em key} & String to convert \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+std\+::size\+\_\+t Hashed string 
+\end{DoxyReturn}
 
 
 The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
