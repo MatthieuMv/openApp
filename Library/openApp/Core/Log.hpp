@@ -21,30 +21,72 @@ namespace oA { class Log; }
 class oA::Log
 {
 public:
+    /**
+     * @brief Log default standard outputs (stdout / stderr)
+     */
     enum Output {
         Stdout = 0,
         Stderr
     };
 
+    /**
+     * @brief Construct a new Log object with a standard output
+     *
+     * @param out Selected standard output
+     * @param color text rendering default color
+     * @param quotes Vector of text quotes symbols and colors
+     */
     Log(Output out = Stdout,
         const ConsoleColor &color = CSL_WHITE,
         const QuoteVector &quotes = QuoteVector());
 
+    /**
+     * @brief Construct a new Log object
+     *
+     * @param os Internal output stream
+     * @param color text rendering default color
+     * @param quotes Vector of text quotes symbols and colors
+     */
     Log(OStream &os,
         const ConsoleColor &color = CSL_WHITE,
         const QuoteVector &quotes = QuoteVector());
 
+    /**
+     * @brief Returns internal enabled state
+     *
+     * @return true Log will forward output to internal #OStream
+     * @return false Log will not forward to internal #OStream
+     */
     bool isEnabled(void) const noexcept;
+
+    /**
+     * @brief Set the internal enabled state
+     *
+     * @param value Enabled state
+     */
     void setEnabled(bool value) noexcept;
 
+    /**
+     * @brief Call the flush method of internal #OStream
+     */
     void flush(void) noexcept;
 
+    /**
+     * @brief Indicate if #Log is using color insertions
+     *
+     * @return bool Color state
+     */
     bool useColor(void) const noexcept;
 
+    /**
+     * @brief Generic stream operator definition
+     *
+     * @tparam T Type to be log
+     * @param value Value to be log
+     * @return Log& Allow chain operators
+     */
     template<typename T>
     Log &operator<<(T value);
-
-    void formatQuotedString(String &str);
 
 private:
     OStream &_os;
@@ -55,9 +97,28 @@ private:
     bool _enabled = true;
     bool _useColor = true;
 
-    bool initColor(void) noexcept;
+    /**
+     * @brief Format a quoted string into a colored string (if using colors)
+     *
+     * @param str
+     */
+    void formatQuotedString(String &str);
+
+    /**
+     * @brief Init #OStream default color
+     */
+    void initColor(void) noexcept;
+
+    /**
+     * @brief Reset #OStream color
+     */
     void closeColor(void) noexcept;
 
+    /**
+     * @brief Repeats a task based on internal repeat count
+     *
+     * @param task Function to be repeated
+     */
     void repeat(const Function<void(void)> &task) noexcept;
 };
 

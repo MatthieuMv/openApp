@@ -140,15 +140,14 @@ oA::Log &oA::Log::operator<<(Endl)
     return *this;
 }
 
-bool oA::Log::initColor(void) noexcept
+void oA::Log::initColor(void) noexcept
 {
     if (!useColor())
-        return false;
+        return;
     if (_quote.empty()) {
         _quote = _color;
         _os << _quote;
     }
-    return true;
 }
 
 void oA::Log::closeColor(void) noexcept

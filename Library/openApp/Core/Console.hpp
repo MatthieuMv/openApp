@@ -15,6 +15,9 @@
 
 namespace oA
 {
+    /**
+     * @brief Console colors are internal console-interpreted commands of ASCI rendering
+     */
     using ConsoleColor = oA::String;
 
     inline const ConsoleColor CSL_RESET = "\e[0m";
