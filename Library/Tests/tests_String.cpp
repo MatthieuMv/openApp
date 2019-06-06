@@ -11,10 +11,19 @@
 
 Test(String, Basics)
 {
-    oA::String toCopy("Hello"), toMove("World");
+    oA::String toCopy("Hello"), toMove("World"), tmp("42");
     oA::String str, copy(toCopy), move(std::move(toMove));
 
     cr_assert(str.empty());
+    str = oA::String('z') + oA::String("aze");
+    str += tmp;
+    cr_assert_eq(str, "zaze42");
+    str += oA::String("0");
+    cr_assert_eq(str, "zaze420");
+    str = tmp;
+    cr_assert_eq(str, "42");
+    str = oA::String("42");
+    cr_assert_eq(str, "42");
     cr_assert_eq(copy, "Hello");
     cr_assert_eq(move, "World");
     str = copy + " " + move;
@@ -109,4 +118,32 @@ Test(String, DecimalCast)
     try { str.toDouble(); }
     catch (...) { crashed = true; }
     cr_assert(crashed);
+}
+
+Test(String, replace)
+{
+    oA::String str("Th1s 1s 4 20");
+
+    str.replace("1", "i");
+    str.replace("4", "four");
+    str.replace("20", "twenty");
+    cr_assert_eq(str, "This is four twenty");
+}
+
+Test(String, replaceWith)
+{
+    oA::String str("X X X X");
+    char c = 'a' - 1;
+
+    str.replaceWith("X", [&c] {
+        return ++c;
+    });
+    cr_assert_eq(str, "a b c d");
+}
+
+Test(String, ToString)
+{
+    cr_assert_eq(oA::ToString(42), "42");
+    cr_assert_eq(oA::ToString(42.4242), "42.4242");
+    cr_assert_eq(oA::ToString(42.0f), "42");
 }

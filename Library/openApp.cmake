@@ -11,28 +11,33 @@ set(oAMemory ${oARoot}/Memory)
 set(oANetwork ${oARoot}/Network)
 
 set(Types
-    ${oATypes}/Scalars.hpp
+    ${oATypes}/Error.hpp
     ${oATypes}/Function.hpp
     ${oATypes}/String.hpp
     ${oATypes}/String.cpp
-    ${oATypes}/Error.hpp
+    ${oATypes}/Scalars.hpp
+    ${oATypes}/Stream.hpp
+    ${oATypes}/FStream.hpp
+    ${oATypes}/SStream.hpp
 )
 
 set(Core
+    ${oACore}/Log.hpp
+    ${oACore}/Log.cpp
 )
 
 set(Containers
+    ${oAContainers}/Array.hpp
     ${oAContainers}/ContainerHelper.hpp
-    ${oAContainers}/Pair.hpp
+    ${oAContainers}/Deque.hpp
+    ${oAContainers}/List.hpp
     ${oAContainers}/Map.hpp
+    ${oAContainers}/Pair.hpp
+    ${oAContainers}/Queue.hpp
+    ${oAContainers}/Stack.hpp
+    ${oAContainers}/Tuple.hpp
     ${oAContainers}/UMap.hpp
     ${oAContainers}/Vector.hpp
-)
-
-set(Memory
-)
-
-set(Time
 )
 
 set(Network
@@ -42,7 +47,5 @@ set(oASources
     ${Types}
     ${Core}
     ${Containers}
-    ${Memory}
-    ${Time}
     ${Network}
 )

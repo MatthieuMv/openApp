@@ -2,18 +2,18 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** Vector
+** Deque
 */
 
 #pragma once
 
-// std::vector
-#include <vector>
+// std::deque
+#include <deque>
 
 #include <openApp/Containers/ContainerHelper.hpp>
 
 namespace oA
 {
     template<typename Value>
-    using Vector = ContainerHelper<std::vector<Value>, Value>;
+    using Deque = ContainerHelper<std::deque<Value>, Value>;
 }

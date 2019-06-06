@@ -8,6 +8,30 @@
 #include <openApp/Types/Error.hpp>
 #include <openApp/Types/String.hpp>
 
+oA::String &oA::String::operator=(const String &other) noexcept
+{
+    this->assign(other);
+    return *this;
+}
+
+oA::String &oA::String::operator=(String &&other) noexcept
+{
+    this->assign(std::move(other));
+    return *this;
+}
+
+oA::String &oA::String::operator+=(const String &other) noexcept
+{
+    this->append(other);
+    return *this;
+}
+
+oA::String &oA::String::operator+=(String &&other) noexcept
+{
+    this->append(std::move(other));
+    return *this;
+}
+
 bool oA::String::toBool(void) const
 {
     if (*this == "true")
@@ -92,4 +116,20 @@ bool oA::String::isDecimal(void) const noexcept
             return false;
     }
     return true;
+}
+
+void oA::String::replace(const String &from, const String &to)
+{
+    for (oA::ULong pos = this->find(from, 0); pos != this->npos; pos = this->find(from, pos)) {
+        this->erase(pos, from.length());
+        this->insert(pos, to);
+    }
+}
+
+void oA::String::replaceWith(const String &from, const Function<String(void)> &to)
+{
+    for (oA::ULong pos = this->find(from, 0); pos != this->npos; pos = this->find(from, pos)) {
+        this->erase(pos, from.length());
+        this->insert(pos, to());
+    }
 }

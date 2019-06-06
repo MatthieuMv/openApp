@@ -9,6 +9,7 @@ set(TestsSources
     tests_Error.cpp
     tests_String.cpp
     tests_ContainerHelper.cpp
+    tests_Log.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -lcriterion --coverage")
