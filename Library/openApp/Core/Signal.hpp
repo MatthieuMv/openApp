@@ -44,9 +44,7 @@ public:
      *
      * @param other Value to move
      */
-    Signal(Signal &&other) {
-        swap(other);
-    }
+    Signal(Signal &&other) { swap(other); }
 
     /**
      * @brief Move assignement operator

@@ -22,6 +22,7 @@ set(Types
     ${oATypes}/V2.hpp
     ${oATypes}/V3.hpp
     ${oATypes}/Thread.hpp
+    ${oATypes}/Memory.hpp
     ${oATypes}/Mutex.hpp
     ${oATypes}/Color.hpp
     ${oATypes}/Color.cpp
@@ -38,6 +39,9 @@ set(Core
     ${oACore}/Path.cpp
     ${oACore}/Signal.hpp
     ${oACore}/Property.hpp
+    ${oACore}/Expression.hpp
+    ${oACore}/ExpressionStack.hpp
+    ${oACore}/ExpressionNode.hpp
 )
 
 set(Containers

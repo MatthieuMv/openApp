@@ -17,6 +17,8 @@ set(TestsSources
     tests_Path.cpp
     tests_Signal.cpp
     tests_Property.cpp
+    tests_Expression.cpp
+    tests_Variant.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -lcriterion --coverage")

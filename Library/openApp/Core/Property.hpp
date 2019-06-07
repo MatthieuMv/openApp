@@ -59,9 +59,7 @@ public:
      *
      * @param other Property to move
      */
-    Property(Property<T> &&other) : Signal<>() {
-        swap(other);
-    }
+    Property(Property<T> &&other) : Signal<>() { swap(other); }
 
     /**
      * @brief Copy value assignment operator
@@ -112,27 +110,21 @@ public:
      *
      * @return const T& Const reference to internal value
      */
-    const T &operator*(void) const noexcept {
-        return get();
-    }
+    const T &operator*(void) const noexcept { return get(); }
 
     /**
      * @brief Property pointer getter operator
      *
      * @return const T& Const pointer to internal value
      */
-    const T *operator->(void) const noexcept {
-        return &get();
-    }
+    const T *operator->(void) const noexcept { return &get(); }
 
     /**
      * @brief Property const getter
      *
      * @return const T& Const reference to internal value
      */
-    const T &get(void) const noexcept {
-        return _var;
-    }
+    const T &get(void) const noexcept { return _var; }
 
     /**
      * @brief Property copy setter

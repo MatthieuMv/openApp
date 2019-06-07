@@ -10,13 +10,16 @@
 // std::stack
 #include <stack>
 
+#include <openApp/Containers/Deque.hpp>
+
 namespace oA
 {
     /**
-     * @brief A std::stack extended by ContainerHelper
+     * @brief A simple std::stack
      *
      * @tparam Value Contained type
+     * @tparam Container implementation type
      */
-    template<typename Value>
-    using Stack = std::stack<Value>;
+    template<typename Value, typename Container = Deque<Value>>
+    using Stack = std::stack<Value, Container>;
 }

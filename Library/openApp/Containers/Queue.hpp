@@ -10,13 +10,16 @@
 // std::queue
 #include <queue>
 
+#include <openApp/Containers/Deque.hpp>
+
 namespace oA
 {
     /**
-     * @brief A std::queue extended by ContainerHelper
+     * @brief A simple std::queue
      *
      * @tparam Value Contained type
+     * @tparam Container implementation type
      */
-    template<typename Value>
-    using Queue = std::queue<Value>;
+    template<typename Value, typename Container = Deque<Value>>
+    using Queue = std::queue<Value, Container>;
 }
