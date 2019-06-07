@@ -24,7 +24,7 @@ namespace oA::RPN
         Not, And, Or, // ! && ||
         Equal, Diff, // == !=
         Superior, SuperiorEqual, Inferior, InferiorEqual, // > >= < <=
-        If, Else, // ? :
+        TernaryIf, TernaryElse, // ? :
         Assign, // =
         AdditionAssign, SubstractionAssign, MultiplicationAssign, DivisionAssign, ModuloAssign, // += -= *= /= %=
         Call, // ()

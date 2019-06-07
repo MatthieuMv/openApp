@@ -8,8 +8,6 @@
 #include <criterion/criterion.h>
 #include <openApp/Types/Color.hpp>
 
-#include <iostream>
-
 Test(Color, Basic)
 {
     oA::Color c(255, 255, 255, 255);

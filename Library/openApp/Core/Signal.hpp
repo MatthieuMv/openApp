@@ -114,6 +114,13 @@ public:
         std::swap(_index, other._index);
     }
 
+    /**
+     * @brief Disconnect each internal slot
+     */
+    void clearSlots(void) noexcept {
+        _slots.clear();
+    }
+
 private:
     mutable UMap<Uint, Slot> _slots; // Should be mutable to preserve emit constness
     Uint _index = 0;

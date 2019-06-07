@@ -137,6 +137,7 @@ public:
         if (_var == value)
             return false;
         _var = value;
+        this->emit();
         return true;
     }
 
@@ -151,6 +152,7 @@ public:
         if (_var == value)
             return false;
         _var = std::move(value);
+        this->emit();
         return true;
     }
 
@@ -161,9 +163,9 @@ public:
      *
      * @param other
      */
-    void bind(const Property<T> &other) noexcept {
+    void bind(Property<T> &other) noexcept {
         other.connect([&]{
-            other = *this;
+            *this = other;
             return true;
         });
     }
@@ -175,7 +177,7 @@ public:
      *
      * @param other
      */
-    void circularBind(const Property<T> &other) noexcept {
+    void circularBind(Property<T> &other) noexcept {
         bind(other);
         other.bind(*this);
     }

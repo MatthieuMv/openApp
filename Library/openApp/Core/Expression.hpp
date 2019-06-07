@@ -11,10 +11,17 @@
 #include <openApp/Core/ExpressionStack.hpp>
 #include <openApp/Core/Property.hpp>
 
-namespace oA { template<typename T> class Expression; }
+namespace oA
+{
+    template<typename T>
+    class Expression;
+}
 
 /**
- * @brief This class extend Property to handle RPN expression computation
+ * @brief This class extend Property to handle high level RPN expression computation
+ *
+ * Expression uses a container of nodes which composes its inernal RPN expression
+ * To be computed, Expression uses an ExpressionNode which provides an abstract operator processing function
  *
  * @tparam T Internal Expression type
  */
@@ -45,9 +52,9 @@ public:
             else
                 stack.push(pair.second);
         }
-        if (stack.empty())
-            throw LogicError("Expression", "Non-null expression must have at least @1 return value@");
-        return Property<T>::set(stack.pop().getValue());
+        if (stack.size() != 1)
+            throw LogicError("Expression", "Non-null expression must have @1 return value@");
+        return Property<T>::set(stack.popValue());
     }
 
     /**
@@ -64,10 +71,14 @@ public:
      * @param node Value to add
      */
     void addNode(ExpressionNode<T> &&node, bool addDependency = true) noexcept {
-        Uint index = 0;
-        if (addDependency && node.isExpression())
-            index = depends(*node.getExpression());
-        _expr.emplace_back(std::make_pair(index, std::move(node)));
+        auto &n = _expr.emplace_back(std::make_pair(0, std::move(node)));
+        if (!addDependency || !n.second.isExpression())
+            return;
+        for (auto &p : _expr) {
+            if (p.first && p.second == n.second)
+                return;
+        }
+        n.first = depends(*n.second.getExpression());
     }
 
     /**
@@ -86,22 +97,26 @@ public:
     }
 
     /**
-     * @brief Add an expression event by move
+     * @brief Add an expression event by move, it will be computed at emit()
      *
      * @param expr Expression to move
      * @return Uint Disconnect index
      */
-    Uint connect(Expression<T> &&expr) {
-        return connect([expr = std::move(expr)] {
-            expr.call();
+    Uint connectEvent(Expression<T> &&expr) noexcept {
+        return this->connect([event = std::move(expr)](void) mutable {
+            event.call();
             return true;
         });
     }
 
     /**
-     * @brief Clear internal expression
+     * @brief Reset internal expression
      */
-    void clear(void) noexcept {
+    virtual void clearExpression(void) noexcept {
+        _expr.apply([](auto &p) {
+            if (p.first && p.second.isExpression())
+                p.second.getExpression()->disconnect(p.first);
+        });
         _expr.clear();
     }
 

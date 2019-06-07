@@ -7,11 +7,12 @@
 
 #pragma once
 
-namespace oA { template <typename T> class ExpressionStack; }
-
 #include <openApp/Types/Error.hpp>
 #include <openApp/Containers/List.hpp>
+#include <openApp/Containers/UMap.hpp>
 #include <openApp/Core/ExpressionNode.hpp>
+
+namespace oA { template <typename T> class ExpressionStack; }
 
 /**
  * @brief This class is used to compute an Expression
@@ -24,28 +25,31 @@ class oA::ExpressionStack
     using ExpressionFct = Function<void(ExpressionStack<T> &)>;
 
 public:
-
     /**
      * @brief Push a copied ExpressioNode to the stack
      *
      * @param node ExpressioNode to be pushed
      */
     void push(const ExpressionNode<T> &node) noexcept {
-        _stack.push_back(node);
+        _stack.insert(_stack.begin(), node);
     }
 
     /**
-     * @brief Pop an ExpressionNode from the stack
+     * @brief Push a moved ExpressioNode to the stack
      *
-     * @return ExpressionNode Return removed node
+     * @param node ExpressioNode to be moved
      */
-    ExpressionNode<T> pop(void) {
+    void push(ExpressionNode<T> &&node) noexcept {
+        _stack.insert(_stack.begin(), std::move(node));
+    }
+
+    /**
+     * @brief Pop a node from the stack
+     */
+    void pop(void) {
         if (empty())
             throw AccessError("ExpressionStack", "Can't pop @empty@ stack");
-        auto it = _stack.begin();
-        auto n(std::move(*it));
-        _stack.erase(it);
-        return n;
+        _stack.erase(_stack.begin());
     }
 
     /**
@@ -58,6 +62,13 @@ public:
             throw AccessError("ExpressionStack", "Can't get top of @empty@ stack");
         return _stack.back();
     }
+
+    /**
+     * @brief Return internal stack size
+     *
+     * @return Uint Size
+     */
+    Uint size(void) const noexcept { return _stack.size(); }
 
     /**
      * @brief Return internal stack state
@@ -76,10 +87,10 @@ public:
             { RPN::Addition, ProcessAddition }, { RPN::Substraction, ProcessSubstraction },
             { RPN::Multiplication, ProcessMultiplication }, { RPN::Division, ProcessDivision }, { RPN::Modulo, ProcessModulo },
             { RPN::Not, ProcessNot }, { RPN::And, ProcessAnd }, { RPN::Or, ProcessOr },
-            { RPN::Equal, ProcessEqual }, { RPN::Diff, ProcessNotEqual },
+            { RPN::Equal, ProcessEqual }, { RPN::Diff, ProcessDiff },
             { RPN::Superior, ProcessSuperior }, { RPN::SuperiorEqual, ProcessEqual },
             { RPN::Inferior, ProcessInferior }, { RPN::InferiorEqual, ProcessInferiorEq },
-            { RPN::If, ProcessTernary },
+            { RPN::TernaryIf, ProcessTernary },
             { RPN::Assign, ProcessAssign },
             { RPN::AdditionAssign, ProcessAdditionAssign }, { RPN::SubstractionAssign, ProcessSubstractionAssign },
             { RPN::MultiplicationAssign, ProcessMultiplicationAssign }, { RPN::DivisionAssign, ProcessDivisionAssign }, { RPN::ModuloAssign, ProcessModuloAssign },
@@ -93,22 +104,37 @@ public:
         throw LogicError("Expression", "Couldn't find operator processing function @" + ToString(op) + "@");
     }
 
-private:
-    List<ExpressionNode<T>> _stack;
+
+    /**
+     * @brief Pop an ExpressionNode from the stack
+     *
+     * @return T Return removed node
+     */
+    ExpressionNode<T> popNode(void) {
+        if (empty())
+            throw AccessError("ExpressionStack", "Can't get top of @empty@ stack");
+        auto it = _stack.begin();
+        auto n(std::move(*it));
+        _stack.erase(it);
+        return n;
+    }
 
     /**
      * @brief Pop a T value from the stack
      *
      * @return T Return removed node value
      */
-    T popValue(void) { return pop().getValue(); }
+    T popValue(void) { return popNode().getValue(); }
 
     /**
      * @brief Pop a Expression<T> ref from the stack
      *
      * @return T Return removed node value
      */
-    Shared<Expression<T>> popExpression(void) { return pop().getExpression(); }
+    ExpressionPtr<T> popExpression(void) { return popNode().getExpression(); }
+
+private:
+    List<ExpressionNode<T>> _stack;
 
     static void ProcessAddition(ExpressionStack<T> &stack) {
         T op2 = stack.popValue(), op1 = stack.popValue();
@@ -145,7 +171,7 @@ private:
         stack.push(T(op1 == op2));
     }
 
-    static void ProcessNotEqual(ExpressionStack<T> &stack) {
+    static void ProcessDiff(ExpressionStack<T> &stack) {
         T op2 = stack.popValue(), op1 = stack.popValue();
         stack.push(T(op1 != op2));
     }
@@ -226,7 +252,7 @@ private:
     }
 
     static void ProcessSeparator(ExpressionStack<T> &stack) {
-        auto last = stack.pop();
+        auto last = stack.popNode();
         while (!stack.empty())
             stack.pop();
         stack.push(std::move(last));

@@ -45,3 +45,30 @@ Test(Property, Assignment)
     p1 = p2;
     cr_assert_eq(*p1, 21);
 }
+
+Test(Property, Bind)
+{
+    oA::Property<oA::Int> x(1), y(2);
+
+    x.bind(y);
+    cr_assert_eq(*x, 1);
+    cr_assert_eq(*y, 2);
+    y = 3;
+    cr_assert_eq(*x, 3);
+    cr_assert_eq(*y, 3);
+}
+
+Test(Property, CircularBind)
+{
+    oA::Property<oA::Int> x(1), y(2);
+
+    x.circularBind(y);
+    cr_assert_eq(*x, 1);
+    cr_assert_eq(*y, 2);
+    y = 3;
+    cr_assert_eq(*x, 3);
+    cr_assert_eq(*y, 3);
+    y = 4;
+    cr_assert_eq(*x, 4);
+    cr_assert_eq(*y, 4);
+}
