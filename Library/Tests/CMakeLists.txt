@@ -23,7 +23,7 @@ set(TestsSources
     tests_Var.cpp
 )
 
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -lcriterion --coverage")
+set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -lcriterion -coverage")
 include_directories(${oAPath})
 
 add_executable(run_tests ${TestsSources} ${oASources})
