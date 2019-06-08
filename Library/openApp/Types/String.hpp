@@ -157,23 +157,30 @@ public:
     bool isBoolean(void) const noexcept;
 
     /**
-     * @brief Signed check
+     * @brief Number check
      *
-     * @return bool Return if the Signed cast is possible
+     * @return bool Return if a number cast is possible
+     */
+    bool isNumber(void) const noexcept;
+
+    /**
+     * @brief Unsigned check
+     *
+     * @return bool Return if a perfect Unsigned cast is possible
      */
     bool isSigned(void) const noexcept;
 
     /**
      * @brief Unsigned check
      *
-     * @return bool Return if the Unsigned cast is possible
+     * @return bool Return if a perfect Unsigned cast is possible
      */
     bool isUnsigned(void) const noexcept;
 
     /**
      * @brief Decimal check
      *
-     * @return bool Return if the Decimal cast is possible
+     * @return bool Return if a perfect Decimal cast is possible
      */
     bool isDecimal(void) const noexcept;
 

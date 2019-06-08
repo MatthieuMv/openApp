@@ -38,40 +38,45 @@ bool oA::String::toBool(void) const
         return true;
     else if (*this == "false")
         return false;
-    throw oA::CastError("String", "Can't convert @" + *this + "@ to Boolean");
+    throw CastError("String", "Can't convert @" + *this + "@ to Boolean");
 }
 
 oA::Int oA::String::toInt(void) const
 {
-    if (!isSigned())
-        throw oA::CastError("String", "Can't convert @" + *this + "@ to Int");
-    return std::stoi(*this);
+    if (!isNumber())
+        throw CastError("String", "Can't convert @" + *this + "@ to Int");
+    return std::stoul(*this);
 }
 
 oA::Uint oA::String::toUint(void) const
 {
-    if (!isUnsigned())
-        throw oA::CastError("String", "Can't convert @" + *this + "@ to Uint");
+    if (!isNumber())
+        throw CastError("String", "Can't convert @" + *this + "@ to Uint");
     return std::stoul(*this);
 }
 
 oA::Float oA::String::toFloat(void) const
 {
-    if (!isDecimal())
-        throw oA::CastError("String", "Can't convert @" + *this + "@ to Float");
+    if (!isNumber())
+        throw CastError("String", "Can't convert @" + *this + "@ to Float");
     return std::stof(*this);
 }
 
 oA::Double oA::String::toDouble(void) const
 {
-    if (!isDecimal())
-        throw oA::CastError("String", "Can't convert @" + *this + "@ to Double");
+    if (!isNumber())
+        throw CastError("String", "Can't convert @" + *this + "@ to Double");
     return std::stod(*this);
 }
 
 bool oA::String::isBoolean(void) const noexcept
 {
     return *this == "true" || *this == "false";
+}
+
+bool oA::String::isNumber(void) const noexcept
+{
+    return isDecimal();
 }
 
 bool oA::String::isSigned(void) const noexcept

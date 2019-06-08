@@ -20,6 +20,7 @@ set(TestsSources
     tests_Expression.cpp
     tests_ExpressionStack.cpp
     tests_ExpressionNode.cpp
+    tests_Var.cpp
 )
 
 set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -lcriterion --coverage")

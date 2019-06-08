@@ -7,7 +7,7 @@ set(oARoot ${oAPath}/openApp)
 set(oATypes ${oARoot}/Types)
 set(oACore ${oARoot}/Core)
 set(oAContainers ${oARoot}/Containers)
-set(oAMemory ${oARoot}/Memory)
+set(oAApp ${oARoot}/App)
 set(oANetwork ${oARoot}/Network)
 
 set(Types
@@ -59,6 +59,8 @@ set(Containers
 )
 
 set(App
+    ${oAApp}/Var.hpp
+    ${oAApp}/Var.cpp
 )
 
 set(Network
