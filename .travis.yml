@@ -5,10 +5,10 @@ compiler:
 
 before_install:
   - sudo add-apt-repository ppa:snaipewastaken/ppa -y
-  - sudo apt-get update
+  - sudo apt-get update -qq
 
 install:
-  - sudo apt-get install g++-6
+  - sudo apt-get install -qq g++-6
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 90
   - sudo apt-get install criterion
   - sudo apt-get install gcovr
