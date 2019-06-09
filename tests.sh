@@ -4,4 +4,4 @@ cmake ../Library/Tests
 make
 ./run_tests
 cd ..
-gcovr BuildTests/CMakeFiles/run_tests.dir/ -r Library/openApp/
+gcovr -r . -f Library/openApp
