@@ -4,4 +4,4 @@ cmake ../Library/Tests
 make
 ./run_tests
 cd ..
-gcovr -r . --exclude Library/Tests
+gcovr --exclude Library/Tests
