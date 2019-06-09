@@ -12,7 +12,7 @@ install:
   - sudo apt-get install criterion-dev
   - sudo apt install python3
   - sudo apt install python3-pip
-  - sudo pip install gcovr
+  - sudo pip3 install gcovr
 
 script:
   - ./tests.sh
