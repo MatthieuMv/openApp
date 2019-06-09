@@ -4,7 +4,7 @@ compiler:
   - gcc
 
 before_install:
-  - sudo add-apt-repository ppa:snaipewastaken/ppa
+  - sudo add-apt-repository ppa:snaipewastaken/ppa -y
   - sudo apt-get update
 
 install:
@@ -15,5 +15,4 @@ script:
   - ./tests.sh
 
 after_success:
-  - export CODECOV_TOKEN="722eadc3-4255-4beb-9a77-e967a211530f"
   - bash <(curl -s https://codecov.io/bash)
