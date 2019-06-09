@@ -1,6 +1,7 @@
 language: cpp
 
-compiler: gcc
+compiler:
+  - gcc
 
 before_install:
   - export CODECOV_TOKEN="722eadc3-4255-4beb-9a77-e967a211530f"
