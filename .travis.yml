@@ -10,7 +10,7 @@ install:
   - sudo apt-get install g++-8
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
   - sudo apt-get install criterion-dev
-  - sudo apt-get install gcovr
+  - sudo pip install gcovr
 
 script:
   - ./tests.sh
