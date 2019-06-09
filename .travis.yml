@@ -8,8 +8,9 @@ before_install:
   - sudo apt-get update
 
 install:
-  - sudo apt-get install g++
+  - sudo apt-get install g++-8
   - sudo apt-get install criterion
+  - sudo apt-get install gcovr
 
 script:
   - ./tests.sh
