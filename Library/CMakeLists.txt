@@ -9,3 +9,4 @@ set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -fPIC")
 include_directories(${oAPath})
 
 add_library(openApp ${oASources})
+#add_executable(openApp ${oASources} Main.cpp)

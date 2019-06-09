@@ -49,6 +49,13 @@ void oA::Item::addExpressionEvent(const String &key, String event)
     (void)(event);
 }
 
+void oA::Item::appendChild(const ItemPtr &child)
+{
+    if (!child.get())
+        throw LogicError("Item", "Can't append @null@ chill");
+    _childs.emplace_back(std::move(child));
+}
+
 void oA::Item::appendChild(ItemPtr &&child)
 {
     if (!child.get())
@@ -58,15 +65,15 @@ void oA::Item::appendChild(ItemPtr &&child)
 
 bool oA::Item::existsChild(const String &id)
 {
-    return _childs.findIf([&id](const auto &child) {
-        return id == child.get("id");
+    return _childs.findIf([&id](const ItemPtr &child) {
+        return id == child->getAs<Var::Literal>("id");
     }) != _childs.end();
 }
 
 oA::Item &oA::Item::getChild(const String &id)
 {
-    auto it = _childs.findIf([&id](const auto &child) {
-        return id == child.get("id");
+    auto it = _childs.findIf([&id](const ItemPtr &child) {
+        return id == child->getAs<Var::Literal>("id");
     });
 
     if (it == _childs.end())
@@ -76,8 +83,8 @@ oA::Item &oA::Item::getChild(const String &id)
 
 const oA::Item &oA::Item::getChild(const String &id) const
 {
-    auto it = _childs.findIf([&id](const auto &child) {
-        return id == child.get("id");
+    auto it = _childs.findIf([&id](const ItemPtr &child) {
+        return id == child->getAs<Var::Literal>("id");
     });
 
     if (it == _childs.end())

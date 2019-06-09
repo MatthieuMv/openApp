@@ -61,7 +61,7 @@ public:
     /**
      * @brief Construct a new Var object
      */
-    Var(void) : _var(0) {}
+    Var(void) : _var(0.0f) {}
 
     /**
      * @brief Construct a new Var object by copy
@@ -107,7 +107,7 @@ public:
      *
      * @return VarType Internal index
      */
-    constexpr VarType index(void) const noexcept { return static_cast<VarType>(_var.index()); }
+    VarType index(void) const noexcept { return static_cast<VarType>(_var.index()); }
 
     /**
      * @brief Try to extract non-const reference to internal type T

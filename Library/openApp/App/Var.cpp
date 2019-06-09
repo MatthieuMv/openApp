@@ -32,7 +32,9 @@ oA::Int oA::Var::toInt(void) const noexcept
             return static_cast<Int>(number);
         },
         [] (const Literal &literal) -> Int {
-            return literal.toInt();
+            if (literal.isNumber())
+                return literal.toInt();
+            return 0.0f;
         },
         [] (const ItemPtr &) -> Int {
             return 0;
@@ -50,7 +52,9 @@ oA::Float oA::Var::toFloat(void) const noexcept
             return number;
         },
         [] (const Literal &literal) -> Float {
-            return literal.toFloat();
+            if (literal.isNumber())
+                return literal.toFloat();
+            return 0.0f;
         },
         [] (const ItemPtr &) -> Float {
             return 0.0f;
@@ -117,20 +121,7 @@ bool oA::Var::operator!(void) const noexcept
 
 bool oA::Var::operator==(const Var &other) const
 {
-    return std::visit(Overload {
-        [&other] (const Number &number) -> bool {
-            return number == other.toFloat();
-        },
-        [&other] (const Literal &literal) -> bool {
-            return literal == other.toString();
-        },
-        [this, &other] (const ItemPtr &) -> bool {
-            return _var == other._var;
-        },
-        [this, &other] (const Container &) -> bool {
-            return _var == other._var;
-        }
-    }, _var);
+    return _var == other._var;
 }
 
 bool oA::Var::operator!=(const Var &other) const

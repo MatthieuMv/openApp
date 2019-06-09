@@ -61,6 +61,8 @@ set(Containers
 set(App
     ${oAApp}/Var.hpp
     ${oAApp}/Var.cpp
+    ${oAApp}/Item.hpp
+    ${oAApp}/Item.cpp
 )
 
 set(Network
