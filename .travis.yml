@@ -11,8 +11,8 @@ install:
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 90
   - sudo apt-get install criterion-dev
   - sudo apt install python3
-  - pip install --upgrade pip
-  - pip install gcovr
+  - sudo apt install python3-pip
+  - sudo pip install gcovr
 
 script:
   - ./tests.sh
