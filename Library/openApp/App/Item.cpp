@@ -49,18 +49,18 @@ void oA::Item::addExpressionEvent(const String &key, String event)
     (void)(event);
 }
 
-void oA::Item::appendChild(const ItemPtr &child)
+oA::Item &oA::Item::appendChild(const ItemPtr &child)
 {
     if (!child.get())
         throw LogicError("Item", "Can't append @null@ chill");
-    _childs.emplace_back(std::move(child));
+    return *_childs.emplace_back(std::move(child));
 }
 
-void oA::Item::appendChild(ItemPtr &&child)
+oA::Item &oA::Item::appendChild(ItemPtr &&child)
 {
     if (!child.get())
         throw LogicError("Item", "Can't append @null@ chill");
-    _childs.emplace_back(std::move(child));
+    return *_childs.emplace_back(std::move(child));
 }
 
 bool oA::Item::existsChild(const String &id)

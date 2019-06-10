@@ -65,11 +65,13 @@ Test(Var, Number)
 Test(Var, Literal)
 {
     bool crashed = false;
-    oA::Var v1("4"), v2("2");
+    oA::Var v1("4"), v2("2"), v3("aze");
 
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), 4);
+    cr_assert_eq(v3.toInt(), 0);
     cr_assert_eq(v1.toFloat(), 4.0f);
+    cr_assert_eq(v3.toFloat(), 0.0f);
     cr_assert_eq(v1.toString(), "4");
     cr_assert_eq(v1.operator bool(), true);
     cr_assert_eq(!v1, false);

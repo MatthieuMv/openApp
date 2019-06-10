@@ -34,7 +34,7 @@ oA::Int oA::Var::toInt(void) const noexcept
         [] (const Literal &literal) -> Int {
             if (literal.isNumber())
                 return literal.toInt();
-            return 0.0f;
+            return 0;
         },
         [] (const ItemPtr &) -> Int {
             return 0;

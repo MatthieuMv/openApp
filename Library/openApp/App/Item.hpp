@@ -86,7 +86,7 @@ public:
     }
 
     /**
-     * @brief Set internal expression matching key, create one if none has been found
+     * @brief Set internal expression of matching key
      *
      * When building an expression, Item makes sure that every dependencies have been set
      *
@@ -110,14 +110,14 @@ public:
      *
      * @param child Value to copy
      */
-    void appendChild(const ItemPtr &child);
+    Item &appendChild(const ItemPtr &child);
 
     /**
      * @brief Add a child ItemPtr by move
      *
      * @param child Value to move
      */
-    void appendChild(ItemPtr &&child);
+    Item &appendChild(ItemPtr &&child);
 
     /**
      * @brief Check existence of a child (using internal id)
