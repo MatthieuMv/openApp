@@ -19,12 +19,12 @@ Test(Item, Basics)
 
     cr_assert_eq(item->getName(), "Item");
     item->get("id") = "item";
-    cr_assert_eq(item->getAs<oA::Var::Literal>("id"), "item");
+    cr_assert_eq(item->getAs<oA::Literal>("id"), "item");
     item->append("myVar") = 42;
     root.appendChild(item);
     root.appendChild(std::make_shared<oA::Item>()).get("id") = "child";
-    cr_assert_eq(root.getChild("item").getAs<oA::Var::Number>("myVar"), 42);
-    cr_assert_eq(ref.getChild("item").getAs<oA::Var::Number>("myVar"), 42);
+    cr_assert_eq(root.getChild("item").getAs<oA::Number>("myVar"), 42);
+    cr_assert_eq(ref.getChild("item").getAs<oA::Number>("myVar"), 42);
     cr_assert(root.existsChild("child"));
     try { root.getChild("azerty"); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;

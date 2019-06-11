@@ -6,19 +6,7 @@
 */
 
 #include <openApp/Types/Error.hpp>
-#include <openApp/App/Var.hpp>
-
-oA::Var &oA::Var::operator=(const Var &other)
-{
-    _var = other._var;
-    return *this;
-}
-
-oA::Var &oA::Var::operator=(Var &&other)
-{
-    _var = std::move(other._var);
-    return *this;
-}
+#include <openApp/Core/Var.hpp>
 
 bool oA::Var::toBool(void) const noexcept
 {
@@ -36,10 +24,24 @@ oA::Int oA::Var::toInt(void) const noexcept
                 return literal.toInt();
             return 0;
         },
-        [] (const ItemPtr &) {
+        [] (const Container &) {
+            return 0;
+        }
+    }, _var);
+}
+
+oA::Uint oA::Var::toUint(void) const noexcept
+{
+    return std::visit(Overload {
+        [] (const Number &number) -> Uint {
+            return static_cast<Uint>(number);
+        },
+        [] (const Literal &literal) -> Uint {
+            if (literal.isNumber())
+                return literal.toUint();
             return 0;
         },
-        [] (const Container &) {
+        [] (const Container &) -> Uint {
             return 0;
         }
     }, _var);
@@ -54,9 +56,6 @@ oA::Float oA::Var::toFloat(void) const noexcept
         [] (const Literal &literal) {
             if (literal.isNumber())
                 return literal.toFloat();
-            return 0.0f;
-        },
-        [] (const ItemPtr &) {
             return 0.0f;
         },
         [] (const Container &) {
@@ -74,13 +73,22 @@ oA::String oA::Var::toString(void) const noexcept
         [] (const Literal &literal) {
             return literal;
         },
-        [] (const ItemPtr &) {
-            return String();
-        },
         [] (const Container &) {
             return String();
         }
     }, _var);
+}
+
+oA::Var &oA::Var::operator=(const Var &other)
+{
+    _var = other._var;
+    return *this;
+}
+
+oA::Var &oA::Var::operator=(Var &&other)
+{
+    _var = std::move(other._var);
+    return *this;
 }
 
 oA::Var::operator bool(void) const noexcept
@@ -91,9 +99,6 @@ oA::Var::operator bool(void) const noexcept
         },
         [] (const Literal &literal) {
             return !literal.empty();
-        },
-        [] (const ItemPtr &item) {
-            return item.operator bool();
         },
         [] (const Container &container) {
             return !container.empty();
@@ -109,9 +114,6 @@ bool oA::Var::operator!(void) const noexcept
         },
         [] (const Literal &literal) {
             return literal.empty();
-        },
-        [] (const ItemPtr &item) {
-            return !item.operator bool();
         },
         [] (const Container &container) {
             return container.empty();
@@ -138,9 +140,6 @@ bool oA::Var::operator<(const Var &other) const
         [] (const Literal &) -> bool {
             throw LogicError("Var", "Can't use operator < on @Literal@");
         },
-        [] (const ItemPtr &) -> bool {
-            throw LogicError("Var", "Can't use operator < on @Item@");
-        },
         [] (const Container &) -> bool {
             throw LogicError("Var", "Can't use operator < on @Container@");
         }
@@ -155,9 +154,6 @@ bool oA::Var::operator<=(const Var &other) const
         },
         [] (const Literal &) -> bool {
             throw LogicError("Var", "Can't use operator <= on @Literal@");
-        },
-        [] (const ItemPtr &) -> bool {
-            throw LogicError("Var", "Can't use operator <= on @Item@");
         },
         [] (const Container &) -> bool {
             throw LogicError("Var", "Can't use operator <= on @Container@");
@@ -174,9 +170,6 @@ bool oA::Var::operator>(const Var &other) const
         [] (const Literal &) -> bool {
             throw LogicError("Var", "Can't use operator > on @Literal@");
         },
-        [] (const ItemPtr &) -> bool {
-            throw LogicError("Var", "Can't use operator > on @Item@");
-        },
         [] (const Container &) -> bool {
             throw LogicError("Var", "Can't use operator > on @Container@");
         }
@@ -191,9 +184,6 @@ bool oA::Var::operator>=(const Var &other) const
         },
         [] (const Literal &) -> bool {
             throw LogicError("Var", "Can't use operator >= on @Literal@");
-        },
-        [] (const ItemPtr &) -> bool {
-            throw LogicError("Var", "Can't use operator >= on @Item@");
         },
         [] (const Container &) -> bool {
             throw LogicError("Var", "Can't use operator >= on @Container@");
@@ -210,9 +200,6 @@ oA::Var oA::Var::operator+(const Var &other) const
         [&other] (const Literal &literal) -> Var {
             return literal + other.toString();
         },
-        [] (const ItemPtr &) -> Var {
-            throw LogicError("Var", "Can't use operator + on @Item@");
-        },
         [] (const Container &) -> Var {
             throw LogicError("Var", "Can't use operator + on @Container@");
         }
@@ -227,9 +214,6 @@ oA::Var oA::Var::operator-(const Var &other) const
         },
         [] (const Literal &) -> Var {
             throw LogicError("Var", "Can't use operator - on @Literal@");
-        },
-        [] (const ItemPtr &) -> Var {
-            throw LogicError("Var", "Can't use operator - on @Item@");
         },
         [] (const Container &) -> Var {
             throw LogicError("Var", "Can't use operator - on @Container@");
@@ -246,9 +230,6 @@ oA::Var oA::Var::operator*(const Var &other) const
         [] (const Literal &) -> Var {
             throw LogicError("Var", "Can't use operator * on @Literal@");
         },
-        [] (const ItemPtr &) -> Var {
-            throw LogicError("Var", "Can't use operator * on @Item@");
-        },
         [] (const Container &) -> Var {
             throw LogicError("Var", "Can't use operator * on @Container@");
         }
@@ -263,9 +244,6 @@ oA::Var oA::Var::operator/(const Var &other) const
         },
         [] (const Literal &) -> Var {
             throw LogicError("Var", "Can't use operator / on @Literal@");
-        },
-        [] (const ItemPtr &) -> Var {
-            throw LogicError("Var", "Can't use operator / on @Item@");
         },
         [] (const Container &) -> Var {
             throw LogicError("Var", "Can't use operator / on @Container@");
@@ -282,9 +260,6 @@ oA::Var oA::Var::operator%(const Var &other) const
         [] (const Literal &) -> Var {
             throw LogicError("Var", "Can't use operator % on @Literal@");
         },
-        [] (const ItemPtr &) -> Var {
-            throw LogicError("Var", "Can't use operator % on @Item@");
-        },
         [] (const Container &) -> Var {
             throw LogicError("Var", "Can't use operator % on @Container@");
         }
@@ -300,11 +275,8 @@ oA::Var &oA::Var::operator+=(const Var &other)
         [&other] (Literal &literal) {
             literal += other.toString();
         },
-        [] (ItemPtr &) {
-            throw LogicError("Var", "Can't use operator += on @Item@");
-        },
-        [&other] (Container &) {
-            throw LogicError("Var", "Can't use operator += on @Container@");
+        [&other] (Container &container) {
+            container.push_back(other);
         }
     }, _var);
     return *this;
@@ -316,14 +288,18 @@ oA::Var &oA::Var::operator-=(const Var &other)
         [&other] (Number &number) {
             number -= other.toFloat();
         },
-        [&other] (Literal &) {
+        [] (Literal &) {
             throw LogicError("Var", "Can't use operator -= on @Literal@");
         },
-        [] (ItemPtr &) {
-            throw LogicError("Var", "Can't use operator -= on @Item@");
-        },
-        [&other] (Container &) {
-            throw LogicError("Var", "Can't use operator -= on @Container@");
+        [&other] (Container &container) {
+            auto it = container.begin();
+            auto idx = other.toUint();
+            if (other.index() != VNumber)
+                throw LogicError("Var", "Operator -= on @Container@ must be used with a Number");
+            if (container.size() <= idx)
+                throw AccessError("Var," "Operator -= on @Container@ used with out of range index @" + ToString(idx) + "@");
+            std::advance(it, idx);
+            container.erase(it);
         }
     }, _var);
     return *this;
@@ -335,13 +311,10 @@ oA::Var &oA::Var::operator*=(const Var &other)
         [&other] (Number &number) {
             number *= other.toFloat();
         },
-        [&other] (Literal &) {
+        [] (Literal &) {
             throw LogicError("Var", "Can't use operator *= on @Literal@");
         },
-        [] (ItemPtr &) {
-            throw LogicError("Var", "Can't use operator *= on @Item@");
-        },
-        [&other] (Container &) {
+        [] (Container &) {
             throw LogicError("Var", "Can't use operator *= on @Container@");
         }
     }, _var);
@@ -354,13 +327,10 @@ oA::Var &oA::Var::operator/=(const Var &other)
         [&other] (Number &number) {
             number /= other.toFloat();
         },
-        [&other] (Literal &) {
+        [] (Literal &) {
             throw LogicError("Var", "Can't use operator /= on @Literal@");
         },
-        [] (ItemPtr &) {
-            throw LogicError("Var", "Can't use operator /= on @Item@");
-        },
-        [&other] (Container &) {
+        [] (Container &) {
             throw LogicError("Var", "Can't use operator /= on @Container@");
         }
     }, _var);
@@ -373,13 +343,10 @@ oA::Var &oA::Var::operator%=(const Var &other)
         [&other] (Number &number) {
             number = static_cast<Int>(number) % other.toInt();
         },
-        [&other] (Literal &) {
+        [] (Literal &) {
             throw LogicError("Var", "Can't use operator %= on @Literal@");
         },
-        [] (ItemPtr &) {
-            throw LogicError("Var", "Can't use operator %= on @Item@");
-        },
-        [&other] (Container &) {
+        [] (Container &) {
             throw LogicError("Var", "Can't use operator %= on @Container@");
         }
     }, _var);
@@ -394,9 +361,6 @@ oA::Var &oA::Var::operator++(void)
         },
         [] (Literal &) {
             throw LogicError("Var", "Can't use operator ++ on @Literal@");
-        },
-        [] (ItemPtr &) {
-            throw LogicError("Var", "Can't use operator ++ on @Item@");
         },
         [] (Container &) {
             throw LogicError("Var", "Can't use operator ++ on @Container@");
@@ -414,9 +378,6 @@ oA::Var &oA::Var::operator--(void)
         [] (Literal &) {
             throw LogicError("Var", "Can't use operator -- on @Literal@");
         },
-        [] (ItemPtr &) {
-            throw LogicError("Var", "Can't use operator -- on @Item@");
-        },
         [] (Container &) {
             throw LogicError("Var", "Can't use operator -- on @Container@");
         }
@@ -433,9 +394,6 @@ oA::Var oA::Var::operator++(oA::Int)
         [] (Literal &) -> Var {
             throw LogicError("Var", "Can't use operator ++ on @Literal@");
         },
-        [] (ItemPtr &) -> Var {
-            throw LogicError("Var", "Can't use operator ++ on @Item@");
-        },
         [] (Container &) -> Var {
             throw LogicError("Var", "Can't use operator ++ on @Container@");
         }
@@ -451,16 +409,13 @@ oA::Var oA::Var::operator--(oA::Int)
         [] (Literal &) -> Var {
             throw LogicError("Var", "Can't use operator -- on @Literal@");
         },
-        [] (ItemPtr &) -> Var {
-            throw LogicError("Var", "Can't use operator -- on @Item@");
-        },
         [] (Container &) -> Var {
             throw LogicError("Var", "Can't use operator -- on @Container@");
         }
     }, _var);
 }
 
-oA::Var &oA::Var::operator[](oA::Uint idx)
+oA::Var &oA::Var::operator[](const Var &other)
 {
     return std::visit(Overload {
         [] (Number &) -> Var& {
@@ -469,15 +424,30 @@ oA::Var &oA::Var::operator[](oA::Uint idx)
         [] (Literal &) -> Var& {
             throw LogicError("Var", "Can't use operator [] on @Literal@");
         },
-        [] (ItemPtr &) -> Var& {
-            throw LogicError("Var", "Can't use operator [] on @Item@");
-        },
-        [idx] (Container &container) -> Var& {
+        [&other] (Container &container) -> Var& {
             auto it = container.begin();
+            auto idx = other.toUint();
+            if (other.index() != VNumber)
+                throw LogicError("Var", "Operator [] on @Container@ must be used with a Number");
             if (container.size() <= idx)
-                throw AccessError("Var::Container", "Index @" + ToString(idx) + "@ out of range");
+                throw AccessError("Var," "Operator [] on @Container@ used with out of range index @" + ToString(idx) + "@");
             std::advance(it, idx);
             return *it;
+        }
+    }, _var);
+}
+
+oA::Var oA::Var::len(void) const
+{
+    return std::visit(Overload {
+        [] (const Number &) -> Var {
+            throw LogicError("Var", "Can't use operator len on @Number@");
+        },
+        [] (const Literal &literal) -> Var {
+            return literal.size();
+        },
+        [] (const Container &container) -> Var {
+            return container.size();
         }
     }, _var);
 }

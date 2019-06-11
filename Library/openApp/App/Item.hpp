@@ -8,9 +8,17 @@
 #pragma once
 
 #include <openApp/Core/Expression.hpp>
-#include <openApp/App/Var.hpp>
+#include <openApp/Core/Var.hpp>
 
-namespace oA { class Item; }
+namespace oA
+{
+    class Item;
+
+    /**
+     * @brief Pointer to Item
+     */
+    using ItemPtr = Shared<Item>;
+}
 
 /**
  * @brief openApp entities' base class
@@ -143,6 +151,20 @@ public:
      * @return Item& Matching child
      */
     const Item &getChild(const String &id) const;
+
+    /**
+     * @brief Return a non-const reference to children list
+     *
+     * @return List<ItemPtr>& Children list
+     */
+    List<ItemPtr> &childs(void) noexcept { return _childs; }
+
+    /**
+     * @brief Return a const reference to children list
+     *
+     * @return const List<ItemPtr>& Children list
+     */
+    const List<ItemPtr> &childs(void) const noexcept { return _childs; }
 
 private:
     UMap<String, ExpressionPtr<Var>> _members;

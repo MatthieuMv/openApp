@@ -42,6 +42,8 @@ set(Core
     ${oACore}/Expression.hpp
     ${oACore}/ExpressionStack.hpp
     ${oACore}/ExpressionNode.hpp
+    ${oACore}/Var.hpp
+    ${oACore}/Var.cpp
 )
 
 set(Containers
@@ -59,8 +61,6 @@ set(Containers
 )
 
 set(App
-    ${oAApp}/Var.hpp
-    ${oAApp}/Var.cpp
     ${oAApp}/Item.hpp
     ${oAApp}/Item.cpp
 )

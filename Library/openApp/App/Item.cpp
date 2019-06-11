@@ -66,14 +66,14 @@ oA::Item &oA::Item::appendChild(ItemPtr &&child)
 bool oA::Item::existsChild(const String &id)
 {
     return _childs.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Var::Literal>("id");
+        return id == child->getAs<Literal>("id");
     }) != _childs.end();
 }
 
 oA::Item &oA::Item::getChild(const String &id)
 {
     auto it = _childs.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Var::Literal>("id");
+        return id == child->getAs<Literal>("id");
     });
 
     if (it == _childs.end())
@@ -84,7 +84,7 @@ oA::Item &oA::Item::getChild(const String &id)
 const oA::Item &oA::Item::getChild(const String &id) const
 {
     auto it = _childs.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Var::Literal>("id");
+        return id == child->getAs<Literal>("id");
     });
 
     if (it == _childs.end())

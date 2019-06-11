@@ -5,16 +5,19 @@
 ** Main
 */
 
-#include <openApp/App/Item.hpp>
+#include <openApp/Core/Var.hpp>
 #include <iostream>
 
 int main(void)
 {
-    oA::Item item;
+    oA::Var v1(42), v2(43);
 
-    std::cout << "ID = " << item.get("id")->index() << std::endl;
-    item.get("id").set("item");
-    std::cout << "SET " << item.get("id")->toString() << std::endl;
-    std::cout << "ID = " << item.get("id")->index() << std::endl;
-    item.append("myVar") = 42;
+    for (unsigned long long i = 0; i < 1000000; ++i) {
+        v1 + v2;
+    }
+    v1 = oA::Var("43");
+    v2 = oA::Var("32");
+    for (unsigned long  i = 0; i < 1000000; ++i) {
+        v1 + v2;
+    }
 }

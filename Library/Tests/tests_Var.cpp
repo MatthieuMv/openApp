@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include <openApp/App/Var.hpp>
+#include <openApp/Core/Var.hpp>
 #include <openApp/App/Item.hpp>
 
 Test(Var, Basics)
@@ -20,13 +20,13 @@ Test(Var, Basics)
 
     cr_assert_not(empty);
     cr_assert_eq(copied.index(), oA::Var::VNumber);
-    cr_assert_eq(copied.get<oA::Var::Number>(), 42);
-    cr_assert_eq(ref.get<oA::Var::Number>(), 42);
+    cr_assert_eq(copied.get<oA::Number>(), 42);
+    cr_assert_eq(ref.get<oA::Number>(), 42);
     cr_assert_eq(moved.index(), oA::Var::VLiteral);
-    cr_assert_eq(moved.get<oA::Var::Literal>(), "24");
+    cr_assert_eq(moved.get<oA::Literal>(), "24");
     moved = std::move(toCopy);
     cr_assert_eq(moved.index(), oA::Var::VNumber);
-    cr_assert_eq(moved.get<oA::Var::Number>(), 42);
+    cr_assert_eq(moved.get<oA::Number>(), 42);
     copied = empty;
 }
 
@@ -37,6 +37,7 @@ Test(Var, Number)
 
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), 42);
+    cr_assert_eq(v1.toUint(), 42);
     cr_assert_eq(v1.toFloat(), 42.0f);
     cr_assert_eq(v1.toString(), "42");
     cr_assert_eq(v1.operator bool(), true);
@@ -63,6 +64,8 @@ Test(Var, Number)
     cr_assert_eq((--v1).toInt(), 0);
     try { v1[0]; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
+    try { v1.len(); } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
 }
 
 Test(Var, Literal)
@@ -70,9 +73,14 @@ Test(Var, Literal)
     bool crashed = false;
     oA::Var v1("4"), v2("2"), v3("aze");
 
+    cr_assert_eq(v1.len().toInt(), 1);
+    cr_assert_eq(v2.len().toInt(), 1);
+    cr_assert_eq(v3.len().toInt(), 3);
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), 4);
+    cr_assert_eq(v1.toUint(), 4);
     cr_assert_eq(v3.toInt(), 0);
+    cr_assert_eq(v3.toUint(), 0);
     cr_assert_eq(v1.toFloat(), 4.0f);
     cr_assert_eq(v3.toFloat(), 0.0f);
     cr_assert_eq(v1.toString(), "4");
@@ -118,70 +126,17 @@ Test(Var, Literal)
     cr_assert(crashed); crashed = false;
 }
 
-Test(Var, Item)
-{
-    bool crashed = false;
-    oA::ItemPtr item(std::make_shared<oA::Item>());
-    oA::Var v1(item), v2(item);
-
-    cr_assert_eq(v1.toBool(), true);
-    cr_assert_eq(v1.operator bool(), true);
-    cr_assert_eq(!v1, false);
-    cr_assert_eq(v1 == v2, true);
-    cr_assert_eq(v1 != v2, false);
-    cr_assert_eq(v1.toInt(), oA::Int());
-    cr_assert_eq(v1.toFloat(), oA::Float());
-    cr_assert_eq(v1.toString(), oA::String());
-    try { v1 + v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 < v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 <= v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 > v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 >= v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 - v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 * v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 / v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 % v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 += v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 -= v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 *= v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 /= v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1 %= v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1++; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { ++v1; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1--; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { --v1; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-    try { v1[0]; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
-}
-
 Test(Var, Container)
 {
     bool crashed = false;
-    oA::Var::Container c = {
+    oA::Container c = {
         false, 1, 2.5, "3"
     };
     oA::Var v1(c), v2(c);
 
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), oA::Int());
+    cr_assert_eq(v1.toUint(), oA::Uint());
     cr_assert_eq(v1.toFloat(), oA::Float());
     cr_assert_eq(v1.toString(), oA::String());
     cr_assert_eq(v1.operator bool(), true);
@@ -189,6 +144,14 @@ Test(Var, Container)
     cr_assert_eq(v1 == v2, true);
     cr_assert_eq(v1 != v2, false);
     cr_assert_eq(v1[2].toFloat(), 2.5);
+    cr_assert_eq(v1.len().toUint(), 4);
+    v1 += 42;
+    cr_assert_eq(v1.len().toUint(), 5);
+    cr_assert_eq(v1[--v1.len()].toInt(), 42);
+    v1 -= 0;
+    cr_assert_eq(v1.len().toUint(), 4);
+    cr_assert_eq(v1[0].toInt(), 1);
+    cr_assert_eq(v1[--v1.len()].toInt(), 42);
     try { v1 + v2; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
     try { v1 < v2; } catch (...) { crashed = true; }
@@ -199,6 +162,8 @@ Test(Var, Container)
     cr_assert(crashed); crashed = false;
     try { v1 >= v2; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
+    try { v1 + v2; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
     try { v1 - v2; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
     try { v1 * v2; } catch (...) { crashed = true; }
@@ -207,9 +172,9 @@ Test(Var, Container)
     cr_assert(crashed); crashed = false;
     try { v1 % v2; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { v1 += v2; } catch (...) { crashed = true; }
-    cr_assert(crashed); crashed = false;
     try { v1 -= v2; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
+    try { v1 -= 42; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
     try { v1 *= v2; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
@@ -226,5 +191,7 @@ Test(Var, Container)
     try { --v1; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
     try { v1[42]; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
+    try { v1[c[3]]; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
 }

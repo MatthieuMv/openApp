@@ -20,13 +20,28 @@ namespace oA
     class Item;
 
     /**
-     * @brief Shared pointer to Item
+     * @brief Type that will be used as Number in Var
      */
-    using ItemPtr = Shared<Item>;
+    using Number = Float;
+
+    /**
+     * @brief Type that will be used as Literal in Var
+     */
+    using Literal = String;
+
+    /**
+     * @brief Type that will be used as Container in Var
+     */
+    using Container = Vector<Var>;
 }
 
 class oA::Var
 {
+    /**
+     * @brief Internal Variant type
+     */
+    using VariantType = Variant<Number, Literal, Container>;
+
 public:
     /**
      * @brief Different internal Variant types
@@ -37,26 +52,6 @@ public:
         VItem,
         VContainer
     };
-
-    /**
-     * @brief Type that will be used as Number
-     */
-    using Number = Float;
-
-    /**
-     * @brief Type that will be used as Literal
-     */
-    using Literal = String;
-
-    /**
-     * @brief Type that will be used as Number
-     */
-    using Container = Vector<Var>;
-
-    /**
-     * @brief Internal Variant type
-     */
-    using VariantType = Variant<Number, Literal, ItemPtr, Container>;
 
     /**
      * @brief Construct a new Var object
@@ -87,27 +82,11 @@ public:
     Var(const T &value) : _var(value) {}
 
     /**
-     * @brief Copy assignment
-     *
-     * @param other Var to copy
-     * @return Var& Allow chain operators
-     */
-    Var &operator=(const Var &other);
-
-    /**
-     * @brief Move assignment
-     *
-     * @param other Var to move
-     * @return Var& Allow chain operators
-     */
-    Var &operator=(Var &&other);
-
-    /**
      * @brief Return internal index as VarType
      *
      * @return VarType Internal index
      */
-    VarType index(void) const noexcept { return static_cast<VarType>(_var.index()); }
+    constexpr VarType index(void) const noexcept { return static_cast<VarType>(_var.index()); }
 
     /**
      * @brief Try to extract non-const reference to internal type T
@@ -138,6 +117,11 @@ public:
     Int toInt(void) const noexcept;
 
     /**
+     * @brief Safe cast of internal type to Int
+     */
+    Uint toUint(void) const noexcept;
+
+    /**
      * @brief Safe cast of internal type to Float
      */
     Float toFloat(void) const noexcept;
@@ -146,6 +130,22 @@ public:
      * @brief Safe cast of internal type to String
      */
     String toString(void) const noexcept;
+
+    /**
+     * @brief Copy assignment
+     *
+     * @param other Var to copy
+     * @return Var& Allow chain operators
+     */
+    Var &operator=(const Var &other);
+
+    /**
+     * @brief Move assignment
+     *
+     * @param other Var to move
+     * @return Var& Allow chain operators
+     */
+    Var &operator=(Var &&other);
 
     /* Boolean operators */
     operator bool(void) const noexcept;
@@ -178,9 +178,10 @@ public:
     Var operator--(Int);
 
     /* Access operators */
-    Var &operator[](Uint idx);
+    Var &operator[](const Var &other);
 
-    /* Special functions */
+    /* Special operators */
+    Var len(void) const;
 
 private:
     VariantType _var;
