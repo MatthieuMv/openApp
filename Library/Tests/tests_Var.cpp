@@ -32,6 +32,7 @@ Test(Var, Basics)
 
 Test(Var, Number)
 {
+    bool crashed = false;
     oA::Var v1(42), v2(2);
 
     cr_assert_eq(v1.toBool(), true);
@@ -60,6 +61,8 @@ Test(Var, Number)
     cr_assert_eq((++v1).toInt(), 2);
     cr_assert_eq((v1--).toInt(), 2);
     cr_assert_eq((--v1).toInt(), 0);
+    try { v1[0]; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
 }
 
 Test(Var, Literal)
@@ -110,6 +113,8 @@ Test(Var, Literal)
     try { v1--; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
     try { --v1; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
+    try { v1[0]; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
 }
 
@@ -163,6 +168,8 @@ Test(Var, Item)
     cr_assert(crashed); crashed = false;
     try { --v1; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
+    try { v1[0]; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
 }
 
 Test(Var, Container)
@@ -174,13 +181,14 @@ Test(Var, Container)
     oA::Var v1(c), v2(c);
 
     cr_assert_eq(v1.toBool(), true);
+    cr_assert_eq(v1.toInt(), oA::Int());
+    cr_assert_eq(v1.toFloat(), oA::Float());
+    cr_assert_eq(v1.toString(), oA::String());
     cr_assert_eq(v1.operator bool(), true);
     cr_assert_eq(!v1, false);
     cr_assert_eq(v1 == v2, true);
     cr_assert_eq(v1 != v2, false);
-    cr_assert_eq(v1.toInt(), oA::Int());
-    cr_assert_eq(v1.toFloat(), oA::Float());
-    cr_assert_eq(v1.toString(), oA::String());
+    cr_assert_eq(v1[2].toFloat(), 2.5);
     try { v1 + v2; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
     try { v1 < v2; } catch (...) { crashed = true; }
@@ -216,5 +224,7 @@ Test(Var, Container)
     try { v1--; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
     try { --v1; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
+    try { v1[42]; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
 }

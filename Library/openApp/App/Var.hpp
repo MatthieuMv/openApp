@@ -174,8 +174,13 @@ public:
     /* Increment / Decrement operators */
     Var &operator++(void);
     Var &operator--(void);
-    Var operator++(oA::Int);
-    Var operator--(oA::Int);
+    Var operator++(Int);
+    Var operator--(Int);
+
+    /* Access operators */
+    Var &operator[](Uint idx);
+
+    /* Special functions */
 
 private:
     VariantType _var;
