@@ -14,7 +14,7 @@ oA::Property<oA::Var> &oA::Item::append(const String &key)
     return *(_members[key] = std::make_shared<Expression<Var>>());
 }
 
-bool oA::Item::exists(const String &key)
+bool oA::Item::exists(const String &key) const noexcept
 {
     return _members.find(key) != _members.end();
 }
@@ -37,57 +37,127 @@ const oA::Property<oA::Var> &oA::Item::get(const String &key) const
     return *it->second;
 }
 
-void oA::Item::setExpression(const String &key, String expression)
+void oA::Item::setExpression(const String &key, const String &expression)
 {
-    (void)(key);
+    const auto &ptr = getExprPtr(key);
+
+    if (!ptr)
+        throw AccessError("Item", "Can't set expression of @" + key + "@");
+    setExpression(*ptr, expression, true);
+}
+
+void oA::Item::setFunction(const String &key, const String &expression)
+{
+    const auto &ptr = getExprPtr(key);
+
+    if (!ptr)
+        throw AccessError("Item", "Can't set function of @" + key + "@");
+    setExpression(*ptr, expression, false);
+}
+
+void oA::Item::addExpressionEvent(const String &key, const String &expression)
+{
+    auto ptr = findExpr(key);
+
+    if (!ptr)
+        throw AccessError("Item", "Can't set expression event of @" + key + "@");
+    setExpression(*ptr, expression, false);
+}
+
+void oA::Item::setExpression(Expression<Var> &target, String expression, bool addDependency)
+{
+    (void)(target);
     (void)(expression);
+    (void)(addDependency);
 }
 
-void oA::Item::addExpressionEvent(const String &key, String event)
+oA::ExpressionPtr<oA::Var> oA::Item::getExprPtr(const String &key) const noexcept
 {
-    (void)(key);
-    (void)(event);
+    auto it = _members.find(key);
+
+    if (it == _members.end())
+        return oA::ExpressionPtr<oA::Var>();
+    return it->second;
 }
 
-oA::Item &oA::Item::appendChild(const ItemPtr &child)
+oA::ItemPtr oA::Item::getItemPtr(const String &key) const noexcept
 {
-    if (!child.get())
-        throw LogicError("Item", "Can't append @null@ chill");
-    return *_childs.emplace_back(std::move(child));
-}
-
-oA::Item &oA::Item::appendChild(ItemPtr &&child)
-{
-    if (!child.get())
-        throw LogicError("Item", "Can't append @null@ chill");
-    return *_childs.emplace_back(std::move(child));
-}
-
-bool oA::Item::existsChild(const String &id)
-{
-    return _childs.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Literal>("id");
-    }) != _childs.end();
-}
-
-oA::Item &oA::Item::getChild(const String &id)
-{
-    auto it = _childs.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Literal>("id");
+    auto it = _children.findIf([](const auto &ptr) {
+        return ptr->get("id") == key;
     });
 
-    if (it == _childs.end())
-        throw AccessError("Item", "Child with id @" + id + "@ doesn't exists");
-    return *it->get();
+    if (it == _children.end())
+        return oA::ItemPtr();
+    return *it;
 }
 
-const oA::Item &oA::Item::getChild(const String &id) const
+oA::Item *oA::Item::findItem(const String &key) const noexcept
 {
-    auto it = _childs.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Literal>("id");
-    });
+    Item *ptr = nullptr;
 
-    if (it == _childs.end())
-        throw AccessError("Item", "Child with id @" + id + "@ doesn't exists");
-    return *it->get();
+    if (existsChild(key))
+        return getItemPtr(key).get();
+    ptr = findInParents(key);
+    if (ptr)
+        return ptr;
+    ptr = findInChildren(key);
+    return ptr;
+}
+
+oA::Item *oA::Item::findInParents(const String &key)
+{
+    if (!_parent)
+        return nullptr;
+    if (key == "parent" || key == _parent->get("id")->get<Literal>())
+        return _parent;
+    if (_parent->existsChild(key))
+        return _parent->getItemPtr(key).get();
+    return _parent->findInParents(key);
+}
+
+oA::Item *oA::Item::findInChildren(const String &key)
+{
+    Item *ptr = nullptr;
+
+    for (auto &child : _children) {
+        if (child->existsChild(key))
+            return child->getItemPtr(key).get();
+    }
+    for (auto &child : _children) {
+        ptr = child->findInChildren(key);
+        if (ptr)
+            return ptr;
+    }
+    return nullptr;
+}
+
+oA::ExpressionPtr<oA::Var> oA::Item::findExpr(const String &key) const noexcept
+{
+    ExpressionPtr<Var> res;
+    String token, left = SplitKeyExpr(key, token);
+
+    if (!token.empty() && token == get("id")->get<String>())
+        return findExpr(left);
+    if (left.empty())
+        return getExprPtr(key);
+    auto ptr = findItem(token);
+    if (ptr)
+        return ptr->findExpr(left);
+    return ExpressionPtr<Var>();
+}
+
+oA::String oA::Item::SplitKeyExpr(const String &expr, String &token)
+{
+    auto it = expr.find('.');
+    oA::String left;
+
+    if (it == expr.npos) {
+        token = expr;
+        return left;
+    }
+    token = expr.substr(0, it);
+    left = expr.substr(it + 1);
+    if (left.empty())
+        throw oA::LogicError("Item", "Invalid expression @" + expr + "@");
+    return left;
 }

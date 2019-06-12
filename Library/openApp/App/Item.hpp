@@ -10,15 +10,7 @@
 #include <openApp/Core/Expression.hpp>
 #include <openApp/Core/Var.hpp>
 
-namespace oA
-{
-    class Item;
-
-    /**
-     * @brief Pointer to Item
-     */
-    using ItemPtr = Shared<Item>;
-}
+namespace oA { class Item; }
 
 /**
  * @brief openApp entities' base class
@@ -63,7 +55,7 @@ public:
      * @return true Expression exists
      * @return false Expression doesn't exists
      */
-    bool exists(const String &key);
+    bool exists(const String &key) const noexcept;
 
     /**
      * @brief Return a non-const reference to matching Expression
@@ -98,75 +90,113 @@ public:
      *
      * When building an expression, Item makes sure that every dependencies have been set
      *
-     * @param key Expression key name
-     * @param expression openApp language expression as String
+     * @param target Expression to set
+     * @param expression openApp language function as String
      */
-    void setExpression(const String &key, String expression);
+    void setExpression(const String &key, const String &expression);
 
     /**
-     * @brief Add an event to matching internal expression
+     * @brief Set internal expression of matching key
+     *
+     * When building a function, Item won't add any dependency
+     *
+     * @param target Expression to set
+     * @param expression openApp language function as String
+     */
+    void setFunction(const String &key, const String &expression);
+
+    /**
+     * @brief Add an event to matching external expression
      *
      * When building an event, Item won't add any dependency
      *
-     * @param key Expression key name
+     * @param keyExpr Expression key name (can be relative to external items)
      * @param expression openApp language function as String
      */
-    void addExpressionEvent(const String &key, String event);
+    void addExpressionEvent(const String &key, const String &expression);
 
     /**
-     * @brief Add a child ItemPtr by copy
+     * @brief Set internal parent pointer
      *
-     * @param child Value to copy
+     * @param parent Parent pointer
      */
-    Item &appendChild(const ItemPtr &child);
+    void setParent(Item *parent) { _parent = parent; }
 
     /**
-     * @brief Add a child ItemPtr by move
+     * @brief Set new items parent pointer to this
      *
-     * @param child Value to move
+     * @param child Child to set parent
      */
-    Item &appendChild(ItemPtr &&child);
+    virtual void onAppendChild(Item &child) override { child.setParent(this); }
+
+protected:
+    /**
+     * @brief Find an item using a match key (ex: parent.label)
+     *
+     * @param key Matching key expression
+     * @return ItemPtr Matching pointer (or null)
+     */
+    Item *findItem(const String &key) const noexcept;
 
     /**
-     * @brief Check existence of a child (using internal id)
+     * @brief Find an expression using a match key (ex: parent.label.x)
      *
-     * @param id Child id to find
-     * @return true Child has been found
-     * @return false Child hasn't been found
+     * @param key Matching key expression
+     * @return ExpressionPtr<Var>Ptr Matching pointer (or null)
      */
-    bool existsChild(const String &id);
-
-    /**
-     * @brief Return a non-const reference to matching child (using internal id)
-     *
-     * @param id Child id to find
-     * @return Item& Matching child
-     */
-    Item &getChild(const String &id);
-
-    /**
-     * @brief Return a const reference to matching child (using internal id)
-     *
-     * @param id Child id to find
-     * @return Item& Matching child
-     */
-    const Item &getChild(const String &id) const;
-
-    /**
-     * @brief Return a non-const reference to children list
-     *
-     * @return List<ItemPtr>& Children list
-     */
-    List<ItemPtr> &childs(void) noexcept { return _childs; }
-
-    /**
-     * @brief Return a const reference to children list
-     *
-     * @return const List<ItemPtr>& Children list
-     */
-    const List<ItemPtr> &childs(void) const noexcept { return _childs; }
+    ExpressionPtr<Var> findExpr(const String &key) const noexcept;
 
 private:
     UMap<String, ExpressionPtr<Var>> _members;
-    List<ItemPtr> _childs;
+    Item *_parent = nullptr; // Must use raw pointer to point parent from inside the class
+
+    /**
+     * @brief Recursively find an Item in parents
+     *
+     * @param key Item to find
+     * @return Item* Item pointer (can be null)
+     */
+    Item *findInParents(const String &key);
+
+    /**
+     * @brief Recursively find an Item in children
+     *
+     * @param key Item to find
+     * @return Item* Item pointer (can be null)
+     */
+    Item *findInChildren(const String &key);
+
+    /**
+     * @brief Set target internal expression
+     *
+     * @param target Expression to set
+     * @param expression openApp language function as String
+     * @param addDependency Add dependencies on each parameters of the expression
+     */
+    void setExpression(Expression<Var> &target, String expression, bool addDependency);
+
+    /**
+     * @brief Get the ExpressionPtr object matching key
+     *
+     * @param key Expression key to match
+     * @return ExpressionPtr<Var> Result expression
+     */
+    ExpressionPtr<Var> getExprPtr(const String &key) const noexcept;
+
+    /**
+     * @brief Get the ItemPtr object matching key
+     *
+     * @param key Expression key to match
+     * @return ItemPtr Result expression
+     */
+    ItemPtr getItemPtr(const String &key) const noexcept;
+
+    /**
+     * @brief Slit an expression key into two string
+     *
+     * @param expr Input expression
+     * @param token String to fill with right part
+     * @return String Name of the first variable
+     */
+    static String SplitKeyExpr(const String &expr, String &token);
 };
