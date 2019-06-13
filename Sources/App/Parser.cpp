@@ -283,6 +283,7 @@ void oA::Parser::parseProperty(void)
         _log << tab() << "Property #" + name + "# set to " << _token << endl;
     } catch (...) {
         addUnassigned(name, _token);
+        _log << tab() << "Property #" + name + "# set to " << _token << " @U@"<< endl;
     }
 }
 
@@ -318,6 +319,7 @@ void oA::Parser::parseRelativePos(void)
     } catch (...) {
         addUnassigned("x", xExpr);
         addUnassigned("y", yExpr);
+       _log << tab() << "Item #relativePosition# set to " << x + ", " + y << " @U@" << endl;
     }
 }
 
@@ -343,6 +345,7 @@ void oA::Parser::parseRelativeSize(void)
     } catch (...) {
         addUnassigned("width", wExpr);
         addUnassigned("height", hExpr);
+       _log << tab() << "Item @relativeSize@ set to #" << width + ", " + height + "#" << "@U@" << endl;
     }
 }
 
@@ -376,5 +379,6 @@ void oA::Parser::parseEvent(void)
         _log << tab() << "Property #" + target + "# event added " << endl;
     } catch (...) {
         addUnassignedEvent(target, _token);
+        _log << tab() << "Property #" + target + "# new event set to '" << _token << "' @U@" << endl;
     }
 }

@@ -46,7 +46,10 @@ public:
         append("height") = 0; // Item height
         append("screenX") = 0; // Item screen-relative X
         append("screenY") = 0; // Item screen-relative Y
-        append("visible") = true; // Condition for an item (and children) to be updated and draw
+        auto &v = append("visible") = true; // Condition for an item (and children) to be updated and draw
+        v.connect([this] { get(*get("visible") ? "show" : "hide").emit(); return true; });
+        append("show");
+        append("hide");
     }
 
     virtual ~Item(void) {}

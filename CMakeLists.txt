@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(openApp VERSION 0.1.0)
 
+include(FindIrrlicht.cmake)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
 set(SRC Sources)
@@ -12,7 +14,7 @@ set(SAPP ${SRC}/App)
 set(RENDER Renderer)
 
 set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -fPIC -std=c++17")
-include_directories(${INC})
+include_directories(${INC} ${Irrlicht_INCLUDE_DIRS})
 
 set(HEADERS
     ${INC}/App.hpp
@@ -103,7 +105,7 @@ set(GRAPHIC
     ${RENDER}/Irrlicht/EventHandler.cpp
 )
 
-link_libraries(Irrlicht)
+link_libraries(${Irrlicht_LIBRARIES})
 
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 

@@ -57,7 +57,7 @@ public:
         ItemPtr ptr = Parser::ParseFile(path, _verbose);
         Window *wnd = dynamic_cast<Window *>(ptr.get());
         if (_verbose) {
-            cout << "#" + path + "#" << ": " << endl << *ptr;
+           cout << "#" + path + "#" << ": " << endl << *ptr;
         }
         if (!wnd)
             ptr->getItemContext(ctx);
