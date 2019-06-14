@@ -13,7 +13,12 @@ set(SCORE ${SRC}/Core)
 set(SAPP ${SRC}/App)
 set(RENDER Renderer)
 
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -fPIC -std=c++17")
+set(CMAKE_CXX_STANDARD 17)
+
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -fPIC")
+endif ()
+
 include_directories(${INC} ${Irrlicht_INCLUDE_DIRS})
 
 set(HEADERS

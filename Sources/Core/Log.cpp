@@ -17,8 +17,10 @@ oA::Log::Repeater oA::repeat;
 oA::Log::Endl oA::endl;
 
 oA::Log::Log(Output out, ConsoleColor text, ConsoleColor quote, ConsoleColor quote2)
-    : _stream(out == Stderr ? std::cerr : std::cout), _text(text), _quote({quote, quote2})
+    : _stream(out == Stderr ? std::cerr : std::cout), _text(text)
 {
+    _quote[0] = quote;
+    _quote[1] = quote2;
     if (_text.empty())
         _text = oA::CSL_WHITE;
     for (auto &q : _quote) {

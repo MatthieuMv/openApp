@@ -33,10 +33,7 @@ public:
     }
 
     void resume(void) noexcept {
-        auto cast = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::system_clock::now() - _pause
-        );
-        _chrono += cast;
+        _chrono += std::chrono::system_clock::now() - _pause;
     }
 
 private:
