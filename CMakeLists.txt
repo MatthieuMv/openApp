@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(openApp VERSION 0.1.0)
 
-include(FindIrrlicht.cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/../Irrlicht")
+
+set(Irrlicht_FIND_REQUIRED true)
+
+include(FindIrrlicht)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR})
 
@@ -16,7 +20,7 @@ set(RENDER Renderer)
 set(CMAKE_CXX_STANDARD 17)
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -fPIC")
+    set(CMAKE_CXX_FLAGS "-Wall -fPIC")
 endif ()
 
 include_directories(${INC} ${Irrlicht_INCLUDE_DIRS})

@@ -8,7 +8,7 @@
 #pragma once
 
 // Irrlicht library
-#include <irrlicht/irrlicht.h>
+#include <irrlicht.h>
 
 // UMap
 #include "Core/UMap.hpp"

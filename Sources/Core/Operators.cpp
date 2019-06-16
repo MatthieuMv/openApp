@@ -63,12 +63,16 @@ void oA::FormatExpression(String &expr)
     for (auto it = expr.begin(); last != expr.end() && it != expr.end(); ++it) {
         if (*it == '"')
             quote = !quote;
-        if (quote)
-            continue;
+		if (quote) {
+			last = it;
+			continue;
+		}
         for (const auto &op : C_OPERATORS) {
             if (MatchOperator(expr, op.first, it, last))
                 break;
         }
+		if (it == expr.end())
+			return;
         last = it;
     }
 }
@@ -81,10 +85,10 @@ static bool MatchOperator(oA::String &expr, const oA::String &op, oA::String::it
             return false;
         ++i;
     }
-    if (!std::isspace(*last)) {
-        it = expr.insert(it, ' ');
-        ++it;
-    }
+	if (!std::isspace(*last)) {
+		it = expr.insert(it, ' ');
+		++it;
+	}
     std::advance(it, op.length());
     if (it != expr.end() && !std::isspace(*it))
         it = expr.insert(it, ' ');
