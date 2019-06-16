@@ -12,7 +12,7 @@
 
 namespace oA
 {
-    class ItemHandler;
+    namespace ItemUtils { class ItemHandler; }
 
     class Item;
 
@@ -22,7 +22,7 @@ namespace oA
     using ItemPtr = Shared<Item>;
 }
 
-class oA::ItemHandler
+class oA::ItemUtils::ItemHandler
 {
 public:
     /**
@@ -57,7 +57,6 @@ public:
      * @param id Child index
      */
     void removeChild(Uint index);
-
 
     /**
      * @brief Event called when appending a new Item
@@ -110,6 +109,15 @@ public:
      */
     const Item &getChild(Uint index) const;
 
-private:
+    /**
+     * @brief Get the ItemPtr object matching key
+     *
+     * @param key Expression key to match
+     * @return ItemPtr Result expression
+     */
+    ItemPtr getItemPtr(const String &key) const noexcept;
+
+
+protected:
     List<ItemPtr> _children;
 };

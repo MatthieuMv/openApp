@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <openApp/Core/Expression.hpp>
-#include <openApp/Core/Var.hpp>
+#include <openApp/App/ItemHandler.hpp>
+#include <openApp/App/ExpressionHandler.hpp>
 
 namespace oA { class Item; }
 
@@ -18,7 +18,7 @@ namespace oA { class Item; }
  * Item contains an Expression list, which can be interpreted as member
  * functions or variables. They can be accessed in openApp's design language
  */
-class oA::Item
+class oA::Item : public ItemUtils::ItemHandler, public ItemUtils::ExpressionHandler
 {
 public:
     /**
@@ -41,49 +41,25 @@ public:
     virtual String getName(void) { return "Item"; }
 
     /**
-     * @brief Append a generic expression
+     * @brief Set internal parent pointer
      *
-     * @param key Expression key name
-     * @return Expression<T>& Allow chain operators
+     * @param parent Parent pointer
      */
-    Property<Var> &append(const String &key);
+    void setParent(Item *parent) { _parent = parent; }
 
     /**
-     * @brief Check existence of a member Expression
+     * @brief Get internal parent pointer
      *
-     * @param key Expression key name
-     * @return true Expression exists
-     * @return false Expression doesn't exists
+     * @return Item* Parent pointer
      */
-    bool exists(const String &key) const noexcept;
+    Item *getParent(Item *parent) { _parent = parent; }
 
     /**
-     * @brief Return a non-const reference to matching Expression
+     * @brief Set new items parent pointer to this
      *
-     * @param key Expression name
-     * @return Property<Var>& Matching expression
+     * @param child Child to set parent
      */
-    Property<Var> &get(const String &key);
-
-    /**
-     * @brief Return a const reference to matching Expression
-     *
-     * @param key Expression name
-     * @return Property<Var>& Matching expression
-     */
-    const Property<Var> &get(const String &key) const;
-
-    /**
-     * @brief Return a const reference to matching Expression as type T
-     *
-     * @tparam T Type to retreive
-     * @param key Expression name
-     * @return const T& Matching expression's value
-     */
-    template<typename T>
-    const T &getAs(const String &key) const {
-        return get(key)->get<T>();
-    }
+    virtual void onAppendChild(Item &child) { child.setParent(this); }
 
     /**
      * @brief Set internal expression of matching key
@@ -116,21 +92,6 @@ public:
     void addExpressionEvent(const String &key, const String &expression);
 
     /**
-     * @brief Set internal parent pointer
-     *
-     * @param parent Parent pointer
-     */
-    void setParent(Item *parent) { _parent = parent; }
-
-    /**
-     * @brief Set new items parent pointer to this
-     *
-     * @param child Child to set parent
-     */
-    virtual void onAppendChild(Item &child) override { child.setParent(this); }
-
-protected:
-    /**
      * @brief Find an item using a match key (ex: parent.label)
      *
      * @param key Matching key expression
@@ -147,7 +108,6 @@ protected:
     ExpressionPtr<Var> findExpr(const String &key) const noexcept;
 
 private:
-    UMap<String, ExpressionPtr<Var>> _members;
     Item *_parent = nullptr; // Must use raw pointer to point parent from inside the class
 
     /**
@@ -174,22 +134,6 @@ private:
      * @param addDependency Add dependencies on each parameters of the expression
      */
     void setExpression(Expression<Var> &target, String expression, bool addDependency);
-
-    /**
-     * @brief Get the ExpressionPtr object matching key
-     *
-     * @param key Expression key to match
-     * @return ExpressionPtr<Var> Result expression
-     */
-    ExpressionPtr<Var> getExprPtr(const String &key) const noexcept;
-
-    /**
-     * @brief Get the ItemPtr object matching key
-     *
-     * @param key Expression key to match
-     * @return ItemPtr Result expression
-     */
-    ItemPtr getItemPtr(const String &key) const noexcept;
 
     /**
      * @brief Slit an expression key into two string

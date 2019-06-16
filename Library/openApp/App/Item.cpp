@@ -79,18 +79,6 @@ oA::ExpressionPtr<oA::Var> oA::Item::getExprPtr(const String &key) const noexcep
         return oA::ExpressionPtr<oA::Var>();
     return it->second;
 }
-
-oA::ItemPtr oA::Item::getItemPtr(const String &key) const noexcept
-{
-    auto it = _children.findIf([](const auto &ptr) {
-        return ptr->get("id") == key;
-    });
-
-    if (it == _children.end())
-        return oA::ItemPtr();
-    return *it;
-}
-
 oA::Item *oA::Item::findItem(const String &key) const noexcept
 {
     Item *ptr = nullptr;

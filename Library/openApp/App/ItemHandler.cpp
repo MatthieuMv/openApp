@@ -8,7 +8,7 @@
 #include <openApp/App/ItemHandler.hpp>
 #include <openApp/App/Item.hpp>
 
-oA::Item &oA::ItemHandler::appendChild(const ItemPtr &child)
+oA::Item &oA::ItemUtils::ItemHandler::appendChild(const ItemPtr &child)
 {
     if (!child.get())
         throw LogicError("Item", "Can't append @null@ chill");
@@ -17,7 +17,7 @@ oA::Item &oA::ItemHandler::appendChild(const ItemPtr &child)
     return *p;
 }
 
-oA::Item &oA::ItemHandler::appendChild(ItemPtr &&child)
+oA::Item &oA::ItemUtils::ItemHandler::appendChild(ItemPtr &&child)
 {
     if (!child.get())
         throw LogicError("Item", "Can't append @null@ chill");
@@ -26,7 +26,7 @@ oA::Item &oA::ItemHandler::appendChild(ItemPtr &&child)
     return *p;
 }
 
-void oA::ItemHandler::removeChild(const String &id)
+void oA::ItemUtils::ItemHandler::removeChild(const String &id)
 {
     _children.removeIf([&id](auto &ptr) {
         if (id != ptr->getAs<Literal>("id"))
@@ -36,7 +36,7 @@ void oA::ItemHandler::removeChild(const String &id)
     });
 }
 
-void oA::ItemHandler::removeChild(Uint index)
+void oA::ItemUtils::ItemHandler::removeChild(Uint index)
 {
     auto it = _children.begin();
 
@@ -47,14 +47,14 @@ void oA::ItemHandler::removeChild(Uint index)
     _children.erase(it);
 }
 
-bool oA::ItemHandler::existsChild(const String &id) const noexcept
+bool oA::ItemUtils::ItemHandler::existsChild(const String &id) const noexcept
 {
     return _children.findIf([&id](const ItemPtr &child) {
         return id == child->getAs<Literal>("id");
     }) != _children.end();
 }
 
-oA::Item &oA::ItemHandler::getChild(const String &id)
+oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id)
 {
     auto it = _children.findIf([&id](const ItemPtr &child) {
         return id == child->getAs<Literal>("id");
@@ -65,7 +65,7 @@ oA::Item &oA::ItemHandler::getChild(const String &id)
     return *it->get();
 }
 
-const oA::Item &oA::ItemHandler::getChild(const String &id) const
+const oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id) const
 {
     auto it = _children.findIf([&id](const ItemPtr &child) {
         return id == child->getAs<Literal>("id");
@@ -76,7 +76,7 @@ const oA::Item &oA::ItemHandler::getChild(const String &id) const
     return *it->get();
 }
 
-oA::Item &oA::ItemHandler::getChild(Uint index)
+oA::Item &oA::ItemUtils::ItemHandler::getChild(Uint index)
 {
     auto it = _children.begin();
 
@@ -86,7 +86,7 @@ oA::Item &oA::ItemHandler::getChild(Uint index)
     return *it->get();
 }
 
-const oA::Item &oA::ItemHandler::getChild(Uint index) const
+const oA::Item &oA::ItemUtils::ItemHandler::getChild(Uint index) const
 {
     auto it = _children.begin();
 
@@ -94,4 +94,16 @@ const oA::Item &oA::ItemHandler::getChild(Uint index) const
         throw AccessError("Item", "Can't get child with out of range index @" + ToString(index) + "@");
     std::advance(it, index);
     return *it->get();
+}
+
+
+oA::ItemPtr oA::ItemUtils::ItemHandler::getItemPtr(const String &key) const noexcept
+{
+    auto it = _children.findIf([](const auto &ptr) {
+        return ptr->get("id") == key;
+    });
+
+    if (it == _children.end())
+        return oA::ItemPtr();
+    return *it;
 }
