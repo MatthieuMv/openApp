@@ -174,7 +174,7 @@ Test(Var, OperatorErrors)
     bool crashed = false;
 
     try { (x + y); } catch (...) { crashed = true; }
-    cr_assert(crashed);
+    cr_assert_not(crashed);
     crashed = false;
     try { (x - y); } catch (...) { crashed = true; }
     cr_assert(crashed);
