@@ -13,6 +13,7 @@
 #include <openApp/Types/FStream.hpp>
 #include <openApp/Types/Function.hpp>
 #include <openApp/Containers/UMap.hpp>
+#include <openApp/Core/GetLine.hpp>
 #include <openApp/Language/Lexer.hpp>
 
 static constexpr auto ItemMatch = "[A-Z][a-zA-Z0-9]*";
@@ -52,9 +53,9 @@ bool oA::Lexer::process(LexTree &target, const String &end)
     String token;
 
     do {
-        if (!_ss >> token || token == end)
+        if (!(_ss >> token) || token == end)
             break;
-        auto it = LexMatches.findIf([&token](const auto &m) { return std::regex_match(token, std::regex(m.first)); }));
+        auto it = LexMatches.findIf([&token](const auto &m) { return std::regex_match(token, std::regex(m.first)); });
         if (it == LexMatches.end())
             throw LogicError("Lexer", "Couldn't identify token @" + token + "@");
         buildNode(target, token, it->second);
@@ -73,10 +74,8 @@ void oA::Lexer::buildNode(LexTree &target, const String &token, TokenType type)
         { NewEvent,         &Lexer::buildNewEvent       }
     };
     auto it = LexBuild.find(type);
-
-    if (it == LexBuild.end())
-        throw LogicError("Lexer", "Invalid token type");
     auto &child = target.childs.emplace_back();
+
     child.value.type = type;
     (this->*it->second)(child, token);
 }
@@ -91,7 +90,7 @@ void oA::Lexer::buildNewItem(LexTree &target, const String &token)
 {
     String tmp;
 
-    if (!(_ss >> tmp) || tmp != '{')
+    if (!(_ss >> tmp) || tmp != "{")
         throw LogicError("Lexer", "Excepted @{@ after item declaration");
     target.value.data.emplace_back(token);
     if (!process(target, "}"))
@@ -109,17 +108,17 @@ void oA::Lexer::buildNewProperty(LexTree &target, const String &)
 
 void oA::Lexer::buildPropertyAssign(LexTree &target, const String &name)
 {
-    target.value.data.emplace_back(name);
+    target.value.data.emplace_back(name.substr(0, name.length() - 1));
     captureExpression(target.value.data.emplace_back());
 }
 
 void oA::Lexer::buildNewFunction(LexTree &target, const String &)
 {
-    String name;
+    String &name = target.value.data.emplace_back();
 
     if (!(_ss >> name) || !std::regex_match(name, std::regex(PropertyMatch)))
         throw LogicError("Lexer", "Invalid function declaration @" + name + "@");
-    target.value.data.emplace_back(name);
+    name.pop_back();
     captureExpression(target.value.data.emplace_back());
 }
 
@@ -129,17 +128,28 @@ void oA::Lexer::buildNewEvent(LexTree &target, const String &)
 
     if (!(_ss >> name) || !std::regex_match(name, std::regex(PropertyMatch)))
         throw LogicError("Lexer", "Invalid event declaration @" + name + "@");
-    target.value.data.emplace_back(name);
+    name.pop_back();
+    target.value.data.emplace_back(std::move(name));
     captureExpression(target.value.data.emplace_back());
 }
 
+#include <iostream>
+
 void oA::Lexer::captureExpression(String &target)
 {
-    if (!(_ss >> target))
+    char c = 0;
+
+    for (c = _ss.get(); c && std::isspace(c) && c != '\n'; c = _ss.get());
+    std::cout << "last char is " << c << std::endl;
+    if (c == '\n')
         return;
-    if (target == "{") {
+    else if (c == '{') {
         target.clear();
-        std::getline(_ss, target, '}');
-    } else
-        std::getline(_ss, target);
+        GetLine(_ss, target, '}');
+    } else {
+        String tmp;
+        target.push_back(c);
+        GetLine(_ss, tmp);
+        target += tmp;
+    }
 }

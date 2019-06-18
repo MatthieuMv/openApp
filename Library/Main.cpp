@@ -5,19 +5,19 @@
 ** Main
 */
 
-#include <openApp/Core/Var.hpp>
-#include <iostream>
+#include <openApp/App/Item.hpp>
 
 int main(void)
 {
-    oA::Var v1(42), v2(43);
+    oA::Item root;
+    auto &child = root.appendChild(std::make_shared<oA::Item>());
+    auto &child2 = root.appendChild(std::make_shared<oA::Item>());
+    auto &sub = child.appendChild(std::make_shared<oA::Item>());
+    auto &sub2 = child2.appendChild(std::make_shared<oA::Item>());
 
-    for (unsigned long long i = 0; i < 1000000; ++i) {
-        v1 + v2;
-    }
-    v1 = oA::Var("43");
-    v2 = oA::Var("32");
-    for (unsigned long  i = 0; i < 1000000; ++i) {
-        v1 + v2;
-    }
+    root.setID("root");
+    child.setID("child");
+    child2.setID("child2");
+    sub.setID("sub");
+    sub2.setID("sub2");
 }

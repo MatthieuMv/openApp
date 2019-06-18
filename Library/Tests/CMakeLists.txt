@@ -22,9 +22,21 @@ set(TestsSources
     tests_ExpressionNode.cpp
     tests_Var.cpp
     tests_Item.cpp
+    tests_ItemHandler.cpp
+    tests_ExpressionHandler.cpp
+    tests_Lexer.cpp
+    tests_GetLine.cpp
 )
 
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -lcriterion --coverage")
+set(CMAKE_CXX_STANDARD 17)
+
+
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -coverage")
+endif ()
+
+link_libraries(criterion)
+
 include_directories(${oAPath})
 
 add_executable(run_tests ${TestsSources} ${oASources})

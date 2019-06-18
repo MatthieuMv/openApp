@@ -22,10 +22,18 @@ class oA::Item : public ItemUtils::ItemHandler, public ItemUtils::ExpressionHand
 {
 public:
     /**
+     * @brief Specifies where findItem should search from himself
+     */
+    enum FindWhere {
+        Parents,
+        Children,
+        Everywhere
+    };
+
+    /**
      * @brief Construct a new Item object
      */
     Item(void) {
-        append("id");
     }
 
     /**
@@ -41,6 +49,13 @@ public:
     virtual String getName(void) { return "Item"; }
 
     /**
+     * @brief Set new items parent pointer to this
+     *
+     * @param child Child to set parent
+     */
+    virtual void onAppendChild(Item &child) { child.setParent(this); }
+
+    /**
      * @brief Set internal parent pointer
      *
      * @param parent Parent pointer
@@ -52,14 +67,21 @@ public:
      *
      * @return Item* Parent pointer
      */
-    Item *getParent(Item *parent) { _parent = parent; }
+    Item *getParent(void) noexcept { return _parent; }
 
     /**
-     * @brief Set new items parent pointer to this
+     * @brief Set internal id
      *
-     * @param child Child to set parent
+     * @param id ID
      */
-    virtual void onAppendChild(Item &child) { child.setParent(this); }
+    void setID(const String &id) noexcept { _id = id; }
+
+    /**
+     * @brief Get internal id
+     *
+     * @return Item* ID
+     */
+    const String &getID(void) const noexcept { return _id; }
 
     /**
      * @brief Set internal expression of matching key
@@ -97,7 +119,7 @@ public:
      * @param key Matching key expression
      * @return ItemPtr Matching pointer (or null)
      */
-    Item *findItem(const String &key) const noexcept;
+    Item *findItem(const String &key, FindWhere where = Everywhere);
 
     /**
      * @brief Find an expression using a match key (ex: parent.label.x)
@@ -105,10 +127,11 @@ public:
      * @param key Matching key expression
      * @return ExpressionPtr<Var>Ptr Matching pointer (or null)
      */
-    ExpressionPtr<Var> findExpr(const String &key) const noexcept;
+    ExpressionPtr<Var> findExpr(const String &key);
 
 private:
     Item *_parent = nullptr; // Must use raw pointer to point parent from inside the class
+    String _id;
 
     /**
      * @brief Recursively find an Item in parents
@@ -116,7 +139,7 @@ private:
      * @param key Item to find
      * @return Item* Item pointer (can be null)
      */
-    Item *findInParents(const String &key);
+    Item *findParents(const String &key);
 
     /**
      * @brief Recursively find an Item in children
@@ -124,7 +147,7 @@ private:
      * @param key Item to find
      * @return Item* Item pointer (can be null)
      */
-    Item *findInChildren(const String &key);
+    Item *findChildren(const String &key);
 
     /**
      * @brief Set target internal expression

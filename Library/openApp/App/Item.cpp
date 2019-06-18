@@ -7,36 +7,6 @@
 
 #include <openApp/App/Item.hpp>
 
-oA::Property<oA::Var> &oA::Item::append(const String &key)
-{
-    if (exists(key))
-        throw LogicError("Item", "Can't append @" + key + "@, already exists");
-    return *(_members[key] = std::make_shared<Expression<Var>>());
-}
-
-bool oA::Item::exists(const String &key) const noexcept
-{
-    return _members.find(key) != _members.end();
-}
-
-oA::Property<oA::Var> &oA::Item::get(const String &key)
-{
-    auto it = _members.find(key);
-
-    if (it == _members.end())
-        throw AccessError("Item", "Member @" + key + "@ doesn't exists");
-    return *it->second;
-}
-
-const oA::Property<oA::Var> &oA::Item::get(const String &key) const
-{
-    auto it = _members.find(key);
-
-    if (it == _members.end())
-        throw AccessError("Item", "Member @" + key + "@ doesn't exists");
-    return *it->second;
-}
-
 void oA::Item::setExpression(const String &key, const String &expression)
 {
     const auto &ptr = getExprPtr(key);
@@ -71,60 +41,59 @@ void oA::Item::setExpression(Expression<Var> &target, String expression, bool ad
     (void)(addDependency);
 }
 
-oA::ExpressionPtr<oA::Var> oA::Item::getExprPtr(const String &key) const noexcept
-{
-    auto it = _members.find(key);
-
-    if (it == _members.end())
-        return oA::ExpressionPtr<oA::Var>();
-    return it->second;
-}
-oA::Item *oA::Item::findItem(const String &key) const noexcept
+oA::Item *oA::Item::findItem(const String &key, FindWhere where)
 {
     Item *ptr = nullptr;
 
-    if (existsChild(key))
-        return getItemPtr(key).get();
-    ptr = findInParents(key);
-    if (ptr)
+    if (key == getID())
+        return this;
+    if (childExists(key))
+        return &getChild(key);
+    if ((where == Parents || where == Everywhere) && (ptr = findParents(key)))
         return ptr;
-    ptr = findInChildren(key);
+    if (where == Children || where == Everywhere)
+        ptr = findChildren(key);
     return ptr;
 }
 
-oA::Item *oA::Item::findInParents(const String &key)
+oA::Item *oA::Item::findParents(const String &key)
 {
     if (!_parent)
         return nullptr;
-    if (key == "parent" || key == _parent->get("id")->get<Literal>())
+    if (key == "parent" || key == _parent->getID())
         return _parent;
-    if (_parent->existsChild(key))
-        return _parent->getItemPtr(key).get();
-    return _parent->findInParents(key);
+    if (_parent->childExists(key))
+        return &_parent->getChild(key);
+    for (auto &child : _parent->_children) {
+        if (child.get() == this)
+            continue;
+        auto ptr = child->findItem(key, Children);
+        if (ptr)
+            return ptr;
+    }
+    return _parent->findParents(key);
 }
 
-oA::Item *oA::Item::findInChildren(const String &key)
+oA::Item *oA::Item::findChildren(const String &key)
 {
-    Item *ptr = nullptr;
-
     for (auto &child : _children) {
-        if (child->existsChild(key))
-            return child->getItemPtr(key).get();
+        if (child->childExists(key))
+            return &child->getChild(key);
     }
     for (auto &child : _children) {
-        ptr = child->findInChildren(key);
+        auto ptr = child->findChildren(key);
         if (ptr)
             return ptr;
     }
     return nullptr;
 }
 
-oA::ExpressionPtr<oA::Var> oA::Item::findExpr(const String &key) const noexcept
+oA::ExpressionPtr<oA::Var> oA::Item::findExpr(const String &key)
 {
     ExpressionPtr<Var> res;
     String token, left = SplitKeyExpr(key, token);
 
-    if (!token.empty() && token == get("id")->get<String>())
+    if (!token.empty() && token == getID())
         return findExpr(left);
     if (left.empty())
         return getExprPtr(key);

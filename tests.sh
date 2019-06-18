@@ -4,4 +4,5 @@ cmake ../Library/Tests
 make
 ./run_tests
 cd ..
-gcovr -r . -f Library/openApp
+echo "Starting GCOVR"
+gcovr --exclude Library/Tests

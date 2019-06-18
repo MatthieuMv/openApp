@@ -9,6 +9,7 @@ set(oACore ${oARoot}/Core)
 set(oAContainers ${oARoot}/Containers)
 set(oAApp ${oARoot}/App)
 set(oANetwork ${oARoot}/Network)
+set(oALanguage ${oARoot}/Language)
 
 set(Types
     ${oATypes}/Error.hpp
@@ -42,6 +43,8 @@ set(Core
     ${oACore}/Expression.hpp
     ${oACore}/ExpressionStack.hpp
     ${oACore}/ExpressionNode.hpp
+    ${oACore}/GetLine.hpp
+    ${oACore}/GetLine.cpp
     ${oACore}/Var.hpp
     ${oACore}/Var.cpp
 )
@@ -63,6 +66,16 @@ set(Containers
 set(App
     ${oAApp}/Item.hpp
     ${oAApp}/Item.cpp
+    ${oAApp}/ItemHandler.hpp
+    ${oAApp}/ItemHandler.cpp
+    ${oAApp}/ExpressionHandler.hpp
+    ${oAApp}/ExpressionHandler.cpp
+)
+
+set(Language
+    ${oALanguage}/Lexer.hpp
+    ${oALanguage}/Lexer.cpp
+    ${oALanguage}/Tree.hpp
 )
 
 set(Network
@@ -75,4 +88,5 @@ set(oASources
     ${Containers}
     ${App}
     ${Network}
+    ${Language}
 )

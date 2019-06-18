@@ -26,16 +26,6 @@ oA::Item &oA::ItemUtils::ItemHandler::appendChild(ItemPtr &&child)
     return *p;
 }
 
-void oA::ItemUtils::ItemHandler::removeChild(const String &id)
-{
-    _children.removeIf([&id](auto &ptr) {
-        if (id != ptr->getAs<Literal>("id"))
-            return false;
-        onRemoveChild(*ptr);
-        return true;
-    });
-}
-
 void oA::ItemUtils::ItemHandler::removeChild(Uint index)
 {
     auto it = _children.begin();
@@ -47,33 +37,26 @@ void oA::ItemUtils::ItemHandler::removeChild(Uint index)
     _children.erase(it);
 }
 
-bool oA::ItemUtils::ItemHandler::existsChild(const String &id) const noexcept
+void oA::ItemUtils::ItemHandler::removeChild(const String &id)
+{
+    auto count = 0;
+
+    _children.removeIf([this, &id, &count](ItemPtr &ptr) {
+        if (id != ptr->getID())
+            return false;
+        onRemoveChild(*ptr);
+        ++count;
+        return true;
+    });
+    if (!count)
+        throw AccessError("Item", "Couldn't remove any instance of children with id @" + id + "@");
+}
+
+bool oA::ItemUtils::ItemHandler::childExists(const String &id) const noexcept
 {
     return _children.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Literal>("id");
+        return id == child->getID();
     }) != _children.end();
-}
-
-oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id)
-{
-    auto it = _children.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Literal>("id");
-    });
-
-    if (it == _children.end())
-        throw AccessError("Item", "Child with id @" + id + "@ doesn't exists");
-    return *it->get();
-}
-
-const oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id) const
-{
-    auto it = _children.findIf([&id](const ItemPtr &child) {
-        return id == child->getAs<Literal>("id");
-    });
-
-    if (it == _children.end())
-        throw AccessError("Item", "Child with id @" + id + "@ doesn't exists");
-    return *it->get();
 }
 
 oA::Item &oA::ItemUtils::ItemHandler::getChild(Uint index)
@@ -96,14 +79,24 @@ const oA::Item &oA::ItemUtils::ItemHandler::getChild(Uint index) const
     return *it->get();
 }
 
-
-oA::ItemPtr oA::ItemUtils::ItemHandler::getItemPtr(const String &key) const noexcept
+oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id)
 {
-    auto it = _children.findIf([](const auto &ptr) {
-        return ptr->get("id") == key;
+    auto it = _children.findIf([&id](const ItemPtr &child) {
+        return id == child->getID();
     });
 
     if (it == _children.end())
-        return oA::ItemPtr();
-    return *it;
+        throw AccessError("Item", "Child with id @" + id + "@ doesn't exists");
+    return *it->get();
+}
+
+const oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id) const
+{
+    auto it = _children.findIf([&id](const ItemPtr &child) {
+        return id == child->getID();
+    });
+
+    if (it == _children.end())
+        throw AccessError("Item", "Child with id @" + id + "@ doesn't exists");
+    return *it->get();
 }

@@ -9,6 +9,7 @@
 
 #include <openApp/Types/Memory.hpp>
 #include <openApp/Types/String.hpp>
+#include <openApp/Containers/Vector.hpp>
 
 namespace oA
 {
@@ -31,6 +32,23 @@ public:
     virtual ~ItemHandler(void) = default;
 
     /**
+     * @brief Event called when appending a new Item
+     */
+    virtual void onAppendChild(Item &) {}
+
+    /**
+     * @brief Event called when removing an Item
+     */
+    virtual void onRemoveChild(Item &) {}
+
+    /**
+     * @brief Return number of children
+     *
+     * @return Uint Number of children
+     */
+    Uint childCount(void) const noexcept { return _children.size(); }
+
+    /**
      * @brief Add a child ItemPtr by copy
      *
      * @param child Value to copy
@@ -45,13 +63,6 @@ public:
     Item &appendChild(ItemPtr &&child);
 
     /**
-     * @brief Remove a child (using internal id)
-     *
-     * @param id Matching child id
-     */
-    void removeChild(const String &id);
-
-    /**
      * @brief Remove a child using index
      *
      * @param id Child index
@@ -59,14 +70,11 @@ public:
     void removeChild(Uint index);
 
     /**
-     * @brief Event called when appending a new Item
+     * @brief Remove a child (using internal id)
+     *
+     * @param id Matching child id
      */
-    virtual void onAppendChild(Item &) {}
-
-    /**
-     * @brief Event called when removing an Item
-     */
-    virtual void onRemoveChild(Item &) {}
+    void removeChild(const String &id);
 
     /**
      * @brief Check existence of a child (using internal id)
@@ -75,23 +83,7 @@ public:
      * @return true Child has been found
      * @return false Child hasn't been found
      */
-    bool existsChild(const String &id) const noexcept;
-
-    /**
-     * @brief Return a non-const reference to matching child (using internal id)
-     *
-     * @param id Child id to find
-     * @return Item& Matching child
-     */
-    Item &getChild(const String &id);
-
-    /**
-     * @brief Return a const reference to matching child (using internal id)
-     *
-     * @param id Child id to find
-     * @return Item& Matching child
-     */
-    const Item &getChild(const String &id) const;
+    bool childExists(const String &id) const noexcept;
 
     /**
      * @brief Return a non-const reference to matching child using index
@@ -110,14 +102,21 @@ public:
     const Item &getChild(Uint index) const;
 
     /**
-     * @brief Get the ItemPtr object matching key
+     * @brief Return a non-const reference to matching child (using internal id)
      *
-     * @param key Expression key to match
-     * @return ItemPtr Result expression
+     * @param id Child id to find
+     * @return Item& Matching child
      */
-    ItemPtr getItemPtr(const String &key) const noexcept;
+    Item &getChild(const String &id);
 
+    /**
+     * @brief Return a const reference to matching child (using internal id)
+     *
+     * @param id Child id to find
+     * @return Item& Matching child
+     */
+    const Item &getChild(const String &id) const;
 
 protected:
-    List<ItemPtr> _children;
+    Vector<ItemPtr> _children;
 };

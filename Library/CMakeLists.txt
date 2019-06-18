@@ -5,8 +5,11 @@ set(oAPath .)
 
 include(openApp.cmake)
 
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -fPIC")
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -fPIC -g3")
+endif ()
+
 include_directories(${oAPath})
 
-add_library(openApp ${oASources})
-#add_executable(openApp ${oASources} Main.cpp)
+#add_library(openApp ${oASources})
+add_executable(openApp ${oASources} Main.cpp)
