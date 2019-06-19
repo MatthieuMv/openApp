@@ -121,7 +121,7 @@ public:
         find() : find an item from parents and childrens
         findExpression() : find an item's expression from parent and children
     */
-    Item *find(const String &name);
+    Item *find(const String &name, bool childOnly = false);
     ExpressionPtr<Var> findExpression(const String &name);
 
 protected:

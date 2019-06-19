@@ -10,13 +10,14 @@
 
 static oA::String SplitExpression(const oA::String &expr, oA::String &token);
 
-oA::Item *oA::Item::find(const String &name)
+oA::Item *oA::Item::find(const String &name, bool childOnly)
 {
     Item *ptr = nullptr;
 
     if (childExists(name))
         return getChildPtr(name).get();
-    ptr = findInParents(name);
+    if (!childOnly)
+        ptr = findInParents(name);
     if (ptr)
         return ptr;
     ptr = findInChildrens(name);
@@ -30,7 +31,12 @@ oA::Item *oA::Item::findInParents(const String &name)
     if (name == "parent" || name == _parent->get("id")->get<String>())
         return _parent;
     if (_parent->childExists(name))
-        return _parent->getChildPtr(name).get();
+        return &_parent->getChild(name);
+    for (auto &child : _parent->_childs) {
+        auto ptr = this != child.get() ? child->find(name, true) : nullptr;
+        if (ptr)
+            return ptr;
+    }
     return _parent->findInParents(name);
 }
 
