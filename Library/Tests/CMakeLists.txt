@@ -24,7 +24,7 @@ set(TestsSources
     tests_Item.cpp
     tests_ItemHandler.cpp
     tests_ExpressionHandler.cpp
-    tests_Lexer.cpp
+    tests_OALexer.cpp
     tests_GetLine.cpp
 )
 

@@ -7,62 +7,88 @@
 
 #pragma once
 
+#include <openApp/Types/Error.hpp>
 #include <openApp/Types/String.hpp>
 #include <openApp/Types/Stream.hpp>
+#include <openApp/Core/GetLine.hpp>
 #include <openApp/Language/Tree.hpp>
 
-namespace oA { class Lexer; }
+namespace oA { template<typename T> class Lexer; }
 
+/**
+ * @brief This class abstract few Lexer functionalities used in OALexer and ExpressionLexer
+ *
+ * @tparam T Type of target Tree's node
+ */
+template<typename T>
 class oA::Lexer
 {
 public:
-    enum TokenType {
-        Root = 0,
-        Import,
-        NewItem,
-        NewProperty,
-        PropertyAssign,
-        NewFunction,
-        NewEvent
-    };
-
-    struct LexNode
-    {
-        Vector<String> data;
-        TokenType type = Root;
-    };
-
-    using LexTree = Tree<LexNode>;
+    using LexTree = Tree<T>;
 
     /**
-     * @brief Process a file, storing the result in target LexTree
+     * @brief Construct a new private Lexer object
      *
-     * @param path File path
-     * @param target Target
+     * @param stream Stream to extract from from
+     * @param target Target Tree
      */
-    static void ProcessFile(const String &path, LexTree &target);
+    Lexer(IStream &stream, LexTree &target) : _ss(stream), _target(&target) {
+        target.childs.clear();
+    }
 
     /**
-     * @brief Process a string, storing the result in target LexTree
-     *
-     * @param toProcess String to process
-     * @param target Target
+     * @brief Destroy the Lexer object
      */
-    static void ProcessString(const String &toProcess, LexTree &target);
+    virtual ~Lexer(void) = default;
 
-private:
-    IStream &_ss;
+    /**
+     * @brief Start Lexing process to override
+     *
+     * @param end End match of processing
+     * @return true Lexer reached end
+     * @return false Lexer didn't reached end
+     */
+    virtual bool process(const String &end) = 0;
 
-    Lexer(IStream &stream);
+    /**
+     * @brief Read a single token
+     *
+     * @return true Read success
+     * @return false Read failed
+     */
+    bool readToken(String &token) { return (_ss >> token).operator bool(); }
 
-    bool process(LexTree &target, const String &end = String());
-    void buildNode(LexTree &target, const String &token, TokenType type);
-    void buildImport(LexTree &target, const String &token);
-    void buildNewItem(LexTree &target, const String &token);
-    void buildNewProperty(LexTree &target, const String &token);
-    void buildPropertyAssign(LexTree &target, const String &token);
-    void buildNewFunction(LexTree &target, const String &token);
-    void buildNewEvent(LexTree &target, const String &token);
+    /**
+     * @brief Read a single internal token
+     *
+     * @return true Read success
+     * @return false Read failed
+     */
+    bool readToken(void) { return readToken(_token); }
 
-    void captureExpression(String &target);
+    /**
+     * @brief Capture a bracket expression
+     *
+     * @param target Where to store capture
+     */
+    void captureExpression(String &target) {
+        char c = 0;
+        for (c = _ss.get(); c && std::isspace(c) && c != '\n'; c = _ss.get());
+        if (c == '\n')
+            return;
+        else if (c == '{') {
+            target.clear();
+            GetLine(_ss, target, '}');
+        } else {
+            String tmp;
+            target.push_back(c);
+            GetLine(_ss, tmp);
+            target += tmp;
+        }
+    }
+
+protected:
+    IStream &_ss; // Internal stream
+    String _token; // Internal current token
+    LexTree *_target; // Internal current node pointer
 };

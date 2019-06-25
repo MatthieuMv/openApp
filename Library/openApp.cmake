@@ -74,7 +74,8 @@ set(App
 
 set(Language
     ${oALanguage}/Lexer.hpp
-    ${oALanguage}/Lexer.cpp
+    ${oALanguage}/OALexer.hpp
+    ${oALanguage}/OALexer.cpp
     ${oALanguage}/Tree.hpp
 )
 
