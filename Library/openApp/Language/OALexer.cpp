@@ -66,7 +66,7 @@ void oA::OALexer::buildNode(TokenType type)
         { NewEvent,         &OALexer::buildNewEvent       }
     };
     auto it = LexBuild.find(type);
-    auto &child = _target->childs.emplace_back();
+    auto &child = _target->children.emplace_back();
     auto *old = _target;
 
     child.value.type = type;

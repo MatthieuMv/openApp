@@ -10,6 +10,8 @@
 #include <openApp/Types/Variant.hpp>
 #include <openApp/Types/Memory.hpp>
 #include <openApp/Core/Var.hpp>
+#include <openApp/Language/Operator.hpp>
+#include <openApp/Language/Statement.hpp>
 
 namespace oA
 {
@@ -23,11 +25,18 @@ class oA::ExpressionNode
 {
 public:
     enum NodeType {
-        OperatorNode = 0,
-        ExprNode,
-        ValueNode,
-        DeclarationNode
+        ValueNode = 0,
+        LocalNode,
+        MemberNode,
+        OperatorNode,
+        StatementNode
     };
+
+    /**
+     * @brief Construct a new Expression Node object
+     * 
+     */
+    ExpressionNode(void) : _data(Block) {}
 
     /**
      * @brief Get internal Variant index
@@ -46,5 +55,5 @@ public:
     T &getAs(void) { return std::get<T>(_data); }
 
 private:
-    Variant<ExpressionPtr, Var> _data;
+    Variant<Var, String, ExpressionPtr, Operator, Statement> _data;
 };

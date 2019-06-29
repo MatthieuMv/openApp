@@ -29,8 +29,8 @@ Test(ExpressionHandler, Basics)
     cr_assert_eq(handler.getAs<oA::Literal>("a"), "42");
     cr_assert_eq(handler.getAs<oA::Number>("b"), 42);
 
-    cr_assert_eq(handler.getExprPtr("a")->get().get<oA::Literal>(), "42");
-    cr_assert_eq(handler.getExprPtr("b")->get().get<oA::Number>(), 42);
+    cr_assert_eq(handler.getExprPtr("a")->get().getAs<oA::Literal>(), "42");
+    cr_assert_eq(handler.getExprPtr("b")->get().getAs<oA::Number>(), 42);
     cr_assert_eq(handler.getExprPtr("c").get(), nullptr);
 }
 

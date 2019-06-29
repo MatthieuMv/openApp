@@ -40,9 +40,6 @@ set(Core
     ${oACore}/Path.cpp
     ${oACore}/Signal.hpp
     ${oACore}/Property.hpp
-    ${oACore}/Expression.hpp
-    ${oACore}/ExpressionStack.hpp
-    ${oACore}/ExpressionNode.hpp
     ${oACore}/GetLine.hpp
     ${oACore}/GetLine.cpp
     ${oACore}/Var.hpp
@@ -77,6 +74,15 @@ set(Language
     ${oALanguage}/OALexer.hpp
     ${oALanguage}/OALexer.cpp
     ${oALanguage}/Tree.hpp
+    ${oALanguage}/Expression.hpp
+    ${oALanguage}/Expression.cpp
+    ${oALanguage}/ExpressionComputer.hpp
+    ${oALanguage}/ExpressionComputer.cpp
+    ${oALanguage}/ExpressionNode.hpp
+    ${oALanguage}/Operator.hpp
+    ${oALanguage}/Operator.cpp
+    ${oALanguage}/Statement.hpp
+    ${oALanguage}/Statement.cpp
 )
 
 set(Network

@@ -25,35 +25,35 @@ Test(OALexer, Basics)
     oA::OALexer::ProcessString(BasicFile, tree);
     cr_assert_eq(tree.value.type, oA::OALexer::Root);
 
-    auto &import = tree.childs[0];
+    auto &import = tree.children[0];
     cr_assert_eq(import.value.type, oA::OALexer::Import);
     cr_assert_eq(import.value.data[0], "Folder");
 
-    auto &item = tree.childs[1];
+    auto &item = tree.children[1];
     cr_assert_eq(item.value.type, oA::OALexer::NewItem);
     cr_assert_eq(item.value.data[0], "Item");
 
-    auto &id = item.childs[0];
+    auto &id = item.children[0];
     cr_assert_eq(id.value.type, oA::OALexer::PropertyAssign);
     cr_assert_eq(id.value.data[0], "id");
     cr_assert_eq(id.value.data[1], "myItem");
 
-    auto &empty = item.childs[1];
+    auto &empty = item.children[1];
     cr_assert_eq(empty.value.type, oA::OALexer::NewProperty);
     cr_assert_eq(empty.value.data[0], "empty");
     cr_assert_eq(empty.value.data[1], "");
 
-    auto &property = item.childs[2];
+    auto &property = item.children[2];
     cr_assert_eq(property.value.type, oA::OALexer::NewProperty);
     cr_assert_eq(property.value.data[0], "life");
     cr_assert_eq(property.value.data[1], "42");
 
-    auto &function = item.childs[3];
+    auto &function = item.children[3];
     cr_assert_eq(function.value.type, oA::OALexer::NewFunction);
     cr_assert_eq(function.value.data[0], "changeLife");
     cr_assert_eq(function.value.data[1], "life = 420");
 
-    auto &event = item.childs[4];
+    auto &event = item.children[4];
     cr_assert_eq(event.value.type, oA::OALexer::NewEvent);
     cr_assert_eq(event.value.data[0], "life");
     cr_assert_eq(event.value.data[1], "++x");

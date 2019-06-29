@@ -125,9 +125,9 @@ public:
      * @brief Find an expression using a match key (ex: parent.label.x)
      *
      * @param key Matching key expression
-     * @return ExpressionPtr<Var>Ptr Matching pointer (or null)
+     * @return ExpressionPtrPtr Matching pointer (or null)
      */
-    ExpressionPtr<Var> findExpr(const String &key);
+    ExpressionPtr findExpr(const String &key);
 
 private:
     Item *_parent = nullptr; // Must use raw pointer to point parent from inside the class
@@ -156,7 +156,7 @@ private:
      * @param expression openApp language function as String
      * @param addDependency Add dependencies on each parameters of the expression
      */
-    void setExpression(Expression<Var> &target, String expression, bool addDependency);
+    void setExpression(Expression &target, String expression, bool addDependency);
 
     /**
      * @brief Slit an expression key into two string

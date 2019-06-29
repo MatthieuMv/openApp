@@ -20,13 +20,13 @@ Test(Var, Basics)
 
     cr_assert_not(empty);
     cr_assert_eq(copied.index(), oA::Var::VNumber);
-    cr_assert_eq(copied.get<oA::Number>(), 42);
-    cr_assert_eq(ref.get<oA::Number>(), 42);
+    cr_assert_eq(copied.getAs<oA::Number>(), 42);
+    cr_assert_eq(ref.getAs<oA::Number>(), 42);
     cr_assert_eq(moved.index(), oA::Var::VLiteral);
-    cr_assert_eq(moved.get<oA::Literal>(), "24");
+    cr_assert_eq(moved.getAs<oA::Literal>(), "24");
     moved = std::move(toCopy);
     cr_assert_eq(moved.index(), oA::Var::VNumber);
-    cr_assert_eq(moved.get<oA::Number>(), 42);
+    cr_assert_eq(moved.getAs<oA::Number>(), 42);
     copied = empty;
 }
 

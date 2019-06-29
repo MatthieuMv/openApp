@@ -41,7 +41,7 @@ namespace oA::RPN
     };
 
     /**
-     * @brief This const struct is initialized internally in an OperatorMap
+     * @brief This const struct is only initialized internally in an OperatorMap
      */
     struct Operator
     {

@@ -5,8 +5,6 @@
 ** Expression
 */
 
-#pragma once
-
 #include <openApp/Containers/UMap.hpp>
 #include <openApp/Language/ExpressionComputer.hpp>
 
@@ -26,7 +24,7 @@ oA::Uint oA::Expression::connectEvent(Expression &&expr) noexcept
 
 bool oA::Expression::compute(void)
 {
-    if (_tree.childs.empty())
+    if (_tree.children.empty())
         return false;
     return set(ExpressionComputer::Compute(_tree));
 }

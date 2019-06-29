@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <openApp/Core/Expression.hpp>
+#include <openApp/Language/Expression.hpp>
 
 namespace oA { class ExpressionComputer; }
 
@@ -15,13 +15,23 @@ class oA::ExpressionComputer
 {
 public:
 
-    static Var Compute(const Tree<ExpressionNode> &tree);
+    static Var Compute(Tree<ExpressionNode> &tree);
 
 private:
-    const Tree<ExpressionNode> &_tree;
     UMap<String, Var> _locals;
 
-    ExpressionComputer(const Tree<ExpressionNode> &tree);
+    ExpressionComputer(void) = default;
 
-    Var compute(void);
+    Var compute(Tree<ExpressionNode> &node);
+    
+    Var computeStatement(Tree<ExpressionNode> &node);
+    Var computeBlock(Tree<ExpressionNode> &node);
+    Var computeDeclaration(Tree<ExpressionNode> &node);
+    Var computeCondition(Tree<ExpressionNode> &node);
+    Var computeWhile(Tree<ExpressionNode> &node);
+    Var computeFor(Tree<ExpressionNode> &node);
+    Var computeSwitch(Tree<ExpressionNode> &node);
+
+    Var computeOperator(Tree<ExpressionNode> &node);
+    Var assignNode(Tree<ExpressionNode> &node, Var &&res);
 };

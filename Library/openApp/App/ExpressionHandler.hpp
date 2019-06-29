@@ -10,7 +10,7 @@
 #include <openApp/Types/Memory.hpp>
 #include <openApp/Types/String.hpp>
 #include <openApp/Containers/Vector.hpp>
-#include <openApp/Core/Expression.hpp>
+#include <openApp/Language/Expression.hpp>
 #include <openApp/Core/Var.hpp>
 
 namespace oA::ItemUtils { class ExpressionHandler; }
@@ -68,17 +68,17 @@ public:
      */
     template<typename T>
     const T &getAs(const String &key) const {
-        return get(key)->get<T>();
+        return get(key)->getAs<T>();
     }
 
     /**
      * @brief Get the ExpressionPtr object matching key
      *
      * @param key Expression key to match
-     * @return ExpressionPtr<Var> Result expression
+     * @return ExpressionPtr Result expression
      */
-    ExpressionPtr<Var> getExprPtr(const String &key) const noexcept;
+    ExpressionPtr getExprPtr(const String &key) const noexcept;
 
 protected:
-    UMap<String, ExpressionPtr<Var>> _members;
+    UMap<String, ExpressionPtr> _members;
 };

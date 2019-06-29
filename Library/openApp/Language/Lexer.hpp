@@ -33,7 +33,7 @@ public:
      * @param target Target Tree
      */
     Lexer(IStream &stream, LexTree &target) : _ss(stream), _target(&target) {
-        target.childs.clear();
+        target.children.clear();
     }
 
     /**

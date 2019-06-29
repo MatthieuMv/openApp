@@ -11,7 +11,7 @@ oA::Property<oA::Var> &oA::ItemUtils::ExpressionHandler::append(const String &ke
 {
     if (exists(key))
         throw LogicError("Item", "Can't append @" + key + "@, already exists");
-    return *(_members[key] = std::make_shared<Expression<Var>>());
+    return *(_members[key] = std::make_shared<Expression>());
 }
 
 bool oA::ItemUtils::ExpressionHandler::exists(const String &key) const noexcept
@@ -37,11 +37,11 @@ const oA::Property<oA::Var> &oA::ItemUtils::ExpressionHandler::get(const String 
     return *it->second;
 }
 
-oA::ExpressionPtr<oA::Var> oA::ItemUtils::ExpressionHandler::getExprPtr(const String &key) const noexcept
+oA::ExpressionPtr oA::ItemUtils::ExpressionHandler::getExprPtr(const String &key) const noexcept
 {
     auto it = _members.find(key);
 
     if (it == _members.end())
-        return oA::ExpressionPtr<oA::Var>();
+        return oA::ExpressionPtr();
     return it->second;
 }

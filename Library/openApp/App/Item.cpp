@@ -34,7 +34,7 @@ void oA::Item::addExpressionEvent(const String &key, const String &expression)
     setExpression(*ptr, expression, false);
 }
 
-void oA::Item::setExpression(Expression<Var> &target, String expression, bool addDependency)
+void oA::Item::setExpression(Expression &target, String expression, bool addDependency)
 {
     (void)(target);
     (void)(expression);
@@ -88,9 +88,9 @@ oA::Item *oA::Item::findChildren(const String &key)
     return nullptr;
 }
 
-oA::ExpressionPtr<oA::Var> oA::Item::findExpr(const String &key)
+oA::ExpressionPtr oA::Item::findExpr(const String &key)
 {
-    ExpressionPtr<Var> res;
+    ExpressionPtr res;
     String token, left = SplitKeyExpr(key, token);
 
     if (!token.empty() && token == getID())
@@ -100,7 +100,7 @@ oA::ExpressionPtr<oA::Var> oA::Item::findExpr(const String &key)
     auto ptr = findItem(token);
     if (ptr)
         return ptr->findExpr(left);
-    return ExpressionPtr<Var>();
+    return ExpressionPtr();
 }
 
 oA::String oA::Item::SplitKeyExpr(const String &expr, String &token)

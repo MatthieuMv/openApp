@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include <openApp/Core/Expression.hpp>
+#include <openApp/Language/Expression.hpp>
 
 Test(Expression, Basics)
 {

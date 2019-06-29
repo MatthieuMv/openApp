@@ -10,7 +10,7 @@
 #include <openApp/Types/Variant.hpp>
 #include <openApp/Language/Lexer.hpp>
 #include <openApp/Language/ExpressionNode.hpp>
-#include <openApp/Core/Expression.hpp>
+#include <openApp/Language/Expression.hpp>
 
 namespace oA { class ExpressionLexer; }
 

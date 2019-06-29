@@ -19,6 +19,6 @@ namespace oA { template<typename T> struct Tree; }
 template<typename T>
 struct oA::Tree
 {
-    Vector<Tree<T>> childs;
+    Vector<Tree<T>> children;
     T value;
 };

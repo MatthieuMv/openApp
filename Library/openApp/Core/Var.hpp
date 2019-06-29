@@ -82,6 +82,15 @@ public:
     Var(const T &value) : _var(value) {}
 
     /**
+     * @brief Construct a new Var object by value move
+     *
+     * @tparam T Value type
+     * @param value Value to move
+     */
+    template<typename T>
+    Var(T &&value) : _var(std::move(value)) {}
+
+    /**
      * @brief Return internal index as VarType
      *
      * @return VarType Internal index
@@ -95,7 +104,7 @@ public:
      * @return T& Extracted value
      */
     template<typename T>
-    constexpr T &get(void) { return std::get<T>(_var); }
+    constexpr T &getAs(void) { return std::get<T>(_var); }
 
     /**
      * @brief Try to extract const reference to internal type T
@@ -104,7 +113,7 @@ public:
      * @return const T& Extracted value
      */
     template<typename T>
-    constexpr const T &get(void) const { return std::get<T>(_var); }
+    constexpr const T &getAs(void) const { return std::get<T>(_var); }
 
     /**
      * @brief Safe cast of internal type to boolean
