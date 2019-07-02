@@ -8,58 +8,52 @@
 #pragma once
 
 #include <openApp/Language/Lexer.hpp>
+#include <openApp/Language/OANode.hpp>
 
-namespace oA { class OALexer; class OANode; }
+namespace oA::Lang { class OALexer; }
 
-class oA::OALexer : protected Lexer<OANode>
+class oA::Lang::OALexer : public Lexer
 {
 public:
-    enum TokenType {
-        Root = 0,
-        Import,
-        NewItem,
-        NewProperty,
-        PropertyAssign,
-        NewFunction,
-        NewEvent
-    };
-
-    using Lexer<OANode>::LexTree;
-
     /**
-     * @brief Process a file, storing the result in target LexTree
-     *
+     * @brief Build an openApp AST node from a file, capturing and lexing each expression
+     * 
      * @param path File path
-     * @param target Target
+     * @param target AST Root node
      */
-    static void ProcessFile(const String &path, LexTree &target);
+    static void ProcessFile(const String &path, OANode &target);
 
     /**
-     * @brief Process a string, storing the result in target LexTree
-     *
-     * @param toProcess String to process
-     * @param target Target
+     * @brief Build an openApp AST node from a string, capturing and lexing each expression
+     * 
+     * @param string File string
+     * @param target AST Root node
      */
-    static void ProcessString(const String &toProcess, LexTree &target);
+    static void ProcessString(const String &string, OANode &target);
+    
+    /**
+     * @brief Lex given expression and push tokens into target Vector
+     * 
+     * @param expr Expression to process
+     * @param target Target Vector
+     */
+    static void ProcessExpression(const String &expr, Vector<String> &target);
 
 private:
-    using Lexer::Lexer;
+    OANode *_target;
 
     virtual ~OALexer(void) = default;
+    OALexer(IStream &ss, OANode &target) : Lexer(ss), _target(&target) {}
 
-    virtual bool process(const String &end = String());
+    virtual void interpretToken(void);
 
-    void buildNode(TokenType type);
-    void buildImport(void);
-    void buildNewItem(void);
-    void buildNewProperty(void);
-    void buildPropertyAssign(void);
-    void buildNewFunction(void);
-    void buildNewEvent(void);
-};
+    void buildNode(OANode::Type type);
+    void buildImportNode(void);
+    void buildItemNode(void);
+    void buildAssignNode(void);
+    void buildPropertyNode(void);
+    void buildFunctionNode(void);
+    void buildEventNode(void);
 
-struct oA::OANode
-{
-    Vector<String> data;
-    OALexer::TokenType type = OALexer::Root;
+    void pushToken(void) { _target->args.emplace_back(std::move(_token)); }
 };

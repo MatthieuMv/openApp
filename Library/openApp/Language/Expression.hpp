@@ -8,10 +8,14 @@
 #pragma once
 
 #include <openApp/Core/Property.hpp>
-#include <openApp/Language/Tree.hpp>
-#include <openApp/Language/ExpressionNode.hpp>
+#include <openApp/Core/Var.hpp>
 
-namespace oA { class Expression; }
+namespace oA
+{
+    class Expression;
+
+    using ExpressionPtr = Shared<Expression>;
+}
 
 /**
  * @brief This class extend Property to handle high level expression computation
@@ -54,15 +58,7 @@ public:
      */
     Uint connectEvent(Expression &&expr) noexcept;
 
-    /**
-     * @brief Set the internal Tree object
-     *
-     * @param tree Tree to set
-     */
-    void setExpressionTree(Tree<ExpressionNode> &&tree);
-
 private:
-    Tree<ExpressionNode> _tree;
 
     /**
      * @brief Compute internal expression and set internal value to result

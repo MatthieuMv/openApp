@@ -20,62 +20,67 @@ Item {\n\
 
 Test(OALexer, Basics)
 {
-    oA::OALexer::LexTree tree;
+    oA::Lang::OANode root;
 
-    oA::OALexer::ProcessString(BasicFile, tree);
-    cr_assert_eq(tree.value.type, oA::OALexer::Root);
+    oA::Lang::OALexer::ProcessString(BasicFile, root);
 
-    auto &import = tree.children[0];
-    cr_assert_eq(import.value.type, oA::OALexer::Import);
-    cr_assert_eq(import.value.data[0], "Folder");
+    // Root
+    cr_assert_eq(root.type, oA::Lang::OANode::RootNode);
 
-    auto &item = tree.children[1];
-    cr_assert_eq(item.value.type, oA::OALexer::NewItem);
-    cr_assert_eq(item.value.data[0], "Item");
+    // Import
+    cr_assert_eq(root.childs[0].type, oA::Lang::OANode::ImportNode);
+    cr_assert_eq(root.childs[0].args[0], "Folder");
 
-    auto &id = item.children[0];
-    cr_assert_eq(id.value.type, oA::OALexer::PropertyAssign);
-    cr_assert_eq(id.value.data[0], "id");
-    cr_assert_eq(id.value.data[1], "myItem");
+    // Item
+    auto &item = root.childs[1];
+    cr_assert_eq(item.type, oA::Lang::OANode::ItemNode);
+    cr_assert_eq(item.args[0], "Item");
 
-    auto &empty = item.children[1];
-    cr_assert_eq(empty.value.type, oA::OALexer::NewProperty);
-    cr_assert_eq(empty.value.data[0], "empty");
-    cr_assert_eq(empty.value.data[1], "");
+    // Property ID
+    cr_assert_eq(item.childs[0].type, oA::Lang::OANode::AssignNode);
+    cr_assert_eq(item.childs[0].args[0], "id");
+    cr_assert_eq(item.childs[0].args[1], "myItem");
 
-    auto &property = item.children[2];
-    cr_assert_eq(property.value.type, oA::OALexer::NewProperty);
-    cr_assert_eq(property.value.data[0], "life");
-    cr_assert_eq(property.value.data[1], "42");
+    // Property Empty
+    cr_assert_eq(item.childs[1].type, oA::Lang::OANode::PropertyNode);
+    cr_assert_eq(item.childs[1].args[0], "empty");
+    cr_assert_eq(item.childs[1].args[1], "");
 
-    auto &function = item.children[3];
-    cr_assert_eq(function.value.type, oA::OALexer::NewFunction);
-    cr_assert_eq(function.value.data[0], "changeLife");
-    cr_assert_eq(function.value.data[1], "life = 420");
+    // Property Life
+    cr_assert_eq(item.childs[2].type, oA::Lang::OANode::PropertyNode);
+    cr_assert_eq(item.childs[2].args[0], "life");
+    cr_assert_eq(item.childs[2].args[1], "42");
 
-    auto &event = item.children[4];
-    cr_assert_eq(event.value.type, oA::OALexer::NewEvent);
-    cr_assert_eq(event.value.data[0], "life");
-    cr_assert_eq(event.value.data[1], "++x");
+    // Function ChangeLife
+    cr_assert_eq(item.childs[3].type, oA::Lang::OANode::FunctionNode);
+    cr_assert_eq(item.childs[3].args[0], "changeLife");
+    cr_assert_eq(item.childs[3].args[1], "life");
+    cr_assert_eq(item.childs[3].args[2], "=");
+    cr_assert_eq(item.childs[3].args[3], "420");
+
+    // Event on Life
+    cr_assert_eq(item.childs[4].type, oA::Lang::OANode::EventNode);
+    cr_assert_eq(item.childs[4].args[0], "life");
+    cr_assert_eq(item.childs[4].args[1], "++x");
 }
 
 Test(OALexer, Errors)
 {
     bool crashed = false;
-    oA::OALexer::LexTree tree;
+    oA::Lang::OANode root;
 
-    try { oA::OALexer::ProcessString("aze", tree); } catch (...) { crashed = true; }
+    try { oA::Lang::OALexer::ProcessString("aze", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::OALexer::ProcessString("import", tree); } catch (...) { crashed = true; }
+    try { oA::Lang::OALexer::ProcessString("import", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::OALexer::ProcessString("Item {", tree); } catch (...) { crashed = true; }
+    try { oA::Lang::OALexer::ProcessString("Item {", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::OALexer::ProcessString("Item }", tree); } catch (...) { crashed = true; }
+    try { oA::Lang::OALexer::ProcessString("Item }", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::OALexer::ProcessString("property", tree); } catch (...) { crashed = true; }
+    try { oA::Lang::OALexer::ProcessString("property", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::OALexer::ProcessString("function", tree); } catch (...) { crashed = true; }
+    try { oA::Lang::OALexer::ProcessString("function", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::OALexer::ProcessString("on", tree); } catch (...) { crashed = true; }
+    try { oA::Lang::OALexer::ProcessString("on", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
 }

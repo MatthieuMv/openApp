@@ -63,6 +63,13 @@ public:
      *
      * @param other Var to copy
      */
+    Var(Var &other) : _var(other._var) {}
+
+    /**
+     * @brief Construct a new Var object by copy
+     *
+     * @param other Var to copy
+     */
     Var(const Var &other) : _var(other._var) {}
 
     /**
@@ -71,6 +78,15 @@ public:
      * @param other Var to move
      */
     Var(Var &&other) : _var(std::move(other._var)) {}
+
+    /**
+     * @brief Construct a new Var object by value copy
+     *
+     * @tparam T Value type
+     * @param value Value to copy
+     */
+    template<typename T>
+    Var(T &value) : _var(value) {}
 
     /**
      * @brief Construct a new Var object by value copy

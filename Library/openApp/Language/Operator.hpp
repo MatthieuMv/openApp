@@ -10,7 +10,7 @@
 #include <openApp/Types/Scalars.hpp>
 #include <openApp/Types/String.hpp>
 
-namespace oA
+namespace oA::Lang
 {
     /**
      * @brief Enum containing every implemented operator 
@@ -29,7 +29,6 @@ namespace oA
     struct OperatorModel
     {
         Operator type;
-        Uint arguments;
     };
 
     /**

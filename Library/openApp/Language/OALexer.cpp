@@ -8,120 +8,131 @@
 // std::regex
 #include <regex>
 
-#include <openApp/Types/SStream.hpp>
+#include <openApp/Types/Error.hpp>
 #include <openApp/Types/FStream.hpp>
-#include <openApp/Types/Function.hpp>
+#include <openApp/Types/SStream.hpp>
+#include <openApp/Containers/Pair.hpp>
 #include <openApp/Containers/UMap.hpp>
 #include <openApp/Language/OALexer.hpp>
+#include <openApp/Language/Operator.hpp>
 
-static constexpr auto ItemMatch = "[A-Z][a-zA-Z0-9]*";
-static constexpr auto PropertyMatch = "[a-zA-Z][a-zA-Z0-9]*:";
+static constexpr auto ItemMatch = "[[:upper:]][[:alnum:]]*";
+static constexpr auto PropertyMatch = "[[:alpha:]][[:alnum:]]*:";
 
-void oA::OALexer::ProcessFile(const String &path, LexTree &target)
+void oA::Lang::OALexer::ProcessFile(const String &path, OANode &target)
 {
     IFStream ss(path);
 
     if (!ss.good())
         throw AccessError("Lexer", "Invalid path @" + path + "@");
-    OALexer(ss, target).process();
+    OALexer(ss, target).processUnit();
 }
 
-void oA::OALexer::ProcessString(const String &toProcess, LexTree &target)
+void oA::Lang::OALexer::ProcessString(const String &string, OANode &target)
 {
-    ISStream ss(toProcess);
+    ISStream ss(string);
 
-    OALexer(ss, target).process();
+    OALexer(ss, target).processUnit();
 }
 
-bool oA::OALexer::process(const String &end)
+void oA::Lang::OALexer::ProcessExpression(const String &expr, Vector<String> &target)
 {
-    static const oA::UMap<String, oA::OALexer::TokenType> LexMatches = {
-        { "import",       Import           },
-        { ItemMatch,      NewItem          },
-        { "property",     NewProperty      },
-        { PropertyMatch,  PropertyAssign   },
-        { "function",     NewFunction      },
-        { "on",           NewEvent         }
+    String word;
+    const auto pushWord = [&word, &target] { target.emplace_back().swap(word); };
+
+    for (auto c : expr) {
+        if (std::isspace(c) && !word.empty()) {
+            pushWord();
+            continue;
+        } else if (IsOperator(c) && !word.empty()) {
+            if (IsOperator(word) && !IsOperator(word += c))
+                word.pop_back();
+            if (word == "++" || word == "--")
+                continue;
+            pushWord();
+        }
+        word.push_back(c);
+    }
+    pushWord();
+}
+
+static const oA::Vector<oA::Pair<std::regex, oA::Lang::OANode::Type>> LexMatches = {
+    { std::regex("import", std::regex::optimize),       oA::Lang::OANode::ImportNode   },
+    { std::regex(ItemMatch, std::regex::optimize),      oA::Lang::OANode::ItemNode     },
+    { std::regex(PropertyMatch, std::regex::optimize),  oA::Lang::OANode::AssignNode   },
+    { std::regex("property", std::regex::optimize),     oA::Lang::OANode::PropertyNode },
+    { std::regex("function", std::regex::optimize),     oA::Lang::OANode::FunctionNode },
+    { std::regex("on", std::regex::optimize),           oA::Lang::OANode::EventNode    }
+};
+
+void oA::Lang::OALexer::interpretToken(void)
+{
+    for (const auto &pair : LexMatches) {
+        if (std::regex_match(token(), pair.first))
+            return buildNode(pair.second);
+    }
+    throw LogicError("OALexer", "Can't interpret token @" + token() + "@");
+}
+
+void oA::Lang::OALexer::buildNode(OANode::Type type)
+{
+    static const oA::UMap<OANode::Type, void(OALexer::*)(void)> Builders = {
+        { OANode::ImportNode,       &OALexer::buildImportNode },
+        { OANode::ItemNode,         &OALexer::buildItemNode },
+        { OANode::AssignNode,       &OALexer::buildAssignNode },
+        { OANode::PropertyNode,     &OALexer::buildPropertyNode },
+        { OANode::FunctionNode,     &OALexer::buildFunctionNode },
+        { OANode::EventNode,        &OALexer::buildEventNode }
     };
+    auto it = Builders.find(type);
+    auto *root = _target;
 
-    do {
-        if (!readToken() || _token == end)
-            break;
-        auto it = LexMatches.findIf([this](const auto &m) { return std::regex_match(_token, std::regex(m.first)); });
-        if (it == LexMatches.end())
-            throw LogicError("OALexer", "Couldn't identify token @" + _token + "@");
-        buildNode(it->second);
-    } while (_ss.good());
-    return _token == end;
-}
-
-void oA::OALexer::buildNode(TokenType type)
-{
-    static const UMap<TokenType, void(OALexer::*)(void)> LexBuild = {
-        { Import,           &OALexer::buildImport         },
-        { NewItem,          &OALexer::buildNewItem        },
-        { NewProperty,      &OALexer::buildNewProperty    },
-        { PropertyAssign,   &OALexer::buildPropertyAssign },
-        { NewFunction,      &OALexer::buildNewFunction    },
-        { NewEvent,         &OALexer::buildNewEvent       }
-    };
-    auto it = LexBuild.find(type);
-    auto &child = _target->children.emplace_back();
-    auto *old = _target;
-
-    child.value.type = type;
-    _target = &child;
+    _target = &_target->childs.emplace_back();
+    _target->type = type;
     (this->*it->second)();
-    _target = old;
+    _target = root;
 }
 
-void oA::OALexer::buildImport(void)
+void oA::Lang::OALexer::buildImportNode(void)
 {
-    if (!(_ss >> _target->value.data.emplace_back()))
-        throw LogicError("OALexer", "Excepted @FolderPath@ after token @import@");
+    if (!readToken())
+        throw LogicError("OALexer", "Excepted token @DirPath@ after @import@");
+    pushToken();
 }
 
-void oA::OALexer::buildNewItem(void)
+void oA::Lang::OALexer::buildItemNode(void)
 {
-    String tmp;
-
-    tmp.swap(_token);
-    _target->value.data.emplace_back(tmp);
-    if (!readToken() || _token != "{")
-        throw LogicError("OALexer", "Excepted @{@ after item declaration");
-    if (!process("}"))
-        throw LogicError("OALexer", "Missing closing bracket of @" + tmp + "@");
+    pushToken();
+    if (!readToken() || token() != "{")
+        throw LogicError("OALexer", "Excepted token @{@ after @" + _target->args[0] + "@ declaration");
+    processUnit("}");
 }
 
-void oA::OALexer::buildNewProperty(void)
+void oA::Lang::OALexer::buildAssignNode(void)
 {
-    if (!readToken() || !std::regex_match(_token, std::regex(PropertyMatch)))
-        throw LogicError("OALexer", "Invalid property declaration @" + _token + "@");
-    buildPropertyAssign();
+    token().pop_back();
+    pushToken();
+    captureExpression();
+    ProcessExpression(token(), _target->args);
 }
 
-void oA::OALexer::buildPropertyAssign(void)
+void oA::Lang::OALexer::buildPropertyNode(void)
 {
-    _target->value.data.emplace_back(_token.substr(0, _token.length() - 1));
-    captureExpression(_target->value.data.emplace_back());
+    if (!readToken() || token().back() != ':')
+        throw LogicError("OALexer", "Unexcepted token @" + token() + "@ after @property@ declaration");
+    buildAssignNode();
 }
 
-void oA::OALexer::buildNewFunction(void)
+void oA::Lang::OALexer::buildFunctionNode(void)
 {
-    String &name = _target->value.data.emplace_back();
-
-    if (!readToken(name) || !std::regex_match(name, std::regex(PropertyMatch)))
-        throw LogicError("OALexer", "Invalid function declaration @" + name + "@");
-    name.pop_back();
-    captureExpression(_target->value.data.emplace_back());
+    if (!readToken() || token().back() != ':')
+        throw LogicError("OALexer", "Unexcepted token @" + token() + "@ after @function@ declaration");
+    buildAssignNode();
 }
 
-void oA::OALexer::buildNewEvent(void)
+void oA::Lang::OALexer::buildEventNode(void)
 {
-    String &name = _target->value.data.emplace_back();
-
-    if (!readToken(name) || !std::regex_match(name, std::regex(PropertyMatch)))
-        throw LogicError("OALexer", "Invalid event declaration @" + name + "@");
-    name.pop_back();
-    captureExpression(_target->value.data.emplace_back());
+    if (!readToken() || token().back() != ':')
+        throw LogicError("OALexer", "Unexcepted token @" + token() + "@ after @event@ declaration");
+    buildAssignNode();
 }

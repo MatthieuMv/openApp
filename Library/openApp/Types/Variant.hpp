@@ -23,10 +23,10 @@ namespace oA
     /**
      * @brief C++ Magic Trick to construct lambda-based visitors
      */
-    template<class... Args> struct Overload : Args... { using Args::operator()...; };
+    template<typename ...Args> struct Overload : Args... { using Args::operator()...; };
 
     /**
      * @brief C++ Magic Trick to construct lambda-based visitors
      */
-    template<class... Args> Overload(Args...) -> Overload<Args...>;
+    template<typename ...Args> Overload(Args...) -> Overload<Args...>;
 }

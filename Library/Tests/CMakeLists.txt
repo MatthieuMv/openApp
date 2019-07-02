@@ -18,12 +18,10 @@ set(TestsSources
     tests_Signal.cpp
     tests_Property.cpp
     tests_Expression.cpp
-    tests_ExpressionStack.cpp
-    tests_ExpressionNode.cpp
+    tests_ExpressionHandler.cpp
     tests_Var.cpp
     tests_Item.cpp
     tests_ItemHandler.cpp
-    tests_ExpressionHandler.cpp
     tests_OALexer.cpp
     tests_GetLine.cpp
 )

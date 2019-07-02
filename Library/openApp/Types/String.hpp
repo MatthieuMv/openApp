@@ -53,21 +53,21 @@ public:
      *
      * @param other Variable to move
      */
-    String(std::string &&other) { *this = std::move(other); }
+    String(std::string &&other) { swap(other); }
 
     /**
      * @brief Construct a new String object with a char
      *
      * @param c Char to insert
      */
-    String(char c) { push_back(c); }
+    String(char c) { if (c) push_back(c); }
 
     /**
      * @brief Construct a new String object with a raw C char pointer
      *
      * @param raw C string to copy
      */
-    String(const char * const raw) { *this = raw; }
+    String(const char * const raw) : ContainerHelper<std::string, char>(raw) {}
 
     /* std::string operators */
     using std::string::operator=;

@@ -71,18 +71,13 @@ set(App
 
 set(Language
     ${oALanguage}/Lexer.hpp
+    ${oALanguage}/Lexer.cpp
     ${oALanguage}/OALexer.hpp
     ${oALanguage}/OALexer.cpp
-    ${oALanguage}/Tree.hpp
     ${oALanguage}/Expression.hpp
     ${oALanguage}/Expression.cpp
-    ${oALanguage}/ExpressionComputer.hpp
-    ${oALanguage}/ExpressionComputer.cpp
-    ${oALanguage}/ExpressionNode.hpp
     ${oALanguage}/Operator.hpp
     ${oALanguage}/Operator.cpp
-    ${oALanguage}/Statement.hpp
-    ${oALanguage}/Statement.cpp
 )
 
 set(Network

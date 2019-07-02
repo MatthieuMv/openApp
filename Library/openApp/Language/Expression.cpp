@@ -6,7 +6,7 @@
 */
 
 #include <openApp/Containers/UMap.hpp>
-#include <openApp/Language/ExpressionComputer.hpp>
+#include <openApp/Language/Expression.hpp>
 
 void oA::Expression::call(void)
 {
@@ -24,12 +24,5 @@ oA::Uint oA::Expression::connectEvent(Expression &&expr) noexcept
 
 bool oA::Expression::compute(void)
 {
-    if (_tree.children.empty())
-        return false;
-    return set(ExpressionComputer::Compute(_tree));
-}
-
-void oA::Expression::setExpressionTree(Tree<ExpressionNode> &&tree)
-{
-    _tree = std::move(tree);
+    return false;
 }
