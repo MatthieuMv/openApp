@@ -40,6 +40,8 @@ set(Core
     ${oACore}/Path.cpp
     ${oACore}/Signal.hpp
     ${oACore}/Property.hpp
+    ${oACore}/Expression.hpp
+    ${oACore}/Expression.cpp
     ${oACore}/GetLine.hpp
     ${oACore}/GetLine.cpp
     ${oACore}/Var.hpp
@@ -63,6 +65,8 @@ set(Containers
 set(App
     ${oAApp}/Item.hpp
     ${oAApp}/Item.cpp
+    ${oAApp}/ItemFactory.hpp
+    ${oAApp}/ItemFactory.cpp
     ${oAApp}/ItemHandler.hpp
     ${oAApp}/ItemHandler.cpp
     ${oAApp}/ExpressionHandler.hpp
@@ -70,14 +74,30 @@ set(App
 )
 
 set(Language
-    ${oALanguage}/Lexer.hpp
-    ${oALanguage}/Lexer.cpp
-    ${oALanguage}/OALexer.hpp
-    ${oALanguage}/OALexer.cpp
-    ${oALanguage}/Expression.hpp
-    ${oALanguage}/Expression.cpp
     ${oALanguage}/Operator.hpp
     ${oALanguage}/Operator.cpp
+    ${oALanguage}/Statement.hpp
+    ${oALanguage}/Statement.cpp
+    ${oALanguage}/Lexer.hpp
+    ${oALanguage}/Lexer.cpp
+    ${oALanguage}/Parser.hpp
+    ${oALanguage}/Parser.cpp
+    ${oALanguage}/ASTNode.hpp
+    ${oALanguage}/ASTNode.cpp
+    ${oALanguage}/Instantiator.hpp
+    ${oALanguage}/Instantiator.cpp
+    ${oALanguage}/ShuntingYard.hpp
+    ${oALanguage}/ShuntingYard.cpp
+    ${oALanguage}/Nodes.hpp
+    ${oALanguage}/Nodes/ImportNode.hpp
+    ${oALanguage}/Nodes/ClassNode.hpp
+    ${oALanguage}/Nodes/DeclarationNode.hpp
+    ${oALanguage}/Nodes/GroupNode.hpp
+    ${oALanguage}/Nodes/ReferenceNode.hpp
+    ${oALanguage}/Nodes/LocalNode.hpp
+    ${oALanguage}/Nodes/ValueNode.hpp
+    ${oALanguage}/Nodes/OperatorNode.hpp
+    ${oALanguage}/Nodes/StatementNode.hpp
 )
 
 set(Network

@@ -5,16 +5,22 @@
 ** Main
 */
 
-#include <openApp/Core/Var.hpp>
+#include <openApp/Types/Error.hpp>
+#include <openApp/Core/Log.hpp>
+#include <openApp/App/ItemFactory.hpp>
+#include <openApp/Language/Instantiator.hpp>
 
 int main(void)
 {
-    oA::Container c = {
-        false, 1, 2.5, "3"
-    };
-    oA::Var v1(c), v2(c);
-
-    if (v1 == v2)
-        return 84;
-    return 0;
+    try {
+        oA::ItemFactory::RegisterBaseItems();
+        auto itm = oA::Lang::Instantiator::ProcessFile("Test.oA");
+        if (!itm)
+            return 84;
+        itm->show();
+        return 0;
+    } catch (const oA::Error &e) {
+        oA::cerr << e.what() << oA::endl;
+        return 1;
+    }
 }

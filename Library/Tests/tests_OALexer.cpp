@@ -2,11 +2,11 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** OALexer
+** Lexer
 */
 
 #include <criterion/criterion.h>
-#include <openApp/Language/OALexer.hpp>
+#include <openApp/Language/Lexer.hpp>
 
 static const auto BasicFile = \
 "import Folder\n\
@@ -18,11 +18,11 @@ Item {\n\
     on life:\t\t++x\n\
 }";
 
-Test(OALexer, Basics)
+Test(Lexer, Basics)
 {
     oA::Lang::OANode root;
 
-    oA::Lang::OALexer::ProcessString(BasicFile, root);
+    oA::Lang::Lexer::ProcessString(BasicFile, root);
 
     // Root
     cr_assert_eq(root.type, oA::Lang::OANode::RootNode);
@@ -64,23 +64,23 @@ Test(OALexer, Basics)
     cr_assert_eq(item.childs[4].args[1], "++x");
 }
 
-Test(OALexer, Errors)
+Test(Lexer, Errors)
 {
     bool crashed = false;
     oA::Lang::OANode root;
 
-    try { oA::Lang::OALexer::ProcessString("aze", root); } catch (...) { crashed = true; }
+    try { oA::Lang::Lexer::ProcessString("aze", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::Lang::OALexer::ProcessString("import", root); } catch (...) { crashed = true; }
+    try { oA::Lang::Lexer::ProcessString("import", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::Lang::OALexer::ProcessString("Item {", root); } catch (...) { crashed = true; }
+    try { oA::Lang::Lexer::ProcessString("Item {", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::Lang::OALexer::ProcessString("Item }", root); } catch (...) { crashed = true; }
+    try { oA::Lang::Lexer::ProcessString("Item }", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::Lang::OALexer::ProcessString("property", root); } catch (...) { crashed = true; }
+    try { oA::Lang::Lexer::ProcessString("property", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::Lang::OALexer::ProcessString("function", root); } catch (...) { crashed = true; }
+    try { oA::Lang::Lexer::ProcessString("function", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { oA::Lang::OALexer::ProcessString("on", root); } catch (...) { crashed = true; }
+    try { oA::Lang::Lexer::ProcessString("on", root); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
 }

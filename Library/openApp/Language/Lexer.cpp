@@ -5,47 +5,184 @@
 ** Lexer
 */
 
+// std::regex
+#include <regex>
+
+#include <openApp/Types/SStream.hpp>
+#include <openApp/Types/FStream.hpp>
 #include <openApp/Types/Error.hpp>
+#include <openApp/Core/GetLine.hpp>
+#include <openApp/Core/Log.hpp>
+#include <openApp/Containers/UMap.hpp>
 #include <openApp/Language/Lexer.hpp>
+#include <openApp/Language/Operator.hpp>
 
-void oA::Lang::Lexer::processUnit(const String &end)
+void oA::Lang::Lexer::ProcessFile(const String &path, TokenList &tokens)
 {
-    while (readToken() && token() != end)
-        interpretToken();
-    if (!end.empty() && token() != end)
-        throw LogicError("Lexer", "Couldn't reach end of unit token @" + end + "@");
+    IFStream stream(path);
+
+    Lexer(path, stream, tokens).process();
 }
 
-void oA::Lang::Lexer::captureExpression(void)
+void oA::Lang::Lexer::ProcessString(const String &string, TokenList &tokens, const String &context)
 {
-    char c = 0;
+    ISStream stream(string);
 
-    for (c = _ss.get(); c && std::isspace(c) && c != '\n'; c = _ss.get());
-    if (c == '\n')
+    Lexer(context, stream, tokens).process();
+}
+
+void oA::Lang::Lexer::ShowTokenList(const TokenList &list)
+{
+    auto line = 0;
+    auto tab = 0;
+
+    for (const auto &token : list) {
+        if (token.second > line) {
+            line = token.second;
+            cout << endl << Repeat(tab) << '\t';
+        }
+        cout << '@' << token.first << "@(" << token.second << ") ";
+        if (token.first == "{")
+            ++tab;
+        else if (token.first == "}")
+            --tab;
+    }
+    cout << endl;
+}
+
+oA::Lang::Lexer::Lexer(const String &context, IStream &stream, TokenList &tokens)
+    : _context(context), _ss(stream), _tokens(tokens)
+{
+}
+
+void oA::Lang::Lexer::process(void)
+{
+    for (char c = get(); c > 0; c = get()) {
+        if (std::isspace(c))
+            continue;
+        else if (std::isalpha(c))
+            processWord(c);
+        else if (std::isdigit(c) || c == '.')
+            processNumber(c);
+        else if (c == '\"')
+            processString(c);
+        else if (c == '/' && peek() == '/')
+            processComment(false);
+        else if (c == '/' && peek() == '*')
+            processComment(true);
+        else if (IsOperator(c))
+            processOperator(c);
+    }
+}
+
+void oA::Lang::Lexer::processString(String res)
+{
+    auto line = _line;
+    char c;
+
+    for (c = get(); c > 0 && c != '"'; c = get()) {
+        if (c == '\\' && peek() == '"')
+            res.push_back(get());
+        else
+            res.push_back(c);
+    }
+    if (c != '"')
+        throw LogicError("Lexer", "Missing end of string token @\"@" + getErrorContext(line));
+    res.push_back(c);
+    pushToken(std::move(res));
+}
+
+void oA::Lang::Lexer::processNumber(String res)
+{
+    bool hasDot = res.front() == '.';
+    auto line = _line;
+    char c;
+
+    for (c = peek(); c > 0; c = peek()) {
+        if (c == '.') {
+            if (hasDot)
+                throw LogicError("Lexer", "Invalid decimal @" + (res += c) + "@" + getErrorContext(line));
+            hasDot = true;
+        }
+        if (!std::isdigit(c))
+            break;
+        res.push_back(get());
+    }
+    pushToken(std::move(res));
+}
+
+void oA::Lang::Lexer::processComment(bool multiline)
+{
+    auto line = _line;
+
+    if (!multiline) {
+        String cache;
+        GetLine(_ss, cache);
+        ++_line;
         return;
-    else if (c == '{') {
-        _token.clear();
-        do {
-            if (!GetLine(_ss, _token, '}'))
-                break;
-        } while (!matchBrackets());
-    } else {
-        String tmp;
-        _token.push_back(c);
-        GetLine(_ss, tmp);
-        _token += tmp;
+    }
+    for (char c = get(); c > 0; c = get()) {
+        if (c == '*' && peek() == '/') {
+            get();
+            return;
+        }
+    }
+    throw LogicError("Lexer", "Missing end of comment token @*/@" + getErrorContext(line));
+}
+
+void oA::Lang::Lexer::processOperator(String &&res)
+{
+    char c = peek();
+
+    if (!IsOperator(c))
+        return pushToken(std::move(res));
+    res.push_back(get());
+    if (IsOperator(res))
+        return processOperator(std::move(res));
+    res.pop_back();
+    pushToken(std::move(res));
+}
+
+void oA::Lang::Lexer::processWord(String res)
+{
+    char c;
+
+    for (c = peek(); std::isalnum(c) || c == '.'; c = peek())
+        res.push_back(get());
+    pushToken(std::move(res));
+    switch (c) {
+    case '(':
+        return processFunctionCall(get());
+    case '[':
+        return processIndexAccess(get());
+    case ':':
+        _tokens.back().first.push_back(get());
+    default:
+        break;
     }
 }
 
-bool oA::Lang::Lexer::matchBrackets(void) const noexcept
+void oA::Lang::Lexer::processFunctionCall(String res)
 {
-    auto groups = 0;
+    if (peek() != ')')
+        throw LogicError("Lexer", "openApp language doesn't support function call with @arguments@" + getErrorContext());
+    res.push_back(get());
+    pushToken(std::move(res));
+}
 
-    for (auto c : _token) {
-        if (c == '{')
-            ++groups;
-        else if (c == '}')
-            --groups;
+void oA::Lang::Lexer::processIndexAccess(String res)
+{
+    res.push_back(']');
+    pushToken(std::move(res));
+    res = String();
+    for (char c = get(); c > 0; c = get()) {
+        if (std::isspace(c))
+            continue;
+        if (c == ']')
+            break;
+        if (!std::isdigit(c))
+            throw LogicError("Lexer", "Containers index access only support integer");
+        res.push_back(c);
     }
-    return groups == 0;
+    pushToken(std::move(res));
 }

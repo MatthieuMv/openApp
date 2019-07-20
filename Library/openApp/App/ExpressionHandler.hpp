@@ -10,7 +10,7 @@
 #include <openApp/Types/Memory.hpp>
 #include <openApp/Types/String.hpp>
 #include <openApp/Containers/Vector.hpp>
-#include <openApp/Language/Expression.hpp>
+#include <openApp/Core/Expression.hpp>
 #include <openApp/Core/Var.hpp>
 
 namespace oA::ItemUtils { class ExpressionHandler; }

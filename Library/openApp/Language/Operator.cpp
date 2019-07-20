@@ -10,28 +10,39 @@
 #include <openApp/Language/Operator.hpp>
 
 static const oA::UMap<oA::String, oA::Lang::OperatorModel> OperatorMap = {
-    { "!",      { oA::Lang::Not                  }    },
-    { "==",     { oA::Lang::Equal                }    },
-    { "!=",     { oA::Lang::Different            }    },
-    { ">",      { oA::Lang::Superior             }    },
-    { ">=",     { oA::Lang::SuperiorEqual        }    },
-    { "<",      { oA::Lang::Inferior             }    },
-    { "<=",     { oA::Lang::InferiorEqual        }    },
-    { "+",      { oA::Lang::Addition             }    },
-    { "-",      { oA::Lang::Substraction         }    },
-    { "*",      { oA::Lang::Multiplication       }    },
-    { "/",      { oA::Lang::Division             }    },
-    { "%",      { oA::Lang::Modulo               }    },
-    { "=",      { oA::Lang::Assign               }    },
-    { "+=",     { oA::Lang::AdditionAssign       }    },
-    { "-=",     { oA::Lang::SubstractionAssign   }    },
-    { "*=",     { oA::Lang::MultiplicationAssign }    },
-    { "/=",     { oA::Lang::DivisionAssign       }    },
-    { "%=",     { oA::Lang::ModuloAssign         }    },
-    { "++",     { oA::Lang::PrefixIncrement      }    },
-    { "++",     { oA::Lang::PrefixDecrement      }    },
-    { "--",     { oA::Lang::SufixIncrement       }    },
-    { "--",     { oA::Lang::SufixDecrement       }    }
+    { "!",      { oA::Lang::Not,                    1,  16,     oA::Lang::RightToLeft           }    },
+    { "+",      { oA::Lang::Addition,               2,  13,     oA::Lang::LeftToRight           }    },
+    { "-",      { oA::Lang::Substraction,           2,  13,     oA::Lang::LeftToRight           }    },
+    { "*",      { oA::Lang::Multiplication,         2,  14,     oA::Lang::LeftToRight           }    },
+    { "/",      { oA::Lang::Division,               2,  14,     oA::Lang::LeftToRight           }    },
+    { "%",      { oA::Lang::Modulo,                 2,  5,      oA::Lang::LeftToRight           }    },
+    { "=",      { oA::Lang::Assign,                 2,  3,      oA::Lang::RightToLeft           }    },
+    { "+=",     { oA::Lang::AdditionAssign,         2,  3,      oA::Lang::RightToLeft           }    },
+    { "-=",     { oA::Lang::SubstractionAssign,     2,  3,      oA::Lang::RightToLeft           }    },
+    { "*=",     { oA::Lang::MultiplicationAssign,   2,  3,      oA::Lang::RightToLeft           }    },
+    { "/=",     { oA::Lang::DivisionAssign,         2,  3,      oA::Lang::RightToLeft           }    },
+    { "%=",     { oA::Lang::ModuloAssign,           2,  3,      oA::Lang::RightToLeft           }    },
+    { "++",     { oA::Lang::PrefixIncrement,        1,  16,     oA::Lang::RightToLeft           }    },
+    { "--",     { oA::Lang::PrefixDecrement,        1,  16,     oA::Lang::RightToLeft           }    },
+    { "++",     { oA::Lang::SufixIncrement,         1,  17,     oA::Lang::LeftToRight           }    },
+    { "--",     { oA::Lang::SufixDecrement,         1,  17,     oA::Lang::LeftToRight           }    },
+    { "==",     { oA::Lang::Equal,                  2,  10,     oA::Lang::LeftToRight           }    },
+    { "!=",     { oA::Lang::Different,              2,  10,     oA::Lang::LeftToRight           }    },
+    { ">",      { oA::Lang::Superior,               2,  11,     oA::Lang::LeftToRight           }    },
+    { "<",      { oA::Lang::Inferior,               2,  11,     oA::Lang::LeftToRight           }    },
+    { ">=",     { oA::Lang::SuperiorEqual,          2,  11,     oA::Lang::LeftToRight           }    },
+    { "<=",     { oA::Lang::InferiorEqual,          2,  11,     oA::Lang::LeftToRight           }    },
+    { ",",      { oA::Lang::Comma,                  0,  1,      oA::Lang::LeftToRight           }    },
+    { ";",      { oA::Lang::End,                    0,  21,     oA::Lang::NoneAssociativity     }    },
+    { "?",      { oA::Lang::TernaryIf,              3,  16,     oA::Lang::RightToLeft           }    },
+    { ":",      { oA::Lang::TernaryElse,            0,  16,     oA::Lang::RightToLeft           }    },
+    { "(",      { oA::Lang::LeftParenthese,         0,  0,      oA::Lang::NoneAssociativity     }    },
+    { ")",      { oA::Lang::RightParenthese,        0,  0,      oA::Lang::NoneAssociativity     }    },
+    { "{",      { oA::Lang::LeftBrace,              0,  0,      oA::Lang::NoneAssociativity     }    },
+    { "}",      { oA::Lang::RightBrace,             0,  0,      oA::Lang::NoneAssociativity     }    },
+    { "[",      { oA::Lang::LeftBracket,            2,  19,     oA::Lang::LeftToRight           }    },
+    { "]",      { oA::Lang::RightBracket,           0,  0,      oA::Lang::NoneAssociativity     }    },
+    { "()",     { oA::Lang::Call,                   1,  20,     oA::Lang::LeftToRight           }    }
 };
 
 bool oA::Lang::IsOperator(const oA::String &op)
@@ -46,4 +57,18 @@ const oA::Lang::OperatorModel &oA::Lang::GetOperator(const oA::String &op)
     if (it == OperatorMap.end())
         throw AccessError("Operator", "Can't find operator @" + op + "@");
     return it->second;
+}
+
+const oA::Lang::OperatorModel &oA::Lang::GetOperator(Operator op)
+{
+    return OperatorMap.findIf([op](const auto &p) {
+        return p.second.type == op;
+    })->second;
+}
+
+const oA::String &oA::Lang::GetOperatorSymbol(Operator op)
+{
+    return OperatorMap.findIf([op](const auto &p) {
+        return p.second.type == op;
+    })->first;
 }

@@ -1,0 +1,8 @@
+Item : myItem {
+    relativeSize: 0.5, 0.5
+
+    function call {
+        x += 50
+        y += 50
+    }
+}

@@ -138,3 +138,24 @@ void oA::String::replaceWith(const String &from, const Function<String(void)> &t
         this->insert(pos, to());
     }
 }
+
+bool oA::String::startWith(const String &other) const noexcept
+{
+    return !this->compare(0, other.length(), other);
+}
+
+bool oA::String::endWith(const String &other) const noexcept
+{
+    auto len = length(), olen = other.length();
+
+    if (olen > len)
+        return false;
+    return !this->compare(len - olen, olen, other);
+}
+
+oA::String &oA::String::tryAppend(const String &other)
+{
+    if (!endWith(other))
+        append(other);
+    return *this;;
+}

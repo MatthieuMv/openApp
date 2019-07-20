@@ -5,6 +5,7 @@
 ** Item
 */
 
+#include <openApp/Core/Log.hpp>
 #include <openApp/App/Item.hpp>
 
 void oA::Item::setExpression(const String &key, const String &expression)
@@ -101,6 +102,18 @@ oA::ExpressionPtr oA::Item::findExpr(const String &key)
     if (ptr)
         return ptr->findExpr(left);
     return ExpressionPtr();
+}
+
+void oA::Item::show(Int tab) const noexcept
+{
+    cout << Repeat(tab) << '\t' << '@' << getName() << "@:" << endl;
+    ++tab;
+    _members.apply([tab](const auto &p) mutable {
+        cout << Repeat(tab) << '\t' << '@' << p.first << "@:" << endl;
+        p.second->show(tab + 1);
+    });
+    _children.apply([tab](const auto &child) { child->show(tab); });
+
 }
 
 oA::String oA::Item::SplitKeyExpr(const String &expr, String &token)

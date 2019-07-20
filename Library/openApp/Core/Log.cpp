@@ -89,13 +89,11 @@ oA::Log &oA::Log::operator<<(const char * const value)
     return (*this << oA::String(value));
 }
 
-
 template<>
 oA::Log &oA::Log::operator<<(char value)
 {
     return (*this << oA::String(value));
 }
-
 
 template<>
 oA::Log &oA::Log::operator<<(bool value)
@@ -103,20 +101,11 @@ oA::Log &oA::Log::operator<<(bool value)
     return (*this << oA::String(value ? "true" : "false"));
 }
 
-
 template<>
-oA::Log &oA::Log::operator<<(oA::Long value)
+oA::Log &oA::Log::operator<<(Double value)
 {
     return (*this << oA::ToString(value));
 }
-
-
-template<>
-oA::Log &oA::Log::operator<<(oA::Double value)
-{
-    return (*this << oA::ToString(value));
-}
-
 
 template<>
 oA::Log &oA::Log::operator<<(Repeat repeat)
@@ -126,7 +115,6 @@ oA::Log &oA::Log::operator<<(Repeat repeat)
     _repeat = repeat;
     return *this;
 }
-
 
 template<>
 oA::Log &oA::Log::operator<<(Endl)

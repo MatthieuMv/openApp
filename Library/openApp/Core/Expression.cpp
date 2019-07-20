@@ -6,7 +6,7 @@
 */
 
 #include <openApp/Containers/UMap.hpp>
-#include <openApp/Language/Expression.hpp>
+#include <openApp/Core/Expression.hpp>
 
 void oA::Expression::call(void)
 {
@@ -16,13 +16,21 @@ void oA::Expression::call(void)
 
 oA::Uint oA::Expression::connectEvent(Expression &&expr) noexcept
 {
-    return this->connect([event = std::move(expr)](void) mutable {
+    return this->connect([event(std::move(expr))](void) mutable {
         event.call();
         return true;
     });
 }
 
+void oA::Expression::show(Int tab) const noexcept
+{
+    if (_tree)
+        Lang::ASTNode::ShowTree(*_tree, tab);
+}
+
 bool oA::Expression::compute(void)
 {
-    return false;
+    if (!_tree)
+        return false;
+    return set(_tree->compute());
 }

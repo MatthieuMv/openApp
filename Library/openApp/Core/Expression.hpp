@@ -9,6 +9,7 @@
 
 #include <openApp/Core/Property.hpp>
 #include <openApp/Core/Var.hpp>
+#include <openApp/Language/ASTNode.hpp>
 
 namespace oA
 {
@@ -30,6 +31,20 @@ public:
      * @brief Destroy the Expression object
      */
     virtual ~Expression(void) = default;
+
+    /**
+     * @brief Construct a new Expression object by copy
+     * 
+     * @param other To copy
+     */
+    Expression(const Expression &other) : Property<Var>(other) {}
+    
+    /**
+     * @brief Construct a new Expression object by move
+     * 
+     * @param other To move
+     */
+    Expression(Expression &&other) = default;
 
     /**
      * @brief Add dependency to a target Property
@@ -58,7 +73,22 @@ public:
      */
     Uint connectEvent(Expression &&expr) noexcept;
 
+    /**
+     * @brief Print to cout expression architecture
+     * 
+     * @param tab Tabulation
+     */
+    void show(Int tab = 0) const noexcept;
+
+    /**
+     * @brief Set the Tree object
+     * 
+     * @param tree Expression AST tree
+     */
+    void setTree(Lang::ASTNodePtr &&tree) { _tree = std::move(tree); }
+
 private:
+    Lang::ASTNodePtr _tree;
 
     /**
      * @brief Compute internal expression and set internal value to result

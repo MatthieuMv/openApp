@@ -1,0 +1,25 @@
+
+import Library
+
+Item : root {
+    x: 100 * 2 / 3
+
+    on x: ++y
+
+    function foo: x++
+
+    //xxx
+
+    /*
+
+        xxx
+                */
+
+    property z: {
+        if (x + y > 0)
+            return 50;
+        return 100;
+    }
+
+    width: (12*z+4) *      4- foo()
+}

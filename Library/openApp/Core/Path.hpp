@@ -40,4 +40,20 @@ namespace oA::Path
      * @return false Given path is not a directory
      */
     bool DirExists(const String &path);
+
+    /**
+     * @brief Retreive absolute path from a relative path 
+     *
+     * @param path Relative path
+     * @return String Absolute path (or empty if doesn't exists)
+     */
+    String GetAbsolutePath(const String &path);
+
+    /**
+     * @brief Retreive canonical path from a relative path 
+     *
+     * @param path Relative path
+     * @return String Canonical path (or empty if doesn't exists)
+     */
+    String GetCanonicalPath(const String &path);
 }

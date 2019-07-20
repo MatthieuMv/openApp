@@ -22,8 +22,10 @@ set(TestsSources
     tests_Var.cpp
     tests_Item.cpp
     tests_ItemHandler.cpp
-    tests_OALexer.cpp
+    tests_ItemFactory.cpp
     tests_GetLine.cpp
+    tests_OALexer.cpp
+    tests_OAParser.cpp
 )
 
 set(CMAKE_CXX_STANDARD 17)

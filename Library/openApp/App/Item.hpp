@@ -34,6 +34,10 @@ public:
      * @brief Construct a new Item object
      */
     Item(void) {
+        append("x") = 0;
+        append("y") = 0;
+        append("width") = 0;
+        append("height") = 0;
     }
 
     /**
@@ -46,7 +50,7 @@ public:
      *
      * @return String Name of the class
      */
-    virtual String getName(void) { return "Item"; }
+    virtual String getName(void) const noexcept { return "Item"; }
 
     /**
      * @brief Set new items parent pointer to this
@@ -128,6 +132,13 @@ public:
      * @return ExpressionPtrPtr Matching pointer (or null)
      */
     ExpressionPtr findExpr(const String &key);
+
+    /**
+     * @brief Print to cout item architecture
+     * 
+     * @param tab Tabulation
+     */
+    void show(Int tab = 0) const noexcept;
 
 private:
     Item *_parent = nullptr; // Must use raw pointer to point parent from inside the class

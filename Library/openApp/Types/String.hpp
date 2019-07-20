@@ -204,6 +204,30 @@ public:
      * @param to Lambda function returing a String
      */
     void replaceWith(const String &from, const Function<String(void)> &to);
+
+    /**
+     * @brief Assert that begin of internal string is other
+     * 
+     * @param other String to compare
+     * @return bool True if begin match
+     */
+    bool startWith(const String &other) const noexcept;
+
+    /**
+     * @brief Assert that end of internal string is other
+     * 
+     * @param other String to compare
+     * @return bool True if end match
+     */
+    bool endWith(const String &other) const noexcept;
+
+    /**
+     * @brief Try to append other into internal string if it doesn't end with it
+     * 
+     * @param other String to append if not present
+     * @return String& Allow chain operations
+     */
+    String &tryAppend(const String &other);
 };
 
 namespace oA

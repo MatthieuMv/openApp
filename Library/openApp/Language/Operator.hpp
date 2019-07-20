@@ -9,6 +9,7 @@
 
 #include <openApp/Types/Scalars.hpp>
 #include <openApp/Types/String.hpp>
+#include <openApp/Types/V2.hpp>
 
 namespace oA::Lang
 {
@@ -20,7 +21,19 @@ namespace oA::Lang
         Superior, SuperiorEqual, Inferior, InferiorEqual,
         Addition, Substraction, Multiplication, Division, Modulo,
         Assign, AdditionAssign, SubstractionAssign, MultiplicationAssign, DivisionAssign, ModuloAssign,
-        PrefixIncrement, PrefixDecrement, SufixIncrement, SufixDecrement
+        PrefixIncrement, PrefixDecrement, SufixIncrement, SufixDecrement,
+        Call,
+        Comma, End,
+        TernaryIf, TernaryElse,
+        LeftParenthese, RightParenthese,
+        LeftBracket, RightBracket,
+        LeftBrace, RightBrace
+    };
+
+    enum Associativity {
+        NoneAssociativity,
+        LeftToRight,
+        RightToLeft
     };
 
     /**
@@ -29,6 +42,9 @@ namespace oA::Lang
     struct OperatorModel
     {
         Operator type;
+        Uint args;
+        Uint precedence;
+        Associativity associativity;
     };
 
     /**
@@ -47,4 +63,20 @@ namespace oA::Lang
      * @return OperatorModel& Resulting model
      */
     const OperatorModel &GetOperator(const String &op);
+
+    /**
+     * @brief Get the OperatorModel of an operator's type
+     * 
+     * @param op Operator as type
+     * @return OperatorModel& Resulting model
+     */
+    const OperatorModel &GetOperator(Operator op);
+
+    /**
+     * @brief Get the Symbol String of an Operator
+     * 
+     * @param op Operator to retreive
+     * @return const String Resulting symbol
+     */
+    const String &GetOperatorSymbol(Operator op);
 }

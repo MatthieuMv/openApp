@@ -91,7 +91,12 @@ public:
      * @return Log& Allow chain operators
      */
     template<typename T>
-    Log &operator<<(T value);
+    Log &operator<<(T value) {
+        if (!isEnabled())
+            return *this;
+        repeat([this, &value] { _os << value; });
+        return *this;
+    }
 
 private:
     OStream &_os;
@@ -135,17 +140,13 @@ namespace oA
 }
 
 template<>
-oA::Log &oA::Log::operator<<(String value);
+oA::Log &oA::Log::operator<<(String &value);
 template<>
 oA::Log &oA::Log::operator<<(const char * const value);
 template<>
 oA::Log &oA::Log::operator<<(char value);
 template<>
 oA::Log &oA::Log::operator<<(bool value);
-template<>
-oA::Log &oA::Log::operator<<(oA::Long value);
-template<>
-oA::Log &oA::Log::operator<<(oA::Double value);
 template<>
 oA::Log &oA::Log::operator<<(Repeat repeat);
 template<>
