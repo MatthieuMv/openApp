@@ -26,12 +26,12 @@ struct oA::Lang::OperatorNode : public ASTNode
 
     Var &at(void);
 
-    Var assign(ASTNode &node, Var &&value, Lang::Operator op);
-    Var &assignAt(OperatorNode &node, Var &&value);
+    Var assign(ASTNode &node, Var &&value, Lang::Operator type);
+    Var &assignAt(OperatorNode &node, Var &&value, Lang::Operator type);
 
     template<typename T>
-    void assignValue(T &var, Var &&value, Lang::Operator op) {
-        switch (op) {
+    void assignValue(T &var, Var &&value, Lang::Operator type) {
+        switch (type) {
         case Assign:
             var = std::move(value); break;
         case AdditionAssign:
@@ -45,7 +45,7 @@ struct oA::Lang::OperatorNode : public ASTNode
         case ModuloAssign:
             var %= std::move(value); break;
         default:
-            throw LogicError("OperatorNode", "Invalid assignment operator");
+            throw LogicError("OperatorNode", "Invalid assignment operator @" + GetOperatorSymbol(type) + "@");
         }
     }
 };

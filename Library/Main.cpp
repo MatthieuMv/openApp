@@ -5,31 +5,39 @@
 ** Main
 */
 
-#include <openApp/Types/Error.hpp>
-#include <openApp/Core/Log.hpp>
-#include <openApp/App/ItemFactory.hpp>
-#include <openApp/Language/Instantiator.hpp>
-
-#include <openApp/Core/Expression.hpp>
 #include <openApp/Language/Nodes.hpp>
+
+void cr_assert(bool res)
+{
+    if (!res)
+        throw;
+}
+
+template<typename T>
+void cr_assert_eq(const T &x, const T &y)
+{
+    if (x != y)
+        throw;
+}
 
 int main(void)
 {
-    try {
-        oA::Item item;
+    oA::Lang::ExpressionGroupNode root;
+    auto expr(std::make_shared<oA::Expression>(0));
+    auto &node = root.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::PrefixIncrement);
 
-        item.setExpression("x", "y * 2");
-        item.setFunction("fct", "height += 2");
-        item.addExpressionEvent("x", "++width; fct();");
+    root.locals["var"] = oA::Container();
+    root.locals["var"] += 42;
+    auto &at = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::At);
+    at.emplaceAs<oA::Lang::LocalNode>(root.locals["var"]);
+    at.emplaceAs<oA::Lang::ValueNode>().value = 0;
 
-        // oA::ItemFactory::RegisterBaseItems();
-        // auto itm = oA::Lang::Instantiator::ProcessFile("Test.oA");
-        // if (!itm)
-        //     return 84;
-        // itm->show();
-        return 0;
-    } catch (const oA::Error &e) {
-        oA::cerr << e.what() << oA::endl;
-        return 1;
-    }
+    cr_assert_eq(node.compute().toInt(), 1);
+    node.op = oA::Lang::SufixDecrement;         cr_assert_eq(node.compute().toInt(), 1);
+    node.op = oA::Lang::PrefixDecrement;        cr_assert_eq(node.compute().toInt(), -1);
+    node.op = oA::Lang::SufixIncrement;         cr_assert_eq(node.compute().toInt(), -1);
+
+    node.emplaceAs<oA::Lang::ValueNode>().value = oA::Container();
+    node.op = oA::Lang::Assign;
+    cr_assert_eq(node.compute().toInt(), 2);
 }

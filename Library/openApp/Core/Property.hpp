@@ -55,7 +55,7 @@ public:
     Property(const Property<T> &other) : Signal<>(), _var(other._var) {}
 
     /**
-     * @brief Construct a new Property object by move
+     * @brief Construct a new Property object by move, swaping properties
      *
      * @param other Property to move
      */
@@ -73,13 +73,35 @@ public:
     }
 
     /**
-     * @brief Copy value assignment operator
+     * @brief Move value assignment operator
      *
-     * @param other Value to copy
+     * @param other Value to move
      * @return Property<T>& Allow chain operators
      */
     Property<T> &operator=(T &&value) {
         set(std::move(value));
+        return *this;
+    }
+
+    /**
+     * @brief Copy assignment operator
+     *
+     * @param other Value to copy
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator=(const Property<T> &other) {
+        set(other.get());
+        return *this;
+    }
+
+    /**
+     * @brief Move assignment operator, swaping properties
+     *
+     * @param other Value to move
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator=(Property<T> &&other) {
+        swap(other);
         return *this;
     }
 
@@ -90,8 +112,10 @@ public:
      * @return Property<T>& Allow chain operators
      */
     Property<T> &operator+=(const T &value) {
+        auto tmp = get();
         _var += value;
-        this->emit();
+        if (tmp != _var)
+            this->emit();
         return *this;
     }
 
@@ -102,8 +126,10 @@ public:
      * @return Property<T>& Allow chain operators
      */
     Property<T> &operator-=(const T &value) {
+        auto tmp = get();
         _var -= value;
-        this->emit();
+        if (tmp != _var)
+            this->emit();
         return *this;
     }
 
@@ -114,8 +140,10 @@ public:
      * @return Property<T>& Allow chain operators
      */
     Property<T> &operator*=(const T &value) {
+        auto tmp = get();
         _var *= value;
-        this->emit();
+        if (tmp != _var)
+            this->emit();
         return *this;
     }
 
@@ -126,8 +154,10 @@ public:
      * @return Property<T>& Allow chain operators
      */
     Property<T> &operator/=(const T &value) {
+        auto tmp = get();
         _var /= value;
-        this->emit();
+        if (tmp != _var)
+            this->emit();
         return *this;
     }
 
@@ -140,6 +170,76 @@ public:
     Property<T> &operator%=(const T &value) {
         _var %= value;
         this->emit();
+        return *this;
+    }
+
+    /**
+     * @brief Addition value assignment operator
+     *
+     * @param other Value to add
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator+=(const Property<T> &value) {
+        auto tmp = get();
+        _var += value.get();
+        if (tmp != _var)
+            this->emit();
+        return *this;
+    }
+
+    /**
+     * @brief Substraction value assignment operator
+     *
+     * @param other Value to sub
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator-=(const Property<T> &value) {
+        auto tmp = get();
+        _var -= value.get();
+        if (tmp != _var)
+            this->emit();
+        return *this;
+    }
+
+    /**
+     * @brief Multiplication value assignment operator
+     *
+     * @param other Value to mult
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator*=(const Property<T> &value) {
+        auto tmp = get();
+        _var *= value.get();
+        if (tmp != _var)
+            this->emit();
+        return *this;
+    }
+
+    /**
+     * @brief Division value assignment operator
+     *
+     * @param other Value to div
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator/=(const Property<T> &value) {
+        auto tmp = get();
+        _var /= value.get();
+        if (tmp != _var)
+            this->emit();
+        return *this;
+    }
+
+    /**
+     * @brief Modulo value assignment operator
+     *
+     * @param other Value to mod
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator%=(const Property<T> &value) {
+        auto tmp = get();
+        _var %= value.get();
+        if (tmp != _var)
+            this->emit();
         return *this;
     }
 

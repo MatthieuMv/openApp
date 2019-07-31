@@ -23,7 +23,6 @@ Test(OperatorNode, Basics)
     try { node.op = oA::Lang::SufixIncrement; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
     try { node.op = oA::Lang::SufixDecrement; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
     try { node.op = oA::Lang::Call; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
-    try { node.op = oA::Lang::At; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
 
     node.emplaceAs<oA::Lang::ValueNode>().value = 2;
 
@@ -54,6 +53,7 @@ Test(OperatorNode, Basics)
     try { node.op = oA::Lang::RightBracket; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
     try { node.op = oA::Lang::LeftBrace; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
     try { node.op = oA::Lang::RightBrace; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
+    try { node.op = oA::Lang::At; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
 
     node.emplaceAs<oA::Lang::ValueNode>().value = 3;
 
@@ -111,16 +111,16 @@ Test(OperatorNode, ContainerAssignment)
     auto &node = root.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::PrefixIncrement);
 
     root.locals["var"] = oA::Container();
-    root.locals["var"] += 42;
+    root.locals["var"] += 0;
     auto &at = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::At);
     at.emplaceAs<oA::Lang::LocalNode>(root.locals["var"]);
     at.emplaceAs<oA::Lang::ValueNode>().value = 0;
-
     cr_assert_eq(node.compute().toInt(), 1);
+
     node.op = oA::Lang::SufixDecrement;         cr_assert_eq(node.compute().toInt(), 1);
     node.op = oA::Lang::PrefixDecrement;        cr_assert_eq(node.compute().toInt(), -1);
     node.op = oA::Lang::SufixIncrement;         cr_assert_eq(node.compute().toInt(), -1);
 
     node.emplaceAs<oA::Lang::ValueNode>().value = oA::Container();
-    node.op = oA::Lang::Assign;                 cr_assert_eq(node.compute().toInt(), 2);
+    node.op = oA::Lang::Assign;                 cr_assert_eq(node.compute(), oA::Container());
 }

@@ -94,35 +94,35 @@ oA::Var &oA::Lang::OperatorNode::at(void)
     }
 }
 
-oA::Var oA::Lang::OperatorNode::assign(ASTNode &node, Var &&value, Lang::Operator op)
+oA::Var oA::Lang::OperatorNode::assign(ASTNode &node, Var &&value, Lang::Operator type)
 {
     switch (node.getType()) {
     case Reference:
     {
         auto &var = *dynamic_cast<ReferenceNode &>(node).ptr;
-        assignValue(var, std::move(value), op);
+        assignValue(var, std::move(value), type);
         return *var;
     }
     case Local:
     {
         auto &var = dynamic_cast<LocalNode &>(node).local;
-        assignValue(var, std::move(value), op);
+        assignValue(var, std::move(value), type);
         return var;
     }
     case Operator:
-        return assignAt(dynamic_cast<OperatorNode &>(node), std::move(value));
+        return assignAt(dynamic_cast<OperatorNode &>(node), std::move(value), type);
     default:
         throw LogicError("OperatorNode", "Invalid assignment");
     }
 }
 
-oA::Var &oA::Lang::OperatorNode::assignAt(OperatorNode &node, Var &&value)
+oA::Var &oA::Lang::OperatorNode::assignAt(OperatorNode &node, Var &&value, Lang::Operator type)
 {
     auto &var = node.at();
-    bool emit = var != value;
+    auto tmp = var;
 
-    assignValue(var, std::move(value), op);
-    if (emit && node.children[0]->getType() == Reference)
+    assignValue(var, std::move(value), type);
+    if (tmp != var && node.children[0]->getType() == Reference)
         dynamic_cast<ReferenceNode &>(*node.children[0]).ptr->emit();
     return var;
 }
