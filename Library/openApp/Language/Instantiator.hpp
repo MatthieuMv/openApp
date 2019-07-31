@@ -34,11 +34,11 @@ public:
     /**
      * @brief Instanciate an openApp class string
      * 
-     * @param string String to instanciate
-     * @param context String context (equal to filename)
+     * @param string File content
+     * @param context File name
      * @return ItemPtr Resulting Item pointer
      */
-    //static ItemPtr ProcessString(const String &string, const String &context = "Root");
+    static ItemPtr ProcessString(const String &string, const String &context = "Root");
 
     using UnitMap = UMap<String, ASTNodePtr>;
     using Unit = Pair<const String, ASTNodePtr>;
@@ -86,6 +86,14 @@ private:
      * @param path Unit path
      */
     ItemPtr processUnit(const String &path);
+
+    /**
+     * @brief Process an Unit with a given string
+     * 
+     * @param string Unit string
+     * @param context Unit context
+     */
+    ItemPtr processStringUnit(const String &string, const String &context);
 
     /**
      * @brief Process a node

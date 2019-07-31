@@ -8,6 +8,13 @@
 #include <openApp/Containers/UMap.hpp>
 #include <openApp/Core/Expression.hpp>
 
+bool oA::Expression::compute(void)
+{
+    if (!_tree)
+        return false;
+    return set(_tree->compute());
+}
+
 void oA::Expression::call(void)
 {
     if (!compute())
@@ -26,11 +33,4 @@ void oA::Expression::show(Int tab) const noexcept
 {
     if (_tree)
         Lang::ASTNode::ShowTree(*_tree, tab);
-}
-
-bool oA::Expression::compute(void)
-{
-    if (!_tree)
-        return false;
-    return set(_tree->compute());
 }

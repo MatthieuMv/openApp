@@ -40,9 +40,10 @@ static const oA::UMap<oA::String, oA::Lang::OperatorModel> OperatorMap = {
     { ")",      { oA::Lang::RightParenthese,        0,  0,      oA::Lang::NoneAssociativity     }    },
     { "{",      { oA::Lang::LeftBrace,              0,  0,      oA::Lang::NoneAssociativity     }    },
     { "}",      { oA::Lang::RightBrace,             0,  0,      oA::Lang::NoneAssociativity     }    },
-    { "[",      { oA::Lang::LeftBracket,            2,  19,     oA::Lang::LeftToRight           }    },
+    { "[",      { oA::Lang::LeftBracket,            0,  0,      oA::Lang::LeftToRight           }    },
     { "]",      { oA::Lang::RightBracket,           0,  0,      oA::Lang::NoneAssociativity     }    },
-    { "()",     { oA::Lang::Call,                   1,  20,     oA::Lang::LeftToRight           }    }
+    { "()",     { oA::Lang::Call,                   1,  20,     oA::Lang::LeftToRight           }    },
+    { "[]",     { oA::Lang::At,                     2,  19,     oA::Lang::LeftToRight           }    }
 };
 
 bool oA::Lang::IsOperator(const oA::String &op)

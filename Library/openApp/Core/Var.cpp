@@ -437,6 +437,28 @@ oA::Var &oA::Var::operator[](const Var &other)
     }, _var);
 }
 
+const oA::Var &oA::Var::operator[](const Var &other) const
+{
+    return std::visit(Overload {
+        [] (const Number &) -> const Var& {
+            throw LogicError("Var", "Can't use operator [] on @Number@");
+        },
+        [] (const Literal &) -> const Var& {
+            throw LogicError("Var", "Can't use operator [] on @Literal@");
+        },
+        [&other] (const Container &container) -> const Var& {
+            auto it = container.begin();
+            auto idx = other.toUint();
+            if (other.index() != VNumber)
+                throw LogicError("Var", "Operator [] on @Container@ must be used with a Number");
+            if (container.size() <= idx)
+                throw AccessError("Var," "Operator [] on @Container@ used with out of range index @" + ToString(idx) + "@");
+            std::advance(it, idx);
+            return *it;
+        }
+    }, _var);
+}
+
 oA::Var oA::Var::len(void) const
 {
     return std::visit(Overload {

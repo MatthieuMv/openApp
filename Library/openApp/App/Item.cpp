@@ -7,39 +7,25 @@
 
 #include <openApp/Core/Log.hpp>
 #include <openApp/App/Item.hpp>
+#include <openApp/Language/ShuntingYard.hpp>
 
 void oA::Item::setExpression(const String &key, const String &expression)
 {
-    const auto &ptr = getExprPtr(key);
-
-    if (!ptr)
-        throw AccessError("Item", "Can't set expression of @" + key + "@");
-    setExpression(*ptr, expression, true);
+    if (!exists(key))
+        append(key);
+    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Expression);
 }
 
 void oA::Item::setFunction(const String &key, const String &expression)
 {
-    const auto &ptr = getExprPtr(key);
-
-    if (!ptr)
-        throw AccessError("Item", "Can't set function of @" + key + "@");
-    setExpression(*ptr, expression, false);
+    if (!exists(key))
+        append(key);
+    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Function);
 }
 
 void oA::Item::addExpressionEvent(const String &key, const String &expression)
 {
-    auto ptr = findExpr(key);
-
-    if (!ptr)
-        throw AccessError("Item", "Can't set expression event of @" + key + "@");
-    setExpression(*ptr, expression, false);
-}
-
-void oA::Item::setExpression(Expression &target, String expression, bool addDependency)
-{
-    (void)(target);
-    (void)(expression);
-    (void)(addDependency);
+    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Event);
 }
 
 oA::Item *oA::Item::findItem(const String &key, FindWhere where)
@@ -106,7 +92,7 @@ oA::ExpressionPtr oA::Item::findExpr(const String &key)
 
 void oA::Item::show(Int tab) const noexcept
 {
-    cout << Repeat(tab) << '\t' << '@' << getName() << "@:" << endl;
+    cout << Repeat(tab) << '\t' << '@' << getName() << "@ '#" << getID() << "#'" << endl;
     ++tab;
     _members.apply([tab](const auto &p) mutable {
         cout << Repeat(tab) << '\t' << '@' << p.first << "@:" << endl;
@@ -125,8 +111,10 @@ oA::String oA::Item::SplitKeyExpr(const String &expr, String &token)
         token = expr;
         return left;
     }
-    token = expr.substr(0, it);
-    left = expr.substr(it + 1);
+    if (it) {
+        token = expr.substr(0, it);
+        left = expr.substr(it + 1);
+    }
     if (left.empty())
         throw oA::LogicError("Item", "Invalid expression @" + expr + "@");
     return left;

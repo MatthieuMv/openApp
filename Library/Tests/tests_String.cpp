@@ -15,6 +15,7 @@ Test(String, Basics)
     oA::String str, copy(toCopy), move(std::move(toMove));
 
     cr_assert(str.empty());
+    cr_assert(!str);
     str = oA::String('z') + oA::String("aze");
     str += tmp;
     cr_assert_eq(str, "zaze42");
@@ -146,4 +147,23 @@ Test(String, ToString)
     cr_assert_eq(oA::ToString(42), "42");
     cr_assert_eq(oA::ToString(42.4242), "42.4242");
     cr_assert_eq(oA::ToString(42.0f), "42");
+}
+
+Test(String, Comparison)
+{
+    oA::String str("Hello world");
+
+    cr_assert(str.startWith("Hello"));
+    cr_assert(str.endWith("world"));
+    cr_assert_not(str.endWith("Hello world !"));
+}
+
+Test(String, TryAppend)
+{
+    oA::String str("file");
+
+    str.tryAppend(".oA");
+    cr_assert_eq(str, "file.oA");
+    str.tryAppend(".oA");
+    cr_assert_eq(str, "file.oA");
 }

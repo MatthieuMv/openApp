@@ -97,7 +97,9 @@ set(Language
     ${oALanguage}/Nodes/LocalNode.hpp
     ${oALanguage}/Nodes/ValueNode.hpp
     ${oALanguage}/Nodes/OperatorNode.hpp
+    ${oALanguage}/Nodes/OperatorNode.cpp
     ${oALanguage}/Nodes/StatementNode.hpp
+    ${oALanguage}/Nodes/StatementNode.cpp
 )
 
 set(Network

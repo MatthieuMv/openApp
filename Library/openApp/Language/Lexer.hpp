@@ -74,14 +74,14 @@ private:
      * 
      * @param res String containing the first character of the string
      */
-    void processString(String res);
+    void processString(String &&res);
 
     /**
      * @brief Process a number
      * 
      * @param res String containing the first character of the number
      */
-    void processNumber(String res);
+    void processNumber(String &&res);
 
     /**
      * @brief Process a comment
@@ -98,25 +98,32 @@ private:
     void processOperator(String &&res);
 
     /**
+     * @brief Process an in/decrement operator
+     * 
+     * @param res Operator
+     */
+    void processIncrement(String &res);
+
+    /**
      * @brief Process a word and try to identify it
      * 
      * @param res String containing the first character of the word
      */
-    void processWord(String res);
+    void processWord(String &&res);
 
     /**
      * @brief Process a word followed by a function call
      * 
      * @param res String containing the first character of the function call
      */
-    void processFunctionCall(String res);
+    void processFunctionCall(String &&res);
 
     /**
      * @brief Process a word followed by an index access
      * 
      * @param res String containing the first character of the index access
      */
-    void processIndexAccess(String res);
+    void processIndexAccess(String &&res);
 
     /**
      * @brief Check internal stream' state

@@ -34,6 +34,7 @@ Test(Var, Number)
 {
     bool crashed = false;
     oA::Var v1(42), v2(2);
+    const auto &ref(v1);
 
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), 42);
@@ -64,6 +65,8 @@ Test(Var, Number)
     cr_assert_eq((--v1).toInt(), 0);
     try { v1[0]; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
+    try { ref[0]; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
     try { v1.len(); } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
 }
@@ -72,6 +75,7 @@ Test(Var, Literal)
 {
     bool crashed = false;
     oA::Var v1("4"), v2("2"), v3("aze");
+    const auto &ref(v1);
 
     cr_assert_eq(v1.len().toInt(), 1);
     cr_assert_eq(v2.len().toInt(), 1);
@@ -124,6 +128,8 @@ Test(Var, Literal)
     cr_assert(crashed); crashed = false;
     try { v1[0]; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
+    try { ref[0]; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
 }
 
 Test(Var, Container)
@@ -133,6 +139,7 @@ Test(Var, Container)
         false, 1, 2.5, "3"
     };
     oA::Var v1(c), v2(c);
+    const auto &ref(v1);
 
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), oA::Int());
@@ -151,6 +158,7 @@ Test(Var, Container)
     v1 -= 0;
     cr_assert_eq(v1.len().toUint(), 4);
     cr_assert_eq(v1[0].toInt(), 1);
+    cr_assert_eq(ref[0].toInt(), 1);
     cr_assert_eq(v1[--v1.len()].toInt(), 42);
     try { v1 + v2; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
@@ -192,6 +200,10 @@ Test(Var, Container)
     cr_assert(crashed); crashed = false;
     try { v1[42]; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
-    try { v1[c[3]]; } catch (...) { crashed = true; }
+    try { v1[v1]; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
+    try { ref[42]; } catch (...) { crashed = true; }
+    cr_assert(crashed); crashed = false;
+    try { ref[ref]; } catch (...) { crashed = true; }
     cr_assert(crashed); crashed = false;
 }

@@ -35,9 +35,22 @@ public:
     };
 
     /**
+     * @brief Process a string representing an expression
+     * 
+     * @param root Root Item
+     * @param name Expression name
+     * @param expr Expression string
+     * @param mode ShuntingYard mode
+     * @param context Context of the tokens
+     */
+    static void ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context = "Root");
+
+    /**
      * @brief Process a list of token representing an expression
      * 
      * @param root Root Item
+     * @param name Expression name
+     * @param mode ShuntingYard mode
      * @param tokens List of tokens
      * @param context Context of the tokens
      */
@@ -54,6 +67,7 @@ private:
     const String &_name;
     Mode _mode;
     Int _line = 0;
+    ExpressionPtr _target;
 
     /**
      * @brief Construct a new Shunting Yard object

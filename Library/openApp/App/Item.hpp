@@ -161,15 +161,6 @@ private:
     Item *findChildren(const String &key);
 
     /**
-     * @brief Set target internal expression
-     *
-     * @param target Expression to set
-     * @param expression openApp language function as String
-     * @param addDependency Add dependencies on each parameters of the expression
-     */
-    void setExpression(Expression &target, String expression, bool addDependency);
-
-    /**
      * @brief Slit an expression key into two string
      *
      * @param expr Input expression

@@ -84,24 +84,62 @@ public:
     }
 
     /**
-     * @brief Copy assignment operator (will not copy Signal base)
+     * @brief Addition value assignment operator
      *
-     * @param other Value to copy
+     * @param other Value to add
      * @return Property<T>& Allow chain operators
      */
-    Property<T> &operator=(const Property<T> &other) {
-        set(other._var);
+    Property<T> &operator+=(const T &value) {
+        _var += value;
+        this->emit();
         return *this;
     }
 
     /**
-     * @brief Move assignment operator
+     * @brief Substraction value assignment operator
      *
-     * @param other Value to move
+     * @param other Value to sub
      * @return Property<T>& Allow chain operators
      */
-    Property<T> &operator=(Property<T> &&other) {
-        swap(other);
+    Property<T> &operator-=(const T &value) {
+        _var -= value;
+        this->emit();
+        return *this;
+    }
+
+    /**
+     * @brief Multiplication value assignment operator
+     *
+     * @param other Value to mult
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator*=(const T &value) {
+        _var *= value;
+        this->emit();
+        return *this;
+    }
+
+    /**
+     * @brief Division value assignment operator
+     *
+     * @param other Value to div
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator/=(const T &value) {
+        _var /= value;
+        this->emit();
+        return *this;
+    }
+
+    /**
+     * @brief Modulo value assignment operator
+     *
+     * @param other Value to mod
+     * @return Property<T>& Allow chain operators
+     */
+    Property<T> &operator%=(const T &value) {
+        _var %= value;
+        this->emit();
         return *this;
     }
 
@@ -125,6 +163,13 @@ public:
      * @return const T& Const reference to internal value
      */
     const T &get(void) const noexcept { return _var; }
+
+    /**
+     * @brief Property getter (will not trigger emit on change !)
+     *
+     * @return const T& Reference to internal value
+     */
+    T &getRaw(void) noexcept { return _var; }
 
     /**
      * @brief Property copy setter
@@ -189,7 +234,7 @@ public:
      */
     void swap(Property<T> &other) {
         Signal::swap(other);
-        _var = std::move(other._var);
+        std::swap(_var, other._var);
     }
 
 private:

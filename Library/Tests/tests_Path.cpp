@@ -5,6 +5,7 @@
 ** tests_Path
 */
 
+#include <filesystem>
 #include <criterion/criterion.h>
 #include <openApp/Core/Path.hpp>
 
@@ -24,4 +25,14 @@ Test(Path, DirExists)
 {
     cr_assert(oA::Path::DirExists("../Library"));
     cr_assert_not(oA::Path::DirExists("abcdef"));
+}
+
+Test(Path, Absolute)
+{
+    cr_assert_eq(oA::Path::GetAbsolutePath("run_tests"), std::filesystem::absolute("run_tests").c_str());
+}
+
+Test(Path, Canonical)
+{
+    cr_assert_eq(oA::Path::GetCanonicalPath("run_tests"), std::filesystem::canonical("run_tests").c_str());
 }

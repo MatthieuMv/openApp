@@ -26,6 +26,7 @@ class oA::Expression : public Property<Var>
 {
 public:
     using Property<Var>::Property;
+    using Property<Var>::operator=;
 
     /**
      * @brief Destroy the Expression object
@@ -34,17 +35,25 @@ public:
 
     /**
      * @brief Construct a new Expression object by copy
-     * 
+     *
      * @param other To copy
      */
     Expression(const Expression &other) : Property<Var>(other) {}
-    
+
     /**
      * @brief Construct a new Expression object by move
-     * 
+     *
      * @param other To move
      */
     Expression(Expression &&other) = default;
+
+    /**
+     * @brief Compute internal expression and set internal value to result
+     *
+     * @return true Internal value changed
+     * @return false Internal value didn't changed
+     */
+    bool compute(void);
 
     /**
      * @brief Add dependency to a target Property
@@ -75,26 +84,28 @@ public:
 
     /**
      * @brief Print to cout expression architecture
-     * 
+     *
      * @param tab Tabulation
      */
     void show(Int tab = 0) const noexcept;
 
     /**
      * @brief Set the Tree object
-     * 
+     *
      * @param tree Expression AST tree
      */
     void setTree(Lang::ASTNodePtr &&tree) { _tree = std::move(tree); }
 
+    /**
+     * @brief Swap two expressions
+     *
+     * @param other Value to swap
+     */
+    void swap(Expression &other) {
+        Property<Var>::swap(other);
+        _tree.swap(other._tree);
+    }
+
 private:
     Lang::ASTNodePtr _tree;
-
-    /**
-     * @brief Compute internal expression and set internal value to result
-     *
-     * @return true Internal value changed
-     * @return false Internal value didn't changed
-     */
-    bool compute(void);
 };

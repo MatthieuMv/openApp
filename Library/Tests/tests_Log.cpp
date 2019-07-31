@@ -15,6 +15,7 @@ Test(Log, Basics)
     oA::Log log(os);
 
     log.setEnabled(false);
+    log << 4;
     log << oA::Repeat(4) << "Hi !" << oA::endl;
     cr_assert(os.str().empty());
     log.setEnabled(true);

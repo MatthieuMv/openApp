@@ -46,7 +46,12 @@ struct oA::Lang::ASTNode
     /**
      * @brief Signal used on return statement
      */
-    struct ReturnSignal { Var value; };
+    struct ReturnSignal
+    {
+        ReturnSignal(Var &&var) : value(std::move(var)) {}
+
+        Var value;
+    };
 
     /**
      * @brief Signal used on loop break

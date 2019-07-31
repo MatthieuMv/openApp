@@ -11,7 +11,7 @@
 #include <openApp/Types/Variant.hpp>
 #include <openApp/Types/Scalars.hpp>
 #include <openApp/Types/String.hpp>
-#include <openApp/Containers/Vector.hpp>
+#include <openApp/Containers/List.hpp>
 
 namespace oA
 {
@@ -32,7 +32,7 @@ namespace oA
     /**
      * @brief Type that will be used as Container in Var
      */
-    using Container = Vector<Var>;
+    using Container = List<Var>;
 }
 
 class oA::Var
@@ -204,6 +204,7 @@ public:
 
     /* Access operators */
     Var &operator[](const Var &other);
+    const Var &operator[](const Var &other) const;
 
     /* Special operators */
     Var len(void) const;

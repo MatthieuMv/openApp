@@ -27,6 +27,8 @@ struct oA::Lang::GroupNode : public ASTNode
             return ret.value;
         } catch (const BreakSignal &) {
             throw LogicError("Break statement used out of loop");
+        } catch (...) {
+            throw;
         }
     }
 };

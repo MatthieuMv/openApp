@@ -17,6 +17,11 @@ oA::ItemPtr oA::Lang::Instantiator::ProcessFile(const String &path)
     return Instantiator().processName(path);
 }
 
+oA::ItemPtr oA::Lang::Instantiator::ProcessString(const String &string, const String &context)
+{
+    return Instantiator().processStringUnit(string, context);
+}
+
 oA::ItemPtr oA::Lang::Instantiator::processName(const String &name)
 {
     bool isItem = ItemFactory::Exists(name);
@@ -51,6 +56,17 @@ oA::ItemPtr oA::Lang::Instantiator::processUnit(const String &path)
     if (it == _units.end())
         it = _units.emplace_hint(it, path, ASTNodePtr());
     it->second = Parser::ParseFile(path);
+    pushContext(*it);
+    processNode(*it->second);
+    resolveUnresolved();
+    return popContext();
+}
+
+oA::ItemPtr oA::Lang::Instantiator::processStringUnit(const String &string, const String &context)
+{
+    auto it = _units.emplace_hint(_units.end(), context, ASTNodePtr());
+
+    it->second = Parser::ParseString(string, context);
     pushContext(*it);
     processNode(*it->second);
     resolveUnresolved();

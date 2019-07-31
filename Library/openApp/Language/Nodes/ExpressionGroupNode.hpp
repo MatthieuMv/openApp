@@ -8,6 +8,7 @@
 #pragma once
 
 #include <openApp/Language/Nodes/GroupNode.hpp>
+#include <openApp/Containers/UMap.hpp>
 
 namespace oA::Lang { struct ExpressionGroupNode; }
  

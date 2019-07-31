@@ -9,9 +9,17 @@
 #include <regex>
 
 #include <openApp/Language/ShuntingYard.hpp>
+#include <openApp/Language/Lexer.hpp>
 #include <openApp/Language/Nodes.hpp>
-
 #include <openApp/Core/Log.hpp>
+
+void oA::Lang::ShuntingYard::ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context)
+{
+    Lexer::TokenList tokens;
+    Lexer::ProcessString(expr, tokens, context);
+
+    ProcessTokenList(root, name, tokens, mode, context);
+}
 
 void oA::Lang::ShuntingYard::ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context)
 {
@@ -25,6 +33,12 @@ oA::Lang::ShuntingYard::ShuntingYard(Item &root, const String &name, const Lexer
 {
     if (!_tokens.empty())
         _line = _tokens.front().second;
+    if (_mode == Expression || _mode == Function)
+        _target = _root.getExprPtr(_name);
+    else
+        _target = _root.findExpr(_name);
+    if (!_target)
+        throw AccessError("ShuntingYard", "Couldn't find target @" + _name + getErrorContext(_line));
 }
 
 void oA::Lang::ShuntingYard::process(void)
@@ -78,9 +92,6 @@ void oA::Lang::ShuntingYard::processOperator(Lexer::TokenList::const_iterator &i
 
 void oA::Lang::ShuntingYard::processOperatorLogic(const OperatorModel &model)
 {
-    if (model.type == Call) {
-        cout << "1" << endl;
-    }
     if (_opStack.empty())
         return;
     const auto *other = &GetOperator(dynamic_cast<OperatorNode &>(*_opStack.back()).op);
@@ -111,7 +122,11 @@ void oA::Lang::ShuntingYard::processIncrementOperator(Lexer::TokenList::const_it
 
 void oA::Lang::ShuntingYard::processReference(Lexer::TokenList::const_iterator &it)
 {
-    _stack.emplace_back(findReference(it->first, it->second));
+    auto node = findReference(it->first, it->second);
+
+    if (_mode == Expression)
+        _target->depends(*dynamic_cast<ReferenceNode &>(*node).ptr);
+    _stack.emplace_back(std::move(node));
 }
 
 oA::Lang::ASTNodePtr oA::Lang::ShuntingYard::findReference(const String &name, Int line)
@@ -258,7 +273,7 @@ void oA::Lang::ShuntingYard::parseCase(Lexer::TokenList::const_iterator &it, AST
     if (it->first == "case")
         parseCase(it, root);
     else if (it->first == "default:")
-        collectGroup(++it, root.emplaceAs<GroupNode>(), "}"); 
+        collectGroup(++it, root.emplaceAs<GroupNode>(), "}");
 }
 
 void oA::Lang::ShuntingYard::parseCaseName(Lexer::TokenList::const_iterator &it, ASTNode &root)
@@ -272,7 +287,7 @@ void oA::Lang::ShuntingYard::parseCaseName(Lexer::TokenList::const_iterator &it,
     else if (std::regex_match(it->first, ReferenceMatch))
         root.emplace(findReference(it->first, it->second));
     else
-        throw LogicError("ShuntingYard", "Invalid @case@ statement" + getErrorContext(line));    
+        throw LogicError("ShuntingYard", "Invalid @case@ statement" + getErrorContext(line));
     if (++it == _tokens.end() || it->first != ":")
         throw LogicError("ShuntingYard", "Invalid @case@ statement" + getErrorContext(line));
     ++it;
@@ -324,12 +339,7 @@ void oA::Lang::ShuntingYard::parseReturn(Lexer::TokenList::const_iterator &it)
 
     if (++it == _tokens.end())
         throw LogicError("ShuntingYard", "Invalid @return@ statement" + getErrorContext(line));
-    if (std::regex_match(it->first, ValueMatch))
-        parseValue(it, node.emplaceAs<ValueNode>().value);
-    else if (std::regex_match(it->first, ReferenceMatch))
-        node.emplace(findReference(it->first, it->second));
-    else
-        throw LogicError("ShuntingYard", "Invalid @return@ statement" + getErrorContext(line));
+    collectGroup(it, node);
 }
 
 void oA::Lang::ShuntingYard::collectExpressionGroup(Lexer::TokenList::const_iterator &it, ASTNode &root)
@@ -364,12 +374,6 @@ void oA::Lang::ShuntingYard::collectGroup(Lexer::TokenList::const_iterator &it, 
 
 void oA::Lang::ShuntingYard::buildStack(ASTNode &root)
 {
-    cout << "Build stack" << endl;
-    for (auto &itm : _stack)
-        ASTNode::ShowTree(*itm);
-    cout << "Op stack" << endl;
-    for (auto &itm : _opStack)
-        ASTNode::ShowTree(*itm);
     popOpStack();
     if (_stack.empty())
         return;
@@ -388,8 +392,6 @@ void oA::Lang::ShuntingYard::buildStack(ASTNode &root)
         }
     }
     if (_stack.size() != 1) {
-        cerr << "Critical error" << endl;
-        cout << "Stack state :" << endl;
         _stack.apply([](const auto &node) { ASTNode::ShowTree(*node, 1); });
         throw LogicError("ShuntingYard", "Invalid expression" + getErrorContext(_line));
     }
@@ -399,10 +401,39 @@ void oA::Lang::ShuntingYard::buildStack(ASTNode &root)
 
 void oA::Lang::ShuntingYard::buildOperator(Vector<ASTNodePtr>::iterator &it)
 {
+    static const auto hasVarReference = [](const ASTNode &node) {
+        return node.children[0]->getType() == ASTNode::Reference || node.children[0]->getType() == ASTNode::Local
+                || (node.children[0]->getType() == ASTNode::Operator && dynamic_cast<const OperatorNode &>(node).op != At);
+    };
     const auto &model = GetOperator(dynamic_cast<OperatorNode &>(**it).op);
 
     if ((*it)->children.empty() && !peekStackArguments(it, **it, model.args))
         throw LogicError("ShuntingYard", "Not enough arguments to process operator @" + GetOperatorSymbol(model.type) + "@" + getErrorContext(_line));
+    switch (model.type) {
+    case Assign:
+    case AdditionAssign:
+    case SubstractionAssign:
+    case MultiplicationAssign:
+    case DivisionAssign:
+    case ModuloAssign:
+    case PrefixIncrement:
+    case PrefixDecrement:
+    case SufixIncrement:
+    case SufixDecrement:
+        if (!hasVarReference(**it))
+            throw LogicError("ShuntingYard", "An assignment can't have a @non-reference type@ as left argument" + getErrorContext(_line));
+        break;
+    case At:
+        if (!hasVarReference(**it))
+            throw LogicError("ShuntingYard", "Container access can't have a @non-reference type@ as left argument" + getErrorContext(_line));
+        break;
+    case Call:
+        if ((*it)->children[0]->getType() != ASTNode::Reference)
+            throw LogicError("ShuntingYard", "A call can't have a @non-reference type@ as left argument" + getErrorContext(_line));
+        break;
+    default:
+        break;
+    }
 }
 
 bool oA::Lang::ShuntingYard::peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, Uint args) noexcept
@@ -445,18 +476,14 @@ void oA::Lang::ShuntingYard::popOpStack(Operator end, Int line)
 
 void oA::Lang::ShuntingYard::buildTarget(void)
 {
-    ExpressionPtr ptr;
-
-    if (_mode == Expression || _mode == Function) {
-        ptr = _root.getExprPtr(_name);
-        if (!ptr)
-            throw LogicError("ShuntingYard", "Couldn't find target @" + _name + getErrorContext(_line));
-        return ptr->setTree(std::move(_expr));
-    }
-    ptr = _root.findExpr(_name);
-    if (!ptr)
-        throw LogicError("ShuntingYard", "Couldn't find target @" + _name + getErrorContext(_line));
     oA::Expression expr;
-    expr.setTree(std::move(_expr));
-    ptr->connectEvent(std::move(expr));
+
+    if (_mode == Expression || _mode == Function)
+        _target->setTree(std::move(_expr));
+    else {
+        expr.setTree(std::move(_expr));
+        _target->connectEvent(std::move(expr));
+    }
+    if (_mode == Expression)
+        _target->compute();
 }

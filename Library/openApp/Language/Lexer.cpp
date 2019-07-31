@@ -5,9 +5,6 @@
 ** Lexer
 */
 
-// std::regex
-#include <regex>
-
 #include <openApp/Types/SStream.hpp>
 #include <openApp/Types/FStream.hpp>
 #include <openApp/Types/Error.hpp>
@@ -75,7 +72,7 @@ void oA::Lang::Lexer::process(void)
     }
 }
 
-void oA::Lang::Lexer::processString(String res)
+void oA::Lang::Lexer::processString(String &&res)
 {
     auto line = _line;
     char c;
@@ -92,7 +89,7 @@ void oA::Lang::Lexer::processString(String res)
     pushToken(std::move(res));
 }
 
-void oA::Lang::Lexer::processNumber(String res)
+void oA::Lang::Lexer::processNumber(String &&res)
 {
     bool hasDot = res.front() == '.';
     auto line = _line;
@@ -136,14 +133,30 @@ void oA::Lang::Lexer::processOperator(String &&res)
 
     if (!IsOperator(c))
         return pushToken(std::move(res));
-    res.push_back(get());
-    if (IsOperator(res))
+    res.push_back(peek());
+    if (res == "++" || res == "--") {
+        get();
+        return processIncrement(res);
+    }
+    if (IsOperator(res)) {
+        get();
         return processOperator(std::move(res));
+    }
     res.pop_back();
     pushToken(std::move(res));
 }
 
-void oA::Lang::Lexer::processWord(String res)
+void oA::Lang::Lexer::processIncrement(String &res)
+{
+    if (std::isalpha(peek()))
+        processWord(std::move(res));
+    else if (std::isalpha(_tokens.back().first))
+        _tokens.back().first.append(res);
+    else
+        throw LogicError("Lexer", "Invalid operator @" + res + "@" + getErrorContext());
+}
+
+void oA::Lang::Lexer::processWord(String &&res)
 {
     char c;
 
@@ -162,7 +175,7 @@ void oA::Lang::Lexer::processWord(String res)
     }
 }
 
-void oA::Lang::Lexer::processFunctionCall(String res)
+void oA::Lang::Lexer::processFunctionCall(String &&res)
 {
     if (peek() != ')')
         throw LogicError("Lexer", "openApp language doesn't support function call with @arguments@" + getErrorContext());
@@ -170,7 +183,7 @@ void oA::Lang::Lexer::processFunctionCall(String res)
     pushToken(std::move(res));
 }
 
-void oA::Lang::Lexer::processIndexAccess(String res)
+void oA::Lang::Lexer::processIndexAccess(String &&res)
 {
     res.push_back(']');
     pushToken(std::move(res));
