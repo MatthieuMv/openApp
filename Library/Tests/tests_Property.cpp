@@ -15,6 +15,7 @@ Test(Propert, Basics)
 
     cr_assert(x.set(42));
     cr_assert_not(x.set(42));
+    cr_assert_eq(x.getRaw(), 42);
 }
 
 Test(Property, Constructors)
@@ -71,4 +72,22 @@ Test(Property, CircularBind)
     y = 4;
     cr_assert_eq(*x, 4);
     cr_assert_eq(*y, 4);
+}
+
+Test(Property, Assignments)
+{
+    oA::Property<oA::Int> x, y(1);
+
+    cr_assert_eq(*(x += 4), 4);
+    cr_assert_eq(*(x += y), 5);
+    y = 0;
+    x = 4;
+    cr_assert_eq(*(y -= 4), -4);
+    cr_assert_eq(*(x -= y), 8);
+    cr_assert_eq(*(x *= 2), 16);
+    cr_assert_eq(*(x *= y), -64);
+    cr_assert_eq(*(x /= y), 16);
+    cr_assert_eq(*(x /= 4), 4);
+    cr_assert_eq(*(x %= 5), 4);
+    cr_assert_eq(*(x %= y), 0);
 }
