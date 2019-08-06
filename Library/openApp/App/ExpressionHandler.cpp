@@ -37,7 +37,7 @@ const oA::Property<oA::Var> &oA::ItemUtils::ExpressionHandler::get(const String 
     return *it->second;
 }
 
-oA::ExpressionPtr oA::ItemUtils::ExpressionHandler::getExprPtr(const String &key) const noexcept
+oA::ExpressionPtr oA::ItemUtils::ExpressionHandler::getPtr(const String &key) const noexcept
 {
     auto it = _members.find(key);
 

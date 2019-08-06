@@ -13,17 +13,20 @@
 namespace oA::Lang
 {
     /**
-     * @brief Enum containing every implemented Statement 
+     * @brief Enum containing every implemented Statement
      */
     enum Statement {
         If,
         Else,
         Switch,
         Case,
+        Default,
         While,
         For,
         Break,
-        Return
+        Return,
+        Variable,
+        StaticVariable
     };
 
     /**
@@ -36,7 +39,7 @@ namespace oA::Lang
 
     /**
      * @brief Check if an Statement exists
-     * 
+     *
      * @param op Statement as String
      * @return true Statement is valid
      * @return false Statement is invalid
@@ -45,7 +48,7 @@ namespace oA::Lang
 
     /**
      * @brief Get the StatementModel of an Statement's string
-     * 
+     *
      * @param op Statement as String
      * @return StatementModel& Resulting model
      */
@@ -53,7 +56,7 @@ namespace oA::Lang
 
     /**
      * @brief Get the StatementModel of an Statement's type
-     * 
+     *
      * @param op Statement as type
      * @return StatementModel& Resulting model
      */
@@ -61,7 +64,7 @@ namespace oA::Lang
 
     /**
      * @brief Get the Symbol String of an Statement
-     * 
+     *
      * @param op Statement to retreive
      * @return const String Resulting symbol
      */

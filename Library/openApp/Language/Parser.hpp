@@ -18,7 +18,7 @@ class oA::Lang::Parser
 public:
     /**
      * @brief Parse a file and fill an Abstract Syntax Tree
-     * 
+     *
      * @param path File path
      * @param tree Target tree
      * @return ASTNodePtr Resulting AST Tree
@@ -27,7 +27,7 @@ public:
 
     /**
      * @brief Parse a string and fill an Abstract Syntax Tree
-     * 
+     *
      * @param string String to parse
      * @param context String context (equal to filename)
      * @return ASTNodePtr Resulting AST Tree
@@ -41,22 +41,22 @@ private:
 
     /**
      * @brief Construct a new Parser object
-     * 
+     *
      * @param context Item context (path)
-     * @param tokens 
+     * @param tokens
      */
     Parser(const String &context, Lexer::TokenList &tokens);
 
     /**
      * @brief Start the parsing operator on internal tokens
-     * 
+     *
      * @return ASTNodePtr Resulting tree root node
      */
     ASTNodePtr parse(void);
 
     /**
      * @brief Parse a single token of internal list
-     * 
+     *
      * @param parent Context node
      * @param it Token Iterator
      */
@@ -64,16 +64,23 @@ private:
 
     /**
      * @brief Parse an import statement
-     * 
+     *
      * @param parent Context node
      * @param it Token iterator
      */
     void parseImport(ASTNodePtr &parent, Lexer::TokenList::iterator &it);
 
+    /**
+     * @brief Parse a declaration
+     *
+     * @param parent Context node
+     * @param it Token iterator
+     */
+    void parseName(ASTNodePtr &parent, Lexer::TokenList::iterator &it);
 
     /**
      * @brief Parse a class declaration
-     * 
+     *
      * @param parent Context node
      * @param it Token iterator
      */
@@ -81,7 +88,7 @@ private:
 
     /**
      * @brief Parse a declaration statement
-     * 
+     *
      * @param parent Context node
      * @param it Token iterator
      */
@@ -89,7 +96,7 @@ private:
 
     /**
      * @brief Parse an assignment statement
-     * 
+     *
      * @param parent Context node
      * @param it Token iterator
      */
@@ -97,7 +104,7 @@ private:
 
     /**
      * @brief Collect internal token of an expression (either group or not)
-     * 
+     *
      * @param it Token iterator
      * @param target Target token list
      */
@@ -105,7 +112,7 @@ private:
 
     /**
      * @brief Collect internal token of an expression group (starting with the token after delimiter)
-     * 
+     *
      * @param it Token iterator
      * @param target Target token list
      */
@@ -113,7 +120,7 @@ private:
 
     /**
      * @brief Get the Error Context object
-     * 
+     *
      * @param line Line of the error
      * @return String Error message
      */

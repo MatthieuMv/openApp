@@ -6,6 +6,8 @@
 */
 
 #include <openApp/Language/Nodes/StatementNode.hpp>
+#include <openApp/Language/Nodes/LocalNode.hpp>
+#include <openApp/Language/Nodes/ValueNode.hpp>
 
 oA::Var oA::Lang::StatementNode::compute(void)
 {
@@ -22,6 +24,8 @@ oA::Var oA::Lang::StatementNode::compute(void)
         throw BreakSignal();
     case Return:
         throw ReturnSignal(children[0]->compute());
+    case Variable:
+        return dynamic_cast<LocalNode &>(*children[0]).local = children[1]->compute();
     default:
         throw LogicError("StatementNode", "Can't compute uncomputable statement");
     }
@@ -38,42 +42,54 @@ oA::Var oA::Lang::StatementNode::computeIf(void)
 
 oA::Var oA::Lang::StatementNode::computeSwitch(void)
 {
-    auto it = children.begin();
-    auto next = it + 1;
-    auto end = children.end();
-    Var comp = (*it)->compute();
+    try {
+        auto it = children.begin();
+        Var comp = (*it)->compute();
+        auto end = children.end();
 
-    for (++it; it != children.end(); ++it) {
-        if (next == end)
-            return (*it)->compute();
-        else if ((*it)->compute() == comp)
-            return (*next)->compute();
-        ++next;
+        for (++it; it != children.end(); it += 2) {
+            if (it + 1 == end)
+                return (*it)->compute();
+            else if ((*it)->compute() == comp)
+                return (*++it)->compute();
+        }
+        return Var();
+    } catch (const BreakSignal &) {
+        return Var();
+    } catch (...) {
+        throw;
     }
-    return Var();
 }
 
 oA::Var oA::Lang::StatementNode::computeWhile(void)
 {
-    auto &comp = children[0];
-    auto &group = children[1];
-    Var var;
+    try {
+        auto &comp = *children[0];
+        auto &group = *children[1];
 
-    while (comp->compute()) {
-        var = group->compute();
+        while (comp.compute())
+            group.compute();
+        return Var();
+    } catch (const BreakSignal &) {
+        return Var();
+    } catch (...) {
+        throw;
     }
-    return var;
 }
 
 oA::Var oA::Lang::StatementNode::computeFor(void)
 {
-    auto &comp = children[1];
-    auto &sufix = children[2];
-    auto &group = children[3];
-    Var var;
+    try {
+        auto &comp = *children[1];
+        auto &sufix = *children[2];
+        auto &group = *children[3];
 
-    for (children[0]->compute(); comp->compute(); sufix->compute()) {
-        var = group->compute();
+        for (children[0]->compute(); comp.compute(); sufix.compute())
+            group.compute();
+        return Var();
+    } catch (const BreakSignal &) {
+        return Var();
+    } catch (...) {
+        throw;
     }
-    return var;
 }

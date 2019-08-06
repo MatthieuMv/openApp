@@ -168,8 +168,6 @@ void oA::Lang::Lexer::processWord(String &&res)
         return processFunctionCall(get());
     case '[':
         return processIndexAccess(get());
-    case ':':
-        _tokens.back().first.push_back(get());
     default:
         break;
     }

@@ -11,12 +11,24 @@
 #include <openApp/Containers/UMap.hpp>
 
 namespace oA::Lang { struct ExpressionGroupNode; }
- 
+
 struct oA::Lang::ExpressionGroupNode : public GroupNode
 {
     virtual ~ExpressionGroupNode(void) = default;
-    
+
     virtual NodeType getType(void) const { return ExpressionGroup; }
+
+    virtual Var compute(void) override {
+        try {
+            return GroupNode::compute();
+        } catch (const ReturnSignal &ret) {
+            return ret.value;
+        } catch (const BreakSignal &) {
+            throw LogicError("Break statement used out of loop");
+        } catch (...) {
+            throw;
+        }
+    }
 
     UMap<String, Var> locals;
 };

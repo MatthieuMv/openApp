@@ -14,7 +14,7 @@
 namespace oA::Lang
 {
     /**
-     * @brief Enum containing every implemented operator 
+     * @brief Enum containing every implemented operator
      */
     enum Operator {
         Not, Equal, Different,
@@ -49,7 +49,7 @@ namespace oA::Lang
 
     /**
      * @brief Check if an operator exists
-     * 
+     *
      * @param op Operator as String
      * @return true Operator is valid
      * @return false Operator is invalid
@@ -58,7 +58,7 @@ namespace oA::Lang
 
     /**
      * @brief Get the OperatorModel of an operator's string
-     * 
+     *
      * @param op Operator as String
      * @return OperatorModel& Resulting model
      */
@@ -66,7 +66,7 @@ namespace oA::Lang
 
     /**
      * @brief Get the OperatorModel of an operator's type
-     * 
+     *
      * @param op Operator as type
      * @return OperatorModel& Resulting model
      */
@@ -74,7 +74,7 @@ namespace oA::Lang
 
     /**
      * @brief Get the Symbol String of an Operator
-     * 
+     *
      * @param op Operator to retreive
      * @return const String Resulting symbol
      */

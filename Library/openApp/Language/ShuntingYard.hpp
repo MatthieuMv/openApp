@@ -31,12 +31,12 @@ public:
      */
     struct State
     {
-        Int inLoop, inSwitch, inCondition;
+        Int inLoop = 0, inSwitch = 0, inCondition = 0;
     };
 
     /**
      * @brief Process a string representing an expression
-     * 
+     *
      * @param root Root Item
      * @param name Expression name
      * @param expr Expression string
@@ -47,7 +47,7 @@ public:
 
     /**
      * @brief Process a list of token representing an expression
-     * 
+     *
      * @param root Root Item
      * @param name Expression name
      * @param mode ShuntingYard mode
@@ -71,7 +71,7 @@ private:
 
     /**
      * @brief Construct a new Shunting Yard object
-     * 
+     *
      * @param root Root item
      * @param tokens Token list
      * @param context Context of the tokens
@@ -85,7 +85,7 @@ private:
 
     /**
      * @brief Process a single token and perform operation on the stack
-     * 
+     *
      * @param it Token iterator
      */
     void processToken(Lexer::TokenList::const_iterator &it, ASTNode &root);
@@ -103,25 +103,31 @@ private:
     void parseContainerValue(Lexer::TokenList::const_iterator &it, Var &var);
 
     void processStatement(Lexer::TokenList::const_iterator &it, ASTNode &root);
+
     void parseIf(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void parseElse(Lexer::TokenList::const_iterator &it, ASTNode &root);
 
     void parseSwitch(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void parseCase(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void parseCaseName(Lexer::TokenList::const_iterator &it, ASTNode &root);
+    void parseDefault(Lexer::TokenList::const_iterator &it, ASTNode &root);
 
     void parseWhile(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void parseFor(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void parseBreak(Lexer::TokenList::const_iterator &it);
     void parseReturn(Lexer::TokenList::const_iterator &it);
 
+    void parseVariable(Lexer::TokenList::const_iterator &it, ASTNode &root);
+    void parseStaticVariable(Lexer::TokenList::const_iterator &it);
+
     void collectExpressionGroup(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void collectGroup(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void collectGroup(Lexer::TokenList::const_iterator &it, ASTNode &root, const String &end);
+    void collectSingleGroup(Lexer::TokenList::const_iterator &it, ASTNode &root);
 
     /**
      * @brief Build a tree out of current stack state
-     * 
+     *
      * @param root Root node in which the node will be added
      */
     void buildStack(ASTNode &root);
@@ -137,14 +143,14 @@ private:
 
     /**
      * @brief Pop every operator of opStack and push them into the stack
-     * 
+     *
      * @param end End marker operator
      */
     void popOpStack(Operator end, Int line);
 
     /**
      * @brief Build an error context String object
-     * 
+     *
      * @param line Line which triggered the error
      * @return String Resulting error message
      */
@@ -152,14 +158,14 @@ private:
 
     /**
      * @brief Get locals of root expr
-     * 
+     *
      * @return UMap<String, Var>& Locals
      */
     UMap<String, Var> &locals(void) { return dynamic_cast<ExpressionGroupNode &>(*_expr).locals; }
 
     /**
      * @brief Assert that stacks are empty
-     * 
+     *
      * @return true Stack and Operator stack are empty
      * @return false A stack is not empty
      */

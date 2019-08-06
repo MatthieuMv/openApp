@@ -65,7 +65,7 @@ struct oA::Lang::ASTNode
 
     /**
      * @brief Show internal node tree
-     * 
+     *
      * @param root Root node
      * @param tab Actual indentation (used in recursion)
      */
@@ -78,28 +78,28 @@ struct oA::Lang::ASTNode
 
     /**
      * @brief Get the Type object
-     * 
+     *
      * @return NodeType Internal type
      */
     virtual NodeType getType(void) const { return Root; }
 
     /**
      * @brief Compute if possible internal node
-     * 
+     *
      * @return Var Resulting variable
      */
     virtual Var compute(void) { throw LogicError("ASTNode", "Can't compute uncomputable node"); }
 
     /**
      * @brief Emplace an existing node
-     * 
+     *
      * @param node Node to move
      */
     void emplace(ASTNodePtr &&node) { children.emplace_back(std::move(node)); }
 
     /**
      * @brief Construct a new node
-     * 
+     *
      * @tparam NodeType Type of constructed node
      * @tparam Args Type of constructor arguments
      * @param args Constructor arguments

@@ -18,14 +18,14 @@
 namespace oA::Lang { class Instantiator; }
 
 /**
- * @brief This class process a file architecture (recurisvely find implicit links) and instantiate an Item pointer 
+ * @brief This class process a file architecture (recurisvely find implicit links) and instantiate an Item pointer
  */
 class oA::Lang::Instantiator
 {
 public:
     /**
      * @brief Instanciate an openApp class file (.oA)
-     * 
+     *
      * @param path File path
      * @return ItemPtr Resulting Item pointer
      */
@@ -33,7 +33,7 @@ public:
 
     /**
      * @brief Instanciate an openApp class string
-     * 
+     *
      * @param string File content
      * @param context File name
      * @return ItemPtr Resulting Item pointer
@@ -67,14 +67,14 @@ private:
 
     /**
      * @brief Process a file / class name
-     * 
+     *
      * @param name Name / Path of the class
      */
     ItemPtr processName(const String &name);
 
     /**
      * @brief Get the Path of a name
-     * 
+     *
      * @param name Name to search
      * @return String Path
      */
@@ -82,14 +82,14 @@ private:
 
     /**
      * @brief Process an Unit with a given path
-     * 
+     *
      * @param path Unit path
      */
     ItemPtr processUnit(const String &path);
 
     /**
      * @brief Process an Unit with a given string
-     * 
+     *
      * @param string Unit string
      * @param context Unit context
      */
@@ -97,39 +97,68 @@ private:
 
     /**
      * @brief Process a node
-     * 
+     *
      * @param node Node to process
      */
     void processNode(const ASTNode &node);
 
     /**
      * @brief Process a root node
-     * 
+     *
      * @param node Node to process
      */
     void processRoot(const ASTNode &node);
 
     /**
      * @brief Process an import node
-     * 
+     *
      * @param node Node to process
      */
     void processImport(const ImportNode &node);
 
     /**
      * @brief Process class node
-     * 
+     *
      * @param node Node to process
      */
     void processClass(const ClassNode &node);
 
     /**
      * @brief Process declaration node
-     * 
+     *
      * @param node Node to process
-     * @param resolve If false will catch errors and put call in unresolved list
      */
     void processDeclaration(const DeclarationNode &node);
+
+    /**
+     * @brief Process special declaration node if it exists
+     *
+     * @param node Node to process
+     * @return true Node was a special node and has been instantied
+     * @return false Node wasn't a special node
+     */
+    bool processSpecialDeclaration(const DeclarationNode &node);
+
+    /**
+     * @brief Process ID
+     *
+     * @param node Node to process
+     */
+    void processID(const DeclarationNode &node);
+
+    /**
+     * @brief Process relative size
+     *
+     * @param node Node to process
+     */
+    void processRelativeSize(const DeclarationNode &node);
+
+    /**
+     * @brief Process relative pos
+     *
+     * @param node Node to process
+     */
+    void processRelativePos(const DeclarationNode &node);
 
     /**
      * @brief Resolve every unresolved function of the instantiator
@@ -138,50 +167,50 @@ private:
 
     /**
      * @brief Check if a context exists
-     * 
+     *
      * @return true There is at least a context
-     * @return false There is no context 
+     * @return false There is no context
      */
     bool hasContext(void) const noexcept { return !_contexts.empty(); }
 
     /**
      * @brief Return current context
-     * 
+     *
      * @return Context& Current context
      */
     Context &context(void) { return _contexts.top(); }
 
     /**
      * @brief Return current unit
-     * 
+     *
      * @return Unit& Current unit
      */
     Unit &unit(void) { return context().unit; }
 
     /**
      * @brief Return current root
-     * 
+     *
      * @return ItemPtr& Current root
      */
     ItemPtr &root(void) { return context().root; }
 
     /**
      * @brief Push a new Context to the stack
-     * 
+     *
      * @param unit Unit of the context
      */
     void pushContext(Unit &unit) { _contexts.emplace(unit); }
 
     /**
      * @brief Pop a Context from the stack and return its internal item pointer
-     * 
+     *
      * @return ItemPtr Item pointer
      */
     ItemPtr popContext(void) { auto item(std::move(root())); _contexts.pop(); return item; }
 
     /**
      * @brief Get the Error Context object of current context
-     * 
+     *
      * @return String Error message
      */
     String getErrorContext(void) { return " | @" + unit().first + '@'; }

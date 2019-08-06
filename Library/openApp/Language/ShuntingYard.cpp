@@ -13,6 +13,10 @@
 #include <openApp/Language/Nodes.hpp>
 #include <openApp/Core/Log.hpp>
 
+static const std::regex ReferenceMatch("[[:alpha:]][[:alnum:]]*", std::regex::optimize);
+static const std::regex ValueMatch("\".*\"|[[]|true|false|-?[[:digit:]]*[.]?[[:digit:]]+", std::regex::optimize);
+static const std::regex IncrementOperatorMatch("([+][+][[:alpha:]][[:alnum:]]*)|(--[[:alpha:]][[:alnum:]]*)|([[:alpha:]][[:alnum:]]*[+][+])|([[:alpha:]][[:alnum:]]*--)", std::regex::optimize);
+
 void oA::Lang::ShuntingYard::ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context)
 {
     Lexer::TokenList tokens;
@@ -34,7 +38,7 @@ oA::Lang::ShuntingYard::ShuntingYard(Item &root, const String &name, const Lexer
     if (!_tokens.empty())
         _line = _tokens.front().second;
     if (_mode == Expression || _mode == Function)
-        _target = _root.getExprPtr(_name);
+        _target = _root.getPtr(_name);
     else
         _target = _root.findExpr(_name);
     if (!_target)
@@ -48,10 +52,6 @@ void oA::Lang::ShuntingYard::process(void)
     buildStack(*_expr);
     buildTarget();
 }
-
-static const std::regex ReferenceMatch("[[:alpha:]][[:alnum:]]*", std::regex::optimize);
-static const std::regex ValueMatch("\".*\"|[[]|true|false|-?[[:digit:]]*[.]?[[:digit:]]+", std::regex::optimize);
-static const std::regex IncrementOperatorMatch("([+][+][[:alpha:]][[:alnum:]]*)|(--[[:alpha:]][[:alnum:]]*)|([[:alpha:]][[:alnum:]]*[+][+])|([[:alpha:]][[:alnum:]]*--)", std::regex::optimize);
 
 void oA::Lang::ShuntingYard::processToken(Lexer::TokenList::const_iterator &it, ASTNode &root)
 {
@@ -82,6 +82,15 @@ void oA::Lang::ShuntingYard::processOperator(Lexer::TokenList::const_iterator &i
         break;
     case RightParenthese:
         popOpStack(LeftParenthese, it->second);
+        break;
+    case TernaryElse:
+        break;
+    case LeftBrace:
+        collectGroup(++it, root.emplaceAs<GroupNode>(), "}");
+        break;
+    case Comma:
+        buildStack(root.emplaceAs<GroupNode>());
+        collectSingleGroup(it, *root.children.back());
         break;
     default:
         processOperatorLogic(model);
@@ -204,6 +213,8 @@ void oA::Lang::ShuntingYard::processStatement(Lexer::TokenList::const_iterator &
         return parseSwitch(it, root);
     case Case:
         return parseCase(it, root);
+    case Default:
+        return parseDefault(it, root);
     case While:
         return parseWhile(it, root);
     case For:
@@ -212,6 +223,10 @@ void oA::Lang::ShuntingYard::processStatement(Lexer::TokenList::const_iterator &
         return parseBreak(it);
     case Return:
         return parseReturn(it);
+    case Variable:
+        return parseVariable(it, root);
+    case StaticVariable:
+        return parseStaticVariable(it);
     }
 }
 
@@ -227,8 +242,8 @@ void oA::Lang::ShuntingYard::parseIf(Lexer::TokenList::const_iterator &it, ASTNo
     if (++it == _tokens.end())
         throw LogicError("ShuntingYard", "Invalid @if@ statement" + getErrorContext(line));
     collectExpressionGroup(it, node);
-    if (it != _tokens.end() && it->first == "else")
-        parseElse(it, root);
+    if (it != _tokens.end() && ++it != _tokens.end() && it->first == "else")
+        parseElse(it, node);
     --_state.inCondition;
 }
 
@@ -237,13 +252,13 @@ void oA::Lang::ShuntingYard::parseElse(Lexer::TokenList::const_iterator &it, AST
     auto line = it->second;
 
     if (_state.inCondition <= 0)
-        throw LogicError("ShuntingYard", "Invalid @elsek@ statement" + getErrorContext(line));
+        throw LogicError("ShuntingYard", "Invalid @else@ statement" + getErrorContext(line));
     if (++it == _tokens.end())
         throw LogicError("ShuntingYard", "Invalid @else@ statement" + getErrorContext(line));
     if (it->first == "if")
-        parseIf(it, root);
+        parseIf(it, root.emplaceAs<GroupNode>());
     else
-        collectExpressionGroup(it, root);
+        collectExpressionGroup(it, root.emplaceAs<GroupNode>());
 }
 
 void oA::Lang::ShuntingYard::parseSwitch(Lexer::TokenList::const_iterator &it, ASTNode &root)
@@ -257,7 +272,7 @@ void oA::Lang::ShuntingYard::parseSwitch(Lexer::TokenList::const_iterator &it, A
     collectGroup(it, node.emplaceAs<GroupNode>(), ")");
     if (++it == _tokens.end() || it->first != "{" || ++it == _tokens.end())
         throw LogicError("ShuntingYard", "Invalid @switch@ statement" + getErrorContext(line));
-    collectGroup(it, node.emplaceAs<GroupNode>(), "}");
+    collectGroup(it, node, "}");
     --_state.inSwitch;
 }
 
@@ -266,14 +281,17 @@ void oA::Lang::ShuntingYard::parseCase(Lexer::TokenList::const_iterator &it, AST
     auto line = it->second;
 
     parseCaseName(it, root);
-    for (auto &group = root.emplaceAs<GroupNode>(); it != _tokens.end() && it->first != "case" && it->first != "default:" && it->first != "}"; ++it)
+    for (auto &group = root.emplaceAs<GroupNode>(); it != _tokens.end() && it->first != "case" && it->first != "default" && it->first != "}"; ++it)
         processToken(it, group);
+    buildStack(*root.children.back());
     if (it == _tokens.end())
         throw LogicError("ShuntingYard", "Invalid @case@ statement" + getErrorContext(line));
     if (it->first == "case")
         parseCase(it, root);
-    else if (it->first == "default:")
-        collectGroup(++it, root.emplaceAs<GroupNode>(), "}");
+    else if (it->first == "default")
+        parseDefault(it, root);
+    else if (it->first == "}")
+        --it;
 }
 
 void oA::Lang::ShuntingYard::parseCaseName(Lexer::TokenList::const_iterator &it, ASTNode &root)
@@ -291,6 +309,19 @@ void oA::Lang::ShuntingYard::parseCaseName(Lexer::TokenList::const_iterator &it,
     if (++it == _tokens.end() || it->first != ":")
         throw LogicError("ShuntingYard", "Invalid @case@ statement" + getErrorContext(line));
     ++it;
+}
+
+void oA::Lang::ShuntingYard::parseDefault(Lexer::TokenList::const_iterator &it, ASTNode &root)
+{
+    auto line = it->second;
+
+    if (++it == _tokens.end() || it->first != ":" || ++it == _tokens.end())
+        throw LogicError("ShuntingYard", "Invalid @default@ statement" + getErrorContext(line));
+    for (auto &group = root.emplaceAs<GroupNode>(); it != _tokens.end() && it->first != "case" && it->first != "default" && it->first != "}"; ++it)
+        processToken(it, group);
+    if (it->first == "}")
+        --it;
+    buildStack(*root.children.back());
 }
 
 void oA::Lang::ShuntingYard::parseWhile(Lexer::TokenList::const_iterator &it, ASTNode &root)
@@ -342,6 +373,27 @@ void oA::Lang::ShuntingYard::parseReturn(Lexer::TokenList::const_iterator &it)
     collectGroup(it, node);
 }
 
+void oA::Lang::ShuntingYard::parseVariable(Lexer::TokenList::const_iterator &it, ASTNode &root)
+{
+    if (++it == _tokens.end() || !std::regex_match(it->first, ReferenceMatch))
+        throw LogicError("ShuntingYard", "Invalid @local variable@ declaration" + getErrorContext(it->second));
+    auto &var = locals()[it->first] = 0;
+    auto &node = root.emplaceAs<StatementNode>(Variable);
+    node.emplaceAs<LocalNode>(var);
+    if (++it != _tokens.end() && it->first == "=")
+        parseValue(it, var);
+    node.emplaceAs<ValueNode>().value = var;
+}
+
+void oA::Lang::ShuntingYard::parseStaticVariable(Lexer::TokenList::const_iterator &it)
+{
+    if (++it == _tokens.end() || it->first != "var" || ++it == _tokens.end() || !std::regex_match(it->first, ReferenceMatch))
+        throw LogicError("ShuntingYard", "Invalid @local variable@ declaration" + getErrorContext(it->second));
+    auto &var = locals()[it->first] = 0;
+    if (++it != _tokens.end() && it->first == "=")
+        parseValue(it, var);
+}
+
 void oA::Lang::ShuntingYard::collectExpressionGroup(Lexer::TokenList::const_iterator &it, ASTNode &root)
 {
     if (it->first == "{")
@@ -369,6 +421,15 @@ void oA::Lang::ShuntingYard::collectGroup(Lexer::TokenList::const_iterator &it, 
         processToken(it, root);
     if (it == _tokens.end())
         throw LogicError("ShuntingYard", "Excepted token @" + end + "@ in group" + getErrorContext(line));
+    buildStack(root);
+}
+
+void oA::Lang::ShuntingYard::collectSingleGroup(Lexer::TokenList::const_iterator &it, ASTNode &root)
+{
+    auto old = it->second;
+
+    for (auto line = it->second; it != _tokens.end() && old == line && it->first != ";"; line = (++it)->second)
+        processToken(it, root);
     buildStack(root);
 }
 

@@ -83,7 +83,7 @@ oA::ExpressionPtr oA::Item::findExpr(const String &key)
     if (!token.empty() && token == getID())
         return findExpr(left);
     if (left.empty())
-        return getExprPtr(key);
+        return getPtr(key);
     auto ptr = findItem(token);
     if (ptr)
         return ptr->findExpr(left);

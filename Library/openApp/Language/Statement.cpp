@@ -10,14 +10,17 @@
 #include <openApp/Language/Statement.hpp>
 
 static const oA::UMap<oA::String, oA::Lang::StatementModel> StatementMap = {
-    { "if",         { oA::Lang::If      }   },
-    { "else",       { oA::Lang::Else    }   },
-    { "switch",     { oA::Lang::Switch  }   },
-    { "case",       { oA::Lang::Case    }   },
-    { "while",      { oA::Lang::While   }   },
-    { "for",        { oA::Lang::For     }   },
-    { "break",      { oA::Lang::Break   }   },
-    { "return",     { oA::Lang::Return  }   }
+    { "if",         {   oA::Lang::If                }     },
+    { "else",       {   oA::Lang::Else              }     },
+    { "switch",     {   oA::Lang::Switch            }     },
+    { "case",       {   oA::Lang::Case              }     },
+    { "default",    {   oA::Lang::Default           }     },
+    { "while",      {   oA::Lang::While             }     },
+    { "for",        {   oA::Lang::For               }     },
+    { "break",      {   oA::Lang::Break             }     },
+    { "return",     {   oA::Lang::Return            }     },
+    { "var",        {   oA::Lang::Variable          }     },
+    { "static",     {   oA::Lang::StaticVariable    }     }
 };
 
 bool oA::Lang::IsStatement(const oA::String &statement)

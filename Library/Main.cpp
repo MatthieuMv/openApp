@@ -5,7 +5,7 @@
 ** Main
 */
 
-#include <openApp/Language/Nodes.hpp>
+#include <openApp/Language/ShuntingYard.hpp>
 
 void cr_assert(bool res)
 {
@@ -13,8 +13,8 @@ void cr_assert(bool res)
         throw;
 }
 
-template<typename T>
-void cr_assert_eq(const T &x, const T &y)
+template<typename T, typename U>
+void cr_assert_eq(const T &x, const U &y)
 {
     if (x != y)
         throw;
@@ -22,22 +22,12 @@ void cr_assert_eq(const T &x, const T &y)
 
 int main(void)
 {
-    oA::Lang::ExpressionGroupNode root;
-    auto expr(std::make_shared<oA::Expression>(0));
-    auto &node = root.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::PrefixIncrement);
+    oA::Item item;
 
-    root.locals["var"] = oA::Container();
-    root.locals["var"] += 42;
-    auto &at = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::At);
-    at.emplaceAs<oA::Lang::LocalNode>(root.locals["var"]);
-    at.emplaceAs<oA::Lang::ValueNode>().value = 0;
-
-    cr_assert_eq(node.compute().toInt(), 1);
-    node.op = oA::Lang::SufixDecrement;         cr_assert_eq(node.compute().toInt(), 1);
-    node.op = oA::Lang::PrefixDecrement;        cr_assert_eq(node.compute().toInt(), -1);
-    node.op = oA::Lang::SufixIncrement;         cr_assert_eq(node.compute().toInt(), -1);
-
-    node.emplaceAs<oA::Lang::ValueNode>().value = oA::Container();
-    node.op = oA::Lang::Assign;
-    cr_assert_eq(node.compute().toInt(), 2);
+    oA::Lang::ShuntingYard::ProcessString(item, "x", "(((y >= 2 ? 42 : 24) * 2) / 4) * 2", oA::Lang::ShuntingYard::Expression);
+    item.getPtr("x")->show();
+    item.get("y") = 1;
+    cr_assert_eq(item.getAs<oA::Number>("x"), 24);
+    item.get("y") = 2;
+    cr_assert_eq(item.getAs<oA::Number>("x"), 42);
 }

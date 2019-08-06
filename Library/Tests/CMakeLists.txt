@@ -29,6 +29,8 @@ set(TestsSources
     tests_Operator.cpp
     tests_Statement.cpp
     tests_OperatorNode.cpp
+    tests_StatementNode.cpp
+    tests_ShuntingYard.cpp
 )
 
 set(CMAKE_CXX_STANDARD 17)

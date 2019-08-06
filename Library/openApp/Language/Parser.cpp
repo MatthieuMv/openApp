@@ -44,15 +44,13 @@ oA::Lang::ASTNodePtr oA::Lang::Parser::parse(void)
 }
 
 static const std::regex NameMatch("[[:alpha:]][[:alnum:]]*", std::regex::optimize);
-static const std::regex PropertyRegex("[[:alpha:]][[:alnum:]]*:", std::regex::optimize);
 
 void oA::Lang::Parser::parseToken(ASTNodePtr &parent, Lexer::TokenList::iterator &it)
 {
     static const Vector<Pair<std::regex, void(Parser::*)(ASTNodePtr &, Lexer::TokenList::iterator &)>> FunctionMap = {
         { std::regex("import", std::regex::optimize),                       &Parser::parseImport        },
         { std::regex("property|function|on", std::regex::optimize),         &Parser::parseDeclaration   },
-        { NameMatch,                                                       &Parser::parseClass         },
-        { PropertyRegex,                                                    &Parser::parseAssignment    }
+        { NameMatch,                                                        &Parser::parseName          }
     };
     auto match = FunctionMap.findIf([it](const auto &p) { return std::regex_match(it->first, p.first); });
 
@@ -65,8 +63,7 @@ void oA::Lang::Parser::parseImport(ASTNodePtr &parent, Lexer::TokenList::iterato
 {
     auto line = it->second;
 
-    ++it;
-    if (it == _tokens.end())
+    if (++it == _tokens.end())
         throw LogicError("Parser", "Excepted directory path after token @import@" + getErrorContext(line));
     if (!Path::DirExists(it->first))
         throw AccessError("Parser", "Couldn't access imported directory @" + it->first + "@" + getErrorContext(it->second));
@@ -74,25 +71,28 @@ void oA::Lang::Parser::parseImport(ASTNodePtr &parent, Lexer::TokenList::iterato
     ++it;
 }
 
+void oA::Lang::Parser::parseName(ASTNodePtr &parent, Lexer::TokenList::iterator &it)
+{
+    auto line = it->second;
+    auto tmp = it;
+
+    if (++tmp == _tokens.end())
+        throw LogicError("Parser", "Unexcpected end of @declaration@" + getErrorContext(line));
+    if (tmp->first == ":")
+        parseAssignment(parent, it);
+    else
+        parseClass(parent, it);
+}
+
 void oA::Lang::Parser::parseClass(ASTNodePtr &parent, Lexer::TokenList::iterator &it)
 {
     auto line = it->second;
-    String name = std::move(it->first), id;
+    String name = std::move(it->first);
 
-    ++it;
-    if (it != _tokens.end() && it->first == ":") {
-        ++it;
-        if (it == _tokens.end())
-            throw LogicError("Parser", "Invalid class declaration" + getErrorContext(line));
-        if (!std::regex_match(it->first, NameMatch))
-            throw LogicError("Parser", "Invalid class id @" + it->first + "@" + getErrorContext(it->second));
-        id = std::move(it->first);
-        ++it;
-    }
-    if (it == _tokens.end() || it->first != "{")
+    if (++it == _tokens.end() || it->first != "{")
         throw LogicError("Parser", "Excepted token @{@ after class declaration" + getErrorContext(line));
     ++it;
-    parent->emplaceAs<ClassNode>(std::move(name), std::move(id));
+    parent->emplaceAs<ClassNode>(std::move(name));
     for (auto &node = parent->children.back(); it != _tokens.end() && it->first != "}";)
         parseToken(node, it);
     if (it == _tokens.end())
@@ -111,9 +111,9 @@ void oA::Lang::Parser::parseDeclaration(ASTNodePtr &parent, Lexer::TokenList::it
     auto line = it->second;
     auto type = Types.find(it->first);
 
-    ++it;
-    if (it == _tokens.end() || type == Types.end() || !std::regex_match(it->first, PropertyRegex))
-        throw LogicError("Parser", "Unexpected @declaration@" + getErrorContext(line));
+    if (++it == _tokens.end() || type == Types.end() || !std::regex_match(it->first, NameMatch)
+        || ++it == _tokens.end() || it->first != ":")
+        throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
     it->first.pop_back();
     auto &node = parent->emplaceAs<DeclarationNode>(std::move(it->first), type->second);
     collectExpression(++it, node.tokens);

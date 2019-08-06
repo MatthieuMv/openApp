@@ -17,6 +17,7 @@ namespace oA::ItemUtils { class ExpressionHandler; }
 
 /**
  * @brief This class is inherited by Item to add member expression management
+ * As the Expression class should not be used by end-user, ExpressionHandler will return a downcast to Property<Var>
  */
 class oA::ItemUtils::ExpressionHandler
 {
@@ -30,7 +31,7 @@ public:
      * @brief Append a generic expression
      *
      * @param key Expression key name
-     * @return Expression<T>& Allow chain operators
+     * @return Expression& Allow chain operators
      */
     Property<Var> &append(const String &key);
 
@@ -47,7 +48,7 @@ public:
      * @brief Return a non-const reference to matching Expression
      *
      * @param key Expression name
-     * @return Property<Var>& Matching expression
+     * @return Expression& Matching expression
      */
     Property<Var> &get(const String &key);
 
@@ -55,7 +56,7 @@ public:
      * @brief Return a const reference to matching Expression
      *
      * @param key Expression name
-     * @return Property<Var>& Matching expression
+     * @return Expression& Matching expression
      */
     const Property<Var> &get(const String &key) const;
 
@@ -77,7 +78,7 @@ public:
      * @param key Expression key to match
      * @return ExpressionPtr Result expression
      */
-    ExpressionPtr getExprPtr(const String &key) const noexcept;
+    ExpressionPtr getPtr(const String &key) const noexcept;
 
 protected:
     UMap<String, ExpressionPtr> _members;

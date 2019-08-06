@@ -243,6 +243,30 @@ public:
         return *this;
     }
 
+    Property<T> &operator++(void) {
+        ++_var;
+        this->emit();
+        return *this;
+    }
+
+    Property<T> operator++(Int) {
+        ++_var;
+        this->emit();
+        return _var - 1;
+    }
+
+    Property<T> &operator--(void) {
+        --_var;
+        this->emit();
+        return *this;
+    }
+
+    Property<T> operator--(Int) {
+        --_var;
+        this->emit();
+        return _var + 1;
+    }
+
     /**
      * @brief Property reference getter operator
      *

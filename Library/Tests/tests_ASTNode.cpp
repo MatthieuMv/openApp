@@ -26,7 +26,7 @@ Test(ASTNode, Show, .init=cr_redirect_stdout)
     oA::Lang::ASTNode tree;
 
     tree.emplaceAs<oA::Lang::ImportNode>("path");
-    tree.emplaceAs<oA::Lang::ClassNode>("Name", "ID");
+    tree.emplaceAs<oA::Lang::ClassNode>("Name");
     tree.emplaceAs<oA::Lang::DeclarationNode>("name", oA::Lang::DeclarationNode::AssignmentDeclaration).tokens.emplace_back(std::make_pair("token", 1));
     tree.emplaceAs<oA::Lang::GroupNode>();
     tree.emplaceAs<oA::Lang::ExpressionGroupNode>();

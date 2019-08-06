@@ -109,7 +109,6 @@ void oA::Lang::Instantiator::processClass(const ClassNode &node)
         root().swap(item);
     else
         root()->appendChild(std::move(item));
-    root()->setID(node.id);
     processRoot(node);
 }
 
@@ -119,6 +118,8 @@ void oA::Lang::Instantiator::processDeclaration(const DeclarationNode &node)
 
     if (!root())
         throw LogicError("Instantiator", "Can't process @declaration@ of null root object" + getErrorContext());
+    if (processSpecialDeclaration(node))
+        return;
     switch (node.type) {
     case DeclarationNode::AssignmentDeclaration:
         mode = ShuntingYard::Expression;
@@ -143,4 +144,52 @@ void oA::Lang::Instantiator::processDeclaration(const DeclarationNode &node)
             ShuntingYard::ProcessTokenList(item, node.name, node.tokens, mode, ctx);
         });
     }
+}
+
+bool oA::Lang::Instantiator::processSpecialDeclaration(const DeclarationNode &node)
+{
+    static const oA::UMap<String, void(Instantiator::*)(const DeclarationNode &)> Specials = {
+        { "id",             &Instantiator::processID            },
+        { "relativeSize",   &Instantiator::processRelativeSize  },
+        { "relativePos",    &Instantiator::processRelativePos   }
+    };
+    auto it = Specials.find(node.name);
+
+    if (it == Specials.end())
+        return false;
+    if (node.type != DeclarationNode::AssignmentDeclaration)
+        throw LogicError("Instantiator", "Invalid use of reserved keyword @" + node.name + "@" + getErrorContext());
+    (this->*it->second)(node);
+    return true;
+}
+
+void oA::Lang::Instantiator::processID(const DeclarationNode &node)
+{
+    if (node.tokens.size() != 1)
+        throw LogicError("Instantiator", "Invalid item @id@" + getErrorContext());
+    root()->setID(node.name);
+}
+
+void oA::Lang::Instantiator::processRelativeSize(const DeclarationNode &node)
+{
+    auto it = node.tokens.begin();
+
+    if (it == node.tokens.end())
+        throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext());
+    root()->setExpression("width", "parent.width * " + it->first);
+    if (++it == node.tokens.end() || it->first != "," || ++it == node.tokens.end())
+        throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext());
+    root()->setExpression("height", "parent.height * " + it->first);
+}
+
+void oA::Lang::Instantiator::processRelativePos(const DeclarationNode &node)
+{
+    auto it = node.tokens.begin();
+
+    if (it == node.tokens.end())
+        throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext());
+    root()->setExpression("x", "parent.width * " + it->first + "- width / 2");
+    if (++it == node.tokens.end() || it->first != "," || ++it == node.tokens.end())
+        throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext());
+    root()->setExpression("y", "parent.height * " + it->first + " - height / 2");
 }
