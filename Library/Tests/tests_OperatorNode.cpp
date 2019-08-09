@@ -13,8 +13,9 @@ Test(OperatorNode, Basics)
 {
     oA::Lang::OperatorNode node(oA::Lang::Not);
     bool crashed = false;
+    oA::Var var;
 
-    node.emplaceAs<oA::Lang::ValueNode>().value = 1;
+    node.emplaceAs<oA::Lang::ValueNode>(1);
 
     cr_assert_eq(node.compute().toBool(), false);
 
@@ -24,8 +25,7 @@ Test(OperatorNode, Basics)
     try { node.op = oA::Lang::SufixDecrement; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
     try { node.op = oA::Lang::Call; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
 
-    node.emplaceAs<oA::Lang::ValueNode>().value = 2;
-
+    node.emplaceAs<oA::Lang::ValueNode>(2);
     node.op = oA::Lang::Equal;                  cr_assert_eq(node.compute().toBool(), false);
     node.op = oA::Lang::Different;              cr_assert_eq(node.compute().toBool(), true);
     node.op = oA::Lang::Superior;               cr_assert_eq(node.compute().toBool(), false);
@@ -55,24 +55,27 @@ Test(OperatorNode, Basics)
     try { node.op = oA::Lang::RightBrace; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
     try { node.op = oA::Lang::At; node.compute(); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
 
-    node.emplaceAs<oA::Lang::ValueNode>().value = 3;
+    node.emplaceAs<oA::Lang::ValueNode>(3);
 
     node.op = oA::Lang::TernaryIf;              cr_assert_eq(node.compute().toInt(), 2);
+
+    try { node.assignValue(var, oA::Var(1), oA::Lang::Addition); } catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
 }
 
 Test(OperatorNode, Assignment)
 {
     auto expr(std::make_shared<oA::Expression>(0));
-    oA::Lang::OperatorNode node(oA::Lang::PrefixIncrement);
+    oA::Lang::OperatorNode node(oA::Lang::Call);
 
     node.emplaceAs<oA::Lang::ReferenceNode>(std::move(expr));
 
-    cr_assert_eq(node.compute().toInt(), 1);
+    cr_assert_eq(node.compute().toInt(), 0);
+    node.op = oA::Lang::PrefixIncrement;         cr_assert_eq(node.compute().toInt(), 1);
     node.op = oA::Lang::SufixDecrement;         cr_assert_eq(node.compute().toInt(), 1);
     node.op = oA::Lang::PrefixDecrement;        cr_assert_eq(node.compute().toInt(), -1);
     node.op = oA::Lang::SufixIncrement;         cr_assert_eq(node.compute().toInt(), -1);
 
-    node.emplaceAs<oA::Lang::ValueNode>().value = 2;
+    node.emplaceAs<oA::Lang::ValueNode>(2);
     node.op = oA::Lang::Assign;                 cr_assert_eq(node.compute().toInt(), 2);
     node.op = oA::Lang::AdditionAssign;         cr_assert_eq(node.compute().toInt(), 4);
     node.op = oA::Lang::SubstractionAssign;     cr_assert_eq(node.compute().toInt(), 2);
@@ -95,7 +98,7 @@ Test(OperatorNode, LocalAssignment)
     node.op = oA::Lang::PrefixDecrement;        cr_assert_eq(node.compute().toInt(), -1);
     node.op = oA::Lang::SufixIncrement;         cr_assert_eq(node.compute().toInt(), -1);
 
-    node.emplaceAs<oA::Lang::ValueNode>().value = 2;
+    node.emplaceAs<oA::Lang::ValueNode>(2);
     node.op = oA::Lang::Assign;                 cr_assert_eq(node.compute().toInt(), 2);
     node.op = oA::Lang::AdditionAssign;         cr_assert_eq(node.compute().toInt(), 4);
     node.op = oA::Lang::SubstractionAssign;     cr_assert_eq(node.compute().toInt(), 2);
@@ -110,17 +113,25 @@ Test(OperatorNode, ContainerAssignment)
     auto expr(std::make_shared<oA::Expression>(0));
     auto &node = root.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::PrefixIncrement);
 
+
+    auto &at = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::At);
     root.locals["var"] = oA::Container();
     root.locals["var"] += 0;
-    auto &at = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::At);
     at.emplaceAs<oA::Lang::LocalNode>(root.locals["var"]);
-    at.emplaceAs<oA::Lang::ValueNode>().value = 0;
+    at.emplaceAs<oA::Lang::ValueNode>(0);
+    cr_assert_eq(node.compute().toInt(), 1);
+
+    *expr = oA::Container();
+    *expr += 0;
+    at.children.clear();
+    at.emplaceAs<oA::Lang::ReferenceNode>(std::move(expr));
+    at.emplaceAs<oA::Lang::ValueNode>(0);
     cr_assert_eq(node.compute().toInt(), 1);
 
     node.op = oA::Lang::SufixDecrement;         cr_assert_eq(node.compute().toInt(), 1);
     node.op = oA::Lang::PrefixDecrement;        cr_assert_eq(node.compute().toInt(), -1);
     node.op = oA::Lang::SufixIncrement;         cr_assert_eq(node.compute().toInt(), -1);
 
-    node.emplaceAs<oA::Lang::ValueNode>().value = oA::Container();
+    node.emplaceAs<oA::Lang::ValueNode>(oA::Container());
     node.op = oA::Lang::Assign;                 cr_assert_eq(node.compute(), oA::Container());
 }

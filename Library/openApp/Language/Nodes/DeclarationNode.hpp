@@ -28,7 +28,7 @@ struct oA::Lang::DeclarationNode : public ASTNode
     DeclarationNode(String &&declarationName, DeclarationType declarationType) : name(std::move(declarationName)), type(declarationType) {}
 
     virtual ~DeclarationNode(void) = default;
-    
+
     virtual NodeType getType(void) const { return Declaration; }
 
     String getDeclarationSymbol(void) const noexcept {
@@ -42,7 +42,7 @@ struct oA::Lang::DeclarationNode : public ASTNode
         case EventDeclaration:
             return "Event";
         default:
-            return String();
+            return oA::String();
         }
     }
 };

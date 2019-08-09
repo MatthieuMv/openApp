@@ -5,7 +5,8 @@
 ** Main
 */
 
-#include <openApp/Language/ShuntingYard.hpp>
+#include <openApp/Core/Log.hpp>
+#include <openApp/Language/Nodes.hpp>
 
 void cr_assert(bool res)
 {
@@ -20,14 +21,23 @@ void cr_assert_eq(const T &x, const U &y)
         throw;
 }
 
+void foo(void)
+{
+    throw oA::LogicError("Error");
+}
+
+void call(void)
+{
+    try {
+        foo();
+    } catch (const oA::AccessError &e) {}
+}
+
 int main(void)
 {
-    oA::Item item;
-
-    oA::Lang::ShuntingYard::ProcessString(item, "x", "(((y >= 2 ? 42 : 24) * 2) / 4) * 2", oA::Lang::ShuntingYard::Expression);
-    item.getPtr("x")->show();
-    item.get("y") = 1;
-    cr_assert_eq(item.getAs<oA::Number>("x"), 24);
-    item.get("y") = 2;
-    cr_assert_eq(item.getAs<oA::Number>("x"), 42);
+    try {
+        call();
+    } catch (...) {
+        oA::cout << "Error" << oA::endl;
+    }
 }

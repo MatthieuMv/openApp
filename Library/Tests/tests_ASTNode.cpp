@@ -15,6 +15,8 @@ Test(ASTNode, Basics)
     oA::Lang::ASTNode::ReturnSignal sig(oA::Var(42));
     bool crashed = false;
 
+    node.emplace(std::make_unique<oA::Lang::ASTNode>());
+    cr_assert_eq(node.children.size(), 1);
     cr_assert_eq(sig.value.toInt(), 42);
     try { node.compute(); }
     catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
@@ -27,7 +29,7 @@ Test(ASTNode, Show, .init=cr_redirect_stdout)
 
     tree.emplaceAs<oA::Lang::ImportNode>("path");
     tree.emplaceAs<oA::Lang::ClassNode>("Name");
-    tree.emplaceAs<oA::Lang::DeclarationNode>("name", oA::Lang::DeclarationNode::AssignmentDeclaration).tokens.emplace_back(std::make_pair("token", 1));
+    tree.emplaceAs<oA::Lang::DeclarationNode>("name", oA::Lang::DeclarationNode::DeclarationType::AssignmentDeclaration).tokens.emplace_back(std::make_pair("token", 1));
     tree.emplaceAs<oA::Lang::GroupNode>();
     tree.emplaceAs<oA::Lang::ExpressionGroupNode>();
     tree.emplaceAs<oA::Lang::ReferenceNode>(std::make_unique<oA::Expression>());

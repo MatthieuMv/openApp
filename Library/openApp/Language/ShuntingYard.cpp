@@ -375,23 +375,30 @@ void oA::Lang::ShuntingYard::parseReturn(Lexer::TokenList::const_iterator &it)
 
 void oA::Lang::ShuntingYard::parseVariable(Lexer::TokenList::const_iterator &it, ASTNode &root)
 {
+    auto line = it->second;
+
     if (++it == _tokens.end() || !std::regex_match(it->first, ReferenceMatch))
         throw LogicError("ShuntingYard", "Invalid @local variable@ declaration" + getErrorContext(it->second));
     auto &var = locals()[it->first] = 0;
-    auto &node = root.emplaceAs<StatementNode>(Variable);
-    node.emplaceAs<LocalNode>(var);
-    if (++it != _tokens.end() && it->first == "=")
+    if (++it != _tokens.end() && it->first == "=") {
+        root.emplaceAs<OperatorNode>(Assign);
         parseValue(it, var);
-    node.emplaceAs<ValueNode>().value = var;
+    }
+    if (it == _tokens.end() || it->first != ";")
+        throw LogicError("ShuntingYard", "Excepted end of declaration token @;@" + getErrorContext(line));
 }
 
 void oA::Lang::ShuntingYard::parseStaticVariable(Lexer::TokenList::const_iterator &it)
 {
+    auto line = it->second;
+
     if (++it == _tokens.end() || it->first != "var" || ++it == _tokens.end() || !std::regex_match(it->first, ReferenceMatch))
         throw LogicError("ShuntingYard", "Invalid @local variable@ declaration" + getErrorContext(it->second));
     auto &var = locals()[it->first] = 0;
     if (++it != _tokens.end() && it->first == "=")
         parseValue(it, var);
+    if (it == _tokens.end() || it->first != ";")
+        throw LogicError("ShuntingYard", "Excepted end of declaration token @;@" + getErrorContext(line));
 }
 
 void oA::Lang::ShuntingYard::collectExpressionGroup(Lexer::TokenList::const_iterator &it, ASTNode &root)

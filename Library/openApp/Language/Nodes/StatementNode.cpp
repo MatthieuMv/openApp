@@ -24,8 +24,6 @@ oA::Var oA::Lang::StatementNode::compute(void)
         throw BreakSignal();
     case Return:
         throw ReturnSignal(children[0]->compute());
-    case Variable:
-        return dynamic_cast<LocalNode &>(*children[0]).local = children[1]->compute();
     default:
         throw LogicError("StatementNode", "Can't compute uncomputable statement");
     }
@@ -56,8 +54,6 @@ oA::Var oA::Lang::StatementNode::computeSwitch(void)
         return Var();
     } catch (const BreakSignal &) {
         return Var();
-    } catch (...) {
-        throw;
     }
 }
 
@@ -72,8 +68,6 @@ oA::Var oA::Lang::StatementNode::computeWhile(void)
         return Var();
     } catch (const BreakSignal &) {
         return Var();
-    } catch (...) {
-        throw;
     }
 }
 
@@ -89,7 +83,5 @@ oA::Var oA::Lang::StatementNode::computeFor(void)
         return Var();
     } catch (const BreakSignal &) {
         return Var();
-    } catch (...) {
-        throw;
     }
 }

@@ -91,3 +91,32 @@ default:\n\
     ++item.get("x");
     cr_assert_eq(item.getAs<oA::Number>("y"), 10);
 }
+
+// Test(ShuntingYard, AdvancedExpression)
+// {
+//     oA::Item item;
+
+//     item.get("y") = 1;
+//     oA::Lang::ShuntingYard::ProcessString(item, "x", "", oA::Lang::ShuntingYard::Expression);
+//     cr_assert_eq(item.getAs<oA::Number>("x"), 2);
+// }
+
+// Test(ShuntingYard, AdvancedFunction)
+// {
+//     oA::Item item;
+
+//     item.append("function");
+//     oA::Lang::ShuntingYard::ProcessString(item, "function", "", oA::Lang::ShuntingYard::Function);
+//     item.getPtr("function")->call();
+//     cr_assert_eq(item.getAs<oA::Number>("x"), 42);
+// }
+
+// Test(ShuntingYard, AdvancedEvent)
+// {
+//     oA::Item item;
+
+//     oA::Lang::ShuntingYard::ProcessString(item, "x", "", oA::Lang::ShuntingYard::Event);
+//     cr_assert_eq(item.getAs<oA::Number>("y"), 0);
+//     ++item.get("x");
+//     cr_assert_eq(item.getAs<oA::Number>("y"), 42);
+// }

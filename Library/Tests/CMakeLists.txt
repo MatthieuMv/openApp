@@ -30,6 +30,9 @@ set(TestsSources
     tests_Statement.cpp
     tests_OperatorNode.cpp
     tests_StatementNode.cpp
+    tests_DeclarationNode.cpp
+    tests_GroupNode.cpp
+    tests_ExpressionGroupNode.cpp
     tests_ShuntingYard.cpp
 )
 

@@ -14,6 +14,8 @@ namespace oA::Lang { struct ExpressionGroupNode; }
 
 struct oA::Lang::ExpressionGroupNode : public GroupNode
 {
+    UMap<String, Var> locals;
+
     virtual ~ExpressionGroupNode(void) = default;
 
     virtual NodeType getType(void) const { return ExpressionGroup; }
@@ -25,10 +27,6 @@ struct oA::Lang::ExpressionGroupNode : public GroupNode
             return ret.value;
         } catch (const BreakSignal &) {
             throw LogicError("Break statement used out of loop");
-        } catch (...) {
-            throw;
         }
     }
-
-    UMap<String, Var> locals;
 };
