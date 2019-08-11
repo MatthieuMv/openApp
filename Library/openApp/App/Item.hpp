@@ -9,6 +9,7 @@
 
 #include <openApp/App/ItemHandler.hpp>
 #include <openApp/App/ExpressionHandler.hpp>
+#include <openApp/App/IRenderer.hpp>
 
 namespace oA { class Item; }
 
@@ -34,10 +35,12 @@ public:
      * @brief Construct a new Item object
      */
     Item(void) {
-        append("x") = 0;
-        append("y") = 0;
-        append("width") = 0;
-        append("height") = 0;
+        append("x") = 0; // X position
+        append("y") = 0; // Y position
+        append("width") = 0; // Item width
+        append("height") = 0; // Item height
+        append("enabled") = true; // If true, Item will receive and propagate updates
+        append("visible") = true; // If true, Item will draw himself and his children
     }
 
     /**
@@ -53,11 +56,25 @@ public:
     virtual String getName(void) const noexcept { return "Item"; }
 
     /**
-     * @brief Set new items parent pointer to this
+     * @brief Draw Item and its children
      *
-     * @param child Child to set parent
+     * @param renderer Drawing interface
+     */
+    virtual void draw(IRenderer &renderer);
+
+    /**
+     * @brief Callback on appending child
+     *
+     * @param child New Item
      */
     virtual void onAppendChild(Item &child) { child.setParent(this); }
+
+    /**
+     * @brief Callback on removing child
+     *
+     * @param child Item to delete
+     */
+    virtual void onRemoveChild(Item &child) {}
 
     /**
      * @brief Set internal parent pointer
@@ -135,7 +152,7 @@ public:
 
     /**
      * @brief Print to cout item architecture
-     * 
+     *
      * @param tab Tabulation
      */
     void show(Int tab = 0) const noexcept;
@@ -159,13 +176,4 @@ private:
      * @return Item* Item pointer (can be null)
      */
     Item *findChildren(const String &key);
-
-    /**
-     * @brief Slit an expression key into two string
-     *
-     * @param expr Input expression
-     * @param token String to fill with right part
-     * @return String Name of the first variable
-     */
-    static String SplitKeyExpr(const String &expr, String &token);
 };

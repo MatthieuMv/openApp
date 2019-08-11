@@ -9,6 +9,8 @@
 #include <openApp/App/Item.hpp>
 #include <openApp/Language/ShuntingYard.hpp>
 
+static oA::String SplitKeyExpr(const oA::String &expr, oA::String &token);
+
 void oA::Item::setExpression(const String &key, const String &expression)
 {
     if (!exists(key))
@@ -102,7 +104,7 @@ void oA::Item::show(Int tab) const noexcept
 
 }
 
-oA::String oA::Item::SplitKeyExpr(const String &expr, String &token)
+static oA::String SplitKeyExpr(const oA::String &expr, oA::String &token)
 {
     auto it = expr.find('.');
     oA::String left;
