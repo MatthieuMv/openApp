@@ -34,18 +34,19 @@ public:
     virtual ~Expression(void) = default;
 
     /**
-     * @brief Construct a new Expression object by copy
-     *
-     * @param other To copy
-     */
-    Expression(const Expression &other) : Property<Var>(other) {}
-
-    /**
      * @brief Construct a new Expression object by move
      *
      * @param other To move
      */
-    Expression(Expression &&other) = default;
+    Expression(Expression &&other) { swap(other); }
+
+    /**
+     * @brief Assign an Expression value by move
+     *
+     * @param other To move
+     * @return Expression& Allow chain operators
+     */
+    Expression &operator=(Expression &&other);
 
     /**
      * @brief Compute internal expression and set internal value to result
@@ -80,7 +81,7 @@ public:
      * @param expr Expression to move
      * @return Uint Disconnect index
      */
-    Uint connectEvent(Expression &&expr) noexcept;
+    Uint connectEvent(ExpressionPtr &&expr);
 
     /**
      * @brief Print to cout expression architecture
@@ -90,11 +91,16 @@ public:
     void show(Int tab = 0) const noexcept;
 
     /**
-     * @brief Set the Tree object
+     * @brief Set the Tree object. If the tree is const, this function will only set its compute value.
      *
      * @param tree Expression AST tree
      */
-    void setTree(Lang::ASTNodePtr &&tree) { _tree = std::move(tree); }
+    void setTree(Lang::ASTNodePtr &&tree) {
+        if (!tree->isConst())
+            _tree = std::move(tree);
+        else
+            set(tree->compute());
+    }
 
     /**
      * @brief Swap two expressions

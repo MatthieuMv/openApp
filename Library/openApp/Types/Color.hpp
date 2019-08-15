@@ -15,7 +15,7 @@ namespace oA { class Color; }
 /**
  * @brief Abstraction of a concatenated RGBA color
  *
- * Note that the internal value is A.R.G.B shifted in a single Uint
+ * Note that the internal color value is 0xRRGGBBAA shifted in a single Uint
  */
 class oA::Color
 {
@@ -31,18 +31,26 @@ public:
     Color(UByte r = 0, UByte g = 0, UByte b = 0, UByte a = 255) { set(r, g, b, a); }
 
     /**
-     * @brief Get alpha intensity
+     * @brief Construct a new Color object by copy
      *
-     * @return UByte Alpha intensity
+     * @param other Color to copy
      */
-    UByte getA(void) const noexcept { return (_val >> 24) & 0xff; }
+    Color(const Color &other) : _val(other._val) {}
+
+    /**
+     * @brief Copy a Color object
+     *
+     * @param other Color to copy
+     * @return Color& Allow chain operators
+     */
+    Color &operator=(const Color &other) { _val = other._val; return *this; }
 
     /**
      * @brief Get red intensity
      *
      * @return UByte Red intensity
      */
-    UByte getR(void) const noexcept { return (_val >> 16) & 0xff; }
+    UByte getR(void) const noexcept { return _val & 0xff; }
 
     /**
      * @brief Get green intensity
@@ -56,7 +64,14 @@ public:
      *
      * @return UByte Blue intensity
      */
-    UByte getB(void) const noexcept { return _val & 0xff; }
+    UByte getB(void) const noexcept { return (_val >> 16) & 0xff; }
+
+    /**
+     * @brief Get alpha intensity
+     *
+     * @return UByte Alpha intensity
+     */
+    UByte getA(void) const noexcept { return (_val >> 24) & 0xff; }
 
     /**
      * @brief Get the internal concatened value
@@ -94,7 +109,7 @@ private:
     Uint _val = 0;
 
     /**
-     * @brief Pack ARGB values into a single Uint
+     * @brief Pack RGBA values into a single Uint
      *
      * @param r Red intensity
      * @param g Green intensity

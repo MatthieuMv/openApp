@@ -24,11 +24,10 @@ oA::ItemPtr oA::Lang::Instantiator::ProcessString(const String &string, const St
 
 oA::ItemPtr oA::Lang::Instantiator::processName(const String &name)
 {
-    bool isItem = ItemFactory::Exists(name);
     auto path = getNamePath(name);
 
     if (path.empty() || (hasContext() && name == unit().first)) {
-        if (isItem)
+        if (ItemFactory::Exists(name))
             return ItemFactory::Instanciate(name);
         throw AccessError("Instantiator", "Can't access file @" + name + "@" + getErrorContext());
     }
@@ -105,11 +104,15 @@ void oA::Lang::Instantiator::processClass(const ClassNode &node)
 {
     auto item = processName(node.name);
 
-    if (!root())
-        root().swap(item);
-    else
-        root()->appendChild(std::move(item));
-    processRoot(node);
+    if (!hasRoot()) {
+        context().roots.push(std::move(item));
+        processRoot(node);
+    } else {
+        root()->appendChild(item);
+        context().roots.push(std::move(item));
+        processRoot(node);
+        context().roots.pop();
+    }
 }
 
 void oA::Lang::Instantiator::processDeclaration(const DeclarationNode &node)
@@ -139,9 +142,8 @@ void oA::Lang::Instantiator::processDeclaration(const DeclarationNode &node)
     try {
         ShuntingYard::ProcessTokenList(*root(), node.name, node.tokens, mode, context().unit.first);
     } catch (...) {
-        auto &item(*root());
-        context().unresolved.emplace_back([this, &node, mode, item, ctx = context().unit.first](void) mutable {
-            ShuntingYard::ProcessTokenList(item, node.name, node.tokens, mode, ctx);
+        context().unresolved.emplace_back([this, &node, mode, item = root(), ctx = context().unit.first](void) mutable {
+            ShuntingYard::ProcessTokenList(*item, node.name, node.tokens, mode, ctx);
         });
     }
 }
@@ -167,7 +169,7 @@ void oA::Lang::Instantiator::processID(const DeclarationNode &node)
 {
     if (node.tokens.size() != 1)
         throw LogicError("Instantiator", "Invalid item @id@" + getErrorContext());
-    root()->setID(node.name);
+    root()->setID(node.tokens.front().first);
 }
 
 void oA::Lang::Instantiator::processRelativeSize(const DeclarationNode &node)

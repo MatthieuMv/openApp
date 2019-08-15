@@ -111,23 +111,29 @@ void oA::Lang::Parser::parseDeclaration(ASTNodePtr &parent, Lexer::TokenList::it
     auto line = it->second;
     auto type = Types.find(it->first);
 
-    if (++it == _tokens.end() || type == Types.end() || !std::regex_match(it->first, NameMatch)
-        || ++it == _tokens.end() || it->first != ":")
+    if (++it == _tokens.end() || type == Types.end() || !std::regex_match(it->first, NameMatch))
         throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
-    it->first.pop_back();
-    auto &node = parent->emplaceAs<DeclarationNode>(std::move(it->first), type->second);
+    auto name = it;
+    if (++it == _tokens.end() || it->first != ":")
+        throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
+    auto &node = parent->emplaceAs<DeclarationNode>(std::move(name->first), type->second);
     collectExpression(++it, node.tokens);
 }
 
 void oA::Lang::Parser::parseAssignment(ASTNodePtr &parent, Lexer::TokenList::iterator &it)
 {
-    it->first.pop_back();
+    auto line = it->second;
     auto &node = parent->emplaceAs<DeclarationNode>(std::move(it->first), DeclarationNode::AssignmentDeclaration);
+
+    if (++it == _tokens.end() || it->first != ":")
+        throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
     collectExpression(++it, node.tokens);
 }
 
 void oA::Lang::Parser::collectExpression(Lexer::TokenList::iterator &it, Lexer::TokenList &target)
 {
+    if (it == _tokens.end())
+        return;
     if (it->first == "{")
         return collectExpressionGroup(++it, target);
     for (auto line = it->second; it != _tokens.end() && it->second == line; ++it) {

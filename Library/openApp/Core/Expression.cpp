@@ -8,6 +8,12 @@
 #include <openApp/Containers/UMap.hpp>
 #include <openApp/Core/Expression.hpp>
 
+oA::Expression &oA::Expression::operator=(Expression &&other)
+{
+    swap(other);
+    return *this;
+}
+
 bool oA::Expression::compute(void)
 {
     if (!_tree)
@@ -21,10 +27,12 @@ void oA::Expression::call(void)
         this->emit();
 }
 
-oA::Uint oA::Expression::connectEvent(Expression &&expr) noexcept
+oA::Uint oA::Expression::connectEvent(ExpressionPtr &&expr)
 {
-    return this->connect([event(std::move(expr))](void) mutable {
-        event.call();
+    if (!expr)
+        throw LogicError("Expression", "Can't add @null@ event");
+    return this->connect([event = std::move(expr)](void) mutable {
+        event->call();
         return true;
     });
 }

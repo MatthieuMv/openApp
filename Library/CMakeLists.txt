@@ -3,13 +3,27 @@ project(openApp)
 
 set(oAPath .)
 
-include(openApp.cmake)
+set(oARendererTarget "SDL")
 
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -std=c++17 -fPIC -g3")
+include(Renderer.cmake)
+
+if (${oARendererTarget} STREQUAL "SDL")
+    message(" | Compiling openApp with SDL Renderer |")
+    find_package(SDL2 REQUIRED)
+    set(oARendererSources ${oASDLRenderer})
+else ()
+    message(FATAL_ERROR " | ! Can't compile openApp without renderer ! |")
 endif ()
 
-include_directories(${oAPath})
 
-#add_library(openApp ${oASources})
-add_executable(openApp ${oASources} Main.cpp)
+if (UNIX)
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -g3 -lSDL2 -lSDL2_gfx")
+endif ()
+
+set(CMAKE_CXX_STANDARD 17)
+
+add_executable(openApp ${oASources} ${oARendererSources} Main.cpp)
+#add_library(openApp ${oASources} ${oARendererSources})
+
+include_directories(${oAPath})
+link_libraries(SDL2)

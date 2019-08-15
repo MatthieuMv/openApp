@@ -77,6 +77,22 @@ public:
     void removeChild(const String &id);
 
     /**
+     * @brief Extract a child using index
+     *
+     * @param id Child index
+     * @return ItemPtr Extracted item
+     */
+    ItemPtr extractChild(Uint index);
+
+    /**
+     * @brief Extract a child (using internal id)
+     *
+     * @param id Matching child id
+     * @return ItemPtr Extracted item
+     */
+    ItemPtr extractChild(const String &id);
+
+    /**
      * @brief Check existence of a child (using internal id)
      *
      * @param id Child id to find

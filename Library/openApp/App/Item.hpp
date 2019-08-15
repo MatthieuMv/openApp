@@ -32,6 +32,11 @@ public:
     };
 
     /**
+     * @brief Destroy the Item object
+     */
+    virtual ~Item(void) = default;
+
+    /**
      * @brief Construct a new Item object
      */
     Item(void) {
@@ -44,9 +49,9 @@ public:
     }
 
     /**
-     * @brief Destroy the Item object
+     * @brief Can't copy construct an Item
      */
-    virtual ~Item(void) = default;
+    Item(const Item &) = delete;
 
     /**
      * @brief Name getter for Item class
@@ -54,13 +59,6 @@ public:
      * @return String Name of the class
      */
     virtual String getName(void) const noexcept { return "Item"; }
-
-    /**
-     * @brief Draw Item and its children
-     *
-     * @param renderer Drawing interface
-     */
-    virtual void draw(IRenderer &renderer);
 
     /**
      * @brief Callback on appending child
@@ -72,16 +70,52 @@ public:
     /**
      * @brief Callback on removing child
      *
-     * @param child Item to delete
+     * @param child Child to remove
      */
-    virtual void onRemoveChild(Item &child) {}
+    virtual void onRemoveChild(Item &child) { child.setParent(nullptr); }
+
+    /**
+     * @brief Callback on internal parent changed
+     */
+    virtual void onParentChanged(void) {}
+
+    /**
+     * @brief Callback on update
+     *
+     * @param renderer Drawing interface
+     */
+    virtual void onUpdate(IRenderer &) {}
+
+    /**
+     * @brief Callback on draw
+     *
+     * @param renderer Drawing interface
+     */
+    virtual void onDraw(IRenderer &) {}
+
+    /**
+     * @brief Callback on children drew
+     *
+     * @param renderer Drawing interface
+     */
+    virtual void onChildrenDrew(IRenderer &) {}
+
+    /**
+     * @brief Called on event handling
+     *
+     * @param renderer Drawing interface
+     * @param event Received event
+     * @return true Don't propagate event
+     * @return false Propagate event
+     */
+    virtual bool onEvent(IRenderer &, const Event &) { return false; }
 
     /**
      * @brief Set internal parent pointer
      *
      * @param parent Parent pointer
      */
-    void setParent(Item *parent) { _parent = parent; }
+    void setParent(Item *parent) { _parent = parent; onParentChanged(); }
 
     /**
      * @brief Get internal parent pointer
@@ -103,6 +137,28 @@ public:
      * @return Item* ID
      */
     const String &getID(void) const noexcept { return _id; }
+
+    /**
+     * @brief Update Item and its children
+     *
+     * @param renderer Drawing interface
+     */
+    void update(IRenderer &renderer);
+
+    /**
+     * @brief Draw Item and its children
+     *
+     * @param renderer Drawing interface
+     */
+    void draw(IRenderer &renderer);
+
+    /**
+     * @brief Propagate an event though Item and children
+     *
+     * @param renderer Drawing interface
+     * @param event Received event
+     */
+    bool propagate(IRenderer &renderer, const Event &event);
 
     /**
      * @brief Set internal expression of matching key

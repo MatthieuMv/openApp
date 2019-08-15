@@ -19,8 +19,10 @@ struct oA::Lang::ReferenceNode : public ASTNode
     ReferenceNode(ExpressionPtr &&expression) : ptr(std::move(expression)) {}
 
     virtual ~ReferenceNode(void) = default;
-    
+
     virtual NodeType getType(void) const { return Reference; }
+
+    virtual bool isConst(void) const { return false; }
 
     virtual Var compute(void) override { return ptr->get(); }
 };

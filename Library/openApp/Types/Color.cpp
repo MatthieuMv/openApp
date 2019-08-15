@@ -60,5 +60,5 @@ void oA::Color::setTransparency(UByte a)
 
 oA::Uint oA::Color::Pack(UByte r, UByte g, UByte b, UByte a)
 {
-    return (a << 24) | (r << 16) | (g << 8) | b;
+    return (a << 24) | (b << 16) | (g << 8) | r;
 }

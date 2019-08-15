@@ -62,6 +62,11 @@ public:
     Property(Property<T> &&other) : Signal<>() { swap(other); }
 
     /**
+     * @brief Boolean operator
+     */
+    operator bool(void) const noexcept { return _var; }
+
+    /**
      * @brief Copy value assignment operator
      *
      * @param other Value to copy
@@ -243,24 +248,44 @@ public:
         return *this;
     }
 
+    /**
+     * @brief Prefix increment operator
+     *
+     * @return Property<T>& Allow chain operators
+     */
     Property<T> &operator++(void) {
         ++_var;
         this->emit();
         return *this;
     }
 
+    /**
+     * @brief Sufix increment operator
+     *
+     * @return Property<T>& Allow chain operators
+     */
     Property<T> operator++(Int) {
         ++_var;
         this->emit();
         return _var - 1;
     }
 
+    /**
+     * @brief Prefix decrement operator
+     *
+     * @return Property<T>& Allow chain operators
+     */
     Property<T> &operator--(void) {
         --_var;
         this->emit();
         return *this;
     }
 
+    /**
+     * @brief Sufix decrement operator
+     *
+     * @return Property<T>& Allow chain operators
+     */
     Property<T> operator--(Int) {
         --_var;
         this->emit();

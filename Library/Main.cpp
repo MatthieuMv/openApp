@@ -5,39 +5,19 @@
 ** Main
 */
 
+#include <openApp/App/App.hpp>
 #include <openApp/Core/Log.hpp>
-#include <openApp/Language/Nodes.hpp>
-
-void cr_assert(bool res)
-{
-    if (!res)
-        throw;
-}
-
-template<typename T, typename U>
-void cr_assert_eq(const T &x, const U &y)
-{
-    if (x != y)
-        throw;
-}
-
-void foo(void)
-{
-    throw oA::LogicError("Error");
-}
-
-void call(void)
-{
-    try {
-        foo();
-    } catch (const oA::AccessError &e) {}
-}
+#include <openApp/Renderer/SDL/SDLRenderer.hpp>
 
 int main(void)
 {
     try {
-        call();
-    } catch (...) {
-        oA::cout << "Error" << oA::endl;
+        oA::App app(std::make_unique<oA::SDLRenderer>());
+
+        app.parseFile("Main.oA", true);
+        app.run();
+    } catch (oA::Error &e) {
+        oA::cerr << e.what() << oA::endl;
     }
+    return 0;
 }

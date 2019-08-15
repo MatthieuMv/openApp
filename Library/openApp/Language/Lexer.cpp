@@ -30,19 +30,24 @@ void oA::Lang::Lexer::ProcessString(const String &string, TokenList &tokens, con
 
 void oA::Lang::Lexer::ShowTokenList(const TokenList &list)
 {
-    auto line = 0;
+    auto line = -1;
     auto tab = 0;
+    auto count = 0;
 
     for (const auto &token : list) {
+        char quote = IsOperator(token.first) ? '#' : '@';
         if (token.second > line) {
             line = token.second;
-            cout << endl << Repeat(tab) << '\t';
+            if (count)
+                cout << endl;
+            cout << line << ": " << Repeat(tab) << '\t';
         }
-        cout << '@' << token.first << "@(" << token.second << ") ";
+        cout << quote << token.first << quote << ' ';
         if (token.first == "{")
             ++tab;
         else if (token.first == "}")
             --tab;
+        ++count;
     }
     cout << endl;
 }

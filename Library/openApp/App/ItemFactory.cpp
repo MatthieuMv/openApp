@@ -6,6 +6,8 @@
 */
 
 #include <openApp/App/ItemFactory.hpp>
+#include <openApp/App/Widgets/Window.hpp>
+#include <openApp/App/Widgets/Rectangle.hpp>
 
 oA::UMap<oA::String, oA::Function<oA::ItemPtr(void)>> oA::ItemFactory::Components;
 
@@ -26,4 +28,6 @@ void oA::ItemFactory::RegisterBaseItems(void)
     if (Exists("Item"))
         return;
     Register<Item>();
+    Register<Window>();
+    Register<Rectangle>();
 }

@@ -11,6 +11,38 @@
 
 static oA::String SplitKeyExpr(const oA::String &expr, oA::String &token);
 
+void oA::Item::update(IRenderer &renderer)
+{
+    if (!get("enabled"))
+        return;
+    onUpdate(renderer);
+    _children.apply([&renderer](auto &child) {
+        child->update(renderer);
+    });
+}
+
+void oA::Item::draw(IRenderer &renderer)
+{
+    if (!get("visible"))
+        return;
+    onDraw(renderer);
+    _children.apply([&renderer](auto &child) {
+        child->draw(renderer);
+    });
+    onChildrenDrew(renderer);
+}
+
+bool oA::Item::propagate(IRenderer &renderer, const Event &event)
+{
+    if (!get("enabled"))
+        return false;
+    if (onEvent(renderer, event))
+        return true;
+    return _children.findIf([&renderer, &event](auto &child) {
+        return child->propagate(renderer, event);
+    }) != _children.end();
+}
+
 void oA::Item::setExpression(const String &key, const String &expression)
 {
     if (!exists(key))
@@ -94,10 +126,10 @@ oA::ExpressionPtr oA::Item::findExpr(const String &key)
 
 void oA::Item::show(Int tab) const noexcept
 {
-    cout << Repeat(tab) << '\t' << '@' << getName() << "@ '#" << getID() << "#'" << endl;
+    cout << Repeat(tab) << '\t' << '#' << getName() << "# " << getID() << endl;
     ++tab;
     _members.apply([tab](const auto &p) mutable {
-        cout << Repeat(tab) << '\t' << '@' << p.first << "@:" << endl;
+        cout << Repeat(tab) << '\t' << '@' << p.first << "@: " << p.second->get().toString() << endl;
         p.second->show(tab + 1);
     });
     _children.apply([tab](const auto &child) { child->show(tab); });

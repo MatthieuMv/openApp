@@ -18,8 +18,10 @@ struct oA::Lang::LocalNode : public ASTNode
     LocalNode(Var &ref) : local(ref) {}
 
     virtual ~LocalNode(void) = default;
-    
+
     virtual NodeType getType(void) const { return Local; }
+
+    virtual bool isConst(void) const { return false; }
 
     Var compute(void) { return local; }
 };

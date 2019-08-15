@@ -63,6 +63,8 @@ set(Containers
 )
 
 set(App
+    ${oAApp}/App.hpp
+    ${oAApp}/App.cpp
     ${oAApp}/Item.hpp
     ${oAApp}/Item.cpp
     ${oAApp}/ItemFactory.hpp
@@ -71,6 +73,16 @@ set(App
     ${oAApp}/ItemHandler.cpp
     ${oAApp}/ExpressionHandler.hpp
     ${oAApp}/ExpressionHandler.cpp
+    ${oAApp}/RenderContexts.hpp
+    ${oAApp}/IRenderer.hpp
+    ${oAApp}/Event.hpp
+    ${oAApp}/Events/KeyboardEvent.hpp
+    ${oAApp}/Events/MotionEvent.hpp
+    ${oAApp}/Events/MouseEvent.hpp
+    ${oAApp}/Events/WheelEvent.hpp
+    ${oAApp}/Events/WindowEvent.hpp
+    ${oAApp}/Widgets/Window.hpp
+    ${oAApp}/Widgets/Rectangle.hpp
 )
 
 set(Language

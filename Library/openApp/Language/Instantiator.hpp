@@ -51,7 +51,7 @@ public:
         Context(Unit &contextUnit) : unit(contextUnit) {}
 
         Unit &unit;
-        ItemPtr root;
+        Stack<ItemPtr> roots;
         Vector<Function<void(void)>> unresolved;
     };
 
@@ -192,7 +192,15 @@ private:
      *
      * @return ItemPtr& Current root
      */
-    ItemPtr &root(void) { return context().root; }
+    ItemPtr &root(void) { return context().roots.top(); }
+
+    /**
+     * @brief Tell if there is any root instancied
+     *
+     * @return true There is at least 1 root item in context
+     * @return false There is not root item in context
+     */
+    bool hasRoot(void) const { return hasContext() ? !_contexts.top().roots.empty() : false; }
 
     /**
      * @brief Push a new Context to the stack

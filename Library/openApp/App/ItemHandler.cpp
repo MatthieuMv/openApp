@@ -52,6 +52,31 @@ void oA::ItemUtils::ItemHandler::removeChild(const String &id)
         throw AccessError("Item", "Couldn't remove any instance of children with id @" + id + "@");
 }
 
+oA::ItemPtr oA::ItemUtils::ItemHandler::extractChild(Uint index)
+{
+    auto it = _children.begin();
+    ItemPtr ptr;
+
+    if (index >= _children.size())
+        throw AccessError("Item", "Can't extract child with out of range index @" + ToString(index) + "@");
+    std::advance(it, index);
+    onRemoveChild(**it);
+    ptr = *it;
+    _children.erase(it);
+    return ptr;
+}
+
+oA::ItemPtr oA::ItemUtils::ItemHandler::extractChild(const String &id)
+{
+    auto it = _children.findIf([&id](const auto &ptr) { return id == ptr->getID(); });
+    ItemPtr ptr;
+
+    if (it == _children.end())
+        throw AccessError("Item", "Couldn't extract any instance of children with id @" + id + "@");
+    ptr = *it;
+    return ptr;
+}
+
 bool oA::ItemUtils::ItemHandler::childExists(const String &id) const noexcept
 {
     return _children.findIf([&id](const ItemPtr &child) {

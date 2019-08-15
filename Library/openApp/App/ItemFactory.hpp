@@ -17,7 +17,7 @@ public:
 
     /**
      * @brief Register a new Item derived type into the factory
-     * 
+     *
      * @tparam T Type to insert
      */
     template<typename T>
@@ -29,7 +29,7 @@ public:
 
     /**
      * @brief Check the existence of a name in the factory
-     * 
+     *
      * @param name Name to check
      * @return true Name exists
      * @return false Name doesn't exists
@@ -38,7 +38,7 @@ public:
 
     /**
      * @brief Instanciate a registered type with his name
-     * 
+     *
      * @param name Name to instanciate
      * @return Item* New item (can be null)
      */

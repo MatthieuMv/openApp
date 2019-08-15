@@ -13,12 +13,13 @@
 Test(Expression, Basics)
 {
     oA::ExpressionPtr ptr(std::make_shared<oA::Expression>(23));
-    oA::Expression main(42), toMove(main), other(std::move(toMove)), event;
+    oA::Expression main(42), toMove(main), other(std::move(toMove));
+    oA::ExpressionPtr event(std::make_unique<oA::Expression>());
 
     oA::Lang::ASTNodePtr tree(std::make_unique<oA::Lang::ExpressionGroupNode>());
     auto &op = tree->emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Operator::PrefixIncrement);
     op.emplaceAs<oA::Lang::ReferenceNode>(oA::ExpressionPtr(ptr));
-    event.setTree(std::move(tree));
+    event->setTree(std::move(tree));
 
     main = 1;
     cr_assert_eq(main->toInt(), 1);
@@ -31,7 +32,7 @@ Test(Expression, Basics)
     cr_assert_eq(main->toInt(), 1);
     cr_assert_eq(other->toInt(), 42);
     cr_assert_eq((*ptr)->toInt(), 24);
-    
+
     other = 4;
     cr_assert_eq(main->toInt(), 1);
     cr_assert_eq(other->toInt(), 4);

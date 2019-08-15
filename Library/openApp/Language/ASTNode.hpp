@@ -84,6 +84,20 @@ struct oA::Lang::ASTNode
     virtual NodeType getType(void) const { return Root; }
 
     /**
+     * @brief Tell if internal tree is const or not
+     *
+     * @return true Tree is const
+     * @return false Tree is not const
+     */
+    virtual bool isConst(void) const {
+        for (auto &child : children) {
+            if (!child->isConst())
+                return false;
+        }
+        return true;
+    }
+
+    /**
      * @brief Compute if possible internal node
      *
      * @return Var Resulting variable

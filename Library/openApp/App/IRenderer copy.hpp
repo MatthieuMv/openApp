@@ -18,19 +18,13 @@ namespace oA
     using IRendererPtr = Unique<IRenderer>;
 }
 
-/**
- * @brief IRenderer is the generic renderer interface of openApp.
- *
- * This renderer should only compute 2D graphics, and supports multiple-windows.
- * For 3D graphics, refer to its derived IRenderer3D.
- */
 class oA::IRenderer
 {
 public:
     virtual ~IRenderer(void) = default;
 
     /**
-     * @brief Create a new window
+     * @brief Open a new window and set it as current target window
      *
      * @param context Window's context
      * @return Int Window's index
@@ -38,11 +32,18 @@ public:
     virtual Int openWindow(const WindowContext &context) = 0;
 
     /**
-     * @brief Close a Window
+     * @brief Close a window
+     *
+     * @param index Close current target window
+     */
+    virtual void closeWindow(void) = 0;
+
+    /**
+     * @brief Set current window target (that will be used for rendering and event handling)
      *
      * @param index Window's index
      */
-    virtual void closeWindow(Int index) = 0;
+    virtual void useWindow(Int index) = 0;
 
     /**
      * @brief Push a window context
@@ -52,68 +53,66 @@ public:
     virtual void pushWindow(const WindowContext &context) = 0;
 
     /**
-     * @brief Poll informations of drawing target
+     * @brief Poll informations of current target window
      *
      * @param context Current target window's context target
      */
     virtual void pollWindow(WindowContext &context) = 0;
 
     /**
-     * @brief Clear a Window set it as drawing target
-     *
-     * @param index Window's index
+     * @brief Clear current target window
      */
-    virtual void clearWindow(Int index) = 0;
+    virtual void clearWindow(void) = 0;
 
     /**
-     * @brief Renderer drawing target
+     * @brief Renderer current target window
      */
     virtual void renderWindow(void) = 0;
 
     /**
-     * @brief Draw Line in drawing target
+     * @brief Draw Line in current target window
      *
      * @param context Line data
      */
     virtual void draw(const LineContext &context) = 0;
 
     /**
-     * @brief Draw Triangle in drawing target
+     * @brief Draw Triangle in current target window
      *
      * @param context Triangle data
      */
     virtual void draw(const TriangleContext &context) = 0;
 
     /**
-     * @brief Draw Rectangle in drawing target
+     * @brief Draw Rectangle in current target window
      *
      * @param context Rectangle data
      */
     virtual void draw(const RectangleContext &context) = 0;
 
     /**
-     * @brief Draw Circle in drawing target
+     * @brief Draw Circle in current target window
      *
      * @param context Circle data
      */
     virtual void draw(const CircleContext &context) = 0;
 
     /**
-     * @brief Draw Ellipse in drawing target
+     * @brief Draw Ellipse in current target window
      *
      * @param context Ellipse data
      */
     virtual void draw(const EllipseContext &context) = 0;
 
     /**
-     * @brief Draw Image in drawing target
+     * @brief Draw Image in current target window
      *
      * @param context Image data
      */
     virtual void draw(const ImageContext &context) = 0;
 
     /**
-     * @brief Poll an event from drawing target
+     * @brief Poll an event from current target window
      *
      * @param target Event to fill in
      * @return true An event has been polled
