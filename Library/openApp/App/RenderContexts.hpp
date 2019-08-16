@@ -13,6 +13,7 @@
 namespace oA
 {
     struct Context;
+    struct AreaContext;
     struct WindowContext;
     struct LineContext;
     struct TriangleContext;
@@ -23,6 +24,14 @@ namespace oA
 }
 
 struct oA::Context {};
+
+struct oA::AreaContext : public Context
+{
+    AreaContext(void) = default;
+    AreaContext(const V2f &_pos, const V2f &_size) : pos(_pos), size(_size) {}
+
+    V2f pos, size;
+};
 
 struct oA::WindowContext : public Context
 {

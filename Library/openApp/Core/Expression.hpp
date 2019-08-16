@@ -31,7 +31,7 @@ public:
     /**
      * @brief Destroy the Expression object
      */
-    virtual ~Expression(void) = default;
+    virtual ~Expression(void) { clearTree(); }
 
     /**
      * @brief Construct a new Expression object by move
@@ -57,17 +57,18 @@ public:
     bool compute(void);
 
     /**
-     * @brief Add dependency to a target Property
+     * @brief Add dependency of internal expression
      *
      * @param target Dependency
-     * @return Uint Disconnect index
      */
-    template<typename T>
-    Uint depends(Property<T> &target) {
-        return target.connect([this]{
-            compute();
-            return true;
-        });
+    void depends(Expression &target) {
+        _dependencies.emplace_back(std::make_pair(
+            target.connect([this]{
+                compute();
+                return true;
+            }),
+            &target
+        ));
     }
 
     /**
@@ -96,10 +97,23 @@ public:
      * @param tree Expression AST tree
      */
     void setTree(Lang::ASTNodePtr &&tree) {
-        if (!tree->isConst())
-            _tree = std::move(tree);
-        else
+        if (_tree)
+            clearTree();
+        if (!tree)
+            throw LogicError("Expression", "Can't set null expression @tree@");
+        else if (tree->isConst())
             set(tree->compute());
+        else
+            _tree = std::move(tree);
+    }
+
+    /**
+     * @brief Clear internal tree, removing dependencies
+     */
+    void clearTree(void) {
+        _dependencies.apply([](auto &pair) { pair.second->disconnect(pair.first); });
+        _dependencies.clear();
+        _tree.reset();
     }
 
     /**
@@ -114,4 +128,5 @@ public:
 
 private:
     Lang::ASTNodePtr _tree;
+    Vector<Pair<Uint, Expression *>> _dependencies;
 };

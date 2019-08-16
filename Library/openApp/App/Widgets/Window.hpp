@@ -28,18 +28,21 @@ public:
     virtual String getName(void) const noexcept { return "Window"; }
 
     virtual void onUpdate(IRenderer &renderer) {
-        if (_index < 0)
+        if (getWindowIndex() < 0)
             throw LogicError("Window", "Invalid use of unconfigured @Window@, openApp supports only Window as root item");
-        if (get("resize"))
-            pollWindow(renderer);
-        else
-            pushWindow(renderer);
+        if (get("resize")) {
+            auto size = renderer.getWindowSize(getWindowIndex());
+            get("width") = size.x; get("height") = size.y;
+        }
+        auto pos = renderer.getWindowPos(getWindowIndex());
+        get("x") = pos.x; get("y") = pos.y;
+        renderer.setWindowColor(getWindowIndex(), Color::RetreiveColor(get("color")->getAs<Literal>()));
     }
 
     WindowContext getWindowContext(void) const {
         return WindowContext(
             get("title")->getAs<Literal>(),
-            V2i(get("x")->getAs<Number>(), get("y")->getAs<Number>()),
+            V2i(get("screenX")->getAs<Number>(), get("screenY")->getAs<Number>()),
             V2i(get("width")->getAs<Number>(), get("height")->getAs<Number>()),
             oA::Color::RetreiveColor(get("color")->getAs<Literal>()),
             get("resize"),
@@ -49,23 +52,8 @@ public:
 
     void setWindowIndex(Int index) { _index = index; }
 
+    Int getWindowIndex(void) const noexcept { return _index; }
+
 private:
     Int _index = -1;
-
-    void pushWindow(IRenderer &renderer) {
-        WindowContext context;
-        renderer.pollWindow(context);
-        get("x") = context.pos.x;
-        get("y") = context.pos.y;
-        renderer.pushWindow(getWindowContext());
-    }
-
-    void pollWindow(IRenderer &renderer) {
-        WindowContext context;
-        renderer.pollWindow(context);
-        get("x") = context.pos.x;
-        get("y") = context.pos.y;
-        get("width") = context.size.x;
-        get("height") = context.size.y;
-    }
 };

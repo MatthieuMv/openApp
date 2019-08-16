@@ -28,7 +28,7 @@ public:
 
     RectangleContext getRectangleContext(void) const {
         return RectangleContext(
-            V2f(get("x")->getAs<Number>(), get("y")->getAs<Number>()),
+            V2f(get("screenX")->getAs<Number>(), get("screenY")->getAs<Number>()),
             V2f(get("width")->getAs<Number>(), get("height")->getAs<Number>()),
             oA::Color::RetreiveColor(get("color")->getAs<Literal>()),
             get("fill")

@@ -55,14 +55,69 @@ void oA::SDLRenderer::closeWindow(Int index)
     _windows.erase(it);
 }
 
-void oA::SDLRenderer::pushWindow(const WindowContext &context)
+oA::V2i oA::SDLRenderer::getWindowPos(Int index)
 {
-    (void)(context);
+    auto it = _windows.find(index);
+    V2i res;
+
+    if (it == _windows.end())
+        throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
+    SDL_GetWindowPosition(
+        it->second.window,
+        &res.x,
+        &res.y
+    );
+    return res;
 }
 
-void oA::SDLRenderer::pollWindow(WindowContext &context)
+oA::V2i oA::SDLRenderer::getWindowSize(Int index)
 {
-    (void)(context);
+    auto it = _windows.find(index);
+    V2i res;
+
+    if (it == _windows.end())
+        throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
+    SDL_GetWindowSize(
+        it->second.window,
+        &res.x,
+        &res.y
+    );
+    return res;
+}
+
+void oA::SDLRenderer::setWindowPos(Int index, const V2i &pos)
+{
+    auto it = _windows.find(index);
+
+    if (it == _windows.end())
+        throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
+    SDL_SetWindowPosition(
+        it->second.window,
+        pos.x,
+        pos.y
+    );
+}
+
+void oA::SDLRenderer::setWindowSize(Int index, const V2i &size)
+{
+    auto it = _windows.find(index);
+
+    if (it == _windows.end())
+        throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
+    SDL_SetWindowSize(
+        it->second.window,
+        size.x,
+        size.y
+    );
+}
+
+void oA::SDLRenderer::setWindowColor(Int index, Color color)
+{
+    auto it = _windows.find(index);
+
+    if (it == _windows.end())
+        throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
+    it->second.clear = color;
 }
 
 void oA::SDLRenderer::clearWindow(Int index)
@@ -70,7 +125,7 @@ void oA::SDLRenderer::clearWindow(Int index)
     auto it = _windows.find(index);
 
     if (it == _windows.end())
-        throw LogicError("SDLRenderer", "Invalid clear @Window@ index");
+        throw AccessError("SDLRenderer", "Invalid clear @Window@ index");
     _current = &it->second;
     SDL_SetRenderDrawColor(
         _current->renderer,
@@ -85,6 +140,22 @@ void oA::SDLRenderer::clearWindow(Int index)
 void oA::SDLRenderer::renderWindow(void)
 {
     SDL_RenderPresent(_current->renderer);
+}
+
+void oA::SDLRenderer::setClippingArea(const AreaContext &context)
+{
+    SDL_Rect rect;
+
+    rect.x = context.pos.x;
+    rect.y = context.pos.y;
+    rect.w = context.size.x;
+    rect.h = context.size.y;
+    SDL_RenderSetClipRect(_current->renderer, &rect);
+}
+
+void oA::SDLRenderer::stopClipping(void)
+{
+    SDL_RenderSetClipRect(_current->renderer, nullptr);
 }
 
 void oA::SDLRenderer::draw(const LineContext &context)

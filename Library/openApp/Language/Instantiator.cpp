@@ -175,23 +175,51 @@ void oA::Lang::Instantiator::processID(const DeclarationNode &node)
 void oA::Lang::Instantiator::processRelativeSize(const DeclarationNode &node)
 {
     auto it = node.tokens.begin();
+    auto x = 0.0f, y = 0.0f;
 
     if (it == node.tokens.end())
         throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext());
-    root()->setExpression("width", "parent.width * " + it->first);
+    x = it->first.toFloat();
     if (++it == node.tokens.end() || it->first != "," || ++it == node.tokens.end())
         throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext());
-    root()->setExpression("height", "parent.height * " + it->first);
+    y = it->first.toFloat();
+    try {
+        root()->setExpression("width", "parent.width * " + ToString(x));
+        root()->setExpression("height", "parent.height * " + ToString(y));
+    } catch (...) {
+        context().unresolved.emplace_back([item = root(), ctx = context().unit.first, x, y](void) mutable {
+            try {
+                item->setExpression("width", "parent.width * " + ToString(x));
+                item->setExpression("height", "parent.height * " + ToString(y));
+            } catch (const Error &e) {
+                throw LogicError("Instantiator", "Invalid @relativeSize@ (target may have no parent) in context #" + ctx + "#\n\t-> " + e.what());
+            }
+        });
+    }
 }
 
 void oA::Lang::Instantiator::processRelativePos(const DeclarationNode &node)
 {
     auto it = node.tokens.begin();
+    auto x = 0.0f, y = 0.0f;
 
     if (it == node.tokens.end())
         throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext());
-    root()->setExpression("x", "parent.width * " + it->first + "- width / 2");
+    x = it->first.toFloat();
     if (++it == node.tokens.end() || it->first != "," || ++it == node.tokens.end())
         throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext());
-    root()->setExpression("y", "parent.height * " + it->first + " - height / 2");
+    y = it->first.toFloat();
+    try {
+        root()->setExpression("x", "parent.width * " + ToString(x) + "- width / 2");
+        root()->setExpression("y", "parent.height * " + ToString(y) + " - height / 2");
+    } catch (...) {
+        context().unresolved.emplace_back([item = root(), ctx = context().unit.first, x, y](void) mutable {
+            try {
+                item->setExpression("x", "parent.width * " + ToString(x) + "- width / 2");
+                item->setExpression("y", "parent.height * " + ToString(y) + " - height / 2");
+            } catch (const Error &e) {
+                throw LogicError("Instantiator", "Invalid @relativePos@ (target may have no parent) in context #" + ctx + "#\n\t-> " + e.what());
+            }
+        });
+    }
 }

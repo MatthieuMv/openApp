@@ -43,10 +43,17 @@ public:
 
     virtual Int openWindow(const WindowContext &context);
     virtual void closeWindow(Int index);
-    virtual void pushWindow(const WindowContext &context);
-    virtual void pollWindow(WindowContext &context);
+    virtual V2i getWindowSize(Int index);
+    virtual V2i getWindowPos(Int index);
+    virtual void setWindowPos(Int index, const V2i &pos);
+    virtual void setWindowSize(Int index, const V2i &size);
+    virtual void setWindowColor(Int index, Color color);
+
     virtual void clearWindow(Int index);
     virtual void renderWindow(void);
+
+    virtual void setClippingArea(const AreaContext &context);
+    virtual void stopClipping(void);
 
     virtual void draw(const LineContext &context);
     virtual void draw(const TriangleContext &context);

@@ -105,8 +105,7 @@ void oA::Lang::Lexer::processNumber(String &&res)
             if (hasDot)
                 throw LogicError("Lexer", "Invalid decimal @" + (res += c) + "@" + getErrorContext(line));
             hasDot = true;
-        }
-        if (!std::isdigit(c))
+        } else if (!std::isdigit(c))
             break;
         res.push_back(get());
     }

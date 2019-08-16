@@ -11,6 +11,21 @@
 
 static oA::String SplitKeyExpr(const oA::String &expr, oA::String &token);
 
+void oA::Item::onAppendChild(Item &child)
+{
+    child.setParent(this);
+    child.setExpression("screenX", "parent.screenX + x");
+    child.setExpression("screenY", "parent.screenY + y");
+}
+
+void oA::Item::onParentChanged(void)
+{
+    if (!getParent()) {
+        setExpression("screenX", "x");
+        setExpression("screenY", "y");
+    }
+}
+
 void oA::Item::update(IRenderer &renderer)
 {
     if (!get("enabled"))
@@ -26,6 +41,10 @@ void oA::Item::draw(IRenderer &renderer)
     if (!get("visible"))
         return;
     onDraw(renderer);
+    if (get("clip"))
+        renderer.setClippingArea(getAreaContext());
+    else
+         renderer.stopClipping();
     _children.apply([&renderer](auto &child) {
         child->draw(renderer);
     });

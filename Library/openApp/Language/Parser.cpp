@@ -43,7 +43,7 @@ oA::Lang::ASTNodePtr oA::Lang::Parser::parse(void)
     return std::move(_root);
 }
 
-static const std::regex NameMatch("[[:alpha:]][[:alnum:]]*", std::regex::optimize);
+static const std::regex NameMatch("([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*", std::regex::optimize);
 
 void oA::Lang::Parser::parseToken(ASTNodePtr &parent, Lexer::TokenList::iterator &it)
 {

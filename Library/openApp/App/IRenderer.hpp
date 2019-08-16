@@ -45,18 +45,44 @@ public:
     virtual void closeWindow(Int index) = 0;
 
     /**
-     * @brief Push a window context
+     * @brief Get a Window's pos
      *
-     * @param context Current target window context patch
+     * @param index Window's index
+     * @return V2i Window's pos
      */
-    virtual void pushWindow(const WindowContext &context) = 0;
+    virtual V2i getWindowPos(Int index) = 0;
 
     /**
-     * @brief Poll informations of drawing target
+     * @brief Get a Window' size
      *
-     * @param context Current target window's context target
+     * @param index Window's index
+     * @return V2i Window' size
      */
-    virtual void pollWindow(WindowContext &context) = 0;
+    virtual V2i getWindowSize(Int index) = 0;
+
+    /**
+     * @brief Set a Window's pos
+     *
+     * @param index Window's index
+     * @param pos Window's pos
+     */
+    virtual void setWindowPos(Int index, const V2i &pos) = 0;
+
+    /**
+     * @brief Set a Window's pos
+     *
+     * @param index Window's index
+     * @param pos Window's pos
+     */
+    virtual void setWindowSize(Int index, const V2i &size) = 0;
+
+    /**
+     * @brief Set a Window's clear color
+     *
+     * @param index Window's index
+     * @param color Window's color
+     */
+    virtual void setWindowColor(Int index, Color color) = 0;
 
     /**
      * @brief Clear a Window set it as drawing target
@@ -69,6 +95,18 @@ public:
      * @brief Renderer drawing target
      */
     virtual void renderWindow(void) = 0;
+
+    /**
+     * @brief Set internal clipping
+     *
+     * @param context Area to clip on
+     */
+    virtual void setClippingArea(const AreaContext &context) = 0;
+
+    /**
+     * @brief Turn off internal clipping
+     */
+    virtual void stopClipping(void) = 0;
 
     /**
      * @brief Draw Line in drawing target

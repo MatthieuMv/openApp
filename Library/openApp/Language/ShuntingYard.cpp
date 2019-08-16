@@ -12,7 +12,7 @@
 #include <openApp/Language/Lexer.hpp>
 #include <openApp/Language/Nodes.hpp>
 
-static const std::regex ReferenceMatch("[[:alpha:]][[:alnum:]]*", std::regex::optimize);
+static const std::regex ReferenceMatch("([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*", std::regex::optimize);
 static const std::regex ValueMatch("\".*\"|[[]|true|false|-?[[:digit:]]*[.]?[[:digit:]]+", std::regex::optimize);
 static const std::regex IncrementOperatorMatch("([+][+][[:alpha:]][[:alnum:]]*)|(--[[:alpha:]][[:alnum:]]*)|([[:alpha:]][[:alnum:]]*[+][+])|([[:alpha:]][[:alnum:]]*--)", std::regex::optimize);
 
@@ -543,7 +543,6 @@ void oA::Lang::ShuntingYard::popOpStack(Operator end, Int line)
 
 void oA::Lang::ShuntingYard::buildTarget(void)
 {
-
     if (_mode == Expression || _mode == Function)
         _target->setTree(std::move(_expr));
     else {
@@ -552,5 +551,5 @@ void oA::Lang::ShuntingYard::buildTarget(void)
         _target->connectEvent(std::move(expr));
     }
     if (_mode == Expression)
-        _target->compute();
+        _target->call();
 }

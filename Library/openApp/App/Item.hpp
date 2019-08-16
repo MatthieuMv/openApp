@@ -10,6 +10,7 @@
 #include <openApp/App/ItemHandler.hpp>
 #include <openApp/App/ExpressionHandler.hpp>
 #include <openApp/App/IRenderer.hpp>
+#include <openApp/App/RenderContexts.hpp>
 
 namespace oA { class Item; }
 
@@ -40,12 +41,15 @@ public:
      * @brief Construct a new Item object
      */
     Item(void) {
-        append("x") = 0; // X position
-        append("y") = 0; // Y position
+        append("x") = 0; // Parent relative X position
+        append("y") = 0; // Parent relative Y position
+        append("screenX") = 0; // Screen relative X position
+        append("screenY") = 0; // Screen relative Y position
         append("width") = 0; // Item width
         append("height") = 0; // Item height
         append("enabled") = true; // If true, Item will receive and propagate updates
         append("visible") = true; // If true, Item will draw himself and his children
+        append("clip") = true; // If true, Item will clip its children on draw
     }
 
     /**
@@ -65,7 +69,7 @@ public:
      *
      * @param child New Item
      */
-    virtual void onAppendChild(Item &child) { child.setParent(this); }
+    virtual void onAppendChild(Item &child);
 
     /**
      * @brief Callback on removing child
@@ -77,7 +81,7 @@ public:
     /**
      * @brief Callback on internal parent changed
      */
-    virtual void onParentChanged(void) {}
+    virtual void onParentChanged(void);
 
     /**
      * @brief Callback on update
@@ -137,6 +141,18 @@ public:
      * @return Item* ID
      */
     const String &getID(void) const noexcept { return _id; }
+
+    /**
+     * @brief Get the Area Context object of Item
+     *
+     * @return AreaContext Item context
+     */
+    AreaContext getAreaContext(void) const {
+        return AreaContext(
+            V2f(get("screenX")->getAs<Number>(), get("screenY")->getAs<Number>()),
+            V2f(get("width")->getAs<Number>(), get("height")->getAs<Number>())
+        );
+    }
 
     /**
      * @brief Update Item and its children
