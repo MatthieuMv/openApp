@@ -8,6 +8,7 @@
 #include <openApp/App/ItemFactory.hpp>
 #include <openApp/App/Widgets/Window.hpp>
 #include <openApp/App/Widgets/Rectangle.hpp>
+#include <openApp/App/Widgets/EventArea.hpp>
 
 oA::UMap<oA::String, oA::Function<oA::ItemPtr(void)>> oA::ItemFactory::Components;
 
@@ -30,4 +31,5 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<Item>();
     Register<Window>();
     Register<Rectangle>();
+    Register<EventArea>();
 }

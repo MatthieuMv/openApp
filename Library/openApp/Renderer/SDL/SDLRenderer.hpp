@@ -48,6 +48,7 @@ public:
     virtual void setWindowPos(Int index, const V2i &pos);
     virtual void setWindowSize(Int index, const V2i &size);
     virtual void setWindowColor(Int index, Color color);
+    virtual void setWindowResizable(Int index, bool resize);
 
     virtual void clearWindow(Int index);
     virtual void renderWindow(void);

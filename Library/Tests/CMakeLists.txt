@@ -13,6 +13,7 @@ set(TestsSources
     tests_V2.cpp
     tests_V3.cpp
     tests_Color.cpp
+    tests_LightChrono.cpp
     tests_Chrono.cpp
     tests_Path.cpp
     tests_Signal.cpp

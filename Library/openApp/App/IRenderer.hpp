@@ -85,6 +85,14 @@ public:
     virtual void setWindowColor(Int index, Color color) = 0;
 
     /**
+     * @brief Set resizable state
+     *
+     * @param index Window's index
+     * @param resize Window's resize state
+     */
+    virtual void setWindowResizable(Int index, bool resize) = 0;
+
+    /**
      * @brief Clear a Window set it as drawing target
      *
      * @param index Window's index

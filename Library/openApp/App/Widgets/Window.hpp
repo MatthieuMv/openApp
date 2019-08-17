@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <openApp/Core/Log.hpp>
 #include <openApp/App/Item.hpp>
 
 namespace oA { class Window; }
@@ -31,9 +32,11 @@ public:
         if (getWindowIndex() < 0)
             throw LogicError("Window", "Invalid use of unconfigured @Window@, openApp supports only Window as root item");
         if (get("resize")) {
+            renderer.setWindowResizable(getWindowIndex(), true);
             auto size = renderer.getWindowSize(getWindowIndex());
             get("width") = size.x; get("height") = size.y;
-        }
+        } else
+            renderer.setWindowResizable(getWindowIndex(), false);
         auto pos = renderer.getWindowPos(getWindowIndex());
         get("x") = pos.x; get("y") = pos.y;
         renderer.setWindowColor(getWindowIndex(), Color::RetreiveColor(get("color")->getAs<Literal>()));

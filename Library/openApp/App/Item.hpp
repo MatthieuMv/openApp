@@ -155,6 +155,20 @@ public:
     }
 
     /**
+     * @brief Tell if item area contains a point
+     *
+     * @param point Point data
+     * @return true Point is contained in Item
+     * @return false Point isn't contained in Item
+     */
+    template<typename V2 = V2f>
+    bool contains(const V2 &point) const {
+        Float x = get("screenX")->getAs<Number>(), y = get("screenY")->getAs<Number>();
+        return point.x >= x && point.x <= x + get("width")->getAs<Number>()
+                && point.y >= y && point.y <= y + get("height")->getAs<Number>();
+    }
+
+    /**
      * @brief Update Item and its children
      *
      * @param renderer Drawing interface

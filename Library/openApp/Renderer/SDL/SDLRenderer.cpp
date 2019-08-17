@@ -25,10 +25,8 @@ oA::Int oA::SDLRenderer::openWindow(const WindowContext &context)
 {
     auto *window = SDL_CreateWindow(
             context.title.c_str(),
-            context.pos.x,
-            context.pos.y,
-            context.size.x,
-            context.size.y,
+            context.pos.x, context.pos.y,
+            context.size.x, context.size.y,
             SDL_WINDOW_SHOWN
         );
 
@@ -118,6 +116,15 @@ void oA::SDLRenderer::setWindowColor(Int index, Color color)
     if (it == _windows.end())
         throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
     it->second.clear = color;
+}
+
+void oA::SDLRenderer::setWindowResizable(Int index, bool resize)
+{
+    auto it = _windows.find(index);
+
+    if (it == _windows.end())
+        throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
+    SDL_SetWindowResizable(it->second.window, resize ? SDL_TRUE : SDL_FALSE);
 }
 
 void oA::SDLRenderer::clearWindow(Int index)

@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** Chrono
+** LightChrono
 */
 
 #pragma once
@@ -12,16 +12,16 @@
 
 #include <openApp/Types/Scalars.hpp>
 
-namespace oA { class Chrono; }
+namespace oA { class LightChrono; }
 
 /**
- * @brief An easy and pausable time chronometer
- *
+ * @brief A lightweight and easy to use time chronometer
  */
-class oA::Chrono
+class oA::LightChrono
 {
 public:
-    Chrono(void) : _chrono(std::chrono::system_clock::now()) {}
+    virtual ~LightChrono(void) = default;
+    LightChrono(void) : _chrono(std::chrono::system_clock::now()) {}
 
     /**
      * @brief Get elapsed time in seconds
@@ -51,38 +51,10 @@ public:
         _chrono = std::chrono::system_clock::now();
     }
 
-    /**
-     * @brief Pause internal timer
-     */
-    void pause(void) noexcept {
-        _paused = true;
-        _pause = std::chrono::system_clock::now();
-    }
-
-    /**
-     * @brief Resume internal timer
-     */
-    void resume(void) noexcept {
-        auto cast = std::chrono::duration_cast<std::chrono::nanoseconds>(
-            std::chrono::system_clock::now() - _pause
-        );
-        _chrono += cast;
-        _paused = false;
-    }
-
-    /**
-     * @brief Return pause internal state
-     *
-     * @return bool Pause state
-     */
-    bool isPaused(void) const noexcept {
-        return _paused;
-    }
+protected:
+    std::chrono::time_point<std::chrono::system_clock> _chrono;
 
 private:
-    std::chrono::time_point<std::chrono::system_clock> _chrono, _pause;
-    bool _paused = false;
-
     /**
      * @brief Get elapsed time, casting it to type T
      *
@@ -91,9 +63,8 @@ private:
      */
     template <typename T>
     Uint getAs(void) const noexcept {
-        auto dt = _paused ? _pause : std::chrono::system_clock::now();
         return std::chrono::duration_cast<T>(
-            dt - _chrono
+            std::chrono::system_clock::now() - _chrono
         ).count();
     }
 };
