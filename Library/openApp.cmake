@@ -83,7 +83,10 @@ set(App
     ${oAApp}/Events/WindowEvent.hpp
     ${oAApp}/Widgets/Window.hpp
     ${oAApp}/Widgets/Rectangle.hpp
+    ${oAApp}/Widgets/Image.hpp
     ${oAApp}/Widgets/EventArea.hpp
+    ${oAApp}/Widgets/Button.hpp
+    ${oAApp}/Widgets/ImageButton.hpp
 )
 
 set(Language

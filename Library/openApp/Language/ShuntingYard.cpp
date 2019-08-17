@@ -60,10 +60,10 @@ void oA::Lang::ShuntingYard::processToken(Lexer::TokenList::const_iterator &it, 
         processStatement(it, root);
     else if (std::regex_match(it->first, IncrementOperatorMatch))
         processIncrementOperator(it);
-    else if (std::regex_match(it->first, ReferenceMatch))
-        processReference(it);
     else if (std::regex_match(it->first, ValueMatch))
         processValue(it);
+    else if (std::regex_match(it->first, ReferenceMatch))
+        processReference(it);
     else
         throw LogicError("ShuntingYard", "Couldn't indentify expression token @" + it->first + "@" + getErrorContext(it->second));
 }
@@ -160,6 +160,12 @@ void oA::Lang::ShuntingYard::processValue(Lexer::TokenList::const_iterator &it)
 void oA::Lang::ShuntingYard::parseValue(Lexer::TokenList::const_iterator &it, Var &var)
 {
     switch (it->first.front()) {
+    case 't':
+        var = true;
+        break;
+    case 'f':
+        var = false;
+        break;
     case '"':
         var = it->first.substr(1, it->first.length() - 2);
         break;

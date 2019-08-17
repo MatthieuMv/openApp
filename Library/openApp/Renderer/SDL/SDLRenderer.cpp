@@ -6,6 +6,7 @@
 */
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
 #include <openApp/Types/Error.hpp>
 #include <openApp/Renderer/SDL/SDLRenderer.hpp>
@@ -294,7 +295,32 @@ void oA::SDLRenderer::draw(const EllipseContext &context)
 
 void oA::SDLRenderer::draw(const ImageContext &context)
 {
-    (void)(context);
+    auto *texture = getTexture(context.source);
+    SDL_Rect src;
+    SDL_FRect dest;
+
+    src.x = context.sourcePos.x; src.y = context.sourcePos.y;
+    src.w = context.sourceSize.x; src.h = context.sourceSize.y;
+    dest.x = context.pos.x; dest.y = context.pos.y;
+    dest.w = context.size.x; dest.h = context.size.y;
+    SDL_RenderCopyExF(
+        _current->renderer,
+        texture,
+        (!src.x && !src.y && !src.w && !src.h ? nullptr : &src),
+        &dest,
+        context.rotation,
+        nullptr,
+        context.vflip ? SDL_FLIP_VERTICAL : context.hflip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE
+    );
+}
+
+SDL_Texture *oA::SDLRenderer::getTexture(const String &path)
+{
+    auto it = _textures.find(path);
+
+    if (it == _textures.end())
+        return _textures[path] = IMG_LoadTexture(_current->renderer, path.c_str());
+    return it->second;
 }
 
 bool oA::SDLRenderer::pollEvent(Event &target)

@@ -12,7 +12,7 @@
 
 namespace oA { class Rectangle; }
 
-class oA::Rectangle : public Item
+class oA::Rectangle : virtual public Item
 {
 public:
     virtual ~Rectangle(void) = default;

@@ -7,12 +7,11 @@
 
 #pragma once
 
-#include <openApp/Core/Log.hpp>
 #include <openApp/App/Item.hpp>
 
 namespace oA { class Window; }
 
-class oA::Window : public Item
+class oA::Window : virtual public Item
 {
 public:
     virtual ~Window(void) = default;

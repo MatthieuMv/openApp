@@ -11,11 +11,9 @@
 #include <openApp/App/Item.hpp>
 #include <openApp/App/RenderContexts.hpp>
 
-#include <openApp/Core/Log.hpp>
-
 namespace oA { class EventArea; }
 
-class oA::EventArea : public Item
+class oA::EventArea : virtual public Item
 {
 public:
     virtual ~EventArea(void) = default;

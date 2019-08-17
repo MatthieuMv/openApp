@@ -62,7 +62,7 @@ struct oA::LineContext : public Context
 struct oA::TriangleContext : public Context
 {
     TriangleContext(void) = default;
-    TriangleContext(const V2f &_p1, const V2f &_p2, const V2f &_p3, Color _color, bool _filled, bool _antiAliasing)
+    TriangleContext(const V2f &_p1, const V2f &_p2, const V2f &_p3, Color _color, bool _filled = true, bool _antiAliasing = true)
         : p1(_p1), p2(_p2), p3(_p3), color(_color), filled(_filled), antiAliasing(_antiAliasing) {}
 
     V2f p1;
@@ -76,7 +76,7 @@ struct oA::TriangleContext : public Context
 struct oA::RectangleContext : public Context
 {
     RectangleContext(void) = default;
-    RectangleContext(const V2f &_pos, const V2f &_size, Color _color, bool _filled)
+    RectangleContext(const V2f &_pos, const V2f &_size, Color _color, bool _filled = true)
         : pos(_pos), size(_size), color(_color), filled(_filled) {}
 
     V2f pos;
@@ -88,7 +88,7 @@ struct oA::RectangleContext : public Context
 struct oA::CircleContext : public Context
 {
     CircleContext(void) = default;
-    CircleContext(const V2f &_pos, Uint _size, Color _color, bool _filled, bool _antiAliasing)
+    CircleContext(const V2f &_pos, Uint _size, Color _color, bool _filled = true, bool _antiAliasing = true)
         : pos(_pos), size(_size), color(_color), filled(_filled), antiAliasing(_antiAliasing) {}
 
     V2f pos;
@@ -102,7 +102,7 @@ struct oA::CircleContext : public Context
 struct oA::EllipseContext : public Context
 {
     EllipseContext(void) = default;
-    EllipseContext(const V2f &_pos, const V2f &_size, Color _color, bool _filled, bool _antiAliasing)
+    EllipseContext(const V2f &_pos, const V2f &_size, Color _color, bool _filled = true, bool _antiAliasing = true)
         : pos(_pos), size(_size), color(_color), filled(_filled), antiAliasing(_antiAliasing) {}
 
     V2f pos;
@@ -115,7 +115,15 @@ struct oA::EllipseContext : public Context
 
 struct oA::ImageContext : public Context
 {
+    ImageContext(void) = default;
+    ImageContext(const String &_source, const V2f &_pos, const V2f &_size, const V2i &_sourcePos = V2i(), const V2i &_sourceSize = V2i(), Float _rotation = 0, bool _vflip = false, bool _hflip = false)
+        : source(_source), pos(_pos), size(_size), sourcePos(_sourcePos), sourceSize(_sourceSize), rotation(_rotation), vflip(_vflip), hflip(_hflip) {}
+
+    String source;
     V2f pos;
     V2f size;
-    String source;
+    V2i sourcePos;
+    V2i sourceSize;
+    Float rotation = 0;
+    bool vflip = false, hflip = false;
 };

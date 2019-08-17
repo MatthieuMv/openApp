@@ -15,6 +15,7 @@ namespace oA { class SDLRenderer; }
 
 struct SDL_Window;
 struct SDL_Renderer;
+struct SDL_Texture;
 union SDL_Event;
 
 class oA::SDLRenderer : public IRenderer
@@ -67,15 +68,14 @@ public:
 
 private:
     UMap<Int, Window> _windows;
+    UMap<String, SDL_Texture *> _textures;
     Window *_current = nullptr;
 
-    bool processPoll(Event &target);
-    bool checkEventStack(Event &target, Int index);
+    SDL_Texture *getTexture(const String &path);
 
     bool constructWindowEvent(Event &target, SDL_Event &event);
     bool constructMouseEvent(Event &target, SDL_Event &event);
     bool constructMotionEvent(Event &target, SDL_Event &event);
     bool constructWheelEvent(Event &target, SDL_Event &event);
     bool constructKeyboardEvent(Event &target, SDL_Event &event);
-
 };
