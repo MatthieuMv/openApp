@@ -5,10 +5,12 @@
 ** OperatorNode
 */
 
+#include <openApp/Containers/Pair.hpp>
 #include <openApp/Language/Nodes/OperatorNode.hpp>
 #include <openApp/Language/Nodes/ReferenceNode.hpp>
 #include <openApp/Language/Nodes/LocalNode.hpp>
-#include <openApp/Containers/Pair.hpp>
+
+#include <openApp/Core/Log.hpp>
 
 oA::Var oA::Lang::OperatorNode::compute(void)
 {
@@ -67,9 +69,9 @@ oA::Var oA::Lang::OperatorNode::compute(void)
     }
     case Call:
     {
-        auto &expr = *dynamic_cast<ReferenceNode &>(*children[0]).ptr;
-        expr.call();
-        return *expr;
+        auto &property = *dynamic_cast<ReferenceNode &>(*children[0]).ptr;
+        property.call();
+        return property;
     }
     case At:
         return at();
@@ -86,7 +88,7 @@ oA::Var &oA::Lang::OperatorNode::at(void)
 
     switch (children[0]->getType()) {
     case Reference:
-        return dynamic_cast<ReferenceNode &>(*children[0]).ptr->getRaw()[index];
+        return (*dynamic_cast<ReferenceNode &>(*children[0]).ptr)[index];
     case Local:
         return dynamic_cast<LocalNode &>(*children[0]).local[index];
     default:
@@ -101,7 +103,7 @@ oA::Var oA::Lang::OperatorNode::assign(ASTNode &node, Var &&value, Lang::Operato
     {
         auto &var = *dynamic_cast<ReferenceNode &>(node).ptr;
         assignValue(var, std::move(value), type);
-        return *var;
+        return var;
     }
     case Local:
     {
@@ -125,4 +127,24 @@ oA::Var &oA::Lang::OperatorNode::assignAt(OperatorNode &node, Var &&value, Lang:
     if (tmp != var && node.children[0]->getType() == Reference)
         dynamic_cast<ReferenceNode &>(*node.children[0]).ptr->emit();
     return var;
+}
+
+void oA::Lang::OperatorNode::assignValue(Var &var, Var &&value, Lang::Operator type)
+{
+    switch (type) {
+    case Assign:
+        var = std::move(value); break;
+    case AdditionAssign:
+        var += std::move(value); break;
+    case SubstractionAssign:
+        var -= std::move(value); break;
+    case MultiplicationAssign:
+        var *= std::move(value); break;
+    case DivisionAssign:
+        var /= std::move(value); break;
+    case ModuloAssign:
+        var %= std::move(value); break;
+    default:
+        throw LogicError("OperatorNode", "Invalid assignment operator @" + GetOperatorSymbol(type) + "@");
+    }
 }

@@ -128,9 +128,9 @@ oA::Item *oA::Item::findChildren(const String &key)
     return nullptr;
 }
 
-oA::ExpressionPtr oA::Item::findExpr(const String &key)
+oA::PropertyPtr oA::Item::findExpr(const String &key)
 {
-    ExpressionPtr res;
+    PropertyPtr res;
     String token, left = SplitKeyExpr(key, token);
 
     if (!token.empty() && token == getID())
@@ -140,7 +140,7 @@ oA::ExpressionPtr oA::Item::findExpr(const String &key)
     auto ptr = findItem(token);
     if (ptr)
         return ptr->findExpr(left);
-    return ExpressionPtr();
+    return PropertyPtr();
 }
 
 void oA::Item::show(Int tab) const noexcept
@@ -148,7 +148,7 @@ void oA::Item::show(Int tab) const noexcept
     cout << Repeat(tab) << '\t' << '#' << getName() << "# " << getID() << endl;
     ++tab;
     _members.apply([tab](const auto &p) mutable {
-        cout << Repeat(tab) << '\t' << '@' << p.first << "@: " << p.second->get().toString() << endl;
+        cout << Repeat(tab) << '\t' << '@' << p.first << "@: " << p.second->toString() << endl;
         p.second->show(tab + 1);
     });
     _children.apply([tab](const auto &child) { child->show(tab); });

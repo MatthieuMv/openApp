@@ -12,6 +12,7 @@
 #include <openApp/Types/Scalars.hpp>
 #include <openApp/Types/String.hpp>
 #include <openApp/Containers/List.hpp>
+#include <openApp/Core/Signal.hpp>
 
 namespace oA
 {
@@ -35,7 +36,7 @@ namespace oA
     using Container = List<Var>;
 }
 
-class oA::Var
+class oA::Var : public Signal<>
 {
     /**
      * @brief Internal Variant type
@@ -54,48 +55,28 @@ public:
     };
 
     /**
+     * @brief Destroy the Var object
+     */
+    virtual ~Var(void) = default;
+
+    /**
      * @brief Construct a new Var object
      */
-    Var(void) : _var(0.0f) {}
+    Var(void) : Signal<>(), _var(0.0f) {}
 
     /**
      * @brief Construct a new Var object by copy
      *
      * @param other Var to copy
      */
-    Var(Var &other) : _var(other._var) {}
-
-    /**
-     * @brief Construct a new Var object by copy
-     *
-     * @param other Var to copy
-     */
-    Var(const Var &other) : _var(other._var) {}
+    Var(const Var &other) : Signal<>(), _var(other._var) {}
 
     /**
      * @brief Construct a new Var object by move
      *
      * @param other Var to move
      */
-    Var(Var &&other) : _var(std::move(other._var)) {}
-
-    /**
-     * @brief Construct a new Var object by value copy
-     *
-     * @tparam T Value type
-     * @param value Value to copy
-     */
-    template<typename T>
-    Var(T &value) : _var(value) {}
-
-    /**
-     * @brief Construct a new Var object by value copy
-     *
-     * @tparam T Value type
-     * @param value Value to copy
-     */
-    template<typename T>
-    Var(const T &value) : _var(value) {}
+    Var(Var &&other) : Signal<>(), _var(0.0f) { swap(other); }
 
     /**
      * @brief Construct a new Var object by value move
@@ -103,8 +84,8 @@ public:
      * @tparam T Value type
      * @param value Value to move
      */
-    template<typename T>
-    Var(T &&value) : _var(std::move(value)) {}
+    template<typename T, std::enable_if_t<!std::is_convertible<T, Var>::value> * = nullptr>
+    Var(T &&value) : Signal<>(), _var(std::forward<T>(value)) {}
 
     /**
      * @brief Return internal index as VarType
@@ -114,15 +95,6 @@ public:
     constexpr VarType index(void) const noexcept { return static_cast<VarType>(_var.index()); }
 
     /**
-     * @brief Try to extract non-const reference to internal type T
-     *
-     * @tparam T Type to extract
-     * @return T& Extracted value
-     */
-    template<typename T>
-    constexpr T &getAs(void) { return std::get<T>(_var); }
-
-    /**
      * @brief Try to extract const reference to internal type T
      *
      * @tparam T Type to extract
@@ -130,6 +102,13 @@ public:
      */
     template<typename T>
     constexpr const T &getAs(void) const { return std::get<T>(_var); }
+
+    /**
+     * @brief Swap two Var
+     *
+     * @param other Value to swap
+     */
+    void swap(Var &other) noexcept;
 
     /**
      * @brief Safe cast of internal type to boolean
@@ -208,6 +187,8 @@ public:
 
     /* Special operators */
     Var len(void) const;
+    Var &push(const Var &value);
+    Var &push(Var &&value);
 
 private:
     VariantType _var;

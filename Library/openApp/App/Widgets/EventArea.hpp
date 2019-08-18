@@ -31,7 +31,7 @@ public:
     virtual String getName(void) const noexcept { return "EventArea"; }
 
     virtual void onUpdate(IRenderer &) {
-        if (get("hovered") && get("pressed") && _hold.getMilliseconds() >= get("holdDuration")->toUint()) {
+        if (get("hovered") && get("pressed") && _hold.getMilliseconds() >= get("holdDuration").toUint()) {
             get("holded").emit();
             _hold.reset();
         }
@@ -57,7 +57,7 @@ private:
         if (!pressed)
             get("released").emit();
         else {
-            if (_double.getMilliseconds() <= get("doublePressInterval")->toUint())
+            if (_double.getMilliseconds() <= get("doublePressInterval").toUint())
                 get("doublePressed").emit();
             _hold.reset();
             _double.reset();

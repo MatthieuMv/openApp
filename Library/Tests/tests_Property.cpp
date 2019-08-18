@@ -6,88 +6,51 @@
 */
 
 #include <criterion/criterion.h>
+#include <criterion/redirect.h>
 #include <openApp/Core/Property.hpp>
-#include <openApp/Types/Scalars.hpp>
+#include <openApp/Language/Nodes.hpp>
 
-Test(Propert, Basics)
+Test(Property, Basics)
 {
-    oA::Property<oA::Int> x;
+    oA::PropertyPtr ptr(std::make_shared<oA::Property>(23));
+    oA::Property main(42), toMove(main), other(std::move(toMove));
+    oA::PropertyPtr event(std::make_unique<oA::Property>());
 
-    cr_assert(x.set(42));
-    cr_assert_not(x.set(42));
-    cr_assert_eq(x.getRaw(), 42);
+    oA::Lang::ASTNodePtr tree(std::make_unique<oA::Lang::ExpressionGroupNode>());
+    auto &op = tree->emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Operator::PrefixIncrement);
+    op.emplaceAs<oA::Lang::ReferenceNode>(oA::PropertyPtr(ptr));
+    event->setTree(std::move(tree));
+
+    main = 1;
+    cr_assert_eq(main->toInt(), 1);
+    cr_assert_eq(other->toInt(), 42);
+    cr_assert_eq((*ptr)->toInt(), 23);
+    main.depends(other);
+
+    main.connectEvent(std::move(event));
+    main.call();
+    cr_assert_eq(main->toInt(), 1);
+    cr_assert_eq(other->toInt(), 42);
+    cr_assert_eq((*ptr)->toInt(), 24);
+
+    other = 4;
+    cr_assert_eq(main->toInt(), 1);
+    cr_assert_eq(other->toInt(), 4);
+    cr_assert_eq((*ptr)->toInt(), 24);
+
+    main.swap(other);
+    cr_assert_eq(main->toInt(), 4);
+    cr_assert_eq(other->toInt(), 1);
+    cr_assert_eq((*ptr)->toInt(), 24);
 }
 
-Test(Property, Constructors)
+Test(Property, Show, .init=cr_redirect_stdout)
 {
-    oA::Int value = 42;
-    oA::Property<oA::Int>   def,
-                            valCopy(value),
-                            valMove(std::move(value)),
-                            copy(valCopy),
-                            move(std::move(valMove));
+    oA::Property event;
+    oA::Lang::ASTNodePtr tree(std::make_unique<oA::Lang::ExpressionGroupNode>());
 
-    cr_assert_eq(*def, 0);
-    cr_assert_eq(*(copy.operator->()), 42);
-    cr_assert_eq(move.get(), 42);
-}
-
-Test(Property, Assignment)
-{
-    oA::Int x = 12, y = 21;
-    oA::Property<oA::Int> p1, p2;
-
-    p1 = x;
-    cr_assert_eq(*p1, 12);
-    p2 = std::move(y);
-    cr_assert_eq(*p2, 21);
-    p1 = p2;
-    cr_assert_eq(*p1, 21);
-    p1 = p2;
-    cr_assert_eq(*p1, 21);
-}
-
-Test(Property, Bind)
-{
-    oA::Property<oA::Int> x(1), y(2);
-
-    x.bind(y);
-    cr_assert_eq(*x, 1);
-    cr_assert_eq(*y, 2);
-    y = 3;
-    cr_assert_eq(*x, 3);
-    cr_assert_eq(*y, 3);
-}
-
-Test(Property, CircularBind)
-{
-    oA::Property<oA::Int> x(1), y(2);
-
-    x.circularBind(y);
-    cr_assert_eq(*x, 1);
-    cr_assert_eq(*y, 2);
-    y = 3;
-    cr_assert_eq(*x, 3);
-    cr_assert_eq(*y, 3);
-    y = 4;
-    cr_assert_eq(*x, 4);
-    cr_assert_eq(*y, 4);
-}
-
-Test(Property, Assignments)
-{
-    oA::Property<oA::Int> x, y(1);
-
-    cr_assert_eq(*(x += 4), 4);
-    cr_assert_eq(*(x += y), 5);
-    y = 0;
-    x = 4;
-    cr_assert_eq(*(y -= 4), -4);
-    cr_assert_eq(*(x -= y), 8);
-    cr_assert_eq(*(x *= 2), 16);
-    cr_assert_eq(*(x *= y), -64);
-    cr_assert_eq(*(x /= y), 16);
-    cr_assert_eq(*(x /= 4), 4);
-    cr_assert_eq(*(x %= 5), 4);
-    cr_assert_eq(*(x %= y), 0);
+    tree->emplaceAs<oA::Lang::ValueNode>();
+    event.show();
+    event.setTree(std::move(tree));
+    event.show();
 }

@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include <openApp/Core/Expression.hpp>
+#include <openApp/Core/Property.hpp>
 #include <openApp/Language/Nodes.hpp>
 
 Test(OperatorNode, Basics)
@@ -64,7 +64,7 @@ Test(OperatorNode, Basics)
 
 Test(OperatorNode, Assignment)
 {
-    auto expr(std::make_shared<oA::Expression>(0));
+    auto expr(std::make_shared<oA::Property>(0));
     oA::Lang::OperatorNode node(oA::Lang::Call);
 
     node.emplaceAs<oA::Lang::ReferenceNode>(std::move(expr));
@@ -87,7 +87,7 @@ Test(OperatorNode, Assignment)
 Test(OperatorNode, LocalAssignment)
 {
     oA::Lang::ExpressionGroupNode root;
-    auto expr(std::make_shared<oA::Expression>(0));
+    auto expr(std::make_shared<oA::Property>(0));
     auto &node = root.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::PrefixIncrement);
 
     root.locals["var"] = 0;
@@ -110,7 +110,7 @@ Test(OperatorNode, LocalAssignment)
 Test(OperatorNode, ContainerAssignment)
 {
     oA::Lang::ExpressionGroupNode root;
-    auto expr(std::make_shared<oA::Expression>(0));
+    auto expr(std::make_shared<oA::Property>(0));
     auto &node = root.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::PrefixIncrement);
 
 

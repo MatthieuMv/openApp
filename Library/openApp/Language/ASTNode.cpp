@@ -37,7 +37,7 @@ void oA::Lang::ASTNode::ShowTree(const ASTNode &root, Int tab)
             cout << "@Group:@ ";
             break;
         case Reference:
-            cout << "@Reference:@ "  << dynamic_cast<const ReferenceNode &>(root).ptr->get().toString();
+            cout << "@Reference:@ "  << dynamic_cast<const ReferenceNode &>(root).ptr->toString();
             break;
         case Local:
             cout << "@Local:@  " << dynamic_cast<const LocalNode &>(root).local.toString();

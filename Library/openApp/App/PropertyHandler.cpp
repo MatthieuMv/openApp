@@ -2,24 +2,24 @@
 ** EPITECH PROJECT, 2019
 ** openApp
 ** File description:
-** Expression
+** PropertyHandler
 */
 
-#include <openApp/App/ExpressionHandler.hpp>
+#include <openApp/App/PropertyHandler.hpp>
 
-oA::Property<oA::Var> &oA::ItemUtils::ExpressionHandler::append(const String &key)
+oA::Var &oA::ItemUtils::PropertyHandler::append(const String &key)
 {
     if (exists(key))
         throw LogicError("Item", "Can't append @" + key + "@, already exists");
-    return *(_members[key] = std::make_shared<Expression>());
+    return *(_members[key] = std::make_shared<Property>());
 }
 
-bool oA::ItemUtils::ExpressionHandler::exists(const String &key) const noexcept
+bool oA::ItemUtils::PropertyHandler::exists(const String &key) const noexcept
 {
     return _members.find(key) != _members.end();
 }
 
-oA::Property<oA::Var> &oA::ItemUtils::ExpressionHandler::get(const String &key)
+oA::Var &oA::ItemUtils::PropertyHandler::get(const String &key)
 {
     auto it = _members.find(key);
 
@@ -28,7 +28,7 @@ oA::Property<oA::Var> &oA::ItemUtils::ExpressionHandler::get(const String &key)
     return *it->second;
 }
 
-const oA::Property<oA::Var> &oA::ItemUtils::ExpressionHandler::get(const String &key) const
+const oA::Var &oA::ItemUtils::PropertyHandler::get(const String &key) const
 {
     auto it = _members.find(key);
 
@@ -37,11 +37,11 @@ const oA::Property<oA::Var> &oA::ItemUtils::ExpressionHandler::get(const String 
     return *it->second;
 }
 
-oA::ExpressionPtr oA::ItemUtils::ExpressionHandler::getPtr(const String &key) const noexcept
+oA::PropertyPtr oA::ItemUtils::PropertyHandler::getPtr(const String &key) const noexcept
 {
     auto it = _members.find(key);
 
     if (it == _members.end())
-        return oA::ExpressionPtr();
+        return PropertyPtr();
     return it->second;
 }

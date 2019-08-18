@@ -67,7 +67,7 @@ private:
     const String &_name;
     Mode _mode;
     Int _line = 0;
-    ExpressionPtr _target;
+    PropertyPtr _target;
 
     /**
      * @brief Construct a new Shunting Yard object

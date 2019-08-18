@@ -34,12 +34,12 @@ public:
 
     ImageContext getImageContext(void) const {
         return ImageContext(
-            get("source")->getAs<Literal>(),
-            V2f(get("x")->getAs<Number>(), get("y")->getAs<Number>()),
-            V2f(get("width")->getAs<Number>(), get("height")->getAs<Number>()),
-            V2i(get("sourceX")->getAs<Number>(), get("sourceY")->getAs<Number>()),
-            V2i(get("sourceWidth")->getAs<Number>(), get("sourceHeight")->getAs<Number>()),
-            get("rotation")->getAs<Number>(),
+            getAs<Literal>("source"),
+            V2f(getAs<Number>("x"), getAs<Number>("y")),
+            V2f(getAs<Number>("width"), getAs<Number>("height")),
+            V2i(getAs<Number>("sourceX"), getAs<Number>("sourceY")),
+            V2i(getAs<Number>("sourceWidth"), getAs<Number>("sourceHeight")),
+            getAs<Number>("rotation"),
             get("verticalFlip"),
             get("horizontalFlip")
         );

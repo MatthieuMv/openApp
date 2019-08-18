@@ -77,7 +77,7 @@ void oA::App::openWindow(ItemPtr &&root, bool verbose)
         index = _renderer->openWindow(WindowContext(
             String(),
             V2i(),
-            V2i(root->get("width")->toInt(), root->get("height")->toInt()),
+            V2i(root->get("width").toInt(), root->get("height").toInt()),
             Color(),
             false,
             true

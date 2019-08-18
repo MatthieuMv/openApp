@@ -40,8 +40,7 @@ set(Core
     ${oACore}/Path.cpp
     ${oACore}/Signal.hpp
     ${oACore}/Property.hpp
-    ${oACore}/Expression.hpp
-    ${oACore}/Expression.cpp
+    ${oACore}/Property.cpp
     ${oACore}/GetLine.hpp
     ${oACore}/GetLine.cpp
     ${oACore}/Var.hpp
@@ -71,8 +70,8 @@ set(App
     ${oAApp}/ItemFactory.cpp
     ${oAApp}/ItemHandler.hpp
     ${oAApp}/ItemHandler.cpp
-    ${oAApp}/ExpressionHandler.hpp
-    ${oAApp}/ExpressionHandler.cpp
+    ${oAApp}/PropertyHandler.hpp
+    ${oAApp}/PropertyHandler.cpp
     ${oAApp}/RenderContexts.hpp
     ${oAApp}/IRenderer.hpp
     ${oAApp}/Event.hpp

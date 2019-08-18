@@ -8,7 +8,7 @@
 #pragma once
 
 #include <openApp/App/ItemHandler.hpp>
-#include <openApp/App/ExpressionHandler.hpp>
+#include <openApp/App/PropertyHandler.hpp>
 #include <openApp/App/IRenderer.hpp>
 #include <openApp/App/RenderContexts.hpp>
 
@@ -20,7 +20,7 @@ namespace oA { class Item; }
  * Item contains an Expression list, which can be interpreted as member
  * functions or variables. They can be accessed in openApp's design language
  */
-class oA::Item : public ItemUtils::ItemHandler, public ItemUtils::ExpressionHandler
+class oA::Item : public ItemUtils::ItemHandler, public ItemUtils::PropertyHandler
 {
 public:
     /**
@@ -149,8 +149,8 @@ public:
      */
     AreaContext getAreaContext(void) const {
         return AreaContext(
-            V2f(get("screenX")->getAs<Number>(), get("screenY")->getAs<Number>()),
-            V2f(get("width")->getAs<Number>(), get("height")->getAs<Number>())
+            V2f(getAs<Number>("screenX"), getAs<Number>("screenY")),
+            V2f(getAs<Number>("width"), getAs<Number>("height"))
         );
     }
 
@@ -163,9 +163,9 @@ public:
      */
     template<typename V2 = V2f>
     bool contains(const V2 &point) const {
-        Float x = get("screenX")->getAs<Number>(), y = get("screenY")->getAs<Number>();
-        return point.x >= x && point.x <= x + get("width")->getAs<Number>()
-                && point.y >= y && point.y <= y + get("height")->getAs<Number>();
+        Float x = getAs<Number>("screenX"), y = getAs<Number>("screenY");
+        return point.x >= x && point.x <= x + getAs<Number>("width")
+                && point.y >= y && point.y <= y + getAs<Number>("height");
     }
 
     /**
@@ -232,9 +232,9 @@ public:
      * @brief Find an expression using a match key (ex: parent.label.x)
      *
      * @param key Matching key expression
-     * @return ExpressionPtrPtr Matching pointer (or null)
+     * @return PropertyPtr Matching pointer (or null)
      */
-    ExpressionPtr findExpr(const String &key);
+    PropertyPtr findExpr(const String &key);
 
     /**
      * @brief Print to cout item architecture

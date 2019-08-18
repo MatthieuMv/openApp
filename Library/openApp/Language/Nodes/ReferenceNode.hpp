@@ -7,16 +7,16 @@
 
 #pragma once
 
-#include <openApp/Core/Expression.hpp>
+#include <openApp/Core/Property.hpp>
 #include <openApp/Language/ASTNode.hpp>
 
 namespace oA::Lang { struct ReferenceNode; }
 
 struct oA::Lang::ReferenceNode : public ASTNode
 {
-    ExpressionPtr ptr;
+    PropertyPtr ptr;
 
-    ReferenceNode(ExpressionPtr &&expression) : ptr(std::move(expression)) {}
+    ReferenceNode(PropertyPtr &&property) : ptr(std::move(property)) {}
 
     virtual ~ReferenceNode(void) = default;
 
@@ -24,5 +24,5 @@ struct oA::Lang::ReferenceNode : public ASTNode
 
     virtual bool isConst(void) const { return false; }
 
-    virtual Var compute(void) override { return ptr->get(); }
+    virtual Var compute(void) override { return *ptr; }
 };

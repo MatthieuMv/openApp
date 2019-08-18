@@ -8,6 +8,12 @@
 #include <openApp/Types/Error.hpp>
 #include <openApp/Core/Var.hpp>
 
+void oA::Var::swap(Var &other) noexcept
+{
+    Signal<>::swap(other);
+    _var = std::move(other._var);
+}
+
 bool oA::Var::toBool(void) const noexcept
 {
     return operator bool();
@@ -81,13 +87,19 @@ oA::String oA::Var::toString(void) const noexcept
 
 oA::Var &oA::Var::operator=(const Var &other)
 {
-    _var = other._var;
+    if (_var != other._var) {
+        _var = other._var;
+        this->emit();
+    }
     return *this;
 }
 
 oA::Var &oA::Var::operator=(Var &&other)
 {
-    _var = std::move(other._var);
+    if (_var != other._var) {
+        _var = std::move(other._var);
+        this->emit();
+    }
     return *this;
 }
 
@@ -268,30 +280,39 @@ oA::Var oA::Var::operator%(const Var &other) const
 
 oA::Var &oA::Var::operator+=(const Var &other)
 {
-    std::visit(Overload {
-        [&other] (Number &number) {
+    if (std::visit(Overload {
+        [&other] (Number &number) -> bool {
+            auto x = number;
             number += other.toFloat();
+            return x != number;
         },
-        [&other] (Literal &literal) {
-            literal += other.toString();
+        [&other] (Literal &literal) -> bool {
+            auto str = other.toString();
+            literal += str;
+            return !str.empty();
         },
-        [&other] (Container &container) {
+        [this, &other] (Container &container) -> bool {
             container.push_back(other);
+            container.back().connect([this]{ this->emit(); return true; });
+            return true;
         }
-    }, _var);
+        }, _var))
+        this->emit();
     return *this;
 }
 
 oA::Var &oA::Var::operator-=(const Var &other)
 {
-    std::visit(Overload {
-        [&other] (Number &number) {
+    if (std::visit(Overload {
+        [&other] (Number &number) -> bool {
+            auto x = number;
             number -= other.toFloat();
+            return x != number;
         },
-        [] (Literal &) {
+        [] (Literal &) -> bool {
             throw LogicError("Var", "Can't use operator -= on @Literal@");
         },
-        [&other] (Container &container) {
+        [&other] (Container &container) -> bool {
             auto it = container.begin();
             auto idx = other.toUint();
             if (other.index() != VNumber)
@@ -300,56 +321,71 @@ oA::Var &oA::Var::operator-=(const Var &other)
                 throw AccessError("Var," "Operator -= on @Container@ used with out of range index @" + ToString(idx) + "@");
             std::advance(it, idx);
             container.erase(it);
+            return true;
         }
-    }, _var);
+    }, _var))
+        this->emit();
     return *this;
 }
 
 oA::Var &oA::Var::operator*=(const Var &other)
 {
-    std::visit(Overload {
-        [&other] (Number &number) {
+    if (std::visit(Overload {
+        [&other] (Number &number) -> bool {
+            auto x = number;
             number *= other.toFloat();
+            return x != number;
         },
-        [] (Literal &) {
+        [] (Literal &) -> bool {
             throw LogicError("Var", "Can't use operator *= on @Literal@");
         },
-        [] (Container &) {
+        [] (Container &) -> bool {
             throw LogicError("Var", "Can't use operator *= on @Container@");
         }
-    }, _var);
+    }, _var))
+        this->emit();
     return *this;
 }
 
 oA::Var &oA::Var::operator/=(const Var &other)
 {
-    std::visit(Overload {
-        [&other] (Number &number) {
-            number /= other.toFloat();
+    if (std::visit(Overload {
+        [&other] (Number &number) -> bool {
+            auto x = number, y = other.toFloat();
+            if (!y)
+                throw LogicError("Var", "Can't divide number by 0");
+            number /= y;
+            return x != number;
         },
-        [] (Literal &) {
+        [] (Literal &) -> bool {
             throw LogicError("Var", "Can't use operator /= on @Literal@");
         },
-        [] (Container &) {
+        [] (Container &) -> bool {
             throw LogicError("Var", "Can't use operator /= on @Container@");
         }
-    }, _var);
+    }, _var))
+        this->emit();
     return *this;
 }
 
 oA::Var &oA::Var::operator%=(const Var &other)
 {
-    std::visit(Overload {
-        [&other] (Number &number) {
-            number = static_cast<Int>(number) % other.toInt();
+    if (std::visit(Overload {
+        [&other] (Number &number) -> bool {
+            auto x = number, y = other.toFloat();
+            if (!y)
+                throw LogicError("Var", "Can't mod number by 0");
+            number = static_cast<Int>(number) % static_cast<Int>(y);
+            return x != number;
         },
-        [] (Literal &) {
+        [] (Literal &) -> bool {
             throw LogicError("Var", "Can't use operator %= on @Literal@");
         },
-        [] (Container &) {
+        [] (Container &) -> bool {
             throw LogicError("Var", "Can't use operator %= on @Container@");
         }
-    }, _var);
+    }, _var))
+        this->emit();
     return *this;
 }
 
@@ -366,6 +402,7 @@ oA::Var &oA::Var::operator++(void)
             throw LogicError("Var", "Can't use operator ++ on @Container@");
         }
     }, _var);
+    this->emit();
     return *this;
 }
 
@@ -382,12 +419,13 @@ oA::Var &oA::Var::operator--(void)
             throw LogicError("Var", "Can't use operator -- on @Container@");
         }
     }, _var);
+    this->emit();
     return *this;
 }
 
 oA::Var oA::Var::operator++(oA::Int)
 {
-    return std::visit(Overload {
+    auto res = std::visit(Overload {
         [] (Number &number) -> Var {
             return number++;
         },
@@ -398,11 +436,13 @@ oA::Var oA::Var::operator++(oA::Int)
             throw LogicError("Var", "Can't use operator ++ on @Container@");
         }
     }, _var);
+    this->emit();
+    return res;
 }
 
 oA::Var oA::Var::operator--(oA::Int)
 {
-    return std::visit(Overload {
+    auto res = std::visit(Overload {
         [] (Number &number) -> Var {
             return number--;
         },
@@ -413,6 +453,8 @@ oA::Var oA::Var::operator--(oA::Int)
             throw LogicError("Var", "Can't use operator -- on @Container@");
         }
     }, _var);
+    this->emit();
+    return res;
 }
 
 oA::Var &oA::Var::operator[](const Var &other)
@@ -424,7 +466,7 @@ oA::Var &oA::Var::operator[](const Var &other)
         [] (Literal &) -> Var& {
             throw LogicError("Var", "Can't use operator [] on @Literal@");
         },
-        [&other] (Container &container) -> Var& {
+        [this, &other] (Container &container) -> Var& {
             auto it = container.begin();
             auto idx = other.toUint();
             if (other.index() != VNumber)
@@ -432,6 +474,7 @@ oA::Var &oA::Var::operator[](const Var &other)
             if (container.size() <= idx)
                 throw AccessError("Var," "Operator [] on @Container@ used with out of range index @" + ToString(idx) + "@");
             std::advance(it, idx);
+            this->emit();
             return *it;
         }
     }, _var);
@@ -463,7 +506,7 @@ oA::Var oA::Var::len(void) const
 {
     return std::visit(Overload {
         [] (const Number &) -> Var {
-            throw LogicError("Var", "Can't use operator len on @Number@");
+            throw LogicError("Var", "Can't use function len on @Number@");
         },
         [] (const Literal &literal) -> Var {
             return literal.size();
@@ -472,4 +515,46 @@ oA::Var oA::Var::len(void) const
             return container.size();
         }
     }, _var);
+}
+
+oA::Var &oA::Var::push(const Var &value)
+{
+    if (std::visit(Overload {
+        [] (const Number &) -> bool {
+            throw LogicError("Var", "Can't use function push on @Number@");
+        },
+        [&value] (Literal &literal) -> bool {
+            auto str = value.toString();
+            literal += str;
+            return !str.empty();
+        },
+        [this, &value] (Container &container) -> bool {
+            container.emplace_back(value);
+            container.back().connect([this]{ this->emit(); return true; });
+            return true;
+        }
+    }, _var))
+        this->emit();
+    return *this;
+}
+
+oA::Var &oA::Var::push(Var &&value)
+{
+    if (std::visit(Overload {
+        [] (const Number &) -> bool {
+            throw LogicError("Var", "Can't use function push on @Number@");
+        },
+        [&value] (Literal &literal) -> bool {
+            auto str = value.toString();
+            literal += str;
+            return !str.empty();
+        },
+        [this, &value] (Container &container) -> bool {
+            container.emplace_back(std::move(value));
+            container.back().connect([this]{ this->emit(); return true; });
+            return true;
+        }
+    }, _var))
+        this->emit();
+    return *this;
 }

@@ -133,7 +133,7 @@ void oA::Lang::ShuntingYard::processReference(Lexer::TokenList::const_iterator &
     auto node = findReference(it->first, it->second);
 
     if (_mode == Expression)
-        _target->depends(*dynamic_cast<ReferenceNode &>(*node).ptr);
+        _target->depends(dynamic_cast<ReferenceNode &>(*node).ptr);
     _stack.emplace_back(std::move(node));
 }
 
@@ -194,12 +194,11 @@ void oA::Lang::ShuntingYard::parseContainerValue(Lexer::TokenList::const_iterato
 {
     auto line = it->second;
     var = Container();
-    auto &target = var.getAs<Container>();
 
     for (; it != _tokens.end() && it->first != "}"; ++it) {
         if (!std::regex_match(it->first, ValueMatch))
             throw LogicError("SuntingYard", "Invalid container declaration token @" + it->first + "@" + getErrorContext(line));
-        parseValue(it, target.emplace_back());
+        parseValue(it, var.push(Var()));
         if (++it == _tokens.end() || (it->first != "," && it->first != "]"))
             throw LogicError("SuntingYard", "Invalid container declaration token @" + it->first + "@" + getErrorContext(line));
     }
@@ -549,13 +548,15 @@ void oA::Lang::ShuntingYard::popOpStack(Operator end, Int line)
 
 void oA::Lang::ShuntingYard::buildTarget(void)
 {
-    if (_mode == Expression || _mode == Function)
+    if (_mode == Expression || _mode == Function) {
+        auto isConst = _expr->isConst();
         _target->setTree(std::move(_expr));
-    else {
-        oA::ExpressionPtr expr(std::make_shared<oA::Expression>());
-        expr->setTree(std::move(_expr));
-        _target->connectEvent(std::move(expr));
-    }
-    if (_mode == Expression)
-        _target->call();
+        if (!isConst)
+            _target->compute();
+    } else if (_mode == Event) {
+        oA::PropertyPtr property(std::make_shared<Property>());
+        property->setTree(std::move(_expr));
+        _target->connectEvent(std::move(property));
+    } else
+        _target->setTree(std::move(_expr));
 }
