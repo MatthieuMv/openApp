@@ -21,13 +21,29 @@ namespace oA
 /**
  * @brief IRenderer is the generic renderer interface of openApp.
  *
- * This renderer should only compute 2D graphics, and supports multiple-windows.
+ * This renderer should only compute 2D graphics, and may supports multiple-windows.
  * For 3D graphics, refer to its derived IRenderer3D.
  */
 class oA::IRenderer
 {
 public:
     virtual ~IRenderer(void) = default;
+
+    /**
+     * @brief Retreive renderer's ability to support multiple windows
+     *
+     * @return true Renderer is able to support multiple windows
+     * @return false Renderer is not able to support multiple windows
+     */
+    virtual bool supportsMultipleWindows(void) const = 0;
+
+    /**
+     * @brief Retreive renderer's ability to draw 3D graphics
+     *
+     * @return true Renderer is able to draw 3D
+     * @return false Renderer is not able to draw 3D
+     */
+    virtual bool supports3DRendering(void) const = 0;
 
     /**
      * @brief Create a new window
@@ -77,6 +93,14 @@ public:
     virtual void setWindowSize(Int index, const V2i &size) = 0;
 
     /**
+     * @brief Set a Window's title
+     *
+     * @param index Window's index
+     * @param title Window's title
+     */
+    virtual void setWindowTitle(Int index, const char *title) = 0;
+
+    /**
      * @brief Set a Window's clear color
      *
      * @param index Window's index
@@ -85,12 +109,20 @@ public:
     virtual void setWindowColor(Int index, Color color) = 0;
 
     /**
-     * @brief Set resizable state
+     * @brief Set Window's type
      *
      * @param index Window's index
-     * @param resize Window's resize state
+     * @param value Window's type
      */
-    virtual void setWindowResizable(Int index, bool resize) = 0;
+    virtual void setWindowType(Int index, WindowContext::WindowType type) = 0;
+
+    /**
+     * @brief Set vsync state
+     *
+     * @param index Window's index
+     * @param value Window's vsync state
+     */
+    virtual void setWindowVSync(Int index, bool value) = 0;
 
     /**
      * @brief Clear a Window set it as drawing target
@@ -154,9 +186,16 @@ public:
     /**
      * @brief Draw Image in drawing target
      *
-     * @param context Image data
+     * @param context Image dataS
      */
     virtual void draw(const ImageContext &context) = 0;
+
+    /**
+     * @brief Draw Label in drawing target
+     *
+     * @param context Label data
+     */
+    virtual void draw(const LabelContext &context) = 0;
 
     /**
      * @brief Poll an event from drawing target

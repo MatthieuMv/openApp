@@ -6,34 +6,41 @@
 */
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
+#include <openApp/Renderer/SDL/Extern/SDL_FontCache.h>
 #include <openApp/Types/Error.hpp>
 #include <openApp/Renderer/SDL/SDLRenderer.hpp>
 
 oA::SDLRenderer::SDLRenderer(void)
 {
-    if (SDL_Init(SDL_INIT_VIDEO))
+    if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) || TTF_Init() < 0)
         throw RuntimeError("SDLRenderer", "Couldn't initialize @SDL@");
 }
 
 oA::SDLRenderer::~SDLRenderer(void)
 {
+    TTF_Quit();
     SDL_Quit();
 }
 
 oA::Int oA::SDLRenderer::openWindow(const WindowContext &context)
 {
     auto *window = SDL_CreateWindow(
-            context.title.c_str(),
+            context.title,
             context.pos.x, context.pos.y,
             context.size.x, context.size.y,
-            SDL_WINDOW_SHOWN
+            getWindowFlags(context.type)
         );
 
     if (!window)
         throw RuntimeError("SDLRenderer", "Couldn't create @window@");
-    auto *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | SDL_RENDERER_PRESENTVSYNC);
+    auto *renderer = SDL_CreateRenderer(
+        window,
+        -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | (context.vsync ? SDL_RENDERER_PRESENTVSYNC : 0)
+    );
     if (!renderer)
         throw RuntimeError("SDLRenderer", "Couldn't create @renderer@ for new @window@");
     auto index = SDL_GetWindowID(window);
@@ -110,6 +117,11 @@ void oA::SDLRenderer::setWindowSize(Int index, const V2i &size)
     );
 }
 
+void oA::SDLRenderer::setWindowTitle(Int index, const char *title)
+{
+    SDL_SetWindowTitle(getWindow(index).window, title);
+}
+
 void oA::SDLRenderer::setWindowColor(Int index, Color color)
 {
     auto it = _windows.find(index);
@@ -119,13 +131,43 @@ void oA::SDLRenderer::setWindowColor(Int index, Color color)
     it->second.clear = color;
 }
 
-void oA::SDLRenderer::setWindowResizable(Int index, bool resize)
+void oA::SDLRenderer::setWindowType(Int index, WindowContext::WindowType type)
 {
-    auto it = _windows.find(index);
+    switch (type) {
+    case WindowContext::Fixed:
+        if (SDL_SetWindowFullscreen(getWindow(index).window, 0) < 0)
+            break;
+        SDL_SetWindowResizable(getWindow(index).window, SDL_FALSE);
+        return;
+    case WindowContext::Resizable:
+        if (SDL_SetWindowFullscreen(getWindow(index).window, 0) < 0)
+            break;
+        SDL_SetWindowResizable(getWindow(index).window, SDL_TRUE);
+        return;
+    case WindowContext::Fullscreen:
+        if (SDL_SetWindowFullscreen(getWindow(index).window, SDL_WINDOW_FULLSCREEN) < 0)
+            break;
+        return;
+    case WindowContext::Borderless:
+        if (SDL_SetWindowFullscreen(getWindow(index).window, SDL_WINDOW_FULLSCREEN_DESKTOP) < 0)
+            break;
+        return;
+    }
+    throw RuntimeError("SDLRenderer", "Couldn't change window type");
+}
 
-    if (it == _windows.end())
-        throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
-    SDL_SetWindowResizable(it->second.window, resize ? SDL_TRUE : SDL_FALSE);
+void oA::SDLRenderer::setWindowVSync(Int index, bool value)
+{
+    auto &wnd = getWindow(index);
+
+    SDL_DestroyRenderer(wnd.renderer);
+    wnd.renderer = SDL_CreateRenderer(
+        wnd.window,
+        -1,
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_TARGETTEXTURE | (value ? SDL_RENDERER_PRESENTVSYNC : 0)
+    );
+    if (!wnd.renderer)
+        throw RuntimeError("SDLRenderer", "Couldn't change vsync");
 }
 
 void oA::SDLRenderer::clearWindow(Int index)
@@ -168,12 +210,12 @@ void oA::SDLRenderer::stopClipping(void)
 
 void oA::SDLRenderer::draw(const LineContext &context)
 {
-    if (context.width != 1) {
+    if (context.thick != 1) {
         thickLineColor(
             _current->renderer,
             context.p1.x, context.p1.y,
             context.p2.x, context.p2.y,
-            context.width,
+            context.thick,
             context.color.getValue()
         );
     } else if (context.antiAliasing) {
@@ -295,7 +337,7 @@ void oA::SDLRenderer::draw(const EllipseContext &context)
 
 void oA::SDLRenderer::draw(const ImageContext &context)
 {
-    auto *texture = getTexture(context.source);
+    auto *texture = getTexture(context);
     SDL_Rect src;
     SDL_FRect dest;
 
@@ -314,13 +356,69 @@ void oA::SDLRenderer::draw(const ImageContext &context)
     );
 }
 
-SDL_Texture *oA::SDLRenderer::getTexture(const String &path)
+void oA::SDLRenderer::draw(const LabelContext &context)
 {
-    auto it = _textures.find(path);
+    auto *font = getFont(context);
 
-    if (it == _textures.end())
-        return _textures[path] = IMG_LoadTexture(_current->renderer, path.c_str());
+    FC_Draw(
+        font,
+        _current->renderer,
+        context.pos.x, context.pos.y,
+        context.text
+    );
+}
+
+oA::SDLRenderer::Window &oA::SDLRenderer::getWindow(Int index)
+{
+    auto it = _windows.find(index);
+
+    if (it == _windows.end())
+        throw AccessError("SDLRenderer", "Can't access invalid window index @" + ToString(index) + "@");
     return it->second;
+}
+
+SDL_Texture *oA::SDLRenderer::getTexture(const ImageContext &context)
+{
+    auto it = _textures.findIf([&context](const auto &p) { return p.first == context.source; });
+
+    if (it != _textures.end())
+        return it->second;
+    return _textures[context.source] = IMG_LoadTexture(_current->renderer, context.source);
+}
+
+FC_Font *oA::SDLRenderer::getFont(const LabelContext &context)
+{
+    auto it = _fonts.findIf([&context](const auto &key) {
+        return key.font == context.font && key.fontSize == context.fontSize && key.fontColor == context.fontColor;
+    });
+
+    if (it != _fonts.end())
+        return it->data;
+    auto &font = _fonts.emplace_back(context.font, context.fontSize, context.fontColor);
+    font.data = FC_CreateFont();
+    FC_LoadFont(
+        font.data,
+        _current->renderer,
+        context.font,
+        context.fontSize,
+        FC_MakeColor(context.fontColor.getR(), context.fontColor.getG(), context.fontColor.getB(), context.fontColor.getA()),
+        TTF_STYLE_NORMAL
+    );
+    return font.data;
+}
+
+oA::Uint oA::SDLRenderer::getWindowFlags(WindowContext::WindowType type)
+{
+    switch (type) {
+    case WindowContext::Resizable:
+        return SDL_WINDOW_RESIZABLE;
+    case WindowContext::Fullscreen:
+        return SDL_WINDOW_FULLSCREEN;
+    case WindowContext::Borderless:
+        return SDL_WINDOW_BORDERLESS;
+    default:
+        return 0;
+    }
 }
 
 bool oA::SDLRenderer::pollEvent(Event &target)

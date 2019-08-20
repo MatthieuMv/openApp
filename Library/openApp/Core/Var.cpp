@@ -11,7 +11,7 @@
 void oA::Var::swap(Var &other) noexcept
 {
     Signal<>::swap(other);
-    _var = std::move(other._var);
+    std::swap(_var, other._var);
 }
 
 bool oA::Var::toBool(void) const noexcept

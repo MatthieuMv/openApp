@@ -17,7 +17,7 @@ endif ()
 
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -g3 -lSDL2 -lSDL2_gfx -lSDL2_image")
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -g3 -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf")
 endif ()
 
 set(CMAKE_CXX_STANDARD 17)
@@ -26,4 +26,4 @@ add_executable(openApp ${oASources} ${oARendererSources} Main.cpp)
 #add_library(openApp ${oASources} ${oARendererSources})
 
 include_directories(${oAPath})
-link_libraries(SDL2)
+#link_libraries(SDL2)

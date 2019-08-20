@@ -68,6 +68,8 @@ void oA::App::openWindow(ItemPtr &&root, bool verbose)
     auto *wnd = dynamic_cast<Window *>(root.get());
     auto index = 0;
 
+    if (!_renderer->supportsMultipleWindows() && !_children.empty())
+        throw LogicError("App", "Internal renderer doesn't supports multiple windows");
     if (!root.get())
         throw LogicError("App", "Can't add null @Window@");
     if (wnd) {
@@ -75,12 +77,11 @@ void oA::App::openWindow(ItemPtr &&root, bool verbose)
         wnd->setWindowIndex(index);
     } else {
         index = _renderer->openWindow(WindowContext(
-            String(),
+            "openApp",
             V2i(),
             V2i(root->get("width").toInt(), root->get("height").toInt()),
             Color(),
-            false,
-            true
+            WindowContext::Fixed
         ));
     }
     _children[index] = std::move(root);

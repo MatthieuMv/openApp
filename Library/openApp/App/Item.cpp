@@ -41,13 +41,17 @@ void oA::Item::draw(IRenderer &renderer)
     if (!get("visible"))
         return;
     onDraw(renderer);
-    if (get("clip"))
-        renderer.setClippingArea(getAreaContext());
-    else
-         renderer.stopClipping();
-    _children.apply([&renderer](auto &child) {
-        child->draw(renderer);
-    });
+    if (!get("clip")) {
+        _children.apply([this, &renderer](auto &child) {
+            renderer.stopClipping();
+            child->draw(renderer);
+        });
+    } else {
+        _children.apply([this, &renderer, area = getAreaContext()](auto &child) {
+            renderer.setClippingArea(area);
+            child->draw(renderer);
+        });
+    }
     onChildrenDrew(renderer);
 }
 

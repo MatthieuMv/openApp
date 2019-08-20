@@ -548,15 +548,13 @@ void oA::Lang::ShuntingYard::popOpStack(Operator end, Int line)
 
 void oA::Lang::ShuntingYard::buildTarget(void)
 {
-    if (_mode == Expression || _mode == Function) {
-        auto isConst = _expr->isConst();
-        _target->setTree(std::move(_expr));
-        if (!isConst)
-            _target->compute();
-    } else if (_mode == Event) {
+    if (_mode == Event) {
         oA::PropertyPtr property(std::make_shared<Property>());
         property->setTree(std::move(_expr));
         _target->connectEvent(std::move(property));
-    } else
-        _target->setTree(std::move(_expr));
+        return;
+    }
+    _target->setTree(std::move(_expr));
+    if (_mode == Expression)
+        _target->compute();
 }

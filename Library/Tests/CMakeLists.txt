@@ -18,8 +18,7 @@ set(TestsSources
     tests_Path.cpp
     tests_Signal.cpp
     tests_Property.cpp
-    tests_Expression.cpp
-    tests_ExpressionHandler.cpp
+    tests_PropertyHandler.cpp
     tests_Var.cpp
     tests_Item.cpp
     tests_ItemHandler.cpp

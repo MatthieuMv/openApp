@@ -32,7 +32,7 @@ Test(ASTNode, Show, .init=cr_redirect_stdout)
     tree.emplaceAs<oA::Lang::DeclarationNode>("name", oA::Lang::DeclarationNode::DeclarationType::AssignmentDeclaration).tokens.emplace_back(std::make_pair("token", 1));
     tree.emplaceAs<oA::Lang::GroupNode>();
     tree.emplaceAs<oA::Lang::ExpressionGroupNode>();
-    tree.emplaceAs<oA::Lang::ReferenceNode>(std::make_unique<oA::Expression>());
+    tree.emplaceAs<oA::Lang::ReferenceNode>(std::make_unique<oA::Property>());
     tree.emplaceAs<oA::Lang::LocalNode>(var);
     tree.emplaceAs<oA::Lang::ValueNode>();
     tree.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Division);

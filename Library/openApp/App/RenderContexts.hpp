@@ -21,6 +21,7 @@ namespace oA
     struct CircleContext;
     struct EllipseContext;
     struct ImageContext;
+    struct LabelContext;
 }
 
 struct oA::Context {};
@@ -35,27 +36,34 @@ struct oA::AreaContext : public Context
 
 struct oA::WindowContext : public Context
 {
-    WindowContext(void) = default;
-    WindowContext(const String &_title, const V2i &_pos, const V2i &_size, Color _color, bool _resize, bool _fullscreen)
-        : title(_title), pos(_pos), size(_size), color(_color), resize(_resize), fullscreen(_fullscreen) {}
+    enum WindowType {
+        Fixed,
+        Resizable,
+        Fullscreen,
+        Borderless
+    };
 
-    String title;
+    WindowContext(void) = default;
+    WindowContext(const char *_title, const V2i &_pos, const V2i &_size, Color _color, WindowType _type = Resizable, bool _vsync = true)
+        : title(_title), pos(_pos), size(_size), color(_color), type(_type), vsync(_vsync) {}
+
+    const char *title = nullptr;
     V2i pos, size;
     Color color;
-    bool resize = false;
-    bool fullscreen = false;
+    WindowType type = Resizable;
+    bool vsync = true;
 };
 
 struct oA::LineContext : public Context
 {
     LineContext(void) = default;
-    LineContext(const V2f &_p1, const V2f &_p2, Color _color, Uint _width, bool _antiAliasing)
-        : p1(_p1), p2(_p2), color(_color), width(_width), antiAliasing(_antiAliasing) {}
+    LineContext(const V2f &_p1, const V2f &_p2, Color _color, Uint _thick, bool _antiAliasing)
+        : p1(_p1), p2(_p2), color(_color), thick(_thick), antiAliasing(_antiAliasing) {}
 
     V2f p1;
     V2f p2;
     Color color;
-    Uint width = 0;
+    Uint thick = 0;
     bool antiAliasing = true;
 };
 
@@ -93,7 +101,7 @@ struct oA::CircleContext : public Context
 
     V2f pos;
     Uint size = 0;
-    Uint width = 0;
+    Uint thick = 0;
     Color color;
     bool filled = true;
     bool antiAliasing = true;
@@ -107,7 +115,7 @@ struct oA::EllipseContext : public Context
 
     V2f pos;
     V2f size;
-    Uint width = 0;
+    Uint thick = 0;
     Color color;
     bool filled = true;
     bool antiAliasing = true;
@@ -116,14 +124,28 @@ struct oA::EllipseContext : public Context
 struct oA::ImageContext : public Context
 {
     ImageContext(void) = default;
-    ImageContext(const String &_source, const V2f &_pos, const V2f &_size, const V2i &_sourcePos = V2i(), const V2i &_sourceSize = V2i(), Float _rotation = 0, bool _vflip = false, bool _hflip = false)
+    ImageContext(const char *_source, const V2f &_pos, const V2f &_size, const V2i &_sourcePos = V2i(), const V2i &_sourceSize = V2i(), Float _rotation = 0, bool _vflip = false, bool _hflip = false)
         : source(_source), pos(_pos), size(_size), sourcePos(_sourcePos), sourceSize(_sourceSize), rotation(_rotation), vflip(_vflip), hflip(_hflip) {}
 
-    String source;
+    const char *source = nullptr;
     V2f pos;
     V2f size;
     V2i sourcePos;
     V2i sourceSize;
     Float rotation = 0;
     bool vflip = false, hflip = false;
+};
+
+struct oA::LabelContext : public Context
+{
+    LabelContext(void) = default;
+    LabelContext(const char *_text, const char *_font, const V2f &_pos, const V2f &_size, Color _fontColor, Uint _fontSize = 12)
+        : text(_text), font(_font), pos(_pos), size(_size), fontColor(_fontColor), fontSize(_fontSize) {}
+
+    const char *text = nullptr;
+    const char *font = nullptr;
+    V2f pos;
+    V2f size;
+    Color fontColor;
+    Uint fontSize = 12;
 };

@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <openApp/Containers/List.hpp>
 #include <openApp/Containers/UMap.hpp>
 #include <openApp/Containers/Stack.hpp>
 #include <openApp/App/IRenderer.hpp>
@@ -16,6 +17,7 @@ namespace oA { class SDLRenderer; }
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
+struct FC_Font;
 union SDL_Event;
 
 class oA::SDLRenderer : public IRenderer
@@ -24,8 +26,8 @@ public:
     struct Window
     {
         Window(void) = default;
-        Window(SDL_Window *win, SDL_Renderer *render, Color color)
-            : window(win), renderer(render), clear(color) {}
+        Window(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear)
+            : window(_window), renderer(_renderer), clear(_clear) {}
 
         Window &operator=(Window &&other) {
             window = other.window;
@@ -39,8 +41,22 @@ public:
         Color clear;
     };
 
+    struct Font
+    {
+        Font(void) = default;
+        Font(String &&_font, Uint _fontSize, Color _fontColor) : font(_font), fontSize(_fontSize), fontColor(_fontColor) {}
+
+        String font;
+        Uint fontSize;
+        Color fontColor;
+        FC_Font *data = nullptr;
+    };
+
     SDLRenderer(void);
     virtual ~SDLRenderer(void);
+
+    virtual bool supportsMultipleWindows(void) const { return true; }
+    virtual bool supports3DRendering(void) const { return true; }
 
     virtual Int openWindow(const WindowContext &context);
     virtual void closeWindow(Int index);
@@ -48,8 +64,10 @@ public:
     virtual V2i getWindowPos(Int index);
     virtual void setWindowPos(Int index, const V2i &pos);
     virtual void setWindowSize(Int index, const V2i &size);
+    virtual void setWindowTitle(Int index, const char *title);
     virtual void setWindowColor(Int index, Color color);
-    virtual void setWindowResizable(Int index, bool resize);
+    virtual void setWindowType(Int index, WindowContext::WindowType type);
+    virtual void setWindowVSync(Int index, bool value);
 
     virtual void clearWindow(Int index);
     virtual void renderWindow(void);
@@ -63,15 +81,20 @@ public:
     virtual void draw(const CircleContext &context);
     virtual void draw(const EllipseContext &context);
     virtual void draw(const ImageContext &context);
+    virtual void draw(const LabelContext &context);
 
     virtual bool pollEvent(Event &event);
 
 private:
     UMap<Int, Window> _windows;
     UMap<String, SDL_Texture *> _textures;
+    List<Font> _fonts;
     Window *_current = nullptr;
 
-    SDL_Texture *getTexture(const String &path);
+    Window &getWindow(Int index);
+    SDL_Texture *getTexture(const ImageContext &context);
+    FC_Font *getFont(const LabelContext &context);
+    Uint getWindowFlags(WindowContext::WindowType type);
 
     bool constructWindowEvent(Event &target, SDL_Event &event);
     bool constructMouseEvent(Event &target, SDL_Event &event);

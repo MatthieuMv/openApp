@@ -114,10 +114,10 @@ void oA::Lang::Parser::parseDeclaration(ASTNodePtr &parent, Lexer::TokenList::it
     if (++it == _tokens.end() || type == Types.end() || !std::regex_match(it->first, NameMatch))
         throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
     auto name = it;
-    if (++it == _tokens.end() || it->first != ":")
+    if (++it == _tokens.end() || (type->second != DeclarationNode::EventDeclaration && it->first != ":"))
         throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
     auto &node = parent->emplaceAs<DeclarationNode>(std::move(name->first), type->second);
-    collectExpression(++it, node.tokens);
+    collectExpression(type->second != DeclarationNode::EventDeclaration ? ++it : it, node.tokens);
 }
 
 void oA::Lang::Parser::parseAssignment(ASTNodePtr &parent, Lexer::TokenList::iterator &it)

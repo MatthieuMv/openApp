@@ -43,7 +43,16 @@ public:
      * @param other Color to copy
      * @return Color& Allow chain operators
      */
-    Color &operator=(const Color &other) { _val = other._val; return *this; }
+    Color &operator=(const Color &other) noexcept { _val = other._val; return *this; }
+
+    /**
+     * @brief Compares 2 colors
+     *
+     * @param other Color to compare
+     * @return true Color are equivalent
+     * @return false Color are different
+     */
+    bool operator==(const Color &other) const noexcept { return _val == other._val; }
 
     /**
      * @brief Get red intensity

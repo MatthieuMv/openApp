@@ -7,9 +7,6 @@
 
 #include <openApp/App/ItemFactory.hpp>
 #include <openApp/App/Widgets/Window.hpp>
-#include <openApp/App/Widgets/Rectangle.hpp>
-#include <openApp/App/Widgets/Image.hpp>
-#include <openApp/App/Widgets/EventArea.hpp>
 #include <openApp/App/Widgets/Button.hpp>
 #include <openApp/App/Widgets/ImageButton.hpp>
 
@@ -34,6 +31,7 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<Item>();
     Register<Window>();
     Register<Rectangle>();
+    Register<Label>();
     Register<Image>();
     Register<EventArea>();
     Register<Button>();
