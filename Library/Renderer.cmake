@@ -12,4 +12,5 @@ set(oASDLRenderer
     ${oASDL}/SDLRenderer.cpp
     ${oASDL}/Extern/SDL_FontCache.h
     ${oASDL}/Extern/SDL_FontCache.c
+    ${oARoot}/SDLApp.hpp
 )

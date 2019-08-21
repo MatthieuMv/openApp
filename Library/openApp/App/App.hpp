@@ -18,12 +18,11 @@ class oA::App
 public:
     virtual ~App(void) = default;
 
-    template<typename Renderer>
-    App(void) : _renderer(std::make_shared<Renderer>()) { ItemFactory::RegisterBaseItems(); }
+    App(IRendererPtr &&renderer) : _renderer(std::move(renderer)) { ItemFactory::RegisterBaseItems(); }
 
     virtual void onRun(void) {}
     virtual void onStop(void) {}
-    virtual bool onEvent(const Event &);
+    virtual bool onEvent(const Event &event);
 
     bool isRunning(void);
     void run(void);

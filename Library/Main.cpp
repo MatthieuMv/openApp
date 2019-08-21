@@ -6,16 +6,12 @@
 */
 
 #include <openApp/Core/Log.hpp>
-#include <openApp/App/App.hpp>
-#include <openApp/Render/SDL/SDLRenderer.hpp>
+#include <openApp/SDLApp.hpp>
 
 int main(void)
 {
     try {
-        oA::App app<oA::SDLRenderer>();
-
-        app.parseFile("Main.oA", true);
-        app.run();
+        X x<oA::SDLRenderer>();
     } catch (oA::Error &e) {
         oA::cerr << e.what() << oA::endl;
     }

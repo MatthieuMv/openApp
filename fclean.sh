@@ -1,3 +1,3 @@
 rm -rf Build
 rm -rf BuildTests
-rm -rf Library/libopenApp.a
+rm -rf Library/libopenApp.*

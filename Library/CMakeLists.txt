@@ -17,13 +17,21 @@ endif ()
 
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -g3 -lSDL2 -lSDL2_gfx -lSDL2_image -lSDL2_ttf")
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra")
 endif ()
 
 set(CMAKE_CXX_STANDARD 17)
 
 #add_executable(openApp ${oASources} ${oARendererSources} Main.cpp)
-add_library(openApp ${oASources} ${oARendererSources})
+add_library(openApp SHARED ${oASources} ${oARendererSources})
 
-include_directories(${oAPath})
-#link_libraries(SDL2)
+target_include_directories(openApp
+    PRIVATE ${oAPath}
+)
+
+target_link_libraries(openApp
+    SDL2
+    SDL2_gfx
+    SDL2_image
+    SDL2_ttf
+)
