@@ -6,70 +6,83 @@
 */
 
 #include <openApp/Core/Path.hpp>
+#include <openApp/Core/Log.hpp>
 #include <openApp/App/ItemFactory.hpp>
 #include <openApp/Language/Instantiator.hpp>
 #include <openApp/Language/Nodes.hpp>
-#include <openApp/Language/ShuntingYard.hpp>
 #include <openApp/Language/Parser.hpp>
 
-oA::ItemPtr oA::Lang::Instantiator::ProcessFile(const String &path)
+oA::ItemPtr oA::Lang::Instantiator::ProcessFile(const String &path, bool verbose)
 {
-    return Instantiator().processName(path);
-}
+    auto ptr = Instantiator(verbose).process(path);
 
-oA::ItemPtr oA::Lang::Instantiator::ProcessString(const String &string, const String &context)
-{
-    return Instantiator().processStringUnit(string, context);
-}
-
-oA::ItemPtr oA::Lang::Instantiator::processName(const String &name)
-{
-    auto path = getNamePath(name);
-
-    if (path.empty() || (hasContext() && name == unit().first)) {
-        if (ItemFactory::Exists(name))
-            return ItemFactory::Instanciate(name);
-        throw AccessError("Instantiator", "Can't access file @" + name + "@" + getErrorContext());
+    if (verbose) {
+        cout << endl << '"' << path << "#:" << endl;
+        ptr->show();
     }
-    return processUnit(path);
+    return ptr;
 }
 
-oA::String oA::Lang::Instantiator::getNamePath(const String &name) const noexcept
+oA::ItemPtr oA::Lang::Instantiator::ProcessString(const String &string, const String &context, bool verbose)
 {
-    auto path = Path::Exists(name) ? Path::GetCanonicalPath(name) : String();
+    auto ptr = Instantiator(verbose).process(string, context);
 
-    if (!path.empty())
-        return path;
-    for (const auto &import : _imports) {
-        path = import + path;
-        if (Path::Exists(name))
-            return Path::GetCanonicalPath(path);
+    if (verbose)
+        ptr->show();
+    return ptr;
+}
+
+oA::ItemPtr oA::Lang::Instantiator::process(const String &path)
+{
+    if (!Path::Exists(path))
+        throw AccessError("Instantiator", "Can't process invalid file path @" + path + "@");
+    openFileContext(Path::GetCanonicalPath(path));
+    processNode(*unit().tree);
+    return closeContext();
+}
+
+oA::ItemPtr oA::Lang::Instantiator::process(const String &string, const String &context)
+{
+    auto &ctx = _contexts.emplace();
+
+    ctx.unit = std::make_shared<Unit>();
+    ctx.unit->path = context;
+    ctx.unit->tree = Parser::ParseString(string, context);
+    processNode(*unit().tree);
+    return closeContext();
+}
+
+void oA::Lang::Instantiator::openFileContext(String &&path)
+{
+    auto &ctx = _contexts.emplace();
+    auto it = _units.findIf([&path](const auto &unit) { return unit->path == path; });
+
+    if (it != _units.end())
+        ctx.unit = *it;
+    else {
+        ctx.unit = _units.emplace_back(std::make_shared<Unit>());
+        ctx.unit->tree = Parser::ParseFile(path);
+        ctx.unit->path = std::move(path);
     }
-    return String();
 }
 
-oA::ItemPtr oA::Lang::Instantiator::processUnit(const String &path)
+oA::ItemPtr oA::Lang::Instantiator::closeContext(void)
 {
-    auto it = _units.find(path);
+    auto &ctx = context();
+    auto root = ctx.root;
+    auto unresolved = std::move(ctx.unresolved);
 
-    if (it == _units.end())
-        it = _units.emplace_hint(it, path, ASTNodePtr());
-    it->second = Parser::ParseFile(path);
-    pushContext(*it);
-    processNode(*it->second);
-    resolveUnresolved();
-    return popContext();
-}
-
-oA::ItemPtr oA::Lang::Instantiator::processStringUnit(const String &string, const String &context)
-{
-    auto it = _units.emplace_hint(_units.end(), context, ASTNodePtr());
-
-    it->second = Parser::ParseString(string, context);
-    pushContext(*it);
-    processNode(*it->second);
-    resolveUnresolved();
-    return popContext();
+    _contexts.pop();
+    for (auto it = unresolved.begin(); it != unresolved.end(); it = unresolved.erase(it)) {
+        try {
+            (*it)();
+        } catch (...) {
+            if (!hasContext())
+                throw;
+            context().unresolved.emplace_back(*it);
+        }
+    }
+    return root;
 }
 
 void oA::Lang::Instantiator::processNode(const ASTNode &node)
@@ -97,54 +110,98 @@ void oA::Lang::Instantiator::processRoot(const ASTNode &node)
 
 void oA::Lang::Instantiator::processImport(const ImportNode &node)
 {
-    _imports.emplace_back(node.directory);
+    context().imports.emplace_back(node.directory);
 }
 
 void oA::Lang::Instantiator::processClass(const ClassNode &node)
 {
-    auto item = processName(node.name);
+    ItemPtr ptr;
+    auto path = searchClassPath(node.name);
+    bool isKnownItem = ItemFactory::Exists(node.name);
+    auto &ctx = context();
 
-    if (!hasRoot()) {
-        context().roots.push(std::move(item));
-        processRoot(node);
-    } else {
-        root()->appendChild(item);
-        context().roots.push(std::move(item));
-        processRoot(node);
-        context().roots.pop();
+    if (_verbose)
+        cout << Repeat(_tab++) << "  " << "@" << node.name << "@ {" << endl;
+    if (!isKnownItem && path.empty())
+        throw LogicError("Instantiator", "Couldn't find path of class @" + node.name + "@");
+    else if (path.empty() || path == unit().path) {
+        if (!isKnownItem)
+            throw LogicError("Instantiator", "Infinite instantiation loop detected on Item @" + node.name + "@");
+        ptr = ItemFactory::Instanciate(node.name);
+    } else
+        ptr = process(path);
+    if (!ctx.root)
+        ctx.root = ptr;
+    else
+        ctx.root->appendChild(ptr);
+    ctx.target = std::move(ptr);
+    processRoot(node);
+    ctx.target = ctx.root;
+    if (_verbose)
+        cout << Repeat(--_tab) << "  " << "}" << endl;
+}
+
+oA::String oA::Lang::Instantiator::searchClassPath(const String &name)
+{
+    auto filename = name, path = String();
+
+    filename.tryAppend(".oA");
+    if (Path::Exists(filename))
+        return filename;
+    for (const auto &import : context().imports) {
+        path = import + filename;
+        if (Path::Exists(path))
+            return path;
     }
+    return String();
 }
 
 void oA::Lang::Instantiator::processDeclaration(const DeclarationNode &node)
 {
     ShuntingYard::Mode mode;
+    auto &target = context().target;
 
-    if (!root())
+    if (!target)
         throw LogicError("Instantiator", "Can't process @declaration@ of null root object" + getErrorContext());
     if (processSpecialDeclaration(node))
         return;
-    switch (node.type) {
-    case DeclarationNode::AssignmentDeclaration:
-        mode = ShuntingYard::Expression;
-        break;
-    case DeclarationNode::PropertyDeclaration:
-        mode = ShuntingYard::Expression;
-        root()->append(node.name);
-        break;
-    case DeclarationNode::FunctionDeclaration:
-        mode = ShuntingYard::Function;
-        root()->append(node.name);
-        break;
-    case DeclarationNode::EventDeclaration:
-        mode = ShuntingYard::Event;
-        break;
-    }
+    mode = prepareDeclaration(node);
     try {
-        ShuntingYard::ProcessTokenList(*root(), node.name, node.tokens, mode, context().unit.first);
+        ShuntingYard::ProcessTokenList(*target, node.name, node.tokens, mode, unit().path, _verbose, _tab);
     } catch (...) {
-        context().unresolved.emplace_back([this, &node, mode, item = root(), ctx = context().unit.first](void) mutable {
+        if (_verbose)
+            cout << "@unresolved@" << endl;
+        context().unresolved.emplace_back([this, &node, mode, item = target, ctx = unit().path](void) mutable {
             ShuntingYard::ProcessTokenList(*item, node.name, node.tokens, mode, ctx);
         });
+    }
+}
+
+oA::Lang::ShuntingYard::Mode oA::Lang::Instantiator::prepareDeclaration(const DeclarationNode &node)
+{
+    if (_verbose)
+        cout << Repeat(_tab) << "  ";
+    switch (node.type) {
+    case DeclarationNode::AssignmentDeclaration:
+        if (_verbose)
+            cout << "#" << node.name << "#: ";
+        return ShuntingYard::Expression;
+    case DeclarationNode::PropertyDeclaration:
+        if (_verbose)
+            cout << "#" << node.name << "#: ";
+        context().target->append(node.name);
+        return ShuntingYard::Expression;
+    case DeclarationNode::FunctionDeclaration:
+        if (_verbose)
+            cout << "function #" << node.name << "#: ";
+        context().target->append(node.name);
+        return ShuntingYard::Function;
+    case DeclarationNode::EventDeclaration:
+        if (_verbose)
+            cout << "event #" << node.name << "#: ";
+        return ShuntingYard::Event;
+    default:
+        return ShuntingYard::Expression;
     }
 }
 
@@ -161,6 +218,8 @@ bool oA::Lang::Instantiator::processSpecialDeclaration(const DeclarationNode &no
         return false;
     if (node.type != DeclarationNode::AssignmentDeclaration)
         throw LogicError("Instantiator", "Invalid use of reserved keyword @" + node.name + "@" + getErrorContext());
+    if (_verbose)
+        cout << Repeat(_tab) << "  " << '#' << node.name << "#: ";
     (this->*it->second)(node);
     return true;
 }
@@ -169,13 +228,16 @@ void oA::Lang::Instantiator::processID(const DeclarationNode &node)
 {
     if (node.tokens.size() != 1)
         throw LogicError("Instantiator", "Invalid item @id@" + getErrorContext());
-    root()->setID(node.tokens.front().first);
+    context().target->setID(node.tokens.front().first);
+    if (_verbose)
+        cout << context().target->getID() << endl;
 }
 
 void oA::Lang::Instantiator::processRelativeSize(const DeclarationNode &node)
 {
     auto it = node.tokens.begin();
     auto x = 0.0f, y = 0.0f;
+    auto &target = context().target;
 
     if (it == node.tokens.end())
         throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext());
@@ -184,10 +246,14 @@ void oA::Lang::Instantiator::processRelativeSize(const DeclarationNode &node)
         throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext());
     y = it->first.toFloat();
     try {
-        root()->setExpression("width", "parent.width * " + ToString(x));
-        root()->setExpression("height", "parent.height * " + ToString(y));
+        target->setExpression("width", "parent.width * " + ToString(x));
+        target->setExpression("height", "parent.height * " + ToString(y));
+        if (_verbose)
+            cout << x << ", " << y << endl;
     } catch (...) {
-        context().unresolved.emplace_back([item = root(), ctx = context().unit.first, x, y](void) mutable {
+        if (_verbose)
+            cout << "@unresolved@" << endl;
+        context().unresolved.emplace_back([item = target, ctx = unit().path, x, y](void) mutable {
             try {
                 item->setExpression("width", "parent.width * " + ToString(x));
                 item->setExpression("height", "parent.height * " + ToString(y));
@@ -202,6 +268,7 @@ void oA::Lang::Instantiator::processRelativePos(const DeclarationNode &node)
 {
     auto it = node.tokens.begin();
     auto x = 0.0f, y = 0.0f;
+    auto &target = context().target;
 
     if (it == node.tokens.end())
         throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext());
@@ -210,10 +277,14 @@ void oA::Lang::Instantiator::processRelativePos(const DeclarationNode &node)
         throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext());
     y = it->first.toFloat();
     try {
-        root()->setExpression("x", "parent.width * " + ToString(x) + "- width / 2");
-        root()->setExpression("y", "parent.height * " + ToString(y) + " - height / 2");
+        target->setExpression("x", "parent.width * " + ToString(x) + "- width / 2");
+        target->setExpression("y", "parent.height * " + ToString(y) + " - height / 2");
+        if (_verbose)
+            cout << x << ", " << y << endl;
     } catch (...) {
-        context().unresolved.emplace_back([item = root(), ctx = context().unit.first, x, y](void) mutable {
+        if (_verbose)
+            cout << "@unresolved@" << endl;
+        context().unresolved.emplace_back([item = target, ctx = unit().path, x, y](void) mutable {
             try {
                 item->setExpression("x", "parent.width * " + ToString(x) + "- width / 2");
                 item->setExpression("y", "parent.height * " + ToString(y) + " - height / 2");

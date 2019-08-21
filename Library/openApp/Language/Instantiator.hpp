@@ -8,14 +8,18 @@
 #pragma once
 
 #include <openApp/Containers/Stack.hpp>
+#include <openApp/Containers/List.hpp>
 #include <openApp/App/Item.hpp>
-#include <openApp/Language/ASTNode.hpp>
-#include <openApp/Language/Nodes/ImportNode.hpp>
-#include <openApp/Language/Nodes/ClassNode.hpp>
-#include <openApp/Language/Nodes/DeclarationNode.hpp>
-#include <openApp/Language/Nodes/ClassNode.hpp>
+#include <openApp/Language/ShuntingYard.hpp>
 
-namespace oA::Lang { class Instantiator; }
+namespace oA::Lang
+{
+    class Instantiator;
+
+    class ImportNode;
+    class ClassNode;
+    class DeclarationNode;
+}
 
 /**
  * @brief This class process a file architecture (recurisvely find implicit links) and instantiate an Item pointer
@@ -23,13 +27,30 @@ namespace oA::Lang { class Instantiator; }
 class oA::Lang::Instantiator
 {
 public:
+    struct Unit
+    {
+        String path;
+        ASTNodePtr tree;
+    };
+
+    using UnitPtr = Shared<Unit>;
+
+    struct Context
+    {
+        UnitPtr unit;
+        ItemPtr root;
+        ItemPtr target;
+        Vector<String> imports;
+        Vector<Function<void(void)>> unresolved;
+    };
+
     /**
      * @brief Instanciate an openApp class file (.oA)
      *
      * @param path File path
      * @return ItemPtr Resulting Item pointer
      */
-    static ItemPtr ProcessFile(const String &path);
+    static ItemPtr ProcessFile(const String &path, bool verbose = false);
 
     /**
      * @brief Instanciate an openApp class string
@@ -38,67 +59,49 @@ public:
      * @param context File name
      * @return ItemPtr Resulting Item pointer
      */
-    static ItemPtr ProcessString(const String &string, const String &context = "Root");
-
-    using UnitMap = UMap<String, ASTNodePtr>;
-    using Unit = Pair<const String, ASTNodePtr>;
-
-    /**
-     * @brief This class hold a context's data
-     */
-    struct Context
-    {
-        Context(Unit &contextUnit) : unit(contextUnit) {}
-
-        Unit &unit;
-        Stack<ItemPtr> roots;
-        Vector<Function<void(void)>> unresolved;
-    };
+    static ItemPtr ProcessString(const String &string, const String &context = "Root", bool verbose = false);
 
 private:
-    UnitMap _units;
-    Vector<String> _imports;
     Stack<Context> _contexts;
+    Vector<UnitPtr> _units;
+    Uint _tab = 0;
+    bool _verbose = false;
+
+    Instantiator(bool verbose) : _verbose(verbose) {}
 
     /**
-     * @brief Construct a new Instantiator object
-     */
-    Instantiator(void) = default;
-
-    /**
-     * @brief Process a file / class name
+     * @brief Process a file
      *
-     * @param name Name / Path of the class
+     * @param path File path
+     * @return ItemPtr Resulting Item
      */
-    ItemPtr processName(const String &name);
+    ItemPtr process(const String &path);
 
     /**
-     * @brief Get the Path of a name
+     * @brief Process a string
      *
-     * @param name Name to search
-     * @return String Path
+     * @param string Content
+     * @param context File name
+     * @return ItemPtr Resulting Item
      */
-    String getNamePath(const String &name) const noexcept;
+    ItemPtr process(const String &string, const String &context);
 
     /**
-     * @brief Process an Unit with a given path
+     * @brief Open a new Context with a valid path
      *
-     * @param path Unit path
+     * @param path Context's path
      */
-    ItemPtr processUnit(const String &path);
+    void openFileContext(String &&path);
 
     /**
-     * @brief Process an Unit with a given string
+     * @brief Close current context and return its root Item
      *
-     * @param string Unit string
-     * @param context Unit context
+     * @return ItemPtr Root Item
      */
-    ItemPtr processStringUnit(const String &string, const String &context);
+    ItemPtr closeContext(void);
 
     /**
-     * @brief Process a node
-     *
-     * @param node Node to process
+     * @brief Process a Context's Unit tree node
      */
     void processNode(const ASTNode &node);
 
@@ -124,11 +127,27 @@ private:
     void processClass(const ClassNode &node);
 
     /**
+     * @brief Search a file path given the class name
+     *
+     * @param name Class' name
+     * @return String Path (empty if non-existent)
+     */
+    String searchClassPath(const String &name);
+
+    /**
      * @brief Process declaration node
      *
      * @param node Node to process
      */
     void processDeclaration(const DeclarationNode &node);
+
+    /**
+     * @brief Prepare a declaration
+     *
+     * @param node Node
+     * @return ShuntingYard::Mode ShuntingYard mode
+     */
+    ShuntingYard::Mode prepareDeclaration(const DeclarationNode &node);
 
     /**
      * @brief Process special declaration node if it exists
@@ -161,65 +180,53 @@ private:
     void processRelativePos(const DeclarationNode &node);
 
     /**
-     * @brief Resolve every unresolved function of the instantiator
-     */
-    void resolveUnresolved(void) { context().unresolved.apply([](const auto &fct) { fct(); }); }
-
-    /**
-     * @brief Check if a context exists
+     * @brief Tell if there is any context loaded
      *
-     * @return true There is at least a context
-     * @return false There is no context
+     * @return true There is at least 1 context opened
+     * @return false No context is opened
      */
     bool hasContext(void) const noexcept { return !_contexts.empty(); }
 
     /**
-     * @brief Return current context
+     * @brief Get current context
      *
-     * @return Context& Current context
+     * @return Context& Current Context
      */
     Context &context(void) { return _contexts.top(); }
 
     /**
-     * @brief Return current unit
+     * @brief Get current context
      *
-     * @return Unit& Current unit
+     * @return const Context& Current Context
      */
-    Unit &unit(void) { return context().unit; }
+    const Context &context(void) const { return _contexts.top(); }
 
     /**
-     * @brief Return current root
+     * @brief Tell if the current Context has a Unit loaded
      *
-     * @return ItemPtr& Current root
+     * @return true Context has Unit
+     * @return false Context has not Unit
      */
-    ItemPtr &root(void) { return context().roots.top(); }
+    bool hasUnit(void) const { return hasContext() && context().unit; }
 
     /**
-     * @brief Tell if there is any root instancied
+     * @brief Return Context's unit
      *
-     * @return true There is at least 1 root item in context
-     * @return false There is not root item in context
+     * @return Unit& Current Unit
      */
-    bool hasRoot(void) const { return hasContext() ? !_contexts.top().roots.empty() : false; }
+    Unit &unit(void) { return *context().unit; }
 
     /**
-     * @brief Push a new Context to the stack
+     * @brief Return Context's unit
      *
-     * @param unit Unit of the context
+     * @return const Unit& Current Unit
      */
-    void pushContext(Unit &unit) { _contexts.emplace(unit); }
-
-    /**
-     * @brief Pop a Context from the stack and return its internal item pointer
-     *
-     * @return ItemPtr Item pointer
-     */
-    ItemPtr popContext(void) { auto item(std::move(root())); _contexts.pop(); return item; }
+    const Unit &unit(void) const { return *context().unit; }
 
     /**
      * @brief Get the Error Context object of current context
      *
      * @return String Error message
      */
-    String getErrorContext(void) { return " | @" + unit().first + '@'; }
+    String getErrorContext(void) const { return " | @" + unit().path + '@'; }
 };

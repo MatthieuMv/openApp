@@ -14,7 +14,7 @@
 #include <openApp/Language/Parser.hpp>
 #include <openApp/Language/Nodes.hpp>
 
-oA::Lang::ASTNodePtr oA::Lang::Parser:: ParseFile(const String &path)
+oA::Lang::ASTNodePtr oA::Lang::Parser::ParseFile(const String &path)
 {
     Lexer::TokenList tokens;
 
@@ -65,6 +65,11 @@ void oA::Lang::Parser::parseImport(ASTNodePtr &parent, Lexer::TokenList::iterato
 
     if (++it == _tokens.end())
         throw LogicError("Parser", "Excepted directory path after token @import@" + getErrorContext(line));
+    if (it->first.size() < 2 || it->first.front() != '\"' || it->first.back() != '\"')
+        throw LogicError("Parser", "Invalid @import@ statement (directory path must be quoted)" + getErrorContext(it->second));
+    it->first.pop_back();
+    it->first.erase(0, 1);
+    it->first.tryAppend("/");
     if (!Path::DirExists(it->first))
         throw AccessError("Parser", "Couldn't access imported directory @" + it->first + "@" + getErrorContext(it->second));
     parent->emplaceAs<ImportNode>(std::move(it->first));

@@ -47,14 +47,14 @@ void oA::App::stop(void)
     onStop();
 }
 
-void oA::App::parseString(const String &string, const String &context, bool verbose)
-{
-    openWindow(oA::Lang::Instantiator::ProcessString(string, context), verbose);
-}
-
 void oA::App::parseFile(const String &path, bool verbose)
 {
-    openWindow(oA::Lang::Instantiator::ProcessFile(path), verbose);
+    openWindow(oA::Lang::Instantiator::ProcessFile(path, verbose));
+}
+
+void oA::App::parseString(const String &string, const String &context, bool verbose)
+{
+    openWindow(oA::Lang::Instantiator::ProcessString(string, context, verbose));
 }
 
 void oA::App::openWindow(ItemPtr &&root, bool verbose)
@@ -65,7 +65,7 @@ void oA::App::openWindow(ItemPtr &&root, bool verbose)
     if (!_renderer->supportsMultipleWindows() && !_children.empty())
         throw LogicError("App", "Internal renderer doesn't supports multiple windows");
     if (!root.get())
-        throw LogicError("App", "Can't add null @Window@");
+        throw LogicError("App", "Can't add null @root@ Item");
     if (wnd) {
         index = _renderer->openWindow(wnd->getWindowContext());
         wnd->setWindowIndex(index);
@@ -78,9 +78,9 @@ void oA::App::openWindow(ItemPtr &&root, bool verbose)
             WindowContext::Fixed
         ));
     }
-    _children[index] = std::move(root);
     if (verbose)
-        _children[index]->show();
+        root->show();
+    _children[index] = std::move(root);
 }
 
 void oA::App::update(void)

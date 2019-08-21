@@ -11,7 +11,7 @@
 
 void oA::Lang::ASTNode::ShowTree(const ASTNode &root, Int tab)
 {
-    cout << Repeat(tab++) << '\t';
+    cout << Repeat(tab++) << "  ";
     switch (root.getType()) {
         case Root:
             cout << "@Root:@ ";

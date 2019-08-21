@@ -40,7 +40,7 @@ void oA::Lang::Lexer::ShowTokenList(const TokenList &list)
             line = token.second;
             if (count)
                 cout << endl;
-            cout << line << ": " << Repeat(tab) << '\t';
+            cout << line << ": " << Repeat(tab) << "  ";
         }
         cout << quote << token.first << quote << ' ';
         if (token.first == "{")
@@ -55,6 +55,8 @@ void oA::Lang::Lexer::ShowTokenList(const TokenList &list)
 oA::Lang::Lexer::Lexer(const String &context, IStream &stream, TokenList &tokens)
     : _context(context), _ss(stream), _tokens(tokens)
 {
+    if (!stream.good())
+        throw AccessError("Lexer", "Can't access file @" + context + "@");
 }
 
 void oA::Lang::Lexer::process(void)

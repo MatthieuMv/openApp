@@ -27,9 +27,9 @@ public:
     bool isRunning(void);
     void run(void);
     void stop(void);
-    void parseString(const String &string, const String &context = "Root", bool debug = false);
-    void parseFile(const String &path, bool debug = false);
-    void openWindow(ItemPtr &&root, bool debug = false);
+    void parseFile(const String &path, bool verbose = false);
+    void parseString(const String &string, const String &context = "Root", bool verbose = false);
+    void openWindow(ItemPtr &&root, bool verbose = false);
 
 protected:
     UMap<Int, ItemPtr> _children;

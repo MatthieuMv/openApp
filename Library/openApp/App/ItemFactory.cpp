@@ -9,6 +9,7 @@
 #include <openApp/App/Items/Window.hpp>
 #include <openApp/App/Items/Button.hpp>
 #include <openApp/App/Items/ImageButton.hpp>
+#include <openApp/App/Items/IndexView.hpp>
 
 oA::UMap<oA::String, oA::Function<oA::ItemPtr(void)>> oA::ItemFactory::Components;
 
@@ -36,4 +37,5 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<EventArea>();
     Register<Button>();
     Register<ImageButton>();
+    Register<IndexView>();
 }

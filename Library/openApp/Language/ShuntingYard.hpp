@@ -43,7 +43,7 @@ public:
      * @param mode ShuntingYard mode
      * @param context Context of the tokens
      */
-    static void ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context = "Root");
+    static void ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context = "Root", bool verbose = false, Uint tab = 0);
 
     /**
      * @brief Process a list of token representing an expression
@@ -54,12 +54,13 @@ public:
      * @param tokens List of tokens
      * @param context Context of the tokens
      */
-    static void ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context = "Root");
+    static void ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context = "Root", bool verbose = false, Uint tab = 0);
 
 private:
     Vector<ASTNodePtr> _stack;
     Vector<ASTNodePtr> _opStack;
     ASTNodePtr _expr;
+    PropertyPtr _target;
     State _state;
     Item &_root;
     const Lexer::TokenList &_tokens;
@@ -67,7 +68,8 @@ private:
     const String &_name;
     Mode _mode;
     Int _line = 0;
-    PropertyPtr _target;
+    Uint _tab = 0;
+    bool _verbose = false;
 
     /**
      * @brief Construct a new Shunting Yard object
@@ -76,7 +78,7 @@ private:
      * @param tokens Token list
      * @param context Context of the tokens
      */
-    ShuntingYard(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context);
+    ShuntingYard(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, Uint tab);
 
     /**
      * @brief Process internal tokens, and convert them to an AST tree
@@ -132,8 +134,22 @@ private:
      */
     void buildStack(ASTNode &root);
 
+    /**
+     * @brief Build operator
+     *
+     * @param it Stack iterator
+     */
     void buildOperator(Vector<ASTNodePtr>::iterator &it);
 
+    /**
+     * @brief Peek argument from stack
+     *
+     * @param it Stack iterator
+     * @param target Target node
+     * @param args Number of arguments
+     * @return true Success
+     * @return false Error
+     */
     bool peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, Uint args) noexcept;
 
     /**

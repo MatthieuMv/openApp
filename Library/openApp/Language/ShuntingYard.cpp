@@ -8,6 +8,7 @@
 // std::regex
 #include <regex>
 
+#include <openApp/Core/Log.hpp>
 #include <openApp/Language/ShuntingYard.hpp>
 #include <openApp/Language/Lexer.hpp>
 #include <openApp/Language/Nodes.hpp>
@@ -16,23 +17,23 @@ static const std::regex ReferenceMatch("([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[
 static const std::regex ValueMatch("\".*\"|[[]|true|false|-?[[:digit:]]*[.]?[[:digit:]]+", std::regex::optimize);
 static const std::regex IncrementOperatorMatch("([+][+][[:alpha:]][[:alnum:]]*)|(--[[:alpha:]][[:alnum:]]*)|([[:alpha:]][[:alnum:]]*[+][+])|([[:alpha:]][[:alnum:]]*--)", std::regex::optimize);
 
-void oA::Lang::ShuntingYard::ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context)
+void oA::Lang::ShuntingYard::ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context, bool verbose, Uint tab)
 {
     Lexer::TokenList tokens;
     Lexer::ProcessString(expr, tokens, context);
 
-    ProcessTokenList(root, name, tokens, mode, context);
+    ProcessTokenList(root, name, tokens, mode, context, verbose, tab);
 }
 
-void oA::Lang::ShuntingYard::ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context)
+void oA::Lang::ShuntingYard::ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, Uint tab)
 {
     if (tokens.empty())
         return;
-    ShuntingYard(root, name, tokens, mode, context).process();
+    ShuntingYard(root, name, tokens, mode, context, verbose, tab).process();
 }
 
-oA::Lang::ShuntingYard::ShuntingYard(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context)
-    :  _expr(std::make_unique<ExpressionGroupNode>()), _root(root), _tokens(tokens), _context(context), _name(name), _mode(mode)
+oA::Lang::ShuntingYard::ShuntingYard(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, Uint tab)
+    :  _expr(std::make_unique<ExpressionGroupNode>()), _root(root), _tokens(tokens), _context(context), _name(name), _mode(mode), _tab(tab), _verbose(verbose)
 {
     if (!_tokens.empty())
         _line = _tokens.front().second;
@@ -50,6 +51,10 @@ void oA::Lang::ShuntingYard::process(void)
         processToken(it, *_expr);
     buildStack(*_expr);
     buildTarget();
+    if (_verbose) {
+        cout << _target->toString() << endl;
+        _target->show(++_tab);
+    }
 }
 
 void oA::Lang::ShuntingYard::processToken(Lexer::TokenList::const_iterator &it, ASTNode &root)
@@ -463,10 +468,8 @@ void oA::Lang::ShuntingYard::buildStack(ASTNode &root)
             throw LogicError("ShuntingYard", "Can't build invalid node" + getErrorContext(_line));
         }
     }
-    if (_stack.size() != 1) {
-        _stack.apply([](const auto &node) { ASTNode::ShowTree(*node, 1); });
+    if (_stack.size() != 1)
         throw LogicError("ShuntingYard", "Invalid expression" + getErrorContext(_line));
-    }
     root.emplace(std::move(_stack.front()));
     _stack.clear();
 }
