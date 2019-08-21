@@ -131,7 +131,7 @@ void oA::SDLRenderer::setWindowColor(Int index, Color color)
     it->second.clear = color;
 }
 
-void oA::SDLRenderer::setWindowType(Int index, WindowContext::WindowType type)
+void oA::SDLRenderer::setWindowType(Int index, WindowContext::Type type)
 {
     switch (type) {
     case WindowContext::Fixed:
@@ -359,11 +359,26 @@ void oA::SDLRenderer::draw(const ImageContext &context)
 void oA::SDLRenderer::draw(const LabelContext &context)
 {
     auto *font = getFont(context);
+    Float x;
 
-    FC_Draw(
+    switch (context.align) {
+    case LabelContext::Left:
+        x = context.pos.x; break;
+    case LabelContext::Center:
+        x = context.pos.x + context.size.x / 2.0f; break;
+    case LabelContext::Right:
+        x = context.pos.x + context.size.x; break;
+    }
+    FC_SetDefaultColor(
+        font,
+        FC_MakeColor(context.fontColor.getR(), context.fontColor.getG(), context.fontColor.getB(), context.fontColor.getA())
+    );
+    FC_DrawAlign(
         font,
         _current->renderer,
-        context.pos.x, context.pos.y,
+        x,
+        context.pos.y + context.size.y / 2.0f - context.fontSize / 2.0f,
+        static_cast<FC_AlignEnum>(context.align),
         context.text
     );
 }
@@ -389,25 +404,24 @@ SDL_Texture *oA::SDLRenderer::getTexture(const ImageContext &context)
 FC_Font *oA::SDLRenderer::getFont(const LabelContext &context)
 {
     auto it = _fonts.findIf([&context](const auto &key) {
-        return key.font == context.font && key.fontSize == context.fontSize && key.fontColor == context.fontColor;
+        return key.first == context.font;
     });
 
     if (it != _fonts.end())
-        return it->data;
-    auto &font = _fonts.emplace_back(context.font, context.fontSize, context.fontColor);
-    font.data = FC_CreateFont();
+        return it->second;
+    auto &font = _fonts.emplace_back(context.font, FC_CreateFont());
     FC_LoadFont(
-        font.data,
+        font.second,
         _current->renderer,
         context.font,
         context.fontSize,
         FC_MakeColor(context.fontColor.getR(), context.fontColor.getG(), context.fontColor.getB(), context.fontColor.getA()),
         TTF_STYLE_NORMAL
     );
-    return font.data;
+    return font.second;
 }
 
-oA::Uint oA::SDLRenderer::getWindowFlags(WindowContext::WindowType type)
+oA::Uint oA::SDLRenderer::getWindowFlags(WindowContext::Type type)
 {
     switch (type) {
     case WindowContext::Resizable:

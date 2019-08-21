@@ -114,7 +114,7 @@ public:
      * @param index Window's index
      * @param value Window's type
      */
-    virtual void setWindowType(Int index, WindowContext::WindowType type) = 0;
+    virtual void setWindowType(Int index, WindowContext::Type type) = 0;
 
     /**
      * @brief Set vsync state

@@ -36,7 +36,7 @@ struct oA::AreaContext : public Context
 
 struct oA::WindowContext : public Context
 {
-    enum WindowType {
+    enum Type {
         Fixed,
         Resizable,
         Fullscreen,
@@ -44,13 +44,13 @@ struct oA::WindowContext : public Context
     };
 
     WindowContext(void) = default;
-    WindowContext(const char *_title, const V2i &_pos, const V2i &_size, Color _color, WindowType _type = Resizable, bool _vsync = true)
+    WindowContext(const char *_title, const V2i &_pos, const V2i &_size, Color _color, Type _type = Resizable, bool _vsync = true)
         : title(_title), pos(_pos), size(_size), color(_color), type(_type), vsync(_vsync) {}
 
     const char *title = nullptr;
     V2i pos, size;
     Color color;
-    WindowType type = Resizable;
+    Type type = Resizable;
     bool vsync = true;
 };
 
@@ -138,9 +138,15 @@ struct oA::ImageContext : public Context
 
 struct oA::LabelContext : public Context
 {
+    enum Alignment {
+        Left,
+        Center,
+        Right
+    };
+
     LabelContext(void) = default;
-    LabelContext(const char *_text, const char *_font, const V2f &_pos, const V2f &_size, Color _fontColor, Uint _fontSize = 12)
-        : text(_text), font(_font), pos(_pos), size(_size), fontColor(_fontColor), fontSize(_fontSize) {}
+    LabelContext(const char *_text, const char *_font, const V2f &_pos, const V2f &_size, Color _fontColor, Uint _fontSize = 12, Alignment _align = Center)
+        : text(_text), font(_font), pos(_pos), size(_size), fontColor(_fontColor), fontSize(_fontSize), align(_align) {}
 
     const char *text = nullptr;
     const char *font = nullptr;
@@ -148,4 +154,5 @@ struct oA::LabelContext : public Context
     V2f size;
     Color fontColor;
     Uint fontSize = 12;
+    Alignment align = Center;
 };

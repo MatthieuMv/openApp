@@ -109,8 +109,8 @@ private:
         }
     }
 
-    WindowContext::WindowType getWindowType(void) const {
-        static const UMap<String, WindowContext::WindowType> Types = {
+    WindowContext::Type getWindowType(void) const {
+        static const UMap<String, WindowContext::Type> Types = {
             { "resize", WindowContext::Resizable },
             { "fullscreen", WindowContext::Fullscreen },
             { "borderless", WindowContext::Borderless }

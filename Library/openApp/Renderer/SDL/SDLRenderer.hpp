@@ -41,16 +41,7 @@ public:
         Color clear;
     };
 
-    struct Font
-    {
-        Font(void) = default;
-        Font(String &&_font, Uint _fontSize, Color _fontColor) : font(_font), fontSize(_fontSize), fontColor(_fontColor) {}
-
-        String font;
-        Uint fontSize;
-        Color fontColor;
-        FC_Font *data = nullptr;
-    };
+    using Font = Pair<String, FC_Font *>;
 
     SDLRenderer(void);
     virtual ~SDLRenderer(void);
@@ -66,7 +57,7 @@ public:
     virtual void setWindowSize(Int index, const V2i &size);
     virtual void setWindowTitle(Int index, const char *title);
     virtual void setWindowColor(Int index, Color color);
-    virtual void setWindowType(Int index, WindowContext::WindowType type);
+    virtual void setWindowType(Int index, WindowContext::Type type);
     virtual void setWindowVSync(Int index, bool value);
 
     virtual void clearWindow(Int index);
@@ -94,7 +85,8 @@ private:
     Window &getWindow(Int index);
     SDL_Texture *getTexture(const ImageContext &context);
     FC_Font *getFont(const LabelContext &context);
-    Uint getWindowFlags(WindowContext::WindowType type);
+    Uint getWindowFlags(WindowContext::Type type);
+    V2f getLabelPosition(const LabelContext &context);
 
     bool constructWindowEvent(Event &target, SDL_Event &event);
     bool constructMouseEvent(Event &target, SDL_Event &event);
