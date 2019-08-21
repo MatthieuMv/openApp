@@ -47,17 +47,17 @@ void oA::App::stop(void)
     onStop();
 }
 
-void oA::App::parseFile(const String &path, bool verbose)
+void oA::App::parseFile(const String &path, bool verbose, bool showItem)
 {
-    openWindow(oA::Lang::Instantiator::ProcessFile(path, verbose));
+    openWindow(oA::Lang::Instantiator::ProcessFile(path, verbose, showItem));
 }
 
-void oA::App::parseString(const String &string, const String &context, bool verbose)
+void oA::App::parseString(const String &string, const String &context, bool verbose, bool showItem)
 {
-    openWindow(oA::Lang::Instantiator::ProcessString(string, context, verbose));
+    openWindow(oA::Lang::Instantiator::ProcessString(string, context, verbose, showItem));
 }
 
-void oA::App::openWindow(ItemPtr &&root, bool verbose)
+void oA::App::openWindow(ItemPtr &&root)
 {
     auto *wnd = dynamic_cast<Window *>(root.get());
     auto index = 0;
@@ -78,8 +78,6 @@ void oA::App::openWindow(ItemPtr &&root, bool verbose)
             WindowContext::Fixed
         ));
     }
-    if (verbose)
-        root->show();
     _children[index] = std::move(root);
 }
 

@@ -149,13 +149,13 @@ oA::PropertyPtr oA::Item::findExpr(const String &key)
 
 void oA::Item::show(Int tab) const noexcept
 {
-    cout << Repeat(tab++) << "  " << '#' << getName() << "# " << getID() << " {" << endl;
+    cout << Repeat(tab++) << "   " << '#' << getName() << "# " << getID() << " {" << endl;
     _members.apply([tab](const auto &p) mutable {
-        cout << Repeat(tab) << "  " << '@' << p.first << "@: " << p.second->toString() << endl;
+        cout << Repeat(tab) << "   " << '@' << p.first << "@: " << p.second->toString() << endl;
         p.second->show(tab + 1);
     });
     _children.apply([tab](const auto &child) { child->show(tab); });
-    cout << Repeat(--tab) << "  " << "}" << endl;
+    cout << Repeat(--tab) << "   " << "}" << endl;
 
 }
 

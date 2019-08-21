@@ -12,23 +12,29 @@
 #include <openApp/Language/Nodes.hpp>
 #include <openApp/Language/Parser.hpp>
 
-oA::ItemPtr oA::Lang::Instantiator::ProcessFile(const String &path, bool verbose)
+oA::ItemPtr oA::Lang::Instantiator::ProcessFile(const String &path, bool verbose, bool showItem)
 {
     auto ptr = Instantiator(verbose).process(path);
 
-    if (verbose) {
-        cout << endl << '"' << path << "#:" << endl;
+    if (verbose)
+        cout << endl;
+    if (showItem) {
         ptr->show();
+        cout << endl;
     }
     return ptr;
 }
 
-oA::ItemPtr oA::Lang::Instantiator::ProcessString(const String &string, const String &context, bool verbose)
+oA::ItemPtr oA::Lang::Instantiator::ProcessString(const String &string, const String &context, bool verbose, bool showItem)
 {
     auto ptr = Instantiator(verbose).process(string, context);
 
     if (verbose)
+        cout << endl;
+    if (showItem) {
         ptr->show();
+        cout << endl;
+    }
     return ptr;
 }
 
@@ -121,7 +127,7 @@ void oA::Lang::Instantiator::processClass(const ClassNode &node)
     auto &ctx = context();
 
     if (_verbose)
-        cout << Repeat(_tab++) << "  " << "@" << node.name << "@ {" << endl;
+        cout << Repeat(_tab++) << "   " << "@" << node.name << "@ {" << endl;
     if (!isKnownItem && path.empty())
         throw LogicError("Instantiator", "Couldn't find path of class @" + node.name + "@");
     else if (path.empty() || path == unit().path) {
@@ -138,7 +144,7 @@ void oA::Lang::Instantiator::processClass(const ClassNode &node)
     processRoot(node);
     ctx.target = ctx.root;
     if (_verbose)
-        cout << Repeat(--_tab) << "  " << "}" << endl;
+        cout << Repeat(--_tab) << "   " << "}" << endl;
 }
 
 oA::String oA::Lang::Instantiator::searchClassPath(const String &name)
@@ -180,7 +186,7 @@ void oA::Lang::Instantiator::processDeclaration(const DeclarationNode &node)
 oA::Lang::ShuntingYard::Mode oA::Lang::Instantiator::prepareDeclaration(const DeclarationNode &node)
 {
     if (_verbose)
-        cout << Repeat(_tab) << "  ";
+        cout << Repeat(_tab) << "   ";
     switch (node.type) {
     case DeclarationNode::AssignmentDeclaration:
         if (_verbose)
@@ -219,7 +225,7 @@ bool oA::Lang::Instantiator::processSpecialDeclaration(const DeclarationNode &no
     if (node.type != DeclarationNode::AssignmentDeclaration)
         throw LogicError("Instantiator", "Invalid use of reserved keyword @" + node.name + "@" + getErrorContext());
     if (_verbose)
-        cout << Repeat(_tab) << "  " << '#' << node.name << "#: ";
+        cout << Repeat(_tab) << "   " << '#' << node.name << "#: ";
     (this->*it->second)(node);
     return true;
 }

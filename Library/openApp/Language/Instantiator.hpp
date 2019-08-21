@@ -50,7 +50,7 @@ public:
      * @param path File path
      * @return ItemPtr Resulting Item pointer
      */
-    static ItemPtr ProcessFile(const String &path, bool verbose = false);
+    static ItemPtr ProcessFile(const String &path, bool verbose = false, bool showItem = false);
 
     /**
      * @brief Instanciate an openApp class string
@@ -59,7 +59,7 @@ public:
      * @param context File name
      * @return ItemPtr Resulting Item pointer
      */
-    static ItemPtr ProcessString(const String &string, const String &context = "Root", bool verbose = false);
+    static ItemPtr ProcessString(const String &string, const String &context = "Root", bool verbose = false, bool showItem = false);
 
 private:
     Stack<Context> _contexts;

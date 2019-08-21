@@ -40,7 +40,7 @@ void oA::Lang::Lexer::ShowTokenList(const TokenList &list)
             line = token.second;
             if (count)
                 cout << endl;
-            cout << line << ": " << Repeat(tab) << "  ";
+            cout << line << ": " << Repeat(tab) << "   ";
         }
         cout << quote << token.first << quote << ' ';
         if (token.first == "{")
