@@ -30,7 +30,7 @@
 
 #include <openApp/App/App.hpp>
 #include <openApp/Core/Log.hpp>
-#include <openApp/Renderer/SDL/SDLRenderer.hpp>
+#include <openApp/Render/SDL/SDLRenderer.hpp>
 
 int main(void)
 {

@@ -9,8 +9,8 @@
 
 #include <openApp/App/ItemHandler.hpp>
 #include <openApp/App/PropertyHandler.hpp>
-#include <openApp/App/IRenderer.hpp>
-#include <openApp/App/RenderContexts.hpp>
+#include <openApp/Render/IRenderer.hpp>
+#include <openApp/Render/RenderContexts.hpp>
 
 namespace oA { class Item; }
 

@@ -10,6 +10,7 @@ set(oAContainers ${oARoot}/Containers)
 set(oAApp ${oARoot}/App)
 set(oANetwork ${oARoot}/Network)
 set(oALanguage ${oARoot}/Language)
+set(oARender ${oARoot}/Render)
 
 set(Types
     ${oATypes}/Error.hpp
@@ -72,20 +73,18 @@ set(App
     ${oAApp}/ItemHandler.cpp
     ${oAApp}/PropertyHandler.hpp
     ${oAApp}/PropertyHandler.cpp
-    ${oAApp}/RenderContexts.hpp
-    ${oAApp}/IRenderer.hpp
     ${oAApp}/Event.hpp
     ${oAApp}/Events/KeyboardEvent.hpp
     ${oAApp}/Events/MotionEvent.hpp
     ${oAApp}/Events/MouseEvent.hpp
     ${oAApp}/Events/WheelEvent.hpp
     ${oAApp}/Events/WindowEvent.hpp
-    ${oAApp}/Widgets/Window.hpp
-    ${oAApp}/Widgets/Rectangle.hpp
-    ${oAApp}/Widgets/Image.hpp
-    ${oAApp}/Widgets/EventArea.hpp
-    ${oAApp}/Widgets/Button.hpp
-    ${oAApp}/Widgets/ImageButton.hpp
+    ${oAApp}/Items/Window.hpp
+    ${oAApp}/Items/Rectangle.hpp
+    ${oAApp}/Items/Image.hpp
+    ${oAApp}/Items/EventArea.hpp
+    ${oAApp}/Items/Button.hpp
+    ${oAApp}/Items/ImageButton.hpp
 )
 
 set(Language
@@ -117,6 +116,11 @@ set(Language
     ${oALanguage}/Nodes/StatementNode.cpp
 )
 
+set(Render
+    ${oARender}/RenderContexts.hpp
+    ${oARender}/IRenderer.hpp
+)
+
 set(Network
 )
 
@@ -127,4 +131,5 @@ set(oASources
     ${App}
     ${Network}
     ${Language}
+    ${Render}
 )

@@ -9,9 +9,9 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
-#include <openApp/Renderer/SDL/Extern/SDL_FontCache.h>
+#include <openApp/Render/SDL/Extern/SDL_FontCache.h>
 #include <openApp/Types/Error.hpp>
-#include <openApp/Renderer/SDL/SDLRenderer.hpp>
+#include <openApp/Render/SDL/SDLRenderer.hpp>
 
 oA::SDLRenderer::SDLRenderer(void)
 {

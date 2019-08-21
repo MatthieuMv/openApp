@@ -7,8 +7,8 @@
 
 #pragma once
 
-#include <openApp/App/Widgets/EventArea.hpp>
-#include <openApp/App/Widgets/Image.hpp>
+#include <openApp/App/Items/EventArea.hpp>
+#include <openApp/App/Items/Image.hpp>
 
 namespace oA { class ImageButton; }
 

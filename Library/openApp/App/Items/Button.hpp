@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <openApp/App/Widgets/EventArea.hpp>
-#include <openApp/App/Widgets/Rectangle.hpp>
-#include <openApp/App/Widgets/Label.hpp>
+#include <openApp/App/Items/EventArea.hpp>
+#include <openApp/App/Items/Rectangle.hpp>
+#include <openApp/App/Items/Label.hpp>
 
 namespace oA { class Button; }
 

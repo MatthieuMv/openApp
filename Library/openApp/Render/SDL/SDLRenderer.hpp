@@ -10,7 +10,7 @@
 #include <openApp/Containers/List.hpp>
 #include <openApp/Containers/UMap.hpp>
 #include <openApp/Containers/Stack.hpp>
-#include <openApp/App/IRenderer.hpp>
+#include <openApp/Render/IRenderer.hpp>
 
 namespace oA { class SDLRenderer; }
 

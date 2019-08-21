@@ -5,8 +5,7 @@ project(openApp)
 
 include(openApp.cmake)
 
-set(oARenderer ${oARoot}/Renderer)
-set(oASDL ${oARenderer}/SDL)
+set(oASDL ${oARender}/SDL)
 
 set(oASDLRenderer
     ${oASDL}/SDLRenderer.hpp

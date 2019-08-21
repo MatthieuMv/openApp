@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <openApp/App/IRenderer.hpp>
+#include <openApp/Render/IRenderer.hpp>
 #include <openApp/App/Item.hpp>
 
 namespace oA { class App; }
