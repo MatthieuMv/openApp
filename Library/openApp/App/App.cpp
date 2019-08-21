@@ -6,14 +6,8 @@
 */
 
 #include <openApp/App/App.hpp>
-#include <openApp/App/ItemFactory.hpp>
 #include <openApp/App/Items/Window.hpp>
 #include <openApp/Language/Instantiator.hpp>
-
-oA::App::App(IRendererPtr &&renderer) : _renderer(std::move(renderer))
-{
-    ItemFactory::RegisterBaseItems();
-}
 
 bool oA::App::onEvent(const Event &event)
 {

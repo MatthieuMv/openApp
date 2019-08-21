@@ -9,6 +9,7 @@
 
 #include <openApp/Render/IRenderer.hpp>
 #include <openApp/App/Item.hpp>
+#include <openApp/App/ItemFactory.hpp>
 
 namespace oA { class App; }
 
@@ -17,7 +18,8 @@ class oA::App
 public:
     virtual ~App(void) = default;
 
-    App(IRendererPtr &&renderer);
+    template<typename Renderer>
+    App(void) : _renderer(std::make_shared<Renderer>()) { ItemFactory::RegisterBaseItems(); }
 
     virtual void onRun(void) {}
     virtual void onStop(void) {}
