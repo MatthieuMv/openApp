@@ -20,30 +20,30 @@ static const oA::UMap<oA::String, oA::Lang::FunctionModel> FunctionMap = {
     { "print",          {   oA::Lang::Print,        -1  }   }
 };
 
-bool oA::Lang::IsFunction(const oA::String &statement)
+bool oA::Lang::IsFunction(const oA::String &symbol)
 {
-    return FunctionMap.find(statement) != FunctionMap.end();
+    return FunctionMap.find(symbol) != FunctionMap.end();
 }
 
-const oA::Lang::FunctionModel &oA::Lang::GetFunction(const oA::String &statement)
+const oA::Lang::FunctionModel &oA::Lang::GetFunction(const oA::String &symbol)
 {
-    auto it = FunctionMap.find(statement);
+    auto it = FunctionMap.find(symbol);
 
     if (it == FunctionMap.end())
-        throw AccessError("Function", "Can't find Function @" + statement + "@");
+        throw AccessError("Function", "Can't find Function @" + symbol + "@");
     return it->second;
 }
 
-const oA::Lang::FunctionModel &oA::Lang::GetFunction(Function statement)
+const oA::Lang::FunctionModel &oA::Lang::GetFunction(Function symbol)
 {
-    return FunctionMap.findIf([statement](const auto &p) {
-        return p.second.type == statement;
+    return FunctionMap.findIf([symbol](const auto &p) {
+        return p.second.type == symbol;
     })->second;
 }
 
-const oA::String &oA::Lang::GetFunctionSymbol(Function statement)
+const oA::String &oA::Lang::GetFunctionSymbol(Function symbol)
 {
-    return FunctionMap.findIf([statement](const auto &p) {
-        return p.second.type == statement;
+    return FunctionMap.findIf([symbol](const auto &p) {
+        return p.second.type == symbol;
     })->first;
 }

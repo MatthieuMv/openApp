@@ -41,7 +41,7 @@ public:
         ItemPtr root;
         ItemPtr target;
         Vector<String> imports;
-        Vector<Function<void(void)>> unresolved;
+        Vector<oA::Function<void(void)>> unresolved;
     };
 
     /**

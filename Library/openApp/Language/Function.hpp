@@ -59,7 +59,7 @@ namespace oA::Lang
      * @param op Function as type
      * @return FunctionModel& Resulting model
      */
-    const FunctionModel &GetFunction(Function statement);
+    const FunctionModel &GetFunction(Function symbol);
 
     /**
      * @brief Get the Symbol String of an Function
@@ -67,5 +67,5 @@ namespace oA::Lang
      * @param op Function to retreive
      * @return const String Resulting symbol
      */
-    const String &GetFunctionSymbol(Function statement);
+    const String &GetFunctionSymbol(Function symbol);
 }

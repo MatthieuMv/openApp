@@ -219,15 +219,12 @@ void oA::Lang::Lexer::processIndexAccess(String &&res)
 {
     res.push_back(']');
     pushToken(std::move(res));
-    res = String();
     for (char c = get(); c > 0; c = get()) {
         if (std::isspace(c))
             continue;
         if (c == ']')
             break;
-        if (!std::isdigit(c))
-            throw LogicError("Lexer", "Containers index access only support integer");
-        res.push_back(c);
+        processChar(c);
     }
     pushToken(std::move(res));
 }

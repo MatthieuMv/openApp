@@ -11,6 +11,7 @@
 #include <openApp/Language/Lexer.hpp>
 #include <openApp/Language/Nodes/ExpressionGroupNode.hpp>
 #include <openApp/Language/Operator.hpp>
+#include <openApp/Language/Function.hpp>
 
 namespace oA::Lang { class ShuntingYard; }
 
@@ -93,11 +94,15 @@ private:
 
     void processOperator(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void processOperatorLogic(const OperatorModel &model);
-    void processFunctionArguments(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void processIncrementOperator(Lexer::TokenList::const_iterator &it);
 
+    void processName(Lexer::TokenList::const_iterator &it);
     void processReference(Lexer::TokenList::const_iterator &it);
     ASTNodePtr findReference(const String &name, Int line);
+    void processFunction(Lexer::TokenList::const_iterator &it);
+    void processFunction(Lexer::TokenList::const_iterator &it, const String &symbol, const String &object);
+    void processFunctionArguments(Lexer::TokenList::const_iterator &it, ASTNode &root, const FunctionModel &model);
+    void peekFunctionArguments(Lexer::TokenList::const_iterator &it, ASTNode &root);
 
     void processValue(Lexer::TokenList::const_iterator &it);
     void parseValue(Lexer::TokenList::const_iterator &it, Var &var);

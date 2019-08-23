@@ -22,7 +22,7 @@ namespace oA::Lang
         Addition, Substraction, Multiplication, Division, Modulo,
         Assign, AdditionAssign, SubstractionAssign, MultiplicationAssign, DivisionAssign, ModuloAssign,
         PrefixIncrement, PrefixDecrement, SufixIncrement, SufixDecrement,
-        Call, StartCall, EndCall, At,
+        Call, At,
         Comma, End,
         TernaryIf, TernaryElse,
         LeftParenthese, RightParenthese,

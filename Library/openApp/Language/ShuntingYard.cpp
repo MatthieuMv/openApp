@@ -13,7 +13,7 @@
 #include <openApp/Language/Lexer.hpp>
 #include <openApp/Language/Nodes.hpp>
 
-static const std::regex ReferenceMatch("([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*", std::regex::optimize);
+static const std::regex NameMatch("([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*", std::regex::optimize);
 static const std::regex ValueMatch("\".*\"|[[]|true|false|-?[[:digit:]]*[.]?[[:digit:]]+", std::regex::optimize);
 static const std::regex IncrementOperatorMatch("([+][+][[:alpha:]][[:alnum:]]*)|(--[[:alpha:]][[:alnum:]]*)|([[:alpha:]][[:alnum:]]*[+][+])|([[:alpha:]][[:alnum:]]*--)", std::regex::optimize);
 
@@ -67,10 +67,10 @@ void oA::Lang::ShuntingYard::processToken(Lexer::TokenList::const_iterator &it, 
         processIncrementOperator(it);
     else if (std::regex_match(it->first, ValueMatch))
         processValue(it);
-    else if (std::regex_match(it->first, ReferenceMatch))
-        processReference(it);
+    else if (std::regex_match(it->first, NameMatch))
+        processName(it);
     else
-        throw LogicError("ShuntingYard", "Couldn't indentify expression token @" + it->first + "@" + getErrorContext(it->second));
+        throw LogicError("ShuntingYard", "Couldn't identify expression token @" + it->first + "@" + getErrorContext(it->second));
 }
 
 void oA::Lang::ShuntingYard::processOperator(Lexer::TokenList::const_iterator &it, ASTNode &root)
@@ -96,12 +96,6 @@ void oA::Lang::ShuntingYard::processOperator(Lexer::TokenList::const_iterator &i
         buildStack(root.emplaceAs<GroupNode>());
         collectSingleGroup(it, *root.children.back());
         break;
-    case StartCall:
-        processOperatorLogic(GetOperator(Call));
-        processFunctionArguments(++it, *_opStack.emplace_back(std::make_unique<OperatorNode>(Call)));
-        break;
-    case EndCall:
-        throw LogicError("ShuntingYard", "Unexpected end call token" + getErrorContext(it->second));
     default:
         processOperatorLogic(model);
         _opStack.emplace_back(std::make_unique<OperatorNode>(model.type));
@@ -123,7 +117,101 @@ void oA::Lang::ShuntingYard::processOperatorLogic(const OperatorModel &model)
     }
 }
 
-void oA::Lang::ShuntingYard::processFunctionArguments(Lexer::TokenList::const_iterator &it, ASTNode &root)
+void oA::Lang::ShuntingYard::processIncrementOperator(Lexer::TokenList::const_iterator &it)
+{
+    Operator op;
+    String name;
+
+    if (it->first.front() == '+' || it->first.front() == '-') {
+        op = it->first.front() == '+' ? PrefixIncrement : PrefixDecrement;
+        name = it->first.substr(2);
+    } else {
+        op = it->first.back() == '+' ? SufixIncrement : SufixDecrement;
+        name = it->first.substr(0, it->first.length() - 2);
+    }
+    auto &node = _stack.emplace_back(std::make_unique<OperatorNode>(op));
+    node->emplace(findReference(name, it->second));
+}
+
+void oA::Lang::ShuntingYard::processName(Lexer::TokenList::const_iterator &it)
+{
+    auto dot = it->first.find_last_of('.');
+
+    if (dot != String::npos) {
+        String last = it->first.substr(dot + 1);
+        if (IsFunction(last))
+            return processFunction(it, last, it->first.substr(0, dot));
+    } else if (IsFunction(it->first))
+        return processFunction(it);
+    processReference(it);
+}
+
+void oA::Lang::ShuntingYard::processReference(Lexer::TokenList::const_iterator &it)
+{
+    auto node = findReference(it->first, it->second);
+
+    if (_mode == Expression)
+        _target->depends(dynamic_cast<ReferenceNode &>(*node).ptr);
+    _stack.emplace_back(std::move(node));
+    auto tmp = it;
+    if (++tmp != _tokens.end() && tmp->first == "((")
+        throw LogicError("ShuntingYard", "openApp doesn't support arguments for @property call@" + getErrorContext(tmp->second));
+}
+
+oA::Lang::ASTNodePtr oA::Lang::ShuntingYard::findReference(const String &name, Int line)
+{
+    auto &loc = locals();
+    auto tmp = loc.find(name);
+
+    if (tmp != loc.end())
+        return ASTNodePtr(std::make_unique<LocalNode>(tmp->second));
+    auto expr = _root.findExpr(name);
+    if (!expr)
+        throw AccessError("ShuntingYard", "Couldn't find reference @" + name + "@" + getErrorContext(line));
+    return ASTNodePtr(std::make_unique<ReferenceNode>(std::move(expr)));
+}
+
+void oA::Lang::ShuntingYard::processFunction(Lexer::TokenList::const_iterator &it)
+{
+    const auto &model = GetFunction(it->first);
+
+    processFunctionArguments(
+        it,
+        *_stack.emplace_back(std::make_unique<FunctionNode>(model.type)),
+        model
+    );
+}
+
+void oA::Lang::ShuntingYard::processFunction(Lexer::TokenList::const_iterator &it, const String &symbol, const String &object)
+{
+    const auto &model = GetFunction(symbol);
+    auto &node = *_stack.emplace_back(std::make_unique<FunctionNode>(model.type));
+
+    node.emplace(findReference(object, it->second));
+    processFunctionArguments(
+        it,
+        node,
+        model
+    );
+}
+
+void oA::Lang::ShuntingYard::processFunctionArguments(Lexer::TokenList::const_iterator &it, ASTNode &root, const FunctionModel &model)
+{
+    auto line = it->second;
+
+    if (++it == _tokens.end() || (it->first != "()" && it->first != "(("))
+        throw LogicError("ShuntingYard", "Invalid use of reserved function keyword @" + GetFunctionSymbol(model.type) + "@" + getErrorContext(line));
+    if (it->first == "()") {
+        if (model.args > 0)
+           throw LogicError("ShuntingYard", "Function @" + GetFunctionSymbol(model.type) + "@ requires " + ToString(model.args) + " arguments (actual: 0)" + getErrorContext(line));
+        return;
+    }
+    peekFunctionArguments(++it, root);
+    if (model.args != -1 && model.args != static_cast<Int>(root.children.size()))
+           throw LogicError("ShuntingYard", "Function @" + GetFunctionSymbol(model.type) + "@ requires " + ToString(model.args) + " arguments (actual: " + ToString(root.children.size()) + ")" + getErrorContext(line));
+}
+
+void oA::Lang::ShuntingYard::peekFunctionArguments(Lexer::TokenList::const_iterator &it, ASTNode &root)
 {
     Vector<ASTNodePtr> stack, opStack;
     auto line = it->second;
@@ -148,44 +236,6 @@ void oA::Lang::ShuntingYard::processFunctionArguments(Lexer::TokenList::const_it
     buildStack(root);
     _stack.swap(stack);
     _opStack.swap(opStack);
-}
-
-void oA::Lang::ShuntingYard::processIncrementOperator(Lexer::TokenList::const_iterator &it)
-{
-    Operator op;
-    String name;
-
-    if (it->first.front() == '+' || it->first.front() == '-') {
-        op = it->first.front() == '+' ? PrefixIncrement : PrefixDecrement;
-        name = it->first.substr(2);
-    } else {
-        op = it->first.back() == '+' ? SufixIncrement : SufixDecrement;
-        name = it->first.substr(0, it->first.length() - 2);
-    }
-    auto &node = _stack.emplace_back(std::make_unique<OperatorNode>(op));
-    node->emplace(findReference(name, it->second));
-}
-
-void oA::Lang::ShuntingYard::processReference(Lexer::TokenList::const_iterator &it)
-{
-    auto node = findReference(it->first, it->second);
-
-    if (_mode == Expression)
-        _target->depends(dynamic_cast<ReferenceNode &>(*node).ptr);
-    _stack.emplace_back(std::move(node));
-}
-
-oA::Lang::ASTNodePtr oA::Lang::ShuntingYard::findReference(const String &name, Int line)
-{
-    auto &loc = locals();
-    auto tmp = loc.find(name);
-
-    if (tmp != loc.end())
-        return ASTNodePtr(std::make_unique<LocalNode>(tmp->second));
-    auto expr = _root.findExpr(name);
-    if (!expr)
-        throw AccessError("ShuntingYard", "Couldn't find reference @" + name + "@" + getErrorContext(line));
-    return ASTNodePtr(std::make_unique<ReferenceNode>(std::move(expr)));
 }
 
 void oA::Lang::ShuntingYard::processValue(Lexer::TokenList::const_iterator &it)
@@ -344,7 +394,7 @@ void oA::Lang::ShuntingYard::parseCaseName(Lexer::TokenList::const_iterator &it,
         throw LogicError("ShuntingYard", "Invalid @case@ statement" + getErrorContext(line));
     if (std::regex_match(it->first, ValueMatch))
         parseValue(it, root.emplaceAs<ValueNode>().value);
-    else if (std::regex_match(it->first, ReferenceMatch))
+    else if (std::regex_match(it->first, NameMatch))
         root.emplace(findReference(it->first, it->second));
     else
         throw LogicError("ShuntingYard", "Invalid @case@ statement" + getErrorContext(line));
@@ -419,7 +469,7 @@ void oA::Lang::ShuntingYard::parseVariable(Lexer::TokenList::const_iterator &it,
 {
     auto line = it->second;
 
-    if (++it == _tokens.end() || !std::regex_match(it->first, ReferenceMatch))
+    if (++it == _tokens.end() || !std::regex_match(it->first, NameMatch))
         throw LogicError("ShuntingYard", "Invalid @local variable@ declaration" + getErrorContext(it->second));
     auto &var = locals()[it->first] = 0;
     if (++it != _tokens.end() && it->first == "=") {
@@ -434,7 +484,7 @@ void oA::Lang::ShuntingYard::parseStaticVariable(Lexer::TokenList::const_iterato
 {
     auto line = it->second;
 
-    if (++it == _tokens.end() || it->first != "var" || ++it == _tokens.end() || !std::regex_match(it->first, ReferenceMatch))
+    if (++it == _tokens.end() || it->first != "var" || ++it == _tokens.end() || !std::regex_match(it->first, NameMatch))
         throw LogicError("ShuntingYard", "Invalid @local variable@ declaration" + getErrorContext(it->second));
     auto &var = locals()[it->first] = 0;
     if (++it != _tokens.end() && it->first == "=")
@@ -496,6 +546,7 @@ void oA::Lang::ShuntingYard::buildStack(ASTNode &root)
         case ASTNode::Reference:
         case ASTNode::Value:
         case ASTNode::Statement:
+        case ASTNode::Function:
             break;
         default:
             throw LogicError("ShuntingYard", "Can't build invalid node" + getErrorContext(_line));
@@ -512,42 +563,12 @@ void oA::Lang::ShuntingYard::buildStack(ASTNode &root)
 
 void oA::Lang::ShuntingYard::buildOperator(Vector<ASTNodePtr>::iterator &it)
 {
-    static const auto hasVarReference = [](const ASTNode &node) {
-        return node.children[0]->getType() == ASTNode::Reference || node.children[0]->getType() == ASTNode::Local
-                || (node.children[0]->getType() == ASTNode::Operator && dynamic_cast<const OperatorNode &>(node).op != At);
-    };
     const auto &model = GetOperator(dynamic_cast<OperatorNode &>(**it).op);
 
-    if (((*it)->children.empty() || model.type == Call) && !peekStackArguments(it, **it, model.args))
+    if ((*it)->children.empty() && !peekStackArguments(it, **it, model.args))
         throw LogicError("ShuntingYard", "Not enough arguments to process operator @" + GetOperatorSymbol(model.type) + "@" + getErrorContext(_line));
-    switch (model.type) {
-    case Assign:
-    case AdditionAssign:
-    case SubstractionAssign:
-    case MultiplicationAssign:
-    case DivisionAssign:
-    case ModuloAssign:
-    case PrefixIncrement:
-    case PrefixDecrement:
-    case SufixIncrement:
-    case SufixDecrement:
-        if (!hasVarReference(**it))
-            throw LogicError("ShuntingYard", "An assignment can't have a @non-reference type@ as left argument" + getErrorContext(_line));
-        break;
-    case At:
-        if (!hasVarReference(**it))
-            throw LogicError("ShuntingYard", "Container access can't have a @non-reference type@ as left argument" + getErrorContext(_line));
-        break;
-    case Call:
-    {
-        auto type = (*it)->children[0]->getType();
-        if (type != ASTNode::Reference && type != ASTNode::Function)
-            throw LogicError("ShuntingYard", "A call can't have a @non-reference type@ as left argument" + getErrorContext(_line));
-        break;
-    }
-    default:
-        break;
-    }
+    if (model.type == Call && (*it)->children[0]->getType() != ASTNode::Reference)
+        throw LogicError("ShuntingYard", "Invalid use of @call@ operator" + getErrorContext(_line));
 }
 
 bool oA::Lang::ShuntingYard::peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, Uint args) noexcept
