@@ -5,12 +5,8 @@
 ** OperatorNode
 */
 
-#include <openApp/Containers/Pair.hpp>
 #include <openApp/Language/Nodes/OperatorNode.hpp>
 #include <openApp/Language/Nodes/ReferenceNode.hpp>
-#include <openApp/Language/Nodes/LocalNode.hpp>
-
-#include <openApp/Core/Log.hpp>
 
 oA::Lang::VarRef oA::Lang::OperatorNode::compute(void)
 {
@@ -40,17 +36,35 @@ oA::Lang::VarRef oA::Lang::OperatorNode::compute(void)
     case Modulo:
         return *children[0]->compute() % *children[1]->compute();
     case Assign:
-        return *children[0]->compute() = *children[1]->compute();
+    {
+        auto value = children[1]->compute();
+        return *children[0]->compute() = value.hasOwnership() ? std::move(*value) : *value;
+    }
     case AdditionAssign:
-        return *children[0]->compute() += *children[1]->compute();
+    {
+        auto value = children[1]->compute();
+        return *children[0]->compute() += value.hasOwnership() ? std::move(*value) : *value;
+    }
     case SubstractionAssign:
-        return *children[0]->compute() -= *children[1]->compute();
+    {
+        auto value = children[1]->compute();
+        return *children[0]->compute() -= value.hasOwnership() ? std::move(*value) : *value;
+    }
     case MultiplicationAssign:
-        return *children[0]->compute() *= *children[1]->compute();
+    {
+        auto value = children[1]->compute();
+        return *children[0]->compute() *= value.hasOwnership() ? std::move(*value) : *value;
+    }
     case DivisionAssign:
-        return *children[0]->compute() /= *children[1]->compute();
+    {
+        auto value = children[1]->compute();
+        return *children[0]->compute() /= value.hasOwnership() ? std::move(*value) : *value;
+    }
     case ModuloAssign:
-        return *children[0]->compute() %= *children[1]->compute();
+    {
+        auto value = children[1]->compute();
+        return *children[0]->compute() %= value.hasOwnership() ? std::move(*value) : *value;
+    }
     case PrefixIncrement:
         return ++(*children[0]->compute());
     case PrefixDecrement:
@@ -68,7 +82,7 @@ oA::Lang::VarRef oA::Lang::OperatorNode::compute(void)
     case At:
         return (*children[0]->compute())[*children[1]->compute()];
     case TernaryIf:
-        return *children[0]->compute() ? *children[1]->compute() : *children[2]->compute();
+        return *children[0]->compute() ? children[1]->compute() : children[2]->compute();
     default:
         throw LogicError("OperatorNode", "Can't compute uncomputable operator");
     }

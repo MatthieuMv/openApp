@@ -20,7 +20,7 @@ bool oA::Property::compute(void)
     auto value = _tree->compute();
     if (Var::operator==(*value))
         return false;
-    Var::operator=(*value);
+    Var::operator=(value.hasOwnership() ? std::move(*value) : *value);
     return true;
 }
 

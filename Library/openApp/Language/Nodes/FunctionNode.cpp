@@ -18,11 +18,17 @@ oA::Lang::VarRef oA::Lang::FunctionNode::compute(void)
     case Length:
         return children[0]->compute()->len();
     case Push:
-        return children[0]->compute()->push(*children[1]->compute());
+    {
+        auto value = children[1]->compute();
+        return children[0]->compute()->push(value.hasOwnership() ? std::move(*value) : *value);
+    }
     case Pop:
         return children[0]->compute()->pop();
     case Insert:
-        return children[0]->compute()->insert(*children[1]->compute(), *children[2]->compute());
+    {
+        auto value = children[2]->compute();
+        return children[0]->compute()->insert(*children[1]->compute(), value.hasOwnership() ? std::move(*value) : *value);
+    }
     case Remove:
         return children[0]->compute()->remove(*children[1]->compute());
     case Print:

@@ -129,20 +129,6 @@ public:
     Item *getParent(void) noexcept { return _parent; }
 
     /**
-     * @brief Set internal id
-     *
-     * @param id ID
-     */
-    void setID(const String &id) noexcept { _id = id; }
-
-    /**
-     * @brief Get internal id
-     *
-     * @return Item* ID
-     */
-    const String &getID(void) const noexcept { return _id; }
-
-    /**
      * @brief Get the Area Context object of Item
      *
      * @return AreaContext Item context
@@ -245,7 +231,6 @@ public:
 
 private:
     Item *_parent = nullptr; // Must use raw pointer to point parent from inside the class
-    String _id;
 
     /**
      * @brief Recursively find an Item in parents

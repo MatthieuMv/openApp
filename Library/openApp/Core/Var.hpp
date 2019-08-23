@@ -50,7 +50,6 @@ public:
     enum VarType {
         VNumber = 0,
         VLiteral,
-        VItem,
         VContainer
     };
 
@@ -101,7 +100,20 @@ public:
      * @return const T& Extracted value
      */
     template<typename T>
-    constexpr const T &getAs(void) const { return std::get<T>(_var); }
+    const T &getAs(void) const {
+        try {
+            return std::get<T>(_var);
+        } catch (...) {
+            throw LogicError("Var", "Invalid use of @getAs@ function, internal type is currently @" + getTypeName() + '@');
+        }
+    }
+
+    /**
+     * @brief Get internal type name
+     *
+     * @return String Type name
+     */
+    String getTypeName(void) const noexcept;
 
     /**
      * @brief Swap two Var

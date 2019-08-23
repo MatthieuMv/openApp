@@ -68,7 +68,11 @@ public:
      */
     template<typename T>
     const T &getAs(const String &key) const {
-        return get(key).getAs<T>();
+        try {
+            return get(key).getAs<T>();
+        } catch (const LogicError &e) {
+            throw LogicError(e.what() + String("\n\t-> from '#") + getID() + "#': @" + key + '@');
+        }
     }
 
     /**
@@ -79,6 +83,21 @@ public:
      */
     PropertyPtr getPtr(const String &key) const noexcept;
 
+    /**
+     * @brief Set internal id
+     *
+     * @param id ID
+     */
+    void setID(const String &id) noexcept { _id = id; }
+
+    /**
+     * @brief Get internal id
+     *
+     * @return Item* ID
+     */
+    const String &getID(void) const noexcept { return _id; }
+
 protected:
     UMap<String, PropertyPtr> _members;
+    String _id;
 };

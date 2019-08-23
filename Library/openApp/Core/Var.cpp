@@ -8,6 +8,18 @@
 #include <openApp/Types/Error.hpp>
 #include <openApp/Core/Var.hpp>
 
+oA::String oA::Var::getTypeName(void) const noexcept
+{
+    switch (index()) {
+    case VNumber:
+        return "Number";
+    case VLiteral:
+        return "Literal";
+    default:
+        return "Container";
+    }
+}
+
 void oA::Var::swap(Var &other) noexcept
 {
     Signal<>::swap(other);

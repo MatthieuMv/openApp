@@ -66,6 +66,6 @@ class oA::LogicError : public oA::Error { public: using Error::Error; };
 class oA::AccessError : public oA::Error { public: using Error::Error; };
 
 /**
- * @brief Used on access error
+ * @brief Used on runtime error
  */
 class oA::RuntimeError : public oA::Error { public: using Error::Error; };
