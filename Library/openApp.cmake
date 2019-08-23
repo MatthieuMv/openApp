@@ -29,6 +29,7 @@ set(Types
     ${oATypes}/Color.hpp
     ${oATypes}/Color.cpp
     ${oATypes}/Variant.hpp
+    ${oATypes}/OptionalReference.hpp
 )
 
 set(Core
@@ -85,6 +86,7 @@ set(App
     ${oAApp}/Items/EventArea.hpp
     ${oAApp}/Items/Button.hpp
     ${oAApp}/Items/ImageButton.hpp
+    ${oAApp}/Items/IndexView.hpp
 )
 
 set(Language
@@ -92,6 +94,8 @@ set(Language
     ${oALanguage}/Operator.cpp
     ${oALanguage}/Statement.hpp
     ${oALanguage}/Statement.cpp
+    ${oALanguage}/Function.hpp
+    ${oALanguage}/Function.cpp
     ${oALanguage}/Lexer.hpp
     ${oALanguage}/Lexer.cpp
     ${oALanguage}/Parser.hpp
@@ -114,6 +118,8 @@ set(Language
     ${oALanguage}/Nodes/OperatorNode.cpp
     ${oALanguage}/Nodes/StatementNode.hpp
     ${oALanguage}/Nodes/StatementNode.cpp
+    ${oALanguage}/Nodes/FunctionNode.hpp
+    ${oALanguage}/Nodes/FunctionNode.cpp
 )
 
 set(Render

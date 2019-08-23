@@ -11,9 +11,13 @@
 int main(void)
 {
     try {
-        X x<oA::SDLRenderer>();
+        oA::SDLApp app;
+
+        app.parseFile("Library/Tests/TestMedias/Test01.oA");
+        app.run();
+        return 0;
     } catch (oA::Error &e) {
         oA::cerr << e.what() << oA::endl;
+        return 84;
     }
-    return 0;
 }

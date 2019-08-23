@@ -74,9 +74,8 @@ void oA::Lang::Instantiator::openFileContext(String &&path)
 
 oA::ItemPtr oA::Lang::Instantiator::closeContext(void)
 {
-    auto &ctx = context();
-    auto root = ctx.root;
-    auto unresolved = std::move(ctx.unresolved);
+    auto root = std::move(context().root);
+    auto unresolved = std::move(context().unresolved);
 
     _contexts.pop();
     for (auto it = unresolved.begin(); it != unresolved.end(); it = unresolved.erase(it)) {
@@ -139,19 +138,27 @@ void oA::Lang::Instantiator::processClass(const ClassNode &node)
     if (!ctx.root)
         ctx.root = ptr;
     else
-        ctx.root->appendChild(ptr);
+        ctx.target->appendChild(ptr);
+    auto oldTarget = ctx.target ? std::move(ctx.target) : ctx.root;
     ctx.target = std::move(ptr);
     processRoot(node);
-    ctx.target = ctx.root;
+    ctx.target = std::move(oldTarget);
     if (_verbose)
         cout << Repeat(--_tab) << "   " << "}" << endl;
 }
 
 oA::String oA::Lang::Instantiator::searchClassPath(const String &name)
 {
-    auto filename = name, path = String();
+    auto filename = name, path = unit().path;
+    auto pos = path.find_last_of('/');
 
     filename.tryAppend(".oA");
+    if (pos != path.npos) {
+        path.erase(pos + 1);
+        path += filename;
+        if (Path::Exists(path))
+            return path;
+    }
     if (Path::Exists(filename))
         return filename;
     for (const auto &import : context().imports) {
@@ -168,7 +175,7 @@ void oA::Lang::Instantiator::processDeclaration(const DeclarationNode &node)
     auto &target = context().target;
 
     if (!target)
-        throw LogicError("Instantiator", "Can't process @declaration@ of null root object" + getErrorContext());
+        throw LogicError("Instantiator", "Can't process @declaration@ of null root object" + getErrorContext(node.line));
     if (processSpecialDeclaration(node))
         return;
     mode = prepareDeclaration(node);
@@ -223,7 +230,7 @@ bool oA::Lang::Instantiator::processSpecialDeclaration(const DeclarationNode &no
     if (it == Specials.end())
         return false;
     if (node.type != DeclarationNode::AssignmentDeclaration)
-        throw LogicError("Instantiator", "Invalid use of reserved keyword @" + node.name + "@" + getErrorContext());
+        throw LogicError("Instantiator", "Invalid use of reserved keyword @" + node.name + "@" + getErrorContext(node.line));
     if (_verbose)
         cout << Repeat(_tab) << "   " << '#' << node.name << "#: ";
     (this->*it->second)(node);
@@ -233,7 +240,7 @@ bool oA::Lang::Instantiator::processSpecialDeclaration(const DeclarationNode &no
 void oA::Lang::Instantiator::processID(const DeclarationNode &node)
 {
     if (node.tokens.size() != 1)
-        throw LogicError("Instantiator", "Invalid item @id@" + getErrorContext());
+        throw LogicError("Instantiator", "Invalid item @id@" + getErrorContext(node.line));
     context().target->setID(node.tokens.front().first);
     if (_verbose)
         cout << context().target->getID() << endl;
@@ -246,25 +253,25 @@ void oA::Lang::Instantiator::processRelativeSize(const DeclarationNode &node)
     auto &target = context().target;
 
     if (it == node.tokens.end())
-        throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext());
+        throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext(node.line));
     x = it->first.toFloat();
     if (++it == node.tokens.end() || it->first != "," || ++it == node.tokens.end())
-        throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext());
+        throw LogicError("Instantiator", "Invalid use of special property @relativeSize@" + getErrorContext(node.line));
     y = it->first.toFloat();
     try {
-        target->setExpression("width", "parent.width * " + ToString(x));
-        target->setExpression("height", "parent.height * " + ToString(y));
+        target->setExpression("width", "parent.width * " + ToString(x), "relativeSize");
+        target->setExpression("height", "parent.height * " + ToString(y), "relativeSize");
         if (_verbose)
             cout << x << ", " << y << endl;
     } catch (...) {
         if (_verbose)
             cout << "@unresolved@" << endl;
-        context().unresolved.emplace_back([item = target, ctx = unit().path, x, y](void) mutable {
+        context().unresolved.emplace_back([item = target, ctx = unit().path, x, y, line = node.line](void) mutable {
             try {
-                item->setExpression("width", "parent.width * " + ToString(x));
-                item->setExpression("height", "parent.height * " + ToString(y));
+                item->setExpression("width", "parent.width * " + ToString(x), "relativeSize");
+                item->setExpression("height", "parent.height * " + ToString(y), "relativeSize");
             } catch (const Error &e) {
-                throw LogicError("Instantiator", "Invalid @relativeSize@ (target may have no parent) in context #" + ctx + "#\n\t-> " + e.what());
+                throw LogicError("Instantiator", "Invalid @relativeSize@ | @" + ctx + "@ line #" + ToString(line) + "#\n\t-> " + e.what());
             }
         });
     }
@@ -277,25 +284,25 @@ void oA::Lang::Instantiator::processRelativePos(const DeclarationNode &node)
     auto &target = context().target;
 
     if (it == node.tokens.end())
-        throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext());
+        throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext(node.line));
     x = it->first.toFloat();
     if (++it == node.tokens.end() || it->first != "," || ++it == node.tokens.end())
-        throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext());
+        throw LogicError("Instantiator", "Invalid use of special property @relativePos@" + getErrorContext(node.line));
     y = it->first.toFloat();
     try {
-        target->setExpression("x", "parent.width * " + ToString(x) + "- width / 2");
-        target->setExpression("y", "parent.height * " + ToString(y) + " - height / 2");
+        target->setExpression("x", "parent.width * " + ToString(x) + "- width / 2", "relativePos");
+        target->setExpression("y", "parent.height * " + ToString(y) + " - height / 2", "relativePos");
         if (_verbose)
             cout << x << ", " << y << endl;
     } catch (...) {
         if (_verbose)
             cout << "@unresolved@" << endl;
-        context().unresolved.emplace_back([item = target, ctx = unit().path, x, y](void) mutable {
+        context().unresolved.emplace_back([item = target, ctx = unit().path, x, y, line = node.line](void) mutable {
             try {
-                item->setExpression("x", "parent.width * " + ToString(x) + "- width / 2");
-                item->setExpression("y", "parent.height * " + ToString(y) + " - height / 2");
+                item->setExpression("x", "parent.width * " + ToString(x) + "- width / 2", "relativePos");
+                item->setExpression("y", "parent.height * " + ToString(y) + " - height / 2", "relativePos");
             } catch (const Error &e) {
-                throw LogicError("Instantiator", "Invalid @relativePos@ (target may have no parent) in context #" + ctx + "#\n\t-> " + e.what());
+                throw LogicError("Instantiator", "Invalid @relativePos@ | @" + ctx + "@ line #" + ToString(line) + "#\n\t-> " + e.what());
             }
         });
     }

@@ -22,11 +22,5 @@ struct oA::Lang::OperatorNode : public ASTNode
 
     virtual NodeType getType(void) const { return NodeType::Operator; }
 
-    virtual Var compute(void);
-
-    Var &at(void);
-
-    Var assign(ASTNode &node, Var &&value, Lang::Operator type);
-    Var &assignAt(OperatorNode &node, Var &&value, Lang::Operator type);
-    void assignValue(Var &var, Var &&value, Lang::Operator type);
+    virtual VarRef compute(void);
 };

@@ -18,9 +18,9 @@ bool oA::Property::compute(void)
     if (!_tree)
         return false;
     auto value = _tree->compute();
-    if (Var::operator==(value))
+    if (Var::operator==(*value))
         return false;
-    Var::operator=(std::move(value));
+    Var::operator=(*value);
     return true;
 }
 
@@ -64,7 +64,7 @@ void oA::Property::setTree(Lang::ASTNodePtr &&tree)
     if (!tree)
         throw LogicError("Property", "Can't set null expression @tree@");
     else if (tree->isConst())
-        Var::operator=(tree->compute());
+        Var::operator=(*tree->compute());
     else
         _tree = std::move(tree);
 }

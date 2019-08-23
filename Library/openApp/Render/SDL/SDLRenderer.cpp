@@ -12,16 +12,36 @@
 #include <openApp/Render/SDL/Extern/SDL_FontCache.h>
 #include <openApp/Types/Error.hpp>
 #include <openApp/Render/SDL/SDLRenderer.hpp>
+#include <openApp/Core/Log.hpp>
+
+oA::SDLRenderer::Window::Window(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear)
+    : window(_window), renderer(_renderer), clear(_clear)
+{
+}
+
+oA::SDLRenderer::Window &oA::SDLRenderer::Window::operator=(Window &&other)
+{
+    window = other.window;
+    renderer = other.renderer;
+    clear = other.clear;
+    return *this;
+}
 
 oA::SDLRenderer::SDLRenderer(void)
 {
-    if (SDL_Init(SDL_INIT_TIMER | SDL_INIT_VIDEO) || TTF_Init() < 0)
-        throw RuntimeError("SDLRenderer", "Couldn't initialize @SDL@");
+    constexpr auto sdlFlags = SDL_INIT_TIMER | SDL_INIT_VIDEO;
+    constexpr auto imgFlags = IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP;
+
+    if (SDL_Init(sdlFlags) || !IMG_Init(imgFlags) || TTF_Init() < 0)
+        throw RuntimeError("SDLRenderer", "Couldn't initialize @SDL@ renderer");
 }
 
 oA::SDLRenderer::~SDLRenderer(void)
 {
+    clearFontsCache();
+    clearTexturesCache();
     TTF_Quit();
+    IMG_Quit();
     SDL_Quit();
 }
 
@@ -56,8 +76,9 @@ void oA::SDLRenderer::closeWindow(Int index)
         throw RuntimeError("SDLRenderer", "Couldn't close null @window@");
     if (&it->second == _current)
         _current = nullptr;
-    SDL_DestroyWindow(it->second.window);
+    clearFontsCache(); // Required by FC library
     SDL_DestroyRenderer(it->second.renderer);
+    SDL_DestroyWindow(it->second.window);
     _windows.erase(it);
 }
 
@@ -398,7 +419,11 @@ SDL_Texture *oA::SDLRenderer::getTexture(const ImageContext &context)
 
     if (it != _textures.end())
         return it->second;
-    return _textures[context.source] = IMG_LoadTexture(_current->renderer, context.source);
+    auto *img = IMG_LoadTexture(_current->renderer, context.source);
+    if (!img)
+        throw RuntimeError("SDLRenderer", "Couldn't instantiate new texture @" + String(context.source) + "@");
+    _textures.emplace_back(context.source, img);
+    return img;
 }
 
 FC_Font *oA::SDLRenderer::getFont(const LabelContext &context)
@@ -409,16 +434,18 @@ FC_Font *oA::SDLRenderer::getFont(const LabelContext &context)
 
     if (it != _fonts.end())
         return it->second;
-    auto &font = _fonts.emplace_back(context.font, FC_CreateFont());
-    FC_LoadFont(
-        font.second,
-        _current->renderer,
-        context.font,
-        context.fontSize,
-        FC_MakeColor(context.fontColor.getR(), context.fontColor.getG(), context.fontColor.getB(), context.fontColor.getA()),
-        TTF_STYLE_NORMAL
-    );
-    return font.second;
+    auto *font = FC_CreateFont();
+    if (!font || !FC_LoadFont(
+            font,
+            _current->renderer,
+            context.font,
+            context.fontSize,
+            FC_MakeColor(context.fontColor.getR(), context.fontColor.getG(), context.fontColor.getB(), context.fontColor.getA()),
+            TTF_STYLE_NORMAL
+            ))
+        throw RuntimeError("SDLRenderer", "Couldn't instantiate new font @" + String(context.font) + "@");
+    _fonts.emplace_back(context.font, font);
+    return font;
 }
 
 oA::Uint oA::SDLRenderer::getWindowFlags(WindowContext::Type type)
@@ -433,6 +460,18 @@ oA::Uint oA::SDLRenderer::getWindowFlags(WindowContext::Type type)
     default:
         return 0;
     }
+}
+
+void oA::SDLRenderer::clearTexturesCache(void)
+{
+    _textures.apply([](auto &p) { SDL_DestroyTexture(p.second); });
+    _textures.clear();
+}
+
+void oA::SDLRenderer::clearFontsCache(void)
+{
+    _fonts.apply([](auto &p) { FC_FreeFont(p.second); });
+    _fonts.clear();
 }
 
 bool oA::SDLRenderer::pollEvent(Event &target)

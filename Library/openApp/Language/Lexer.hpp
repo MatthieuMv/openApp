@@ -70,6 +70,13 @@ private:
     void process(void);
 
     /**
+     * @brief Process a single character
+     *
+     * @param c Character to process
+     */
+    void processChar(char c);
+
+    /**
      * @brief Process a string
      *
      * @param res String containing the first character of the string
@@ -117,6 +124,11 @@ private:
      * @param res String containing the first character of the function call
      */
     void processFunctionCall(String &&res);
+
+    /**
+     * @brief Process function call arguments
+     */
+    void processFunctionArgs(void);
 
     /**
      * @brief Process a word followed by an index access

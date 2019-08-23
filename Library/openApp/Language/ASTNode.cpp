@@ -51,6 +51,8 @@ void oA::Lang::ASTNode::ShowTree(const ASTNode &root, Int tab)
         case Statement:
             cout << "@Statement:@  " << GetStatementSymbol(dynamic_cast<const StatementNode &>(root).statement);
             break;
+        case Function:
+            cout << "@Function:@  " << GetFunctionSymbol(dynamic_cast<const FunctionNode &>(root).symbol);
     }
     cout << endl;
     for (const auto &child : root.children)

@@ -96,6 +96,12 @@ void oA::Lang::ShuntingYard::processOperator(Lexer::TokenList::const_iterator &i
         buildStack(root.emplaceAs<GroupNode>());
         collectSingleGroup(it, *root.children.back());
         break;
+    case StartCall:
+        processOperatorLogic(GetOperator(Call));
+        processFunctionArguments(++it, *_opStack.emplace_back(std::make_unique<OperatorNode>(Call)));
+        break;
+    case EndCall:
+        throw LogicError("ShuntingYard", "Unexpected end call token" + getErrorContext(it->second));
     default:
         processOperatorLogic(model);
         _opStack.emplace_back(std::make_unique<OperatorNode>(model.type));
@@ -115,6 +121,33 @@ void oA::Lang::ShuntingYard::processOperatorLogic(const OperatorModel &model)
             break;
         other = &GetOperator(dynamic_cast<OperatorNode &>(*_opStack.back()).op);
     }
+}
+
+void oA::Lang::ShuntingYard::processFunctionArguments(Lexer::TokenList::const_iterator &it, ASTNode &root)
+{
+    Vector<ASTNodePtr> stack, opStack;
+    auto line = it->second;
+    auto opened = 1;
+
+    _stack.swap(stack);
+    _opStack.swap(opStack);
+    for (; it != _tokens.end(); ++it) {
+        if (it->first == "((")
+            ++opened;
+        else if (it->first == "))")
+            --opened;
+        if (!opened)
+            break;
+        else if (it->first == ",")
+            buildStack(root);
+        else
+            processToken(it, root);
+    }
+    if (opened)
+        throw LogicError("ShuntingYard", "Invalid function call @arguments@" + getErrorContext(line));
+    buildStack(root);
+    _stack.swap(stack);
+    _opStack.swap(opStack);
 }
 
 void oA::Lang::ShuntingYard::processIncrementOperator(Lexer::TokenList::const_iterator &it)
@@ -468,8 +501,11 @@ void oA::Lang::ShuntingYard::buildStack(ASTNode &root)
             throw LogicError("ShuntingYard", "Can't build invalid node" + getErrorContext(_line));
         }
     }
-    if (_stack.size() != 1)
+    if (_stack.size() != 1) {
+        cout << endl << "ERROR" << endl;
+        _stack.apply([](const auto &x) { ASTNode::ShowTree(*x); });
         throw LogicError("ShuntingYard", "Invalid expression" + getErrorContext(_line));
+    }
     root.emplace(std::move(_stack.front()));
     _stack.clear();
 }
@@ -482,7 +518,7 @@ void oA::Lang::ShuntingYard::buildOperator(Vector<ASTNodePtr>::iterator &it)
     };
     const auto &model = GetOperator(dynamic_cast<OperatorNode &>(**it).op);
 
-    if ((*it)->children.empty() && !peekStackArguments(it, **it, model.args))
+    if (((*it)->children.empty() || model.type == Call) && !peekStackArguments(it, **it, model.args))
         throw LogicError("ShuntingYard", "Not enough arguments to process operator @" + GetOperatorSymbol(model.type) + "@" + getErrorContext(_line));
     switch (model.type) {
     case Assign:
@@ -503,9 +539,12 @@ void oA::Lang::ShuntingYard::buildOperator(Vector<ASTNodePtr>::iterator &it)
             throw LogicError("ShuntingYard", "Container access can't have a @non-reference type@ as left argument" + getErrorContext(_line));
         break;
     case Call:
-        if ((*it)->children[0]->getType() != ASTNode::Reference)
+    {
+        auto type = (*it)->children[0]->getType();
+        if (type != ASTNode::Reference && type != ASTNode::Function)
             throw LogicError("ShuntingYard", "A call can't have a @non-reference type@ as left argument" + getErrorContext(_line));
         break;
+    }
     default:
         break;
     }
@@ -513,14 +552,14 @@ void oA::Lang::ShuntingYard::buildOperator(Vector<ASTNodePtr>::iterator &it)
 
 bool oA::Lang::ShuntingYard::peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, Uint args) noexcept
 {
-    auto tmp = args;
+    auto i = args;
 
-    for (; tmp > 0 && it != _stack.begin(); --tmp)
+    for (; i > 0 && it != _stack.begin(); --i)
         --it;
-    if (tmp)
+    if (i)
         return false;
     for (; args > 0; --args) {
-        target.emplace(std::move(*it));
+        target.children.insert(target.children.begin() + i++, std::move(*it));
         it = _stack.erase(it);
     }
     return true;

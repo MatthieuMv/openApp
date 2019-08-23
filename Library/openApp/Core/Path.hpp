@@ -42,7 +42,7 @@ namespace oA::Path
     bool DirExists(const String &path);
 
     /**
-     * @brief Retreive absolute path from a relative path 
+     * @brief Retreive absolute path from a relative path
      *
      * @param path Relative path
      * @return String Absolute path (or empty if doesn't exists)
@@ -50,7 +50,7 @@ namespace oA::Path
     String GetAbsolutePath(const String &path);
 
     /**
-     * @brief Retreive canonical path from a relative path 
+     * @brief Retreive canonical path from a relative path
      *
      * @param path Relative path
      * @return String Canonical path (or empty if doesn't exists)

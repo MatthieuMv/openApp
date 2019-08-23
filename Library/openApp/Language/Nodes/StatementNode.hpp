@@ -22,10 +22,10 @@ struct oA::Lang::StatementNode : public ASTNode
 
     virtual NodeType getType(void) const { return NodeType::Statement; }
 
-    virtual Var compute(void);
+    virtual VarRef compute(void);
 
-    Var computeIf(void);
-    Var computeSwitch(void);
-    Var computeWhile(void);
-    Var computeFor(void);
+    VarRef computeIf(void);
+    VarRef computeSwitch(void);
+    VarRef computeWhile(void);
+    VarRef computeFor(void);
 };

@@ -17,10 +17,10 @@ struct oA::Lang::GroupNode : public ASTNode
 
     virtual NodeType getType(void) const { return Group; }
 
-    virtual Var compute(void) override {
-        Var res;
+    virtual VarRef compute(void) override {
+        VarRef res;
         for (const auto &child : children)
-            res = child->compute();
+            res = std::move(child->compute());
         return res;
     }
 };

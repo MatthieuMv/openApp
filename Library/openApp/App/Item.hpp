@@ -76,7 +76,7 @@ public:
      *
      * @param child Child to remove
      */
-    virtual void onRemoveChild(Item &child) { child.setParent(nullptr); }
+    virtual void onRemoveChild(Item &child);
 
     /**
      * @brief Callback on internal parent changed
@@ -198,7 +198,7 @@ public:
      * @param target Expression to set
      * @param expression openApp language function as String
      */
-    void setExpression(const String &key, const String &expression);
+    void setExpression(const String &key, const String &expression, const String &context = String());
 
     /**
      * @brief Set internal expression of matching key
@@ -208,7 +208,7 @@ public:
      * @param target Expression to set
      * @param expression openApp language function as String
      */
-    void setFunction(const String &key, const String &expression);
+    void setFunction(const String &key, const String &expression, const String &context = String());
 
     /**
      * @brief Add an event to matching external expression
@@ -218,7 +218,7 @@ public:
      * @param keyExpr Expression key name (can be relative to external items)
      * @param expression openApp language function as String
      */
-    void addExpressionEvent(const String &key, const String &expression);
+    void addExpressionEvent(const String &key, const String &expression, const String &context = String());
 
     /**
      * @brief Find an item using a match key (ex: parent.label)

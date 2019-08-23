@@ -8,6 +8,7 @@
 #pragma once
 
 #include <openApp/App/Item.hpp>
+#include <openApp/Core/Log.hpp>
 
 namespace oA { class IndexView; }
 
@@ -25,19 +26,14 @@ public:
 
     String getName(void) const noexcept { return "IndexView"; }
 
-    virtual void onAppendChild(Item &) { updateVisibility(); }
+    virtual void onAppendChild(Item &item) { Item::onAppendChild(item); updateVisibility(); }
 
-    virtual void onRemoveChild(Item &) { updateVisibility(); }
+    virtual void onRemoveChild(Item &item) { Item::onAppendChild(item); updateVisibility(); }
 
 private:
     void updateVisibility(void) {
-        auto index = get("index").toInt();
-        auto i = 0;
-        for (auto &child : _children) {
-            if (i == index)
-                child->get("visible") = false;
-            else
-                child->get("visible") = true;
-        }
+        _children.apply([index = get("index").toInt(), i = 0](auto &child) mutable {
+            child->get("visible") = i++ == index;
+        });
     }
 };

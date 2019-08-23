@@ -23,5 +23,5 @@ struct oA::Lang::LocalNode : public ASTNode
 
     virtual bool isConst(void) const { return false; }
 
-    Var compute(void) { return local; }
+    VarRef compute(void) { return local; }
 };

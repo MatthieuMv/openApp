@@ -229,4 +229,11 @@ private:
      * @return String Error message
      */
     String getErrorContext(void) const { return " | @" + unit().path + '@'; }
+
+    /**
+     * @brief Get the Error Context object of current context
+     *
+     * @return String Error message
+     */
+    String getErrorContext(Uint line) const { return getErrorContext() + " line #" + ToString(line) + '#'; }
 };

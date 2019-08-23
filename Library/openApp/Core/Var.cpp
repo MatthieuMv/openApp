@@ -79,8 +79,15 @@ oA::String oA::Var::toString(void) const noexcept
         [] (const Literal &literal) {
             return literal;
         },
-        [] (const Container &) {
-            return String();
+        [] (const Container &container) {
+            String str = "[ ";
+            container.apply([&str, i = 0](const auto &var) mutable {
+                if (i++)
+                    str += ", ";
+                str += var.toString();
+            });
+            str += " ]";
+            return str;
         }
     }, _var);
 }
@@ -529,8 +536,7 @@ oA::Var &oA::Var::push(const Var &value)
             return !str.empty();
         },
         [this, &value] (Container &container) -> bool {
-            container.emplace_back(value);
-            container.back().connect([this]{ this->emit(); return true; });
+            container.emplace_back(value).connect([this]{ this->emit(); return true; });
             return true;
         }
     }, _var))
@@ -550,8 +556,91 @@ oA::Var &oA::Var::push(Var &&value)
             return !str.empty();
         },
         [this, &value] (Container &container) -> bool {
-            container.emplace_back(std::move(value));
-            container.back().connect([this]{ this->emit(); return true; });
+            container.emplace_back(std::move(value)).connect([this]{ this->emit(); return true; });
+            return true;
+        }
+    }, _var))
+        this->emit();
+    return *this;
+}
+
+oA::Var &oA::Var::pop(void)
+{
+    if (std::visit(Overload {
+        [] (const Number &) -> bool {
+            throw LogicError("Var", "Can't use function push on @Number@");
+        },
+        [] (Literal &literal) -> bool {
+            literal.pop_back();
+            return true;
+        },
+        [] (Container &container) -> bool {
+            container.pop_back();
+            return true;
+        }
+    }, _var))
+        this->emit();
+    return *this;
+}
+
+oA::Var &oA::Var::insert(const Var &index, const Var &value)
+{
+    if (std::visit(Overload {
+        [] (const Number &) -> bool {
+            throw LogicError("Var", "Can't use function push on @Number@");
+        },
+        [&index, &value] (Literal &literal) -> bool {
+            auto str = value.toString();
+            literal.insert(index.toUint(), str);
+            return !str.empty();
+        },
+        [this, &index, &value] (Container &container) -> bool {
+            auto it = container.begin();
+            std::advance(it, index.toUint());
+            container.insert(it, value)->connect([this]{ this->emit(); return true; });
+            return true;
+        }
+    }, _var))
+        this->emit();
+    return *this;
+}
+
+oA::Var &oA::Var::insert(const Var &index, Var &&value)
+{
+    if (std::visit(Overload {
+        [] (const Number &) -> bool {
+            throw LogicError("Var", "Can't use function push on @Number@");
+        },
+        [&index, &value] (Literal &literal) -> bool {
+            auto str = value.toString();
+            literal.insert(index.toUint(), str);
+            return !str.empty();
+        },
+        [this, &index, &value] (Container &container) -> bool {
+            auto it = container.begin();
+            std::advance(it, index.toUint());
+            container.insert(it, std::move(value))->connect([this]{ this->emit(); return true; });
+            return true;
+        }
+    }, _var))
+        this->emit();
+    return *this;
+}
+
+oA::Var &oA::Var::remove(const Var &index)
+{
+    if (std::visit(Overload {
+        [] (const Number &) -> bool {
+            throw LogicError("Var", "Can't use function push on @Number@");
+        },
+        [&index] (Literal &literal) -> bool {
+            literal.erase(index.toUint());
+            return true;
+        },
+        [&index] (Container &container) -> bool {
+            auto it = container.begin();
+            std::advance(it, index.toUint());
+            container.erase(it);
             return true;
         }
     }, _var))

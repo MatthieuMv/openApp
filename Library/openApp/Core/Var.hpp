@@ -185,10 +185,14 @@ public:
     Var &operator[](const Var &other);
     const Var &operator[](const Var &other) const;
 
-    /* Special operators */
+    /* Functions */
     Var len(void) const;
     Var &push(const Var &value);
     Var &push(Var &&value);
+    Var &pop(void);
+    Var &insert(const Var &index, const Var &value);
+    Var &insert(const Var &index, Var &&value);
+    Var &remove(const Var &index);
 
 private:
     VariantType _var;

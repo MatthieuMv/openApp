@@ -24,5 +24,5 @@ struct oA::Lang::ReferenceNode : public ASTNode
 
     virtual bool isConst(void) const { return false; }
 
-    virtual Var compute(void) override { return *ptr; }
+    virtual VarRef compute(void) override { return *ptr; }
 };

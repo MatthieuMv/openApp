@@ -17,7 +17,7 @@ endif ()
 
 
 if (UNIX)
-    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra")
+    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -g3")
 endif ()
 
 set(CMAKE_CXX_STANDARD 17)

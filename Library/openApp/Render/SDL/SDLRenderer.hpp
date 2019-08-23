@@ -26,22 +26,14 @@ public:
     struct Window
     {
         Window(void) = default;
-        Window(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear)
-            : window(_window), renderer(_renderer), clear(_clear) {}
+        Window(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear);
 
-        Window &operator=(Window &&other) {
-            window = other.window;
-            renderer = other.renderer;
-            clear = other.clear;
-            return *this;
-        }
+        Window &operator=(Window &&other);
 
         SDL_Window *window = nullptr;
         SDL_Renderer *renderer = nullptr;
         Color clear;
     };
-
-    using Font = Pair<String, FC_Font *>;
 
     SDLRenderer(void);
     virtual ~SDLRenderer(void);
@@ -78,8 +70,8 @@ public:
 
 private:
     UMap<Int, Window> _windows;
-    UMap<String, SDL_Texture *> _textures;
-    List<Font> _fonts;
+    List<Pair<String, SDL_Texture *>> _textures;
+    List<Pair<String, FC_Font *>> _fonts;
     Window *_current = nullptr;
 
     Window &getWindow(Int index);
@@ -87,6 +79,9 @@ private:
     FC_Font *getFont(const LabelContext &context);
     Uint getWindowFlags(WindowContext::Type type);
     V2f getLabelPosition(const LabelContext &context);
+
+    void clearTexturesCache(void);
+    void clearFontsCache(void);
 
     bool constructWindowEvent(Event &target, SDL_Event &event);
     bool constructMouseEvent(Event &target, SDL_Event &event);

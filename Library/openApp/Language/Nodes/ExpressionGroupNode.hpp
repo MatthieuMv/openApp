@@ -20,11 +20,11 @@ struct oA::Lang::ExpressionGroupNode : public GroupNode
 
     virtual NodeType getType(void) const { return ExpressionGroup; }
 
-    virtual Var compute(void) override {
+    virtual VarRef compute(void) override {
         try {
             return GroupNode::compute();
-        } catch (const ReturnSignal &ret) {
-            return ret.value;
+        } catch (ReturnSignal &ret) {
+            return std::move(ret.value);
         } catch (const BreakSignal &) {
             throw LogicError("Break statement used out of loop");
         }

@@ -9,6 +9,7 @@
 
 #include <openApp/Types/Memory.hpp>
 #include <openApp/Types/Error.hpp>
+#include <openApp/Types/OptionalReference.hpp>
 #include <openApp/Containers/Vector.hpp>
 #include <openApp/Core/Var.hpp>
 
@@ -19,6 +20,8 @@ namespace oA::Lang
     class ASTNodeList;
 
     using ASTNodePtr = Unique<ASTNode>;
+
+    using VarRef = OptionalReference<Var>;
 }
 
 /**
@@ -40,7 +43,8 @@ struct oA::Lang::ASTNode
         Local,
         Value,
         Operator,
-        Statement
+        Statement,
+        Function
     };
 
     /**
@@ -48,9 +52,9 @@ struct oA::Lang::ASTNode
      */
     struct ReturnSignal
     {
-        ReturnSignal(Var &&var) : value(std::move(var)) {}
+        ReturnSignal(VarRef &&var) : value(std::move(var)) {}
 
-        Var value;
+        VarRef value;
     };
 
     /**
@@ -102,7 +106,7 @@ struct oA::Lang::ASTNode
      *
      * @return Var Resulting variable
      */
-    virtual Var compute(void) { throw LogicError("ASTNode", "Can't compute uncomputable node"); }
+    virtual VarRef compute(void) { throw LogicError("ASTNode", "Can't compute uncomputable node"); }
 
     /**
      * @brief Emplace an existing node

@@ -207,7 +207,7 @@ public:
 
     /**
      * @brief Assert that begin of internal string is other
-     * 
+     *
      * @param other String to compare
      * @return bool True if begin match
      */
@@ -215,7 +215,7 @@ public:
 
     /**
      * @brief Assert that end of internal string is other
-     * 
+     *
      * @param other String to compare
      * @return bool True if end match
      */
@@ -223,7 +223,7 @@ public:
 
     /**
      * @brief Try to append other into internal string if it doesn't end with it
-     * 
+     *
      * @param other String to append if not present
      * @return String& Allow chain operations
      */

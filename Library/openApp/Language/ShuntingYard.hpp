@@ -57,8 +57,7 @@ public:
     static void ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context = "Root", bool verbose = false, Uint tab = 0);
 
 private:
-    Vector<ASTNodePtr> _stack;
-    Vector<ASTNodePtr> _opStack;
+    Vector<ASTNodePtr> _stack, _opStack;
     ASTNodePtr _expr;
     PropertyPtr _target;
     State _state;
@@ -94,6 +93,7 @@ private:
 
     void processOperator(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void processOperatorLogic(const OperatorModel &model);
+    void processFunctionArguments(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void processIncrementOperator(Lexer::TokenList::const_iterator &it);
 
     void processReference(Lexer::TokenList::const_iterator &it);

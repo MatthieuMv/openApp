@@ -18,6 +18,11 @@ void oA::Item::onAppendChild(Item &child)
     child.setExpression("screenY", "parent.screenY + y");
 }
 
+void oA::Item::onRemoveChild(Item &child)
+{
+    child.setParent(nullptr);
+}
+
 void oA::Item::onParentChanged(void)
 {
     if (!getParent()) {
@@ -66,23 +71,23 @@ bool oA::Item::propagate(IRenderer &renderer, const Event &event)
     }) != _children.end();
 }
 
-void oA::Item::setExpression(const String &key, const String &expression)
+void oA::Item::setExpression(const String &key, const String &expression, const String &context)
 {
     if (!exists(key))
         append(key);
-    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Expression);
+    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Expression, context ? context : key);
 }
 
-void oA::Item::setFunction(const String &key, const String &expression)
+void oA::Item::setFunction(const String &key, const String &expression, const String &context)
 {
     if (!exists(key))
         append(key);
-    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Function);
+    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Function, context ? context : key);
 }
 
-void oA::Item::addExpressionEvent(const String &key, const String &expression)
+void oA::Item::addExpressionEvent(const String &key, const String &expression, const String &context)
 {
-    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Event);
+    Lang::ShuntingYard::ProcessString(*this, key, expression, Lang::ShuntingYard::Event, context ? context : key);
 }
 
 oA::Item *oA::Item::findItem(const String &key, FindWhere where)

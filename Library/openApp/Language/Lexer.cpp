@@ -62,21 +62,26 @@ oA::Lang::Lexer::Lexer(const String &context, IStream &stream, TokenList &tokens
 void oA::Lang::Lexer::process(void)
 {
     for (char c = get(); c > 0; c = get()) {
-        if (std::isspace(c))
-            continue;
-        else if (std::isalpha(c))
-            processWord(c);
-        else if (std::isdigit(c) || c == '.')
-            processNumber(c);
-        else if (c == '\"')
-            processString(c);
-        else if (c == '/' && peek() == '/')
-            processComment(false);
-        else if (c == '/' && peek() == '*')
-            processComment(true);
-        else if (IsOperator(c))
-            processOperator(c);
+        processChar(c);
     }
+}
+
+void oA::Lang::Lexer::processChar(char c)
+{
+    if (std::isspace(c))
+        return;
+    else if (std::isalpha(c))
+        processWord(c);
+    else if (std::isdigit(c) || c == '.')
+        processNumber(c);
+    else if (c == '\"')
+        processString(c);
+    else if (c == '/' && peek() == '/')
+        processComment(false);
+    else if (c == '/' && peek() == '*')
+        processComment(true);
+    else if (IsOperator(c))
+        processOperator(c);
 }
 
 void oA::Lang::Lexer::processString(String &&res)
@@ -181,10 +186,33 @@ void oA::Lang::Lexer::processWord(String &&res)
 
 void oA::Lang::Lexer::processFunctionCall(String &&res)
 {
-    if (peek() != ')')
-        throw LogicError("Lexer", "openApp language doesn't support function call with @arguments@" + getErrorContext());
-    res.push_back(get());
+    if (peek() == ')') {
+        res.push_back(get());
+        pushToken(std::move(res));
+        return;
+    }
+    res.push_back('(');
     pushToken(std::move(res));
+    processFunctionArgs();
+}
+
+void oA::Lang::Lexer::processFunctionArgs(void)
+{
+    auto opened = 1;
+    auto line = _line;
+
+    for (char c = get(); c > 0; c = get()) {
+        if (c == '(')
+            ++opened;
+        else if (c == ')')
+            --opened;
+        if (!opened)
+            break;
+        processChar(c);
+    }
+    if (opened)
+        throw LogicError("Lexer", "Invalid @function call@" + getErrorContext(line));
+    pushToken("))");
 }
 
 void oA::Lang::Lexer::processIndexAccess(String &&res)

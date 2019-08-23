@@ -17,3 +17,4 @@
 #include <openApp/Language/Nodes/ValueNode.hpp>
 #include <openApp/Language/Nodes/OperatorNode.hpp>
 #include <openApp/Language/Nodes/StatementNode.hpp>
+#include <openApp/Language/Nodes/FunctionNode.hpp>

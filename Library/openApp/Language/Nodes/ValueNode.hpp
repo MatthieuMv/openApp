@@ -23,6 +23,6 @@ struct oA::Lang::ValueNode : public ASTNode
 
     virtual NodeType getType(void) const { return Value; }
 
-    virtual Var compute(void) override { return value; }
+    virtual VarRef compute(void) override { return value; }
 
 };

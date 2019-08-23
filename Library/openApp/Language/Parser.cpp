@@ -72,7 +72,7 @@ void oA::Lang::Parser::parseImport(ASTNodePtr &parent, Lexer::TokenList::iterato
     it->first.tryAppend("/");
     if (!Path::DirExists(it->first))
         throw AccessError("Parser", "Couldn't access imported directory @" + it->first + "@" + getErrorContext(it->second));
-    parent->emplaceAs<ImportNode>(std::move(it->first));
+    parent->emplaceAs<ImportNode>(std::move(it->first), it->second);
     ++it;
 }
 
@@ -97,7 +97,7 @@ void oA::Lang::Parser::parseClass(ASTNodePtr &parent, Lexer::TokenList::iterator
     if (++it == _tokens.end() || it->first != "{")
         throw LogicError("Parser", "Excepted token @{@ after class declaration" + getErrorContext(line));
     ++it;
-    parent->emplaceAs<ClassNode>(std::move(name));
+    parent->emplaceAs<ClassNode>(std::move(name), line);
     for (auto &node = parent->children.back(); it != _tokens.end() && it->first != "}";)
         parseToken(node, it);
     if (it == _tokens.end())
@@ -119,16 +119,16 @@ void oA::Lang::Parser::parseDeclaration(ASTNodePtr &parent, Lexer::TokenList::it
     if (++it == _tokens.end() || type == Types.end() || !std::regex_match(it->first, NameMatch))
         throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
     auto name = it;
-    if (++it == _tokens.end() || (type->second != DeclarationNode::EventDeclaration && it->first != ":"))
+    if (++it == _tokens.end() || it->first != ":")
         throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
-    auto &node = parent->emplaceAs<DeclarationNode>(std::move(name->first), type->second);
-    collectExpression(type->second != DeclarationNode::EventDeclaration ? ++it : it, node.tokens);
+    auto &node = parent->emplaceAs<DeclarationNode>(std::move(name->first), type->second, line);
+    collectExpression(++it, node.tokens);
 }
 
 void oA::Lang::Parser::parseAssignment(ASTNodePtr &parent, Lexer::TokenList::iterator &it)
 {
     auto line = it->second;
-    auto &node = parent->emplaceAs<DeclarationNode>(std::move(it->first), DeclarationNode::AssignmentDeclaration);
+    auto &node = parent->emplaceAs<DeclarationNode>(std::move(it->first), DeclarationNode::AssignmentDeclaration, line);
 
     if (++it == _tokens.end() || it->first != ":")
         throw LogicError("Parser", "Invalid @declaration@" + getErrorContext(line));
@@ -137,28 +137,36 @@ void oA::Lang::Parser::parseAssignment(ASTNodePtr &parent, Lexer::TokenList::ite
 
 void oA::Lang::Parser::collectExpression(Lexer::TokenList::iterator &it, Lexer::TokenList &target)
 {
+    auto line = it->second;
+
     if (it == _tokens.end())
         return;
     if (it->first == "{")
         return collectExpressionGroup(++it, target);
-    for (auto line = it->second; it != _tokens.end() && it->second == line; ++it) {
+    for (; it != _tokens.end() && it->second == line; ++it) {
         target.emplace_back(std::move(it->first), it->second);
     }
 }
 
 void oA::Lang::Parser::collectExpressionGroup(Lexer::TokenList::iterator &it, Lexer::TokenList &target)
 {
-    auto line = it->second;
+    auto firstLine = it->second;
     auto groupLevel = 1;
 
-    for (; it != _tokens.end() && groupLevel > 0; ++it) {
+    for (auto line = it->second; it != _tokens.end() && groupLevel; ++it) {
         if (it->first == "{")
             ++groupLevel;
         else if (it->first == "}")
             --groupLevel;
-        if (groupLevel > 0)
-            target.emplace_back(std::move(it->first), it->second);
+        if (!groupLevel)
+            continue;
+        if (it->second != line) {
+            if (target.back().first != ";")
+                target.emplace_back(";", line);
+            line = it->second;
+        }
+        target.emplace_back(std::move(it->first), it->second);
     }
     if (groupLevel > 0)
-        throw LogicError("Parser", "Missing end of expression declaration token @}@" + getErrorContext(line));
+        throw LogicError("Parser", "Missing end of expression declaration token @}@" + getErrorContext(firstLine));
 }

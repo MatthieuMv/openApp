@@ -9,7 +9,7 @@
 #include <openApp/Language/Nodes/LocalNode.hpp>
 #include <openApp/Language/Nodes/ValueNode.hpp>
 
-oA::Var oA::Lang::StatementNode::compute(void)
+oA::Lang::VarRef oA::Lang::StatementNode::compute(void)
 {
     switch (statement) {
     case If:
@@ -29,59 +29,59 @@ oA::Var oA::Lang::StatementNode::compute(void)
     }
 }
 
-oA::Var oA::Lang::StatementNode::computeIf(void)
+oA::Lang::VarRef oA::Lang::StatementNode::computeIf(void)
 {
-    if (children[0]->compute())
+    if (*children[0]->compute())
         return children[1]->compute();
     else if (children.size() == 3)
         return children[2]->compute();
-    return Var();
+    return VarRef();
 }
 
-oA::Var oA::Lang::StatementNode::computeSwitch(void)
+oA::Lang::VarRef oA::Lang::StatementNode::computeSwitch(void)
 {
     try {
         auto it = children.begin();
-        Var comp = (*it)->compute();
+        VarRef comp = (*it)->compute();
         auto end = children.end();
 
         for (++it; it != children.end(); it += 2) {
             if (it + 1 == end)
                 return (*it)->compute();
-            else if ((*it)->compute() == comp)
+            else if (*(*it)->compute() == *comp)
                 return (*++it)->compute();
         }
-        return Var();
+        return VarRef();
     } catch (const BreakSignal &) {
-        return Var();
+        return VarRef();
     }
 }
 
-oA::Var oA::Lang::StatementNode::computeWhile(void)
+oA::Lang::VarRef oA::Lang::StatementNode::computeWhile(void)
 {
     try {
         auto &comp = *children[0];
         auto &group = *children[1];
 
-        while (comp.compute())
+        while (*comp.compute())
             group.compute();
-        return Var();
+        return VarRef();
     } catch (const BreakSignal &) {
-        return Var();
+        return VarRef();
     }
 }
 
-oA::Var oA::Lang::StatementNode::computeFor(void)
+oA::Lang::VarRef oA::Lang::StatementNode::computeFor(void)
 {
     try {
         auto &comp = *children[1];
         auto &sufix = *children[2];
         auto &group = *children[3];
 
-        for (children[0]->compute(); comp.compute(); sufix.compute())
+        for (children[0]->compute(); *comp.compute(); sufix.compute())
             group.compute();
-        return Var();
+        return VarRef();
     } catch (const BreakSignal &) {
-        return Var();
+        return VarRef();
     }
 }

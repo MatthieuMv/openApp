@@ -5,9 +5,13 @@
 ** Color
 */
 
+// std::regex
+#include <regex>
+
+#include <openApp/Types/Error.hpp>
 #include <openApp/Types/Color.hpp>
 #include <openApp/Containers/UMap.hpp>
-#include <openApp/Types/Error.hpp>
+#include <openApp/Containers/Vector.hpp>
 
 static const oA::UMap<oA::String, oA::Color> C_COLORS = {
     { "transparent",    oA::Color(0, 0, 0, 0)       },
@@ -39,13 +43,38 @@ static const oA::UMap<oA::String, oA::Color> C_COLORS = {
     { "darkorange",     oA::Color(255, 140, 0)      }
 };
 
+static const std::regex RGBAMatch("[:digit:]+,[:digit:]+,[:digit:]+(,[:digit:]+)?", std::regex::optimize);
+
+static oA::Color RetreiveColorArgs(const oA::String &color);
+
 oA::Color oA::Color::RetreiveColor(const String &color)
 {
     auto it = C_COLORS.find(color);
 
-    if (it == C_COLORS.end())
-        throw LogicError("Color", "Invalid color name @" + color + "@");
-    return it->second;
+    if (it != C_COLORS.end())
+        return it->second;
+    if (!std::regex_match(color, RGBAMatch))
+        return RetreiveColorArgs(color);
+    throw LogicError("Color", "Invalid color @" + color + "@");
+}
+
+static oA::Color RetreiveColorArgs(const oA::String &color)
+{
+    oA::Vector<oA::Uint> vec;
+    oA::String tmp;
+
+    for (auto &c : color) {
+        if (std::isdigit(c))
+            tmp.push_back(c);
+        else if (c == ',') {
+            vec.push_back(tmp.toUint());
+            tmp.clear();
+        }
+    }
+    vec.push_back(tmp.toUint());
+    if (vec.size() == 4)
+        return oA::Color(vec[0], vec[1], vec[2], vec[3]);
+    return oA::Color(vec[0], vec[1], vec[2]);
 }
 
 void oA::Color::set(UByte r, UByte g, UByte b, UByte a)
