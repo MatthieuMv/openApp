@@ -96,6 +96,9 @@ void oA::Lang::ShuntingYard::processOperator(Lexer::TokenList::const_iterator &i
         buildStack(root.emplaceAs<GroupNode>());
         collectSingleGroup(it, *root.children.back());
         break;
+    case Call:
+        _stack.emplace_back(std::make_unique<OperatorNode>(Call));
+        break;
     default:
         processOperatorLogic(model);
         _opStack.emplace_back(std::make_unique<OperatorNode>(model.type));
@@ -552,23 +555,23 @@ void oA::Lang::ShuntingYard::buildStack(ASTNode &root)
             throw LogicError("ShuntingYard", "Can't build invalid node" + getErrorContext(_line));
         }
     }
-    if (_stack.size() != 1) {
-        cout << endl << "ERROR" << endl;
-        _stack.apply([](const auto &x) { ASTNode::ShowTree(*x); });
+    if (_stack.size() != 1)
         throw LogicError("ShuntingYard", "Invalid expression" + getErrorContext(_line));
-    }
     root.emplace(std::move(_stack.front()));
     _stack.clear();
 }
 
 void oA::Lang::ShuntingYard::buildOperator(Vector<ASTNodePtr>::iterator &it)
 {
-    const auto &model = GetOperator(dynamic_cast<OperatorNode &>(**it).op);
+    auto &node = **it;
+    const auto &model = GetOperator(dynamic_cast<OperatorNode &>(node).op);
 
-    if ((*it)->children.empty() && !peekStackArguments(it, **it, model.args))
+    if ((*it)->children.empty() && !peekStackArguments(it, node, model.args))
         throw LogicError("ShuntingYard", "Not enough arguments to process operator @" + GetOperatorSymbol(model.type) + "@" + getErrorContext(_line));
-    if (model.type == Call && (*it)->children[0]->getType() != ASTNode::Reference)
+    if (model.type == Call && node.children[0]->getType() != ASTNode::Reference) {
+        ASTNode::ShowTree(node);
         throw LogicError("ShuntingYard", "Invalid use of @call@ operator" + getErrorContext(_line));
+    }
 }
 
 bool oA::Lang::ShuntingYard::peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, Uint args) noexcept
