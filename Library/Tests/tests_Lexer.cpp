@@ -32,10 +32,10 @@ Test(Lexer, Basics2)
     cr_assert_eq(it->first, "fct");         cr_assert_eq(it->second, 1); ++it;
     cr_assert_eq(it->first, "()");          cr_assert_eq(it->second, 1); ++it;
     cr_assert_eq(it->first, "container");   cr_assert_eq(it->second, 1); ++it;
-    cr_assert_eq(it->first, "[]");           cr_assert_eq(it->second, 1); ++it;
     cr_assert_eq(it->first, "4");           cr_assert_eq(it->second, 1); ++it;
-    cr_assert_eq(it->first, "property");   cr_assert_eq(it->second, 1); ++it;
-    cr_assert_eq(it->first, ":");   cr_assert_eq(it->second, 1); ++it;
+    cr_assert_eq(it->first, "[]");          cr_assert_eq(it->second, 1); ++it;
+    cr_assert_eq(it->first, "property");    cr_assert_eq(it->second, 1); ++it;
+    cr_assert_eq(it->first, ":");           cr_assert_eq(it->second, 1);
 }
 
 // Test(Lexer, Basics3)

@@ -85,13 +85,15 @@ oA::Float oA::Var::toFloat(void) const noexcept
 oA::String oA::Var::toString(void) const noexcept
 {
     return std::visit(Overload {
-        [] (const Number &number) {
+        [] (const Number &number) -> String {
             return ToString(number);
         },
-        [] (const Literal &literal) {
+        [] (const Literal &literal) -> String {
             return literal;
         },
-        [] (const Container &container) {
+        [] (const Container &container) -> String {
+            if (container.empty())
+                return "[]";
             String str = "[ ";
             container.apply([&str, i = 0](const auto &var) mutable {
                 if (i++)

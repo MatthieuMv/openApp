@@ -18,8 +18,7 @@ template<typename T>
 class oA::OptionalReference
 {
 public:
-    OptionalReference(void) : _ref(new T()), _ownership(true) {}
-
+    OptionalReference(T &&value = T()) : _ref(new T(std::move(value))), _ownership(true) {}
     OptionalReference(T &value) : _ref(&value), _ownership(false) {}
 
     OptionalReference(OptionalReference &&other) : _ref(other._ref), _ownership(other._ownership) {
@@ -27,8 +26,6 @@ public:
         other._ownership = false;
     }
 
-    template<typename... Args>
-    OptionalReference(Args &&...args) : _ref(new T(std::forward<Args>(args)...)), _ownership(true) {}
 
     ~OptionalReference(void) {
         if (_ownership)
@@ -54,6 +51,6 @@ public:
     }
 
 private:
-    mutable T *_ref;
+    T *_ref;
     bool _ownership;
 };

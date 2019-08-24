@@ -17,7 +17,7 @@ Test(ASTNode, Basics)
 
     node.emplace(std::make_unique<oA::Lang::ASTNode>());
     cr_assert_eq(node.children.size(), 1);
-    cr_assert_eq(sig.value.toInt(), 42);
+    cr_assert_eq(sig.value->toInt(), 42);
     try { node.compute(); }
     catch (...) { crashed = true; } cr_assert(crashed); crashed = false;
 }

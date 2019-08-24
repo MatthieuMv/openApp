@@ -18,5 +18,5 @@ Test(ExpressionGroupNode, Basics)
     cr_assert(crashed);
     child.statement = oA::Lang::Return;
     child.emplaceAs<oA::Lang::ValueNode>(42);
-    cr_assert_eq(group.compute().toInt(), 42);
+    cr_assert_eq(group.compute()->toInt(), 42);
 }

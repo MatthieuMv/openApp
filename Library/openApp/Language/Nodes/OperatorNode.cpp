@@ -5,6 +5,7 @@
 ** OperatorNode
 */
 
+#include <openApp/Core/Log.hpp>
 #include <openApp/Language/Nodes/OperatorNode.hpp>
 #include <openApp/Language/Nodes/ReferenceNode.hpp>
 
@@ -12,77 +13,59 @@ oA::Lang::VarRef oA::Lang::OperatorNode::compute(void)
 {
     switch (op) {
     case Not:
-        return !*children[0]->compute();
+        return computeUnary(&Var::operator!);
     case Equal:
-        return *children[0]->compute() == *children[1]->compute();
+        return computeBinary(&Var::operator==);
     case Different:
-        return *children[0]->compute() != *children[1]->compute();
+        return computeBinary(&Var::operator!=);
     case Superior:
-        return *children[0]->compute() > *children[1]->compute();
+        return computeBinary(&Var::operator>);
     case SuperiorEqual:
-        return *children[0]->compute() >= *children[1]->compute();
+        return computeBinary(&Var::operator>=);
     case Inferior:
-        return *children[0]->compute() < *children[1]->compute();
+        return computeBinary(&Var::operator<);
     case InferiorEqual:
-        return *children[0]->compute() <= *children[1]->compute();
+        return computeBinary(&Var::operator<=);
     case Addition:
-        return *children[0]->compute() + *children[1]->compute();
+        return computeBinary(&Var::operator+);
     case Substraction:
-        return *children[0]->compute() - *children[1]->compute();
+        return computeBinary(&Var::operator-);
     case Multiplication:
-        return *children[0]->compute() * *children[1]->compute();
+        return computeBinary(&Var::operator*);
     case Division:
-        return *children[0]->compute() / *children[1]->compute();
+        return computeBinary(&Var::operator/);
     case Modulo:
-        return *children[0]->compute() % *children[1]->compute();
+        return computeBinary(&Var::operator%);
     case Assign:
-    {
-        auto value = children[1]->compute();
-        return *children[0]->compute() = value.hasOwnership() ? std::move(*value) : *value;
-    }
+        return computeBinaryAssignment();
     case AdditionAssign:
-    {
-        auto value = children[1]->compute();
-        return *children[0]->compute() += value.hasOwnership() ? std::move(*value) : *value;
-    }
+        return computeBinaryAssignment(&Var::operator+=);
     case SubstractionAssign:
-    {
-        auto value = children[1]->compute();
-        return *children[0]->compute() -= value.hasOwnership() ? std::move(*value) : *value;
-    }
+        return computeBinaryAssignment(&Var::operator-=);
     case MultiplicationAssign:
-    {
-        auto value = children[1]->compute();
-        return *children[0]->compute() *= value.hasOwnership() ? std::move(*value) : *value;
-    }
+        return computeBinaryAssignment(&Var::operator*=);
     case DivisionAssign:
-    {
-        auto value = children[1]->compute();
-        return *children[0]->compute() /= value.hasOwnership() ? std::move(*value) : *value;
-    }
+        return computeBinaryAssignment(&Var::operator/=);
     case ModuloAssign:
-    {
-        auto value = children[1]->compute();
-        return *children[0]->compute() %= value.hasOwnership() ? std::move(*value) : *value;
-    }
+        return computeBinaryAssignment(&Var::operator%=);
     case PrefixIncrement:
-        return ++(*children[0]->compute());
+        return computeUnaryAssignment(static_cast<Var&(Var::*)(void)>(&Var::operator++));
     case PrefixDecrement:
-        return --(*children[0]->compute());
+        return computeUnaryAssignment(static_cast<Var&(Var::*)(void)>(&Var::operator--));
     case SufixIncrement:
-        return (*children[0]->compute())++;
+        return computeUnarySufixAssignment(static_cast<Var(Var::*)(Int)>(&Var::operator++));
     case SufixDecrement:
-        return (*children[0]->compute())--;
+        return computeUnarySufixAssignment(static_cast<Var(Var::*)(Int)>(&Var::operator--));
+    case At:
+        return children[0]->compute()->operator[](*children[1]->compute());
+    case TernaryIf:
+        return *children[0]->compute() ? children[1]->compute() : children[2]->compute();
     case Call:
     {
         auto &property = *dynamic_cast<ReferenceNode &>(*children[0]).ptr;
         property.call();
         return property;
     }
-    case At:
-        return (*children[0]->compute())[*children[1]->compute()];
-    case TernaryIf:
-        return *children[0]->compute() ? children[1]->compute() : children[2]->compute();
     default:
         throw LogicError("OperatorNode", "Can't compute uncomputable operator");
     }

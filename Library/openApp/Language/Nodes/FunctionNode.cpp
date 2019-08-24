@@ -12,9 +12,9 @@ oA::Lang::VarRef oA::Lang::FunctionNode::compute(void)
 {
     switch (symbol) {
     case ToNumber:
-        return children[0]->compute()->toFloat();
+        return Var(children[0]->compute()->toFloat());
     case ToLiteral:
-        return children[0]->compute()->toString();
+        return Var(children[0]->compute()->toString());
     case Length:
         return children[0]->compute()->len();
     case Push:

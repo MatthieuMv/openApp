@@ -13,6 +13,7 @@
 #include <openApp/Containers/UMap.hpp>
 #include <openApp/Language/Lexer.hpp>
 #include <openApp/Language/Operator.hpp>
+#include <openApp/Language/Statement.hpp>
 
 void oA::Lang::Lexer::ProcessFile(const String &path, TokenList &tokens)
 {
@@ -35,7 +36,7 @@ void oA::Lang::Lexer::ShowTokenList(const TokenList &list)
     auto count = 0;
 
     for (const auto &token : list) {
-        char quote = IsOperator(token.first) ? '#' : '@';
+        char quote = IsOperator(token.first) || IsStatement(token.first) ? '#' : '@';
         if (token.second > line) {
             line = token.second;
             if (count)
@@ -218,7 +219,6 @@ void oA::Lang::Lexer::processFunctionArgs(void)
 void oA::Lang::Lexer::processIndexAccess(String &&res)
 {
     res.push_back(']');
-    pushToken(std::move(res));
     for (char c = get(); c > 0; c = get()) {
         if (std::isspace(c))
             continue;

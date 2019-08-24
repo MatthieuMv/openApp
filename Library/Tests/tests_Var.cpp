@@ -145,7 +145,7 @@ Test(Var, Container)
     cr_assert_eq(v1.toInt(), oA::Int());
     cr_assert_eq(v1.toUint(), oA::Uint());
     cr_assert_eq(v1.toFloat(), oA::Float());
-    cr_assert_eq(v1.toString(), oA::String());
+    cr_assert_eq(v1.toString(), oA::String("[ 0, 1, 2.5, 3 ]"));
     cr_assert_eq(v1.operator bool(), true);
     cr_assert_eq(!v1, false);
     cr_assert_eq(v1 == v2, true);

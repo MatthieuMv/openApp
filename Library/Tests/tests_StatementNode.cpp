@@ -14,12 +14,12 @@ Test(StatementNode, If)
     auto &condition = node.emplaceAs<oA::Lang::ValueNode>(0);
 
     node.emplaceAs<oA::Lang::ValueNode>(1);
-    cr_assert_eq(node.compute().toInt(), 0);
+    cr_assert_eq(node.compute()->toInt(), 0);
     condition.value = 1;
     node.emplaceAs<oA::Lang::ValueNode>(2);
-    cr_assert_eq(node.compute().toInt(), 1);
+    cr_assert_eq(node.compute()->toInt(), 1);
     condition.value = 0;
-    cr_assert_eq(node.compute().toInt(), 2);
+    cr_assert_eq(node.compute()->toInt(), 2);
 }
 
 Test(StatementNode, Else)
@@ -37,7 +37,7 @@ Test(StatementNode, Switch)
     oA::Lang::StatementNode node(oA::Lang::Switch);
     auto &comp = node.emplaceAs<oA::Lang::ValueNode>(24);
 
-    cr_assert_eq(node.compute().toInt(), 0);
+    cr_assert_eq(node.compute()->toInt(), 0);
 
     node.emplaceAs<oA::Lang::ValueNode>(24);
     auto &c1 = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Assign);
@@ -130,7 +130,7 @@ Test(StatementNode, Return)
 
     node.emplaceAs<oA::Lang::ValueNode>(42);
     try { node.compute(); }
-    catch (const oA::Lang::ASTNode::ReturnSignal &ret) { crashed = false; cr_assert_eq(ret.value.toInt(), 42); }
+    catch (const oA::Lang::ASTNode::ReturnSignal &ret) { crashed = false; cr_assert_eq(ret.value->toInt(), 42); }
     catch (...) {}
     cr_assert_not(crashed);
 }
@@ -164,7 +164,7 @@ Test(StatementNode, WhileSignals)
     sig.statement = oA::Lang::Return;
     sig.emplaceAs<oA::Lang::ValueNode>(42);
     try { node.compute(); }
-    catch (const oA::Lang::ASTNode::ReturnSignal &ret) { value = ret.value; }
+    catch (const oA::Lang::ASTNode::ReturnSignal &ret) { value = *ret.value; }
     cr_assert_eq(value.toInt(), 42);
 }
 
@@ -181,7 +181,7 @@ Test(StatementNode, ForSignals)
     sig.statement = oA::Lang::Return;
     sig.emplaceAs<oA::Lang::ValueNode>(42);
     try { node.compute(); }
-    catch (const oA::Lang::ASTNode::ReturnSignal &ret) { value = ret.value; }
+    catch (const oA::Lang::ASTNode::ReturnSignal &ret) { value = *ret.value; }
     cr_assert_eq(value.toInt(), 42);
 }
 
@@ -197,6 +197,6 @@ Test(StatementNode, SwitchSignals)
     sig.statement = oA::Lang::Return;
     sig.emplaceAs<oA::Lang::ValueNode>(42);
     try { node.compute(); }
-    catch (const oA::Lang::ASTNode::ReturnSignal &ret) { value = ret.value; }
+    catch (const oA::Lang::ASTNode::ReturnSignal &ret) { value = *ret.value; }
     cr_assert_eq(value.toInt(), 42);
 }
