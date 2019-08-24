@@ -130,6 +130,7 @@ private:
     void collectExpressionGroup(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void collectGroup(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void collectGroup(Lexer::TokenList::const_iterator &it, ASTNode &root, const String &end);
+    void collectGroup(Lexer::TokenList::const_iterator &it, ASTNode &root, const Vector<String> &ends);
     void collectSingleGroup(Lexer::TokenList::const_iterator &it, ASTNode &root);
 
     /**

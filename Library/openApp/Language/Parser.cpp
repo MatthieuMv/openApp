@@ -153,18 +153,13 @@ void oA::Lang::Parser::collectExpressionGroup(Lexer::TokenList::iterator &it, Le
     auto firstLine = it->second;
     auto groupLevel = 1;
 
-    for (auto line = it->second; it != _tokens.end() && groupLevel; ++it) {
+    for (; it != _tokens.end() && groupLevel; ++it) {
         if (it->first == "{")
             ++groupLevel;
         else if (it->first == "}")
             --groupLevel;
         if (!groupLevel)
             continue;
-        if (it->second != line) {
-            if (target.back().first != ";")
-                target.emplace_back(";", line);
-            line = it->second;
-        }
         target.emplace_back(std::move(it->first), it->second);
     }
     if (groupLevel > 0)

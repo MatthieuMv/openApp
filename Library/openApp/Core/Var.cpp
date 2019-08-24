@@ -487,7 +487,7 @@ oA::Var &oA::Var::operator[](const Var &other)
         [] (Literal &) -> Var& {
             throw LogicError("Var", "Can't use operator [] on @Literal@");
         },
-        [this, &other] (Container &container) -> Var& {
+        [&other] (Container &container) -> Var& {
             auto it = container.begin();
             auto idx = other.toUint();
             if (other.index() != VNumber)
@@ -495,7 +495,6 @@ oA::Var &oA::Var::operator[](const Var &other)
             if (container.size() <= idx)
                 throw AccessError("Var," "Operator [] on @Container@ used with out of range index @" + ToString(idx) + "@");
             std::advance(it, idx);
-            this->emit();
             return *it;
         }
     }, _var);

@@ -13,7 +13,7 @@ int main(void)
     try {
         oA::SDLApp app;
 
-        app.parseFile("Library/Tests/TestMedias/Test01.oA");
+        app.parseFile("Library/Tests/TestMedias/Test02.oA");
         app.run();
         return 0;
     } catch (oA::Error &e) {
