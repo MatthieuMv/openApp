@@ -9,6 +9,7 @@
 
 #include <openApp/App/Items/EventArea.hpp>
 #include <openApp/App/Items/Image.hpp>
+#include <openApp/App/Items/Label.hpp>
 
 namespace oA { class ImageButton; }
 

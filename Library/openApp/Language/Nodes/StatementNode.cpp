@@ -43,15 +43,19 @@ oA::Lang::VarRef oA::Lang::StatementNode::computeSwitch(void)
     try {
         auto it = children.begin();
         VarRef comp = (*it)->compute();
-        auto end = children.end();
 
-        for (++it; it != children.end(); it += 2) {
-            if (it + 1 == end)
-                return (*it)->compute();
-            else if (*(*it)->compute() == *comp)
-                return (*++it)->compute();
+        ++it;
+        if (it == children.end())
+            return VarRef();
+        auto &caseNode = **it;
+        for (auto tmp = caseNode.children.begin(); tmp != caseNode.children.end(); tmp += 2) {
+            if (*comp == *(*tmp)->compute())
+                return (*++tmp)->compute();
         }
-        return VarRef();
+        ++it;
+        if (it == children.end())
+            return VarRef();
+        return (*it)->compute();
     } catch (const BreakSignal &) {
         return VarRef();
     }

@@ -7,7 +7,7 @@
 
 #include <openApp/App/PropertyHandler.hpp>
 
-oA::Var &oA::ItemUtils::PropertyHandler::append(const String &key)
+oA::Property &oA::ItemUtils::PropertyHandler::append(const String &key)
 {
     if (exists(key))
         throw LogicError("Item", "Can't append @" + key + "@, already exists");
@@ -19,7 +19,7 @@ bool oA::ItemUtils::PropertyHandler::exists(const String &key) const noexcept
     return _members.find(key) != _members.end();
 }
 
-oA::Var &oA::ItemUtils::PropertyHandler::get(const String &key)
+oA::Property &oA::ItemUtils::PropertyHandler::get(const String &key)
 {
     auto it = _members.find(key);
 
@@ -28,7 +28,7 @@ oA::Var &oA::ItemUtils::PropertyHandler::get(const String &key)
     return *it->second;
 }
 
-const oA::Var &oA::ItemUtils::PropertyHandler::get(const String &key) const
+const oA::Property &oA::ItemUtils::PropertyHandler::get(const String &key) const
 {
     auto it = _members.find(key);
 

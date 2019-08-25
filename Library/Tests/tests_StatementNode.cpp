@@ -39,19 +39,21 @@ Test(StatementNode, Switch)
 
     cr_assert_eq(node.compute()->toInt(), 0);
 
-    node.emplaceAs<oA::Lang::ValueNode>(24);
-    auto &c1 = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Assign);
+    auto &caseNode = node.emplaceAs<oA::Lang::GroupNode>(); // Case node
+
+    caseNode.emplaceAs<oA::Lang::ValueNode>(24);
+    auto &c1 = caseNode.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Assign);
     c1.emplaceAs<oA::Lang::LocalNode>(var);
     c1.emplaceAs<oA::Lang::ValueNode>(1);
 
-    node.emplaceAs<oA::Lang::ValueNode>(42);
-    auto &c2 = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Assign);
+    caseNode.emplaceAs<oA::Lang::ValueNode>(42);
+    auto &c2 = caseNode.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Assign);
     c2.emplaceAs<oA::Lang::LocalNode>(var);
     c2.emplaceAs<oA::Lang::ValueNode>(2);
 
-    auto &c3 = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Assign);
-    c3.emplaceAs<oA::Lang::LocalNode>(var);
-    c3.emplaceAs<oA::Lang::ValueNode>(3);
+    auto &def = node.emplaceAs<oA::Lang::OperatorNode>(oA::Lang::Assign);
+    def.emplaceAs<oA::Lang::LocalNode>(var);
+    def.emplaceAs<oA::Lang::ValueNode>(3);
 
     node.compute(); cr_assert_eq(var.toInt(), 1);
     comp.value = 42;

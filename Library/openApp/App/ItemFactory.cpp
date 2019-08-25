@@ -9,7 +9,9 @@
 #include <openApp/App/Items/Window.hpp>
 #include <openApp/App/Items/Button.hpp>
 #include <openApp/App/Items/ImageButton.hpp>
+#include <openApp/App/Items/TilesetButton.hpp>
 #include <openApp/App/Items/IndexView.hpp>
+#include <openApp/App/Items/Timer.hpp>
 
 oA::UMap<oA::String, oA::Function<oA::ItemPtr(void)>> oA::ItemFactory::Components;
 
@@ -34,8 +36,11 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<Rectangle>();
     Register<Label>();
     Register<Image>();
+    Register<Tileset>();
     Register<EventArea>();
     Register<Button>();
     Register<ImageButton>();
+    Register<TilesetButton>();
     Register<IndexView>();
+    Register<Timer>();
 }

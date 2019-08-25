@@ -32,7 +32,7 @@ public:
      * @param key Property key name
      * @return Property& Allow chain operators
      */
-    Var &append(const String &key);
+    Property &append(const String &key);
 
     /**
      * @brief Check existence of a member Property
@@ -49,7 +49,7 @@ public:
      * @param key Property name
      * @return Property& Matching expression
      */
-    Var &get(const String &key);
+    Property &get(const String &key);
 
     /**
      * @brief Return a const reference to matching Property
@@ -57,7 +57,7 @@ public:
      * @param key Property name
      * @return Property& Matching expression
      */
-    const Var &get(const String &key) const;
+    const Property &get(const String &key) const;
 
     /**
      * @brief Return a const reference to matching Property as type T

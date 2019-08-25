@@ -197,4 +197,6 @@ private:
      * @brief Build target expression
      */
     void buildTarget(void);
+
+    void showStack(void) const { _stack.apply([](const auto &elem) { ASTNode::ShowTree(*elem); }); }
 };
