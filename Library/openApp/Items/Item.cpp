@@ -6,7 +6,7 @@
 */
 
 #include <openApp/Core/Log.hpp>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 #include <openApp/Language/ShuntingYard.hpp>
 
 static oA::String SplitKeyExpr(const oA::String &expr, oA::String &token);

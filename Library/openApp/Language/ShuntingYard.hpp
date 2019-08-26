@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 #include <openApp/Language/Lexer.hpp>
 #include <openApp/Language/Nodes/ExpressionGroupNode.hpp>
 #include <openApp/Language/Operator.hpp>

@@ -6,7 +6,7 @@
 */
 
 #include <openApp/App/ItemHandler.hpp>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 
 oA::Item &oA::ItemUtils::ItemHandler::appendChild(const ItemPtr &child)
 {

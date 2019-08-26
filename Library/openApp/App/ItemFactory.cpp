@@ -6,12 +6,13 @@
 */
 
 #include <openApp/App/ItemFactory.hpp>
-#include <openApp/App/Items/Window.hpp>
-#include <openApp/App/Items/Button.hpp>
-#include <openApp/App/Items/ImageButton.hpp>
-#include <openApp/App/Items/TilesetButton.hpp>
-#include <openApp/App/Items/IndexView.hpp>
-#include <openApp/App/Items/Timer.hpp>
+#include <openApp/Items/Window.hpp>
+#include <openApp/Items/Button.hpp>
+#include <openApp/Items/ImageButton.hpp>
+#include <openApp/Items/TilesetButton.hpp>
+#include <openApp/Items/AnimatedTileButton.hpp>
+#include <openApp/Items/IndexView.hpp>
+#include <openApp/Items/Timer.hpp>
 
 oA::UMap<oA::String, oA::Function<oA::ItemPtr(void)>> oA::ItemFactory::Components;
 
@@ -40,7 +41,9 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<EventArea>();
     Register<Button>();
     Register<ImageButton>();
+    Register<AnimatedTile>();
     Register<TilesetButton>();
+    Register<AnimatedTileButton>();
     Register<IndexView>();
     Register<Timer>();
 }

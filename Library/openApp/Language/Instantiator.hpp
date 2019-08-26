@@ -9,7 +9,7 @@
 
 #include <openApp/Containers/Stack.hpp>
 #include <openApp/Containers/List.hpp>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 #include <openApp/Language/ShuntingYard.hpp>
 
 namespace oA::Lang

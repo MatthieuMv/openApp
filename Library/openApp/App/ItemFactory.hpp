@@ -6,7 +6,7 @@
 */
 
 #include <openApp/Containers/UMap.hpp>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 
 namespace oA { class ItemFactory; }
 

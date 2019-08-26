@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 #include <openApp/Render/RenderContexts.hpp>
 
 namespace oA { class Rectangle; }

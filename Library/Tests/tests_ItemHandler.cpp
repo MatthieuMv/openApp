@@ -6,7 +6,7 @@
 */
 
 #include <criterion/criterion.h>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 
 Test(ItemHandler, Basics)
 {

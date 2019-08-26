@@ -379,9 +379,12 @@ void oA::SDLRenderer::draw(const ImageContext &context)
 
 void oA::SDLRenderer::draw(const LabelContext &context)
 {
-    auto *font = getFont(context);
+    FC_Font *font;
     Float x;
 
+    if (!context.font || !*context.font)
+        return;
+    font = getFont(context);
     switch (context.align) {
     case LabelContext::Left:
         x = context.pos.x; break;

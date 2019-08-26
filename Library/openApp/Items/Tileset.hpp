@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <openApp/App/Items/Image.hpp>
+#include <openApp/Items/Image.hpp>
 
 namespace oA { class Tileset; }
 

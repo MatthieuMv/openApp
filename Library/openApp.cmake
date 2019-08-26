@@ -8,7 +8,7 @@ set(oATypes ${oARoot}/Types)
 set(oACore ${oARoot}/Core)
 set(oAContainers ${oARoot}/Containers)
 set(oAApp ${oARoot}/App)
-set(oANetwork ${oARoot}/Network)
+set(oAItems ${oARoot}/Items)
 set(oALanguage ${oARoot}/Language)
 set(oARender ${oARoot}/Render)
 
@@ -66,8 +66,6 @@ set(Containers
 set(App
     ${oAApp}/App.hpp
     ${oAApp}/App.cpp
-    ${oAApp}/Item.hpp
-    ${oAApp}/Item.cpp
     ${oAApp}/ItemFactory.hpp
     ${oAApp}/ItemFactory.cpp
     ${oAApp}/ItemHandler.hpp
@@ -80,13 +78,18 @@ set(App
     ${oAApp}/Events/MouseEvent.hpp
     ${oAApp}/Events/WheelEvent.hpp
     ${oAApp}/Events/WindowEvent.hpp
-    ${oAApp}/Items/Window.hpp
-    ${oAApp}/Items/Rectangle.hpp
-    ${oAApp}/Items/Image.hpp
-    ${oAApp}/Items/EventArea.hpp
-    ${oAApp}/Items/Button.hpp
-    ${oAApp}/Items/ImageButton.hpp
-    ${oAApp}/Items/IndexView.hpp
+)
+
+set(Items
+    ${oAItems}/Item.hpp
+    ${oAItems}/Item.cpp
+    ${oAItems}/Window.hpp
+    ${oAItems}/Rectangle.hpp
+    ${oAItems}/Image.hpp
+    ${oAItems}/EventArea.hpp
+    ${oAItems}/Button.hpp
+    ${oAItems}/ImageButton.hpp
+    ${oAItems}/IndexView.hpp
 )
 
 set(Language
@@ -127,15 +130,12 @@ set(Render
     ${oARender}/IRenderer.hpp
 )
 
-set(Network
-)
-
 set(oASources
     ${Types}
     ${Core}
     ${Containers}
     ${App}
-    ${Network}
+    ${Items}
     ${Language}
     ${Render}
 )

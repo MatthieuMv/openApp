@@ -7,9 +7,9 @@
 
 #pragma once
 
-#include <openApp/App/Items/EventArea.hpp>
-#include <openApp/App/Items/Label.hpp>
-#include <openApp/App/Items/Tileset.hpp>
+#include <openApp/Items/EventArea.hpp>
+#include <openApp/Items/Label.hpp>
+#include <openApp/Items/Tileset.hpp>
 
 namespace oA { class TilesetButton; }
 

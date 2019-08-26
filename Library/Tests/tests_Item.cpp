@@ -7,7 +7,7 @@
 
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 
 Test(Item, Basics)
 {

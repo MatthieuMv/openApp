@@ -7,7 +7,7 @@
 
 #include <criterion/criterion.h>
 #include <openApp/Core/Var.hpp>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 
 Test(Var, Basics)
 {

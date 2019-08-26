@@ -8,7 +8,7 @@
 #pragma once
 
 #include <openApp/Core/LightChrono.hpp>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 
 namespace oA { class Timer; }
 
@@ -21,7 +21,7 @@ public:
         auto &running = append("running") = false; // Running state, if changed will call associated start / stop function
         append("repeat") = false; // If true will repeat timer forever
         append("interval") = 0; // Duration before trigger in milliseconds
-        append("trigger"); // Event called on triggered
+        append("triggered"); // Event called on triggered
         running.connect([this] { _ch.reset(); return true; });
     }
 
@@ -30,7 +30,7 @@ public:
     virtual void onUpdate(IRenderer &) {
         if (!get("running") || _ch.getMilliseconds() < getAs<Number>("interval"))
             return;
-        get("trigger").call();
+        get("triggered").call();
         if (!get("repeat"))
             get("running") = false;
         else

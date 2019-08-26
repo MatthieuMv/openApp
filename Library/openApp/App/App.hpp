@@ -8,7 +8,7 @@
 #pragma once
 
 #include <openApp/Render/IRenderer.hpp>
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 #include <openApp/App/ItemFactory.hpp>
 
 namespace oA { class App; }

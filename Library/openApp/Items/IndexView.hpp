@@ -7,7 +7,7 @@
 
 #pragma once
 
-#include <openApp/App/Item.hpp>
+#include <openApp/Items/Item.hpp>
 #include <openApp/Core/Log.hpp>
 
 namespace oA { class IndexView; }
