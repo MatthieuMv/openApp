@@ -21,8 +21,9 @@ public:
         auto &from = append("from") = 0; // Starting animation index (index: y if vertical is true, else x)
         auto &to = append("to") = 0; // Ending animation index (index: y if vertical is true, else x)
         auto &vertical = append("vertical") = false; // If true, will process vertical animation
-        get("running") = true;
         get("repeat") = true;
+        get("running") = true;
+        append("completed"); // Event called on animation completed
         get("triggered").connect([this] { updateTileIndex(); return true; });
         from.connect([this]{ resetTileIndex(); return true; });
         to.connect([this]{ resetTileIndex(); return true; });
@@ -36,9 +37,12 @@ private:
 
     void updateTileIndex(void) {
         auto &index = getIndex();
-        if (index < get("to"))
+        if (index < get("to")) {
             ++index;
-        else if (get("repeat"))
+            return;
+        }
+        get("completed").call();
+        if (get("repeat"))
             index = get("from");
     }
 

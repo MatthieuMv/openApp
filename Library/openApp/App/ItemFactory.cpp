@@ -13,6 +13,8 @@
 #include <openApp/Items/AnimatedTileButton.hpp>
 #include <openApp/Items/IndexView.hpp>
 #include <openApp/Items/Timer.hpp>
+#include <openApp/Items/Column.hpp>
+#include <openApp/Items/Row.hpp>
 
 oA::UMap<oA::String, oA::Function<oA::ItemPtr(void)>> oA::ItemFactory::Components;
 
@@ -46,4 +48,7 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<AnimatedTileButton>();
     Register<IndexView>();
     Register<Timer>();
+    Register<Layout>();
+    Register<Column>();
+    Register<Row>();
 }

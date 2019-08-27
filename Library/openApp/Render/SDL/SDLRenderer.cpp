@@ -8,8 +8,8 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_image.h>
-#include <SDL2/SDL2_gfxPrimitives.h>
 #include <openApp/Render/SDL/Extern/SDL_FontCache.h>
+#include <openApp/Render/SDL/Extern/SDL2_gfxPrimitives.h>
 #include <openApp/Types/Error.hpp>
 #include <openApp/Render/SDL/SDLRenderer.hpp>
 #include <openApp/Core/Log.hpp>
@@ -43,6 +43,22 @@ oA::SDLRenderer::~SDLRenderer(void)
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
+}
+
+void oA::SDLRenderer::setTargetFPS(Float fps)
+{
+    _fpsDelay = 1000.0f / fps;
+}
+
+void oA::SDLRenderer::handleTargetFPS(void)
+{
+    Uint tick = SDL_GetTicks(), frameTime = tick - _tick;
+
+    if (frameTime < _fpsDelay) {
+        SDL_Delay(_fpsDelay - frameTime);
+        _tick = SDL_GetTicks();
+    } else
+        _tick = tick;
 }
 
 oA::Int oA::SDLRenderer::openWindow(const WindowContext &context)

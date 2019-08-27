@@ -90,6 +90,9 @@ set(Items
     ${oAItems}/Button.hpp
     ${oAItems}/ImageButton.hpp
     ${oAItems}/IndexView.hpp
+    ${oAItems}/Layout.hpp
+    ${oAItems}/Column.hpp
+    ${oAItems}/Row.hpp
 )
 
 set(Language

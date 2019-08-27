@@ -28,7 +28,6 @@ class oA::IRenderer
 {
 public:
     virtual ~IRenderer(void) = default;
-
     /**
      * @brief Retreive renderer's ability to support multiple windows
      *
@@ -44,6 +43,18 @@ public:
      * @return false Renderer is not able to draw 3D
      */
     virtual bool supports3DRendering(void) const = 0;
+
+    /**
+     * @brief Set the targeted frame per second count
+     *
+     * @param fps Frame per second
+     */
+    virtual void setTargetFPS(Float fps) = 0;
+
+    /**
+     * @brief Wait to reach target fps
+     */
+    virtual void handleTargetFPS(void) = 0;
 
     /**
      * @brief Create a new window

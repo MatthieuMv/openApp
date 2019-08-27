@@ -31,7 +31,6 @@ target_include_directories(openApp
 
 target_link_libraries(openApp
     SDL2
-    SDL2_gfx
     SDL2_image
     SDL2_ttf
 )

@@ -41,6 +41,8 @@ public:
     virtual bool supportsMultipleWindows(void) const { return true; }
     virtual bool supports3DRendering(void) const { return true; }
 
+    virtual void setTargetFPS(Float fps);
+    virtual void handleTargetFPS(void);
     virtual Int openWindow(const WindowContext &context);
     virtual void closeWindow(Int index);
     virtual V2i getWindowSize(Int index);
@@ -73,12 +75,14 @@ private:
     List<Pair<String, SDL_Texture *>> _textures;
     List<Pair<String, FC_Font *>> _fonts;
     Window *_current = nullptr;
+    Float _fpsDelay = 1000.0f / 60.0f;
+    Uint _tick = 0;
 
     Window &getWindow(Int index);
     SDL_Texture *getTexture(const ImageContext &context);
     FC_Font *getFont(const LabelContext &context);
     Uint getWindowFlags(WindowContext::Type type);
-    V2f getLabelPosition(const LabelContext &context);
+    void setRenderColor(Color color);
 
     void clearTexturesCache(void);
     void clearFontsCache(void);

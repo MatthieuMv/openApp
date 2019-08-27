@@ -30,11 +30,11 @@ public:
     virtual void onUpdate(IRenderer &) {
         if (!get("running") || _ch.getMilliseconds() < getAs<Number>("interval"))
             return;
-        get("triggered").call();
         if (!get("repeat"))
             get("running") = false;
         else
             _ch.reset();
+        get("triggered").call();
     }
 private:
     LightChrono _ch;

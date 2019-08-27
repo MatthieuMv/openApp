@@ -12,33 +12,16 @@
 int main(void)
 {
     try {
-        oA::Item item;
-
-        oA::Lang::ShuntingYard::ProcessString(item, "x",
-    "switch (x) {\n\
-    case 1:\n\
-        print(\"case x = 1\")\n\
-        y = 4;\n\
-        break;\n\
-    case 2:\n\
-        print(\"case x = 2\")\n\
-        y = 42;\n\
-        break;\n\
-    case 3:\n\
-        print(\"case x = 3\")\n\
-        y = 420;\n\
-        break;\n\
-    default:\n\
-        print(\"default\")\n\
-        y = 10;\n\
-        break;\n\
-    }", oA::Lang::ShuntingYard::Event);
-
-        item.addExpressionEvent("y", "print(\"y = \", y)");
-        oA::cout << "x = " << item.get("x").toUint() << oA::endl;
-        item.get("x") = 2;
-        oA::cout << "x = " << item.get("x").toUint() << oA::endl;
-    return 0;
+        oA::Item root;
+        root.setID("root");
+        root.appendChild(std::make_shared<oA::Item>()).setID("target");
+        auto &container = root.appendChild(std::make_shared<oA::Item>());
+        container.setID("container");
+        auto &source = container.appendChild(std::make_shared<oA::Item>());
+        source.setID("source");
+        auto res = source.findExpr("root.x");
+        oA::cout << "Res = " << res.get() << oA::endl;
+        return 0;
     } catch (oA::Error &e) {
         oA::cerr << e.what() << oA::endl;
         return 84;

@@ -12,5 +12,10 @@ set(oASDLRenderer
     ${oASDL}/SDLRenderer.cpp
     ${oASDL}/Extern/SDL_FontCache.h
     ${oASDL}/Extern/SDL_FontCache.c
+    ${oASDL}/Extern/SDL2_gfxPrimitives.h
+    ${oASDL}/Extern/SDL2_gfxPrimitives.c
+    ${oASDL}/Extern/SDL2_gfxPrimitives_font.h
+    ${oASDL}/Extern/SDL2_rotozoom.h
+    ${oASDL}/Extern/SDL2_rotozoom.c
     ${oARoot}/SDLApp.hpp
 )

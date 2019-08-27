@@ -94,6 +94,7 @@ void oA::App::render(void)
         pair.second->draw(*_renderer);
         _renderer->renderWindow();
     });
+    _renderer->handleTargetFPS();
 }
 
 void oA::App::pollEvents(void)
