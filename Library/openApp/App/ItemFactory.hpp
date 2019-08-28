@@ -5,6 +5,8 @@
 ** ItemFactory
 */
 
+#pragma once
+
 #include <openApp/Containers/UMap.hpp>
 #include <openApp/Items/Item.hpp>
 
@@ -21,8 +23,22 @@ public:
      * @tparam T Type to insert
      */
     template<typename T>
-    static void Register(void) {
+    typename std::enable_if<std::is_base_of<Item, T>::value>::type
+    static Register(void) {
         Components[T().getName()] = [] {
+            return ItemPtr(new T);
+        };
+    }
+
+    /**
+     * @brief Register a new Item derived type into the factory
+     *
+     * @tparam T Type to insert
+     */
+    template<typename T>
+    typename std::enable_if<std::is_base_of<Item, T>::value>::type
+    static Register(const String &name) {
+        Components[name] = [] {
             return ItemPtr(new T);
         };
     }

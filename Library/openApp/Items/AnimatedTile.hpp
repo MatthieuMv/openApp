@@ -37,13 +37,11 @@ private:
 
     void updateTileIndex(void) {
         auto &index = getIndex();
-        if (index < get("to")) {
-            ++index;
+        if (++index <= get("to"))
             return;
-        }
         get("completed").call();
         if (get("repeat"))
-            index = get("from");
+            getIndex() = get("from");
     }
 
     Property &getIndex(void) { return get(get("vertical") ? "yIndex" : "xIndex"); }
