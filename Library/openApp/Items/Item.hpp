@@ -128,6 +128,13 @@ public:
     Item *getParent(void) noexcept { return _parent; }
 
     /**
+     * @brief Get internal parent const pointer
+     *
+     * @return const Item* Parent pointer
+     */
+    const Item *getParent(void) const noexcept { return _parent; }
+
+    /**
      * @brief Get root parent pointer
      *
      * @return Item* Root pointer

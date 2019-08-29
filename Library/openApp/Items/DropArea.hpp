@@ -26,11 +26,11 @@ public:
         if (event.getType() != Event::Drop)
             return false;
         auto &evt = event.getAs<DropEvent>();
-        if (!contains(evt.pos) || !onDroped(evt.target))
+        if (!contains(evt.pos) || !onCatched(evt.target))
             return false;
         get("droped").call();
         return true;
     }
 
-    virtual bool onDroped(const ItemPtr &) { return false; }
+    virtual bool onCatched(ItemPtr) { return false; }
 };

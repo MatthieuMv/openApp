@@ -36,7 +36,7 @@ void oA::Item::onParentChanged(void)
 
 void oA::Item::update(IRenderer &renderer)
 {
-    if (!get("enabled"))
+    if (!get("visible") || !get("enabled"))
         return;
     onUpdate(renderer);
     _children.apply([&renderer](auto &child) {

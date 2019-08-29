@@ -19,6 +19,7 @@ public:
     virtual ~EventArea(void) = default;
 
     EventArea(void) {
+        append("propagate") = true; // If true will propagate mouse clics
         append("pressed") = false; // Pressed state
         append("hovered") = false; // Hovered state
         append("released"); // Release event
@@ -31,7 +32,7 @@ public:
     virtual String getName(void) const noexcept { return "EventArea"; }
 
     virtual void onUpdate(IRenderer &) {
-        if (get("hovered") && get("pressed") && _hold.getMilliseconds() >= get("holdDuration").toUint()) {
+        if (get("pressed") && _hold.getMilliseconds() >= get("holdDuration").toUint()) {
             get("holded").emit();
             _hold.reset();
         }
@@ -49,20 +50,19 @@ private:
     LightChrono _hold, _double;
 
     bool handleMouseEvent(const MouseEvent &event) {
-        bool hovered = contains(event.pos), pressed = event.type == MouseEvent::Pressed;
-        get("hovered") = hovered;
-        get("pressed") = hovered && pressed;
+        auto &hovered = get("hovered") = contains(event.pos);
+        get("pressed") = hovered && event.type == MouseEvent::Pressed;
         if (!hovered)
             return false;
-        if (!pressed)
-            get("released").emit();
-        else {
-            if (_double.getMilliseconds() <= get("doublePressInterval").toUint())
-                get("doublePressed").emit();
+        if (event.type != MouseEvent::Released) {
             _hold.reset();
-            _double.reset();
+            return !get("propagate");
         }
-        return false;
+        get("released").call();
+        if (_double.getMilliseconds() <= get("doublePressInterval").toUint())
+            get("doublePressed").call();
+        _double.reset();
+        return !get("propagate");
     }
 
     bool handleMotionEvent(const MotionEvent &event) {

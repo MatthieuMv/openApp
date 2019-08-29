@@ -23,15 +23,14 @@ union SDL_Event;
 class oA::SDLRenderer : public IRenderer
 {
 public:
-    struct RenderContext
+    struct Context
     {
-        RenderContext(void) = default;
-        RenderContext(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear);
-        ~RenderContext(void);
+        Context(void) = default;
+        Context(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear);
+        ~Context(void);
 
-        RenderContext &operator=(RenderContext &&other);
+        Context &operator=(Context &&other);
 
-        void destroy(void);
         void clearCache(void);
 
         List<Pair<String, SDL_Texture *>> textures;
@@ -77,15 +76,19 @@ public:
     virtual bool pollEvent(Event &event);
 
 private:
-    UMap<Int, RenderContext> _contexts;
-    RenderContext *_current = nullptr;
+    UMap<Int, Context> _contexts;
+    Context *_current = nullptr;
     Float _fpsDelay = 1000.0f / 60.0f;
     Uint _tick = 0;
 
-    RenderContext &getRenderContext(Int index);
+    Context &getContext(Int index);
     SDL_Texture *getTexture(const ImageContext &context);
     FC_Font *getFont(const LabelContext &context);
     Uint getWindowFlags(WindowContext::Type type);
+    void setRenderColor(Color color);
+
+    void clearTexturesCache(void);
+    void clearFontsCache(void);
 
     bool constructWindowEvent(Event &target, SDL_Event &event);
     bool constructMouseEvent(Event &target, SDL_Event &event);

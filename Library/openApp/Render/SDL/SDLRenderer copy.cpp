@@ -14,44 +14,32 @@
 #include <openApp/Render/SDL/SDLRenderer.hpp>
 #include <openApp/Core/Log.hpp>
 
-oA::SDLRenderer::RenderContext::RenderContext(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear)
+oA::SDLRenderer::Context::Context(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear)
     : window(_window), renderer(_renderer), clear(_clear)
 {
 }
 
-oA::SDLRenderer::RenderContext::~RenderContext(void)
+oA::SDLRenderer::Context::~Context(void)
 {
-    destroy();
+    clearCache();
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
 }
 
-oA::SDLRenderer::RenderContext &oA::SDLRenderer::RenderContext::operator=(RenderContext &&other)
+oA::SDLRenderer::Context &oA::SDLRenderer::Context::operator=(Context &&other)
 {
-    destroy();
-    textures = std::move(other.textures);
-    fonts = std::move(fonts);
+    textures = std::move(other.textures)
+    fonts = std::move(other.fonts)
     window = other.window;
     renderer = other.renderer;
     clear = other.clear;
-    other.renderer = nullptr;
-    other.window = nullptr;
     return *this;
 }
 
-void oA::SDLRenderer::RenderContext::destroy(void)
+void oA::SDLRenderer::Context::clearCache(void)
 {
-    clearCache();
-    if (renderer)
-        SDL_DestroyRenderer(renderer);
-    if (window)
-        SDL_DestroyWindow(window);
-}
-
-void oA::SDLRenderer::RenderContext::clearCache(void)
-{
-    textures.apply([](auto &p) { SDL_DestroyTexture(p.second); });
-    textures.clear();
-    fonts.apply([](auto &p) { FC_FreeFont(p.second); });
-    fonts.clear();
+    textures.apply([](auto &texture) { SDL_DestroyTexture(texture.second); });
+    fonts.apply([](auto &font) { FC_FreeFont(font.second); });
 }
 
 oA::SDLRenderer::SDLRenderer(void)
@@ -65,7 +53,6 @@ oA::SDLRenderer::SDLRenderer(void)
 
 oA::SDLRenderer::~SDLRenderer(void)
 {
-    _contexts.clear();
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
@@ -106,7 +93,7 @@ oA::Int oA::SDLRenderer::openWindow(const WindowContext &context)
     if (!renderer)
         throw RuntimeError("SDLRenderer", "Couldn't create @renderer@ for new @window@");
     auto index = SDL_GetWindowID(window);
-    _contexts[index] = RenderContext(window, renderer, context.color);
+    _contexts[index] = Context(window, renderer, context.color);
     return index;
 }
 
@@ -179,7 +166,7 @@ void oA::SDLRenderer::setWindowSize(Int index, const V2i &size)
 
 void oA::SDLRenderer::setWindowTitle(Int index, const char *title)
 {
-    SDL_SetWindowTitle(getRenderContext(index).window, title);
+    SDL_SetWindowTitle(getContext(index).window, title);
 }
 
 void oA::SDLRenderer::setWindowColor(Int index, Color color)
@@ -193,23 +180,25 @@ void oA::SDLRenderer::setWindowColor(Int index, Color color)
 
 void oA::SDLRenderer::setWindowType(Int index, WindowContext::Type type)
 {
+    auto *window = getContext(index).window;
+
     switch (type) {
     case WindowContext::Fixed:
-        if (SDL_SetWindowFullscreen(getRenderContext(index).window, 0) < 0)
+        if (SDL_SetWindowFullscreen(window, 0) < 0)
             break;
-        SDL_SetWindowResizable(getRenderContext(index).window, SDL_FALSE);
+        SDL_SetWindowResizable(window, SDL_FALSE);
         return;
     case WindowContext::Resizable:
-        if (SDL_SetWindowFullscreen(getRenderContext(index).window, 0) < 0)
+        if (SDL_SetWindowFullscreen(window, 0) < 0)
             break;
-        SDL_SetWindowResizable(getRenderContext(index).window, SDL_TRUE);
+        SDL_SetWindowResizable(window, SDL_TRUE);
         return;
     case WindowContext::Fullscreen:
-        if (SDL_SetWindowFullscreen(getRenderContext(index).window, SDL_WINDOW_FULLSCREEN) < 0)
+        if (SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN) < 0)
             break;
         return;
     case WindowContext::Borderless:
-        if (SDL_SetWindowFullscreen(getRenderContext(index).window, SDL_WINDOW_FULLSCREEN_DESKTOP) < 0)
+        if (SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN_DESKTOP) < 0)
             break;
         return;
     }
@@ -218,10 +207,10 @@ void oA::SDLRenderer::setWindowType(Int index, WindowContext::Type type)
 
 void oA::SDLRenderer::setWindowVSync(Int index, bool value)
 {
-    auto &wnd = getRenderContext(index);
+    auto &wnd = getContext(index);
 
-    if (wnd.renderer)
-        SDL_DestroyRenderer(wnd.renderer);
+    wnd.clearCache();
+    SDL_DestroyRenderer(wnd.renderer);
     wnd.renderer = SDL_CreateRenderer(
         wnd.window,
         -1,
@@ -447,7 +436,7 @@ void oA::SDLRenderer::draw(const LabelContext &context)
     );
 }
 
-oA::SDLRenderer::RenderContext &oA::SDLRenderer::getRenderContext(Int index)
+oA::SDLRenderer::Context &oA::SDLRenderer::getContext(Int index)
 {
     auto it = _contexts.find(index);
 
