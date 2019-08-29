@@ -44,7 +44,7 @@ public:
         processEvents(renderer);
     }
 
-    virtual bool onEvent(IRenderer &, const Event &event) {
+    virtual bool onEvent(const Event &event) {
         if (event.getType() != Event::Window)
             return false;
         auto &wnd = event.getAs<WindowEvent>();

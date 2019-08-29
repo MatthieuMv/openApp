@@ -15,6 +15,7 @@
 #include <openApp/Items/Timer.hpp>
 #include <openApp/Items/Column.hpp>
 #include <openApp/Items/Row.hpp>
+#include <openApp/Items/DragArea.hpp>
 
 oA::UMap<oA::String, oA::Function<oA::ItemPtr(void)>> oA::ItemFactory::Components;
 
@@ -51,4 +52,5 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<Layout>();
     Register<Column>();
     Register<Row>();
+    Register<DragArea>();
 }

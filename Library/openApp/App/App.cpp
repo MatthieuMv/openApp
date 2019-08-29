@@ -103,12 +103,12 @@ void oA::App::pollEvents(void)
         if (onEvent(event))
             continue;
         if (event.window < 0)
-            _children.findIf([this, &event](auto &pair) { return pair.second->propagate(*_renderer, event); });
+            _children.findIf([this, &event](auto &pair) { return pair.second->propagate(event); });
         else {
             _children.findIf([&event, this](auto &pair) {
                 if (pair.first != event.window)
                     return false;
-                pair.second->propagate(*_renderer, event);
+                pair.second->propagate(event);
                 return true;
             });
         }

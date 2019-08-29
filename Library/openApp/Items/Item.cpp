@@ -25,10 +25,13 @@ void oA::Item::onRemoveChild(Item &child)
 
 void oA::Item::onParentChanged(void)
 {
-    if (!getParent()) {
-        setExpression("screenX", "x");
-        setExpression("screenY", "y");
-    }
+    if (getParent())
+        return;
+    auto &x = get("screenX"), &y = get("screenY");
+    x.clearTree();
+    x = 0;
+    y.clearTree();
+    y = 0;
 }
 
 void oA::Item::update(IRenderer &renderer)
@@ -60,14 +63,14 @@ void oA::Item::draw(IRenderer &renderer)
     onChildrenDrew(renderer);
 }
 
-bool oA::Item::propagate(IRenderer &renderer, const Event &event)
+bool oA::Item::propagate(const Event &event)
 {
     if (!get("enabled"))
         return false;
-    if (onEvent(renderer, event))
+    if (onEvent(event))
         return true;
-    return _children.findIf([&renderer, &event](auto &child) {
-        return child->propagate(renderer, event);
+    return _children.findIf([&event](auto &child) {
+        return child->propagate(event);
     }) != _children.end();
 }
 

@@ -80,4 +80,5 @@ void oA::Property::swap(Property &other)
 {
     Var::swap(other);
     _tree.swap(other._tree);
+    _dependencies.swap(other._dependencies);
 }

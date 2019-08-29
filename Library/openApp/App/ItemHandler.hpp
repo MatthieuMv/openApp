@@ -133,6 +133,13 @@ public:
      */
     const Item &getChild(const String &id) const;
 
+    /**
+     * @brief Returun const reference to children
+     *
+     * @return const Vector<ItemPtr>& Children vector
+     */
+    const Vector<ItemPtr> &children(void) const noexcept { return _children; }
+
 protected:
     Vector<ItemPtr> _children;
 };

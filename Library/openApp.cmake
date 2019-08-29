@@ -78,6 +78,7 @@ set(App
     ${oAApp}/Events/MouseEvent.hpp
     ${oAApp}/Events/WheelEvent.hpp
     ${oAApp}/Events/WindowEvent.hpp
+    ${oAApp}/Events/DropEvent.hpp
 )
 
 set(Items
@@ -93,6 +94,8 @@ set(Items
     ${oAItems}/Layout.hpp
     ${oAItems}/Column.hpp
     ${oAItems}/Row.hpp
+    ${oAItems}/DragArea.hpp
+    ${oAItems}/DropArea.hpp
 )
 
 set(Language

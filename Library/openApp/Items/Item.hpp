@@ -107,12 +107,11 @@ public:
     /**
      * @brief Called on event handling
      *
-     * @param renderer Drawing interface
      * @param event Received event
      * @return true Don't propagate event
      * @return false Propagate event
      */
-    virtual bool onEvent(IRenderer &, const Event &) { return false; }
+    virtual bool onEvent(const Event &) { return false; }
 
     /**
      * @brief Set internal parent pointer
@@ -127,6 +126,13 @@ public:
      * @return Item* Parent pointer
      */
     Item *getParent(void) noexcept { return _parent; }
+
+    /**
+     * @brief Get root parent pointer
+     *
+     * @return Item* Root pointer
+     */
+    Item *getRoot(void) noexcept { return _parent ? _parent->getRoot() : this; }
 
     /**
      * @brief Get the Area Context object of Item
@@ -171,10 +177,9 @@ public:
     /**
      * @brief Propagate an event though Item and children
      *
-     * @param renderer Drawing interface
      * @param event Received event
      */
-    bool propagate(IRenderer &renderer, const Event &event);
+    bool propagate(const Event &event);
 
     /**
      * @brief Set internal expression of matching key

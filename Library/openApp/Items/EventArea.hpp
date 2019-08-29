@@ -37,7 +37,7 @@ public:
         }
     }
 
-    virtual bool onEvent(IRenderer &, const Event &event) {
+    virtual bool onEvent(const Event &event) {
         if (event.getType() == Event::Mouse)
             return handleMouseEvent(event.getAs<MouseEvent>());
         else if (event.getType() == Event::Motion)
@@ -62,7 +62,7 @@ private:
             _hold.reset();
             _double.reset();
         }
-        return true;
+        return false;
     }
 
     bool handleMotionEvent(const MotionEvent &event) {
