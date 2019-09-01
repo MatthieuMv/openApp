@@ -140,6 +140,36 @@ public:
      */
     const Vector<ItemPtr> &children(void) const noexcept { return _children; }
 
+    /**
+     * @brief Apply a non-const function to children
+     *
+     * @tparam Signature Function signature
+     * @param fct Function
+     */
+    template<typename Signature>
+    void applyToChildren(const Signature &fct) { _children.apply(fct); }
+
+    /**
+     * @brief Apply a const function to children
+     *
+     * @tparam Signature Function signature
+     * @param fct Function
+     */
+    template<typename Signature>
+    void applyToChildren(const Signature &fct) const { _children.apply(fct); }
+
+    /**
+     * @brief Check if Item class is derived of another class
+     *
+     * @tparam T Class to check
+     * @return true Class can be safely casted
+     * @return false Class can't be casted
+     */
+    template<typename T>
+    bool isDerivedOf(void) const noexcept {
+        return dynamic_cast<const T *>(this) != nullptr;
+    }
+
 protected:
     Vector<ItemPtr> _children;
 };

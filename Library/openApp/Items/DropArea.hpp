@@ -8,6 +8,7 @@
 #pragma once
 
 #include <openApp/Items/Item.hpp>
+#include <openApp/Core/Log.hpp>
 
 namespace oA { class DropArea; }
 
@@ -17,20 +18,21 @@ public:
     virtual ~DropArea(void) = default;
 
     DropArea(void) {
-        append("droped"); // Event called when something has been dropped and handled
+        append("droppable") = true; // If true will catch drop events
+        append("dropped"); // Event called when something has been dropped and handled
     }
 
     virtual String getName(void) const noexcept { return "DropArea"; }
 
     virtual bool onEvent(const Event &event) {
-        if (event.getType() != Event::Drop)
+        if (!get("droppable") || event.getType() != Event::Drop)
             return false;
         auto &evt = event.getAs<DropEvent>();
-        if (!contains(evt.pos) || !onCatched(evt.target))
+        if (!contains(evt.pos) || evt.target.get() == this || !onCatched(evt))
             return false;
-        get("droped").call();
+        get("dropped").call();
         return true;
     }
 
-    virtual bool onCatched(ItemPtr) { return false; }
+    virtual bool onCatched(const DropEvent &) { return false; }
 };

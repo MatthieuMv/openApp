@@ -20,9 +20,8 @@ public:
         append("draggable") = true; // If true will process drag events
         append("dragging") = false; // Will be true while dragging
         append("dragged"); // Event on drag
-        append("dropped"); // Event on drop
-        append("catched"); // Event on drop catching
-        append("failed"); // Event on drop failure
+        append("catched"); // Event on drop
+        append("canceled"); // Event on drop failure
     }
 
     virtual String getName(void) const noexcept { return "DragArea"; }
@@ -49,14 +48,13 @@ private:
     }
 
     bool handleMouseEvent(const MouseEvent &event) {
-        if (event.type == MouseEvent::Released && get("dragging")) {
-            return onDrop();
-        } else if (event.type == MouseEvent::Pressed && !get("dragging") && get("hovered")) {
-            onDrag();
-            updateCoord(event.pos);
-            return !get("propagate");
-        }
-        return false;
+        if (event.type == MouseEvent::Released && get("dragging"))
+            return onDrop(event.pos);
+        else if (event.type != MouseEvent::Pressed || get("dragging") || !get("hovered"))
+            return false;
+        onDrag();
+        updateCoord(event.pos);
+        return !get("propagate");
     }
 
     void onDrag(void) {
@@ -69,27 +67,22 @@ private:
         get("dragged").call();
     }
 
-    bool onDrop(void) {
+    bool onDrop(const V2i &pos) {
         auto *root = getRoot();
         auto me = getParent()->extractChild(getMyIndex());
         Event event;
+        revertDragState();
         get("dragging") = false;
-        get("dropped").call();
-        event.emplace<DropEvent>(ItemPtr(me), getCenterPos());
+        event.emplace<DropEvent>(ItemPtr(me), pos);
         if (root->propagate(event)) {
             get("catched").call();
             return true;
         }
-        revertDragState(me);
-        get("failed").call();
+        get("x") = _oldX;
+        get("y") = _oldY;
+        _oldParent->appendChild(std::move(me));
+        get("canceled").call();
         return false;
-    }
-
-    V2i getCenterPos(void) const {
-        return V2i(
-            getAs<Number>("x") - getAs<Number>("width") / 2.0f,
-            getAs<Number>("y") - getAs<Number>("height") / 2.0f
-        );
     }
 
     Uint getMyIndex(void) const {
@@ -112,12 +105,18 @@ private:
         get("y").swap(_oldY);
     }
 
-    void revertDragState(ItemPtr &me) {
+    void revertDragState(void) {
         auto &x = get("x"), &y = get("y");
-        x.clearTree();
+        Var cache;
         x.swap(_oldX);
-        y.clearTree();
         y.swap(_oldY);
-        _oldParent->appendChild(std::move(me));
+        _oldX.clearTree();
+        _oldY.clearTree();
+        cache = std::move(x);
+        x = _oldX;
+        _oldX = std::move(cache);
+        cache = std::move(y);
+        y = _oldY;
+        _oldY = std::move(cache);
     }
 };

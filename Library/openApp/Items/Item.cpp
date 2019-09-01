@@ -27,11 +27,8 @@ void oA::Item::onParentChanged(void)
 {
     if (getParent())
         return;
-    auto &x = get("screenX"), &y = get("screenY");
-    x.clearTree();
-    x = 0;
-    y.clearTree();
-    y = 0;
+    (get("screenX") = 0).clearTree();
+    (get("screenY") = 0).clearTree();
 }
 
 void oA::Item::update(IRenderer &renderer)

@@ -94,8 +94,8 @@ set(Items
     ${oAItems}/Layout.hpp
     ${oAItems}/Column.hpp
     ${oAItems}/Row.hpp
-    ${oAItems}/DragArea.hpp
     ${oAItems}/DropArea.hpp
+    ${oAItems}/DragArea.hpp
 )
 
 set(Language

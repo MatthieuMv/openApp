@@ -534,7 +534,7 @@ bool oA::SDLRenderer::constructWindowEvent(Event &target, SDL_Event &event)
         { SDL_WINDOWEVENT_SHOWN,        WindowEvent::Shown },
         { SDL_WINDOWEVENT_HIDDEN,       WindowEvent::Hidden },
         { SDL_WINDOWEVENT_MOVED,        WindowEvent::Moved },
-        { SDL_WINDOWEVENT_RESIZED,      WindowEvent::Resized },
+        { SDL_WINDOWEVENT_SIZE_CHANGED, WindowEvent::Resized },
         { SDL_WINDOWEVENT_MINIMIZED,    WindowEvent::Minimized },
         { SDL_WINDOWEVENT_MAXIMIZED,    WindowEvent::Maximized },
         { SDL_WINDOWEVENT_RESTORED,     WindowEvent::Restored },
