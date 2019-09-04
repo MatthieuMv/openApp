@@ -27,7 +27,8 @@ public:
             size.y = getAs<Number>("height");
         }
         for (auto &child : _children) {
-            child->get("x") = pos;
+            (child->get("x") = pos).clearTree();
+            (child->get("y") = 0).clearTree();
             pos += fill ? size.x : child->getAs<Number>("width");
             if (fill) {
                 child->get("width") = size.x;

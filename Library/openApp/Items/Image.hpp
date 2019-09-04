@@ -35,7 +35,7 @@ public:
     ImageContext getImageContext(void) const {
         return ImageContext(
             getAs<Literal>("source").c_str(),
-            V2f(getAs<Number>("x"), getAs<Number>("y")),
+            V2f(getAs<Number>("screenX"), getAs<Number>("screenY")),
             V2f(getAs<Number>("width"), getAs<Number>("height")),
             V2i(getAs<Number>("sourceX"), getAs<Number>("sourceY")),
             V2i(getAs<Number>("sourceWidth"), getAs<Number>("sourceHeight")),

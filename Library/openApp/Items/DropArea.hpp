@@ -34,5 +34,11 @@ public:
         return true;
     }
 
+    /**
+     * @brief Callback on catching a drop
+     *
+     * @return true DropArea takes target's ownership
+     * @return false DropArea won't take target's ownership
+     */
     virtual bool onCatched(const DropEvent &) { return false; }
 };

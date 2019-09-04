@@ -103,6 +103,14 @@ public:
     void show(Int tab = 0) const noexcept;
 
     /**
+     * @brief Returns true if Property has an internal AST tree
+     *
+     * @return true Property has tree
+     * @return false  Property doesn't have tree
+     */
+    bool hasTree(void) const noexcept { return _tree.get(); }
+
+    /**
      * @brief Set the Tree object. If the tree is const, this function will only set its compute value.
      *
      * @param tree Property AST tree
@@ -121,7 +129,7 @@ public:
      */
     void swap(Property &other);
 
-private:
+//private:
     Lang::ASTNodePtr _tree;
     Vector<Pair<Uint, PropertyPtr>> _dependencies;
 };

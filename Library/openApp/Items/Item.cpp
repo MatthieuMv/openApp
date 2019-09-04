@@ -64,11 +64,13 @@ bool oA::Item::propagate(const Event &event)
 {
     if (!get("enabled"))
         return false;
+    for (auto it = _children.rbegin(); it != _children.rend(); ++it) {
+        if ((*it)->propagate(event))
+            return true;
+    }
     if (onEvent(event))
         return true;
-    return _children.findIf([&event](auto &child) {
-        return child->propagate(event);
-    }) != _children.end();
+    return false;
 }
 
 void oA::Item::setExpression(const String &key, const String &expression, const String &context)

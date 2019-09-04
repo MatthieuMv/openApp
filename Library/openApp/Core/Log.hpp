@@ -140,7 +140,7 @@ namespace oA
 }
 
 template<>
-oA::Log &oA::Log::operator<<(String &value);
+oA::Log &oA::Log::operator<<(String value);
 template<>
 oA::Log &oA::Log::operator<<(const char * const value);
 template<>

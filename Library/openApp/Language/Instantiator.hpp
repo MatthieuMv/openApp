@@ -8,6 +8,7 @@
 #pragma once
 
 #include <openApp/Containers/Stack.hpp>
+#include <openApp/Containers/Deque.hpp>
 #include <openApp/Containers/List.hpp>
 #include <openApp/Items/Item.hpp>
 #include <openApp/Language/ShuntingYard.hpp>
@@ -41,7 +42,7 @@ public:
         ItemPtr root;
         ItemPtr target;
         Vector<String> imports;
-        Vector<oA::Function<void(void)>> unresolved;
+        Deque<oA::Function<void(void)>> unresolved;
     };
 
     /**

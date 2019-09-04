@@ -27,6 +27,7 @@ public:
             size.y = getAs<Number>("height");
         }
         for (auto &child : _children) {
+            child->get("x") = 0;
             child->get("y") = pos;
             pos += fill ? size.y : child->getAs<Number>("width");
             if (fill) {

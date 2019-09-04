@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <openApp/Core/Log.hpp>
 #include <openApp/Items/EventArea.hpp>
 
 namespace oA { class DragArea; }
@@ -54,7 +55,7 @@ private:
             return false;
         onDrag();
         updateCoord(event.pos);
-        return !get("propagate");
+        return true;
     }
 
     void onDrag(void) {
