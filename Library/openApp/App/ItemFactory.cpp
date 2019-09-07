@@ -7,6 +7,7 @@
 
 #include <openApp/App/ItemFactory.hpp>
 #include <openApp/Items/Window.hpp>
+#include <openApp/Items/Circle.hpp>
 #include <openApp/Items/Button.hpp>
 #include <openApp/Items/ImageButton.hpp>
 #include <openApp/Items/TilesetButton.hpp>
@@ -38,6 +39,7 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<Item>();
     Register<Window>();
     Register<Rectangle>();
+    Register<Circle>();
     Register<Label>();
     Register<Image>();
     Register<Tileset>();

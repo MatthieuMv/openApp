@@ -185,7 +185,7 @@ void oA::Lang::Instantiator::processDeclaration(const DeclarationNode &node)
         if (_verbose)
             cout << "@unresolved@" << endl;
         context().unresolved.emplace_back([this, &node, mode, item = target, ctx = unit().path](void) mutable {
-            if (item->get(node.name).hasTree())
+            if (!item->get(node.name).hasTree())
                 ShuntingYard::ProcessTokenList(*item, node.name, node.tokens, mode, ctx);
         });
     }
@@ -269,9 +269,9 @@ void oA::Lang::Instantiator::processRelativeSize(const DeclarationNode &node)
             cout << "@unresolved@" << endl;
         context().unresolved.emplace_back([item = target, ctx = unit().path, x, y, line = node.line](void) mutable {
             try {
-                if (item->get("width").hasTree())
+                if (!item->get("width").hasTree())
                     item->setExpression("width", "parent.width * " + ToString(x), "relativeSize");
-                if (item->get("height").hasTree())
+                if (!item->get("height").hasTree())
                     item->setExpression("height", "parent.height * " + ToString(y), "relativeSize");
             } catch (const Error &e) {
                 throw LogicError("Instantiator", "Invalid @relativeSize@ | @" + ctx + "@ line #" + ToString(line) + "#\n\t-> " + e.what());
@@ -302,9 +302,9 @@ void oA::Lang::Instantiator::processRelativePos(const DeclarationNode &node)
             cout << "@unresolved@" << endl;
         context().unresolved.emplace_back([item = target, ctx = unit().path, x, y, line = node.line](void) mutable {
             try {
-                if (item->get("x").hasTree())
+                if (!item->get("x").hasTree())
                     item->setExpression("x", "parent.width * " + ToString(x) + "- width / 2", "relativePos");
-                if (item->get("y").hasTree())
+                if (!item->get("y").hasTree())
                     item->setExpression("y", "parent.height * " + ToString(y) + " - height / 2", "relativePos");
             } catch (const Error &e) {
                 throw LogicError("Instantiator", "Invalid @relativePos@ | @" + ctx + "@ line #" + ToString(line) + "#\n\t-> " + e.what());

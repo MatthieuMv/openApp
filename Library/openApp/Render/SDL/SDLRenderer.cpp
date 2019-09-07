@@ -441,7 +441,7 @@ void oA::SDLRenderer::draw(const LabelContext &context)
         font,
         _current->renderer,
         x,
-        context.pos.y + context.size.y / 2.0f - context.fontSize / 2.0f,
+        context.pos.y + context.size.y / 2.0f - context.fontSize,
         static_cast<FC_AlignEnum>(context.align),
         context.text
     );

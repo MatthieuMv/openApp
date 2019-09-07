@@ -52,6 +52,14 @@ void oA::ItemUtils::ItemHandler::removeChild(const String &id)
         throw AccessError("Item", "Couldn't remove any instance of children with id @" + id + "@");
 }
 
+void oA::ItemUtils::ItemHandler::popChild(void)
+{
+    if (_children.empty())
+        throw LogicError("Item", "Can't pop empty children list");
+    onRemoveChild(*_children.back());
+    _children.pop_back();
+}
+
 oA::ItemPtr oA::ItemUtils::ItemHandler::extractChild(Uint index)
 {
     auto it = _children.begin();

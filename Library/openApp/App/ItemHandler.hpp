@@ -77,6 +77,11 @@ public:
     void removeChild(const String &id);
 
     /**
+     * @brief Pop last child
+     */
+    void popChild(void);
+
+    /**
      * @brief Extract a child using index
      *
      * @param id Child index

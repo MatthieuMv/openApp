@@ -101,7 +101,6 @@ struct oA::CircleContext : public Context
 
     V2f pos;
     Uint size = 0;
-    Uint thick = 0;
     Color color;
     bool filled = true;
     bool antiAliasing = true;
@@ -115,7 +114,6 @@ struct oA::EllipseContext : public Context
 
     V2f pos;
     V2f size;
-    Uint thick = 0;
     Color color;
     bool filled = true;
     bool antiAliasing = true;
