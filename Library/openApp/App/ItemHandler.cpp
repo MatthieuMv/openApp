@@ -26,7 +26,7 @@ oA::Item &oA::ItemUtils::ItemHandler::appendChild(ItemPtr &&child)
     return *p;
 }
 
-void oA::ItemUtils::ItemHandler::removeChild(Uint index)
+void oA::ItemUtils::ItemHandler::removeChild(UInt index)
 {
     auto it = _children.begin();
 
@@ -60,7 +60,7 @@ void oA::ItemUtils::ItemHandler::popChild(void)
     _children.pop_back();
 }
 
-oA::ItemPtr oA::ItemUtils::ItemHandler::extractChild(Uint index)
+oA::ItemPtr oA::ItemUtils::ItemHandler::extractChild(UInt index)
 {
     auto it = _children.begin();
     ItemPtr ptr;
@@ -92,7 +92,7 @@ bool oA::ItemUtils::ItemHandler::childExists(const String &id) const noexcept
     }) != _children.end();
 }
 
-oA::Item &oA::ItemUtils::ItemHandler::getChild(Uint index)
+oA::Item &oA::ItemUtils::ItemHandler::getChild(UInt index)
 {
     auto it = _children.begin();
 
@@ -102,7 +102,7 @@ oA::Item &oA::ItemUtils::ItemHandler::getChild(Uint index)
     return *it->get();
 }
 
-const oA::Item &oA::ItemUtils::ItemHandler::getChild(Uint index) const
+const oA::Item &oA::ItemUtils::ItemHandler::getChild(UInt index) const
 {
     auto it = _children.begin();
 

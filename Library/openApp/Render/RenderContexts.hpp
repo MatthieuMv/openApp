@@ -57,13 +57,13 @@ struct oA::WindowContext : public Context
 struct oA::LineContext : public Context
 {
     LineContext(void) = default;
-    LineContext(const V2f &_p1, const V2f &_p2, Color _color, Uint _thick, bool _antiAliasing)
+    LineContext(const V2f &_p1, const V2f &_p2, Color _color, UInt _thick, bool _antiAliasing)
         : p1(_p1), p2(_p2), color(_color), thick(_thick), antiAliasing(_antiAliasing) {}
 
     V2f p1;
     V2f p2;
     Color color;
-    Uint thick = 0;
+    UInt thick = 0;
     bool antiAliasing = true;
 };
 
@@ -96,11 +96,11 @@ struct oA::RectangleContext : public Context
 struct oA::CircleContext : public Context
 {
     CircleContext(void) = default;
-    CircleContext(const V2f &_pos, Uint _size, Color _color, bool _filled = true, bool _antiAliasing = true)
+    CircleContext(const V2f &_pos, UInt _size, Color _color, bool _filled = true, bool _antiAliasing = true)
         : pos(_pos), size(_size), color(_color), filled(_filled), antiAliasing(_antiAliasing) {}
 
     V2f pos;
-    Uint size = 0;
+    UInt size = 0;
     Color color;
     bool filled = true;
     bool antiAliasing = true;
@@ -143,7 +143,7 @@ struct oA::LabelContext : public Context
     };
 
     LabelContext(void) = default;
-    LabelContext(const char *_text, const char *_font, const V2f &_pos, const V2f &_size, Color _fontColor, Uint _fontSize = 12, Alignment _align = Center)
+    LabelContext(const char *_text, const char *_font, const V2f &_pos, const V2f &_size, Color _fontColor, UInt _fontSize = 12, Alignment _align = Center)
         : text(_text), font(_font), pos(_pos), size(_size), fontColor(_fontColor), fontSize(_fontSize), align(_align) {}
 
     const char *text = nullptr;
@@ -151,6 +151,6 @@ struct oA::LabelContext : public Context
     V2f pos;
     V2f size;
     Color fontColor;
-    Uint fontSize = 12;
+    UInt fontSize = 12;
     Alignment align = Center;
 };

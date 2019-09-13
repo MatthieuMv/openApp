@@ -15,7 +15,7 @@ namespace oA { class Color; }
 /**
  * @brief Abstraction of a concatenated RGBA color
  *
- * Note that the internal color value is 0xRRGGBBAA shifted in a single Uint
+ * Note that the internal color value is 0xRRGGBBAA shifted in a single UInt
  */
 class oA::Color
 {
@@ -85,9 +85,9 @@ public:
     /**
      * @brief Get the internal concatened value
      *
-     * @return Uint Concatenated value
+     * @return UInt Concatenated value
      */
-    Uint getValue(void) const noexcept { return _val; }
+    UInt getValue(void) const noexcept { return _val; }
 
     /**
      * @brief Set a new concatened value
@@ -115,16 +115,16 @@ public:
     static Color RetreiveColor(const String &color);
 
 private:
-    Uint _val = 0;
+    UInt _val = 0;
 
     /**
-     * @brief Pack RGBA values into a single Uint
+     * @brief Pack RGBA values into a single UInt
      *
      * @param r Red intensity
      * @param g Green intensity
      * @param b Blue intensity
      * @param a Alpha intensity
-     * @return Uint Final concatened value
+     * @return UInt Final concatened value
      */
-    inline static Uint Pack(UByte r, UByte g, UByte b, UByte a);
+    inline static UInt Pack(UByte r, UByte g, UByte b, UByte a);
 };

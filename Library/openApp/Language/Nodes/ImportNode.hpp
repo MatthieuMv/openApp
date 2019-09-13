@@ -14,9 +14,9 @@ namespace oA::Lang { struct ImportNode; }
 struct oA::Lang::ImportNode : public ASTNode
 {
     String directory;
-    Uint line = 0;
+    UInt line = 0;
 
-    ImportNode(String &&path, Uint contextLine = 0) : directory(std::move(path)), line(contextLine) {}
+    ImportNode(String &&path, UInt contextLine = 0) : directory(std::move(path)), line(contextLine) {}
 
     virtual ~ImportNode(void) = default;
 

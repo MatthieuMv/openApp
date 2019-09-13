@@ -60,18 +60,18 @@ oA::Color oA::Color::RetreiveColor(const String &color)
 
 static oA::Color RetreiveColorArgs(const oA::String &color)
 {
-    oA::Vector<oA::Uint> vec;
+    oA::Vector<oA::UInt> vec;
     oA::String tmp;
 
     for (auto &c : color) {
         if (std::isdigit(c))
             tmp.push_back(c);
         else if (c == ',') {
-            vec.push_back(tmp.toUint());
+            vec.push_back(tmp.toUInt());
             tmp.clear();
         }
     }
-    vec.push_back(tmp.toUint());
+    vec.push_back(tmp.toUInt());
     if (vec.size() == 4)
         return oA::Color(vec[0], vec[1], vec[2], vec[3]);
     return oA::Color(vec[0], vec[1], vec[2]);
@@ -87,7 +87,7 @@ void oA::Color::setTransparency(UByte a)
     _val = Pack(getR(), getG(), getB(), a);
 }
 
-oA::Uint oA::Color::Pack(UByte r, UByte g, UByte b, UByte a)
+oA::UInt oA::Color::Pack(UByte r, UByte g, UByte b, UByte a)
 {
     return (a << 24) | (b << 16) | (g << 8) | r;
 }

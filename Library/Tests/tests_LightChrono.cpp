@@ -12,7 +12,7 @@
 Test(LightChrono, Basics)
 {
     oA::LightChrono ch;
-    oA::Uint s, ms, mc;
+    oA::UInt s, ms, mc;
 
     ch.reset();
     std::this_thread::sleep_for(std::chrono::seconds(1));

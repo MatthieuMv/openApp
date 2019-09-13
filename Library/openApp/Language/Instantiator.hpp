@@ -65,7 +65,7 @@ public:
 private:
     Stack<Context> _contexts;
     Vector<UnitPtr> _units;
-    Uint _tab = 0;
+    UInt _tab = 0;
     bool _verbose = false;
 
     Instantiator(bool verbose) : _verbose(verbose) {}
@@ -236,5 +236,5 @@ private:
      *
      * @return String Error message
      */
-    String getErrorContext(Uint line) const { return getErrorContext() + " line #" + ToString(line) + '#'; }
+    String getErrorContext(UInt line) const { return getErrorContext() + " line #" + ToString(line) + '#'; }
 };

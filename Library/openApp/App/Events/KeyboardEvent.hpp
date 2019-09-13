@@ -33,9 +33,9 @@ struct oA::KeyboardEvent
     };
 
     KeyboardEvent(void) = default;
-    KeyboardEvent(EventType eventType, KeyType keyType, Uint eventTime) : type(eventType), key(keyType), timestamp(eventTime) {}
+    KeyboardEvent(EventType eventType, KeyType keyType, UInt eventTime) : type(eventType), key(keyType), timestamp(eventTime) {}
 
     EventType type = Pressed; // Key state
     KeyType key = A; // Key symbol
-    Uint timestamp = 0;
+    UInt timestamp = 0;
 };

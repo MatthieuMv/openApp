@@ -48,10 +48,10 @@ oA::Int oA::String::toInt(void) const
     return std::stoul(*this);
 }
 
-oA::Uint oA::String::toUint(void) const
+oA::UInt oA::String::toUInt(void) const
 {
     if (!isNumber())
-        throw CastError("String", "Can't convert @" + *this + "@ to Uint");
+        throw CastError("String", "Can't convert @" + *this + "@ to UInt");
     return std::stoul(*this);
 }
 

@@ -22,7 +22,7 @@ namespace oA
 
     /* 32 Bits */
     using Int = int32_t;
-    using Uint = uint32_t;
+    using UInt = uint32_t;
     using Float = float;
 
     /* 64 Bits */

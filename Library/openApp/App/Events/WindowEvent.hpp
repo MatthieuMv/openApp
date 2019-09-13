@@ -35,9 +35,9 @@ struct oA::WindowEvent
     };
 
     WindowEvent(void) = default;
-    WindowEvent(EventType eventType, const V2i &windowData, Uint eventTime) : type(eventType), data(windowData), timestamp(eventTime) {}
+    WindowEvent(EventType eventType, const V2i &windowData, UInt eventTime) : type(eventType), data(windowData), timestamp(eventTime) {}
 
     EventType type = Shown;
     V2i data; // Data containing either a (x,y) coord or a (width,height) size
-    Uint timestamp = 0;
+    UInt timestamp = 0;
 };

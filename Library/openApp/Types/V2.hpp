@@ -16,7 +16,7 @@ namespace oA
 
     using V2f = V2<Float>;
     using V2i = V2<Int>;
-    using V2u = V2<Uint>;
+    using V2u = V2<UInt>;
 }
 
 /**

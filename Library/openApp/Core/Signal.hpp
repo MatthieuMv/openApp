@@ -71,9 +71,9 @@ public:
      * @brief Connect a Slot, returning its index
      *
      * @param slot Slot to be connected
-     * @return Uint Index used for disconnexion
+     * @return UInt Index used for disconnexion
      */
-    Uint connect(Slot &&slot) noexcept {
+    UInt connect(Slot &&slot) noexcept {
         _slots.insert(std::make_pair(++_index, std::move(slot)));
         return _index;
     }
@@ -83,7 +83,7 @@ public:
      *
      * @param index Index of the slot to be disconnected
      */
-    void disconnect(Uint index) {
+    void disconnect(UInt index) {
         auto it = _slots.find(index);
         if (it == _slots.end())
             throw AccessError("Signal", "Disconnection index not found @" + oA::ToString(index) + "@");
@@ -122,6 +122,6 @@ public:
     }
 
 private:
-    mutable UMap<Uint, Slot> _slots; // Should be mutable to preserve emit constness
-    Uint _index = 0;
+    mutable UMap<UInt, Slot> _slots; // Should be mutable to preserve emit constness
+    UInt _index = 0;
 };

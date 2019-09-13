@@ -92,10 +92,10 @@ Test(String, UnsignedCast)
     bool crashed = false;
 
     cr_assert(str.isUnsigned());
-    cr_assert_eq(str.toUint(), 42);
+    cr_assert_eq(str.toUInt(), 42);
     str = "-42z";
     cr_assert_not(str.isUnsigned());
-    try { str.toUint(); }
+    try { str.toUInt(); }
     catch (...) { crashed = true; }
     cr_assert(crashed);
 }

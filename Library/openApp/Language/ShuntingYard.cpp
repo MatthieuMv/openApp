@@ -17,7 +17,7 @@ static const std::regex NameMatch("([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnu
 static const std::regex ValueMatch("\".*\"|[[]|true|false|-?[[:digit:]]*[.]?[[:digit:]]+", std::regex::optimize);
 static const std::regex IncrementOperatorMatch("(([+][+]|[-][-])([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*)|((([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*)([+][+]|[-][-]))", std::regex::optimize);
 
-void oA::Lang::ShuntingYard::ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context, bool verbose, Uint tab)
+void oA::Lang::ShuntingYard::ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context, bool verbose, UInt tab)
 {
     Lexer::TokenList tokens;
     Lexer::ProcessString(expr, tokens, context);
@@ -25,14 +25,14 @@ void oA::Lang::ShuntingYard::ProcessString(Item &root, const String &name, const
     ProcessTokenList(root, name, tokens, mode, context, verbose, tab);
 }
 
-void oA::Lang::ShuntingYard::ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, Uint tab)
+void oA::Lang::ShuntingYard::ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, UInt tab)
 {
     if (tokens.empty())
         return;
     ShuntingYard(root, name, tokens, mode, context, verbose, tab).process();
 }
 
-oA::Lang::ShuntingYard::ShuntingYard(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, Uint tab)
+oA::Lang::ShuntingYard::ShuntingYard(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, UInt tab)
     :  _expr(std::make_unique<ExpressionGroupNode>()), _root(root), _tokens(tokens), _context(context), _name(name), _mode(mode), _tab(tab), _verbose(verbose)
 {
     if (!_tokens.empty())
@@ -615,7 +615,7 @@ void oA::Lang::ShuntingYard::buildOperator(Vector<ASTNodePtr>::iterator &it)
     }
 }
 
-bool oA::Lang::ShuntingYard::peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, Uint args) noexcept
+bool oA::Lang::ShuntingYard::peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, UInt args) noexcept
 {
     auto i = args;
 

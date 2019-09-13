@@ -135,7 +135,7 @@ public:
     /**
      * @brief Safe cast of internal type to Int
      */
-    Uint toUint(void) const noexcept;
+    UInt toUInt(void) const noexcept;
 
     /**
      * @brief Safe cast of internal type to Float

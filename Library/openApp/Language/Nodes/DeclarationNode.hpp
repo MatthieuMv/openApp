@@ -24,9 +24,9 @@ struct oA::Lang::DeclarationNode : public ASTNode
     String name;
     DeclarationType type;
     Lexer::TokenList tokens;
-    Uint line = 0;
+    UInt line = 0;
 
-    DeclarationNode(String &&declarationName, DeclarationType declarationType, Uint contextLine = 0) : name(std::move(declarationName)), type(declarationType), line(contextLine) {}
+    DeclarationNode(String &&declarationName, DeclarationType declarationType, UInt contextLine = 0) : name(std::move(declarationName)), type(declarationType), line(contextLine) {}
 
     virtual ~DeclarationNode(void) = default;
 

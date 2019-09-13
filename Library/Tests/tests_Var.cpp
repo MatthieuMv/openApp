@@ -38,7 +38,7 @@ Test(Var, Number)
 
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), 42);
-    cr_assert_eq(v1.toUint(), 42);
+    cr_assert_eq(v1.toUInt(), 42);
     cr_assert_eq(v1.toFloat(), 42.0f);
     cr_assert_eq(v1.toString(), "42");
     cr_assert_eq(v1.operator bool(), true);
@@ -82,9 +82,9 @@ Test(Var, Literal)
     cr_assert_eq(v3.len().toInt(), 3);
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), 4);
-    cr_assert_eq(v1.toUint(), 4);
+    cr_assert_eq(v1.toUInt(), 4);
     cr_assert_eq(v3.toInt(), 0);
-    cr_assert_eq(v3.toUint(), 0);
+    cr_assert_eq(v3.toUInt(), 0);
     cr_assert_eq(v1.toFloat(), 4.0f);
     cr_assert_eq(v3.toFloat(), 0.0f);
     cr_assert_eq(v1.toString(), "4");
@@ -143,7 +143,7 @@ Test(Var, Container)
 
     cr_assert_eq(v1.toBool(), true);
     cr_assert_eq(v1.toInt(), oA::Int());
-    cr_assert_eq(v1.toUint(), oA::Uint());
+    cr_assert_eq(v1.toUInt(), oA::UInt());
     cr_assert_eq(v1.toFloat(), oA::Float());
     cr_assert_eq(v1.toString(), oA::String("[ 0, 1, 2.5, 3 ]"));
     cr_assert_eq(v1.operator bool(), true);
@@ -151,12 +151,12 @@ Test(Var, Container)
     cr_assert_eq(v1 == v2, true);
     cr_assert_eq(v1 != v2, false);
     cr_assert_eq(v1[2].toFloat(), 2.5);
-    cr_assert_eq(v1.len().toUint(), 4);
+    cr_assert_eq(v1.len().toUInt(), 4);
     v1 += 42;
-    cr_assert_eq(v1.len().toUint(), 5);
+    cr_assert_eq(v1.len().toUInt(), 5);
     cr_assert_eq(v1[--v1.len()].toInt(), 42);
     v1 -= 0;
-    cr_assert_eq(v1.len().toUint(), 4);
+    cr_assert_eq(v1.len().toUInt(), 4);
     cr_assert_eq(v1[0].toInt(), 1);
     cr_assert_eq(ref[0].toInt(), 1);
     cr_assert_eq(v1[--v1.len()].toInt(), 42);

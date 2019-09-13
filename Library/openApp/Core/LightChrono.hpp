@@ -26,23 +26,23 @@ public:
     /**
      * @brief Get elapsed time in seconds
      *
-     * @return Uint Seconds
+     * @return UInt Seconds
      */
-    Uint getSeconds(void) const noexcept { return getAs<std::chrono::seconds>(); }
+    UInt getSeconds(void) const noexcept { return getAs<std::chrono::seconds>(); }
 
     /**
      * @brief Get elapsed time in milliseconds
      *
-     * @return Uint Milliseconds
+     * @return UInt Milliseconds
      */
-    Uint getMilliseconds(void) const noexcept { return getAs<std::chrono::milliseconds>(); }
+    UInt getMilliseconds(void) const noexcept { return getAs<std::chrono::milliseconds>(); }
 
     /**
      * @brief Get elapsed time in microseconds
      *
-     * @return Uint Microseconds
+     * @return UInt Microseconds
      */
-    Uint getMicroseconds(void) const noexcept { return getAs<std::chrono::microseconds>(); }
+    UInt getMicroseconds(void) const noexcept { return getAs<std::chrono::microseconds>(); }
 
     /**
      * @brief Reset internal timer
@@ -59,10 +59,10 @@ private:
      * @brief Get elapsed time, casting it to type T
      *
      * @tparam T Time interpretation type
-     * @return Uint Elapsed time casted to T
+     * @return UInt Elapsed time casted to T
      */
     template <typename T>
-    Uint getAs(void) const noexcept {
+    UInt getAs(void) const noexcept {
         return std::chrono::duration_cast<T>(
             std::chrono::system_clock::now() - _chrono
         ).count();

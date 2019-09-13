@@ -48,18 +48,18 @@ oA::Int oA::Var::toInt(void) const noexcept
     }, _var);
 }
 
-oA::Uint oA::Var::toUint(void) const noexcept
+oA::UInt oA::Var::toUInt(void) const noexcept
 {
     return std::visit(Overload {
-        [] (const Number &number) -> Uint {
-            return static_cast<Uint>(number);
+        [] (const Number &number) -> UInt {
+            return static_cast<UInt>(number);
         },
-        [] (const Literal &literal) -> Uint {
+        [] (const Literal &literal) -> UInt {
             if (literal.isNumber())
-                return literal.toUint();
+                return literal.toUInt();
             return 0;
         },
-        [] (const Container &) -> Uint {
+        [] (const Container &) -> UInt {
             return 0;
         }
     }, _var);
@@ -335,7 +335,7 @@ oA::Var &oA::Var::operator-=(const Var &other)
         },
         [&other] (Container &container) -> bool {
             auto it = container.begin();
-            auto idx = other.toUint();
+            auto idx = other.toUInt();
             if (other.index() != VNumber)
                 throw LogicError("Var", "Operator -= on @Container@ must be used with a Number");
             if (container.size() <= idx)
@@ -489,7 +489,7 @@ oA::Var &oA::Var::operator[](const Var &other)
         },
         [&other] (Container &container) -> Var& {
             auto it = container.begin();
-            auto idx = other.toUint();
+            auto idx = other.toUInt();
             if (other.index() != VNumber)
                 throw LogicError("Var", "Operator [] on @Container@ must be used with a Number");
             if (container.size() <= idx)
@@ -511,7 +511,7 @@ const oA::Var &oA::Var::operator[](const Var &other) const
         },
         [&other] (const Container &container) -> const Var& {
             auto it = container.begin();
-            auto idx = other.toUint();
+            auto idx = other.toUInt();
             if (other.index() != VNumber)
                 throw LogicError("Var", "Operator [] on @Container@ must be used with a Number");
             if (container.size() <= idx)
@@ -604,12 +604,12 @@ oA::Var &oA::Var::insert(const Var &index, const Var &value)
         },
         [&index, &value] (Literal &literal) -> bool {
             auto str = value.toString();
-            literal.insert(index.toUint(), str);
+            literal.insert(index.toUInt(), str);
             return !str.empty();
         },
         [this, &index, &value] (Container &container) -> bool {
             auto it = container.begin();
-            std::advance(it, index.toUint());
+            std::advance(it, index.toUInt());
             container.insert(it, value)->connect([this]{ this->emit(); return true; });
             return true;
         }
@@ -626,12 +626,12 @@ oA::Var &oA::Var::insert(const Var &index, Var &&value)
         },
         [&index, &value] (Literal &literal) -> bool {
             auto str = value.toString();
-            literal.insert(index.toUint(), str);
+            literal.insert(index.toUInt(), str);
             return !str.empty();
         },
         [this, &index, &value] (Container &container) -> bool {
             auto it = container.begin();
-            std::advance(it, index.toUint());
+            std::advance(it, index.toUInt());
             container.insert(it, std::move(value))->connect([this]{ this->emit(); return true; });
             return true;
         }
@@ -647,12 +647,12 @@ oA::Var &oA::Var::remove(const Var &index)
             throw LogicError("Var", "Can't use function push on @Number@");
         },
         [&index] (Literal &literal) -> bool {
-            literal.erase(index.toUint());
+            literal.erase(index.toUInt());
             return true;
         },
         [&index] (Container &container) -> bool {
             auto it = container.begin();
-            std::advance(it, index.toUint());
+            std::advance(it, index.toUInt());
             container.erase(it);
             return true;
         }

@@ -42,8 +42,8 @@ namespace oA::Lang
     struct OperatorModel
     {
         Operator type;
-        Uint args;
-        Uint precedence;
+        UInt args;
+        UInt precedence;
         Associativity associativity;
     };
 

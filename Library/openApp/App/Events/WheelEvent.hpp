@@ -25,9 +25,9 @@ struct oA::WheelEvent
     };
 
     WheelEvent(void) = default;
-    WheelEvent(Direction wheelDirection, const V2i &scrollDistance, Uint eventTime) : direction(wheelDirection), scroll(scrollDistance), timestamp(eventTime) {}
+    WheelEvent(Direction wheelDirection, const V2i &scrollDistance, UInt eventTime) : direction(wheelDirection), scroll(scrollDistance), timestamp(eventTime) {}
 
     Direction direction = Top;
     V2i scroll; // Scroll amount (x, y)
-    Uint timestamp = 0;
+    UInt timestamp = 0;
 };

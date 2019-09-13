@@ -80,12 +80,12 @@ private:
     UMap<Int, RenderContext> _contexts;
     RenderContext *_current = nullptr;
     Float _fpsDelay = 1000.0f / 60.0f;
-    Uint _tick = 0;
+    UInt _tick = 0;
 
     RenderContext &getRenderContext(Int index);
     SDL_Texture *getTexture(const ImageContext &context);
     FC_Font *getFont(const LabelContext &context);
-    Uint getWindowFlags(WindowContext::Type type);
+    UInt getWindowFlags(WindowContext::Type type);
 
     bool constructWindowEvent(Event &target, SDL_Event &event);
     bool constructMouseEvent(Event &target, SDL_Event &event);

@@ -33,10 +33,10 @@ struct oA::MouseEvent
     };
 
     MouseEvent(void) = default;
-    MouseEvent(EventType eventType, KeyType mouseKey, V2i mousePos, Uint eventTime) : type(eventType), key(mouseKey), pos(mousePos), timestamp(eventTime) {}
+    MouseEvent(EventType eventType, KeyType mouseKey, V2i mousePos, UInt eventTime) : type(eventType), key(mouseKey), pos(mousePos), timestamp(eventTime) {}
 
     EventType type = Pressed;
     KeyType key = Left;
     V2i pos; // Data containing a (x, y) pos
-    Uint timestamp = 0;
+    UInt timestamp = 0;
 };

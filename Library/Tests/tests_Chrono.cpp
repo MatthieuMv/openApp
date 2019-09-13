@@ -12,7 +12,7 @@
 Test(Chrono, Basics)
 {
     oA::Chrono ch;
-    oA::Uint s, ms, mc;
+    oA::UInt s, ms, mc;
 
     cr_assert_not(ch.isPaused());
     ch.reset();

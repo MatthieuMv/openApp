@@ -91,9 +91,9 @@ public:
      * @brief Add an expression event by move, it will be computed at emit()
      *
      * @param expr Property to move
-     * @return Uint Disconnect index
+     * @return UInt Disconnect index
      */
-    Uint connectEvent(PropertyPtr &&expr);
+    UInt connectEvent(PropertyPtr &&expr);
 
     /**
      * @brief Print to cout expression architecture
@@ -131,5 +131,5 @@ public:
 
 //private:
     Lang::ASTNodePtr _tree;
-    Vector<Pair<Uint, PropertyPtr>> _dependencies;
+    Vector<Pair<UInt, PropertyPtr>> _dependencies;
 };

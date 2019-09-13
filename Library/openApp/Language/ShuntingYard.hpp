@@ -44,7 +44,7 @@ public:
      * @param mode ShuntingYard mode
      * @param context Context of the tokens
      */
-    static void ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context = "Root", bool verbose = false, Uint tab = 0);
+    static void ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context = "Root", bool verbose = false, UInt tab = 0);
 
     /**
      * @brief Process a list of token representing an expression
@@ -55,7 +55,7 @@ public:
      * @param tokens List of tokens
      * @param context Context of the tokens
      */
-    static void ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context = "Root", bool verbose = false, Uint tab = 0);
+    static void ProcessTokenList(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context = "Root", bool verbose = false, UInt tab = 0);
 
 private:
     Vector<ASTNodePtr> _stack, _opStack;
@@ -68,7 +68,7 @@ private:
     const String &_name;
     Mode _mode;
     Int _line = 0;
-    Uint _tab = 0;
+    UInt _tab = 0;
     bool _verbose = false;
 
     /**
@@ -78,7 +78,7 @@ private:
      * @param tokens Token list
      * @param context Context of the tokens
      */
-    ShuntingYard(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, Uint tab);
+    ShuntingYard(Item &root, const String &name, const Lexer::TokenList &tokens, Mode mode, const String &context, bool verbose, UInt tab);
 
     /**
      * @brief Process internal tokens, and convert them to an AST tree
@@ -156,7 +156,7 @@ private:
      * @return true Success
      * @return false Error
      */
-    bool peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, Uint args) noexcept;
+    bool peekStackArguments(Vector<ASTNodePtr>::iterator &it, ASTNode &target, UInt args) noexcept;
 
     /**
      * @brief Pop every operator of opStack and push them into the stack

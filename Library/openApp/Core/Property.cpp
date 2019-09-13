@@ -41,7 +41,7 @@ void oA::Property::call(void)
         this->emit();
 }
 
-oA::Uint oA::Property::connectEvent(PropertyPtr &&ptr)
+oA::UInt oA::Property::connectEvent(PropertyPtr &&ptr)
 {
     if (!ptr)
         throw LogicError("Property", "Can't add @null@ event");

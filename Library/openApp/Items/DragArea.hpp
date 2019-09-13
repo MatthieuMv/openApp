@@ -86,8 +86,8 @@ private:
         return false;
     }
 
-    Uint getMyIndex(void) const {
-        Uint index = 0;
+    UInt getMyIndex(void) const {
+        UInt index = 0;
         if (!getParent())
             throw LogicError("DragArea", "Can't get @index@ of DragArea that doesn't have @parent@");
         getParent()->children().findIf([this, &index](const auto &child) {

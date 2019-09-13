@@ -20,9 +20,9 @@ namespace oA
 struct oA::MotionEvent
 {
     MotionEvent(void) = default;
-    MotionEvent(const V2i &mousePos, const V2i &mouseSpeed, Uint eventTime) : pos(mousePos), speed(mouseSpeed), timestamp(eventTime) {}
+    MotionEvent(const V2i &mousePos, const V2i &mouseSpeed, UInt eventTime) : pos(mousePos), speed(mouseSpeed), timestamp(eventTime) {}
 
     V2i pos; // Mouse position
     V2i speed; // Mouse speed
-    Uint timestamp = 0;
+    UInt timestamp = 0;
 };

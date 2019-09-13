@@ -21,6 +21,6 @@ namespace oA
      * @tparam Value Contained type
      * @tparam Size Array lenght
      */
-    template<typename Value, oA::Uint Size>
+    template<typename Value, oA::UInt Size>
     using Array = ContainerHelper<std::array<Value, Size>, Value>;
 }

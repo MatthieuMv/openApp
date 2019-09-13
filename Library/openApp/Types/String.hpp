@@ -129,11 +129,11 @@ public:
     Int  toInt(void) const;
 
     /**
-     * @brief Uint cast
+     * @brief UInt cast
      *
-     * @return Uint Cast result
+     * @return UInt Cast result
      */
-    Uint toUint(void) const;
+    UInt toUInt(void) const;
 
     /**
      * @brief Float cast

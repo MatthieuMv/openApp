@@ -78,7 +78,7 @@ void oA::SDLRenderer::setTargetFPS(Float fps)
 
 void oA::SDLRenderer::handleTargetFPS(void)
 {
-    Uint tick = SDL_GetTicks(), frameTime = tick - _tick;
+    UInt tick = SDL_GetTicks(), frameTime = tick - _tick;
 
     if (frameTime < _fpsDelay) {
         SDL_Delay(_fpsDelay - frameTime);
@@ -491,7 +491,7 @@ FC_Font *oA::SDLRenderer::getFont(const LabelContext &context)
     return font;
 }
 
-oA::Uint oA::SDLRenderer::getWindowFlags(WindowContext::Type type)
+oA::UInt oA::SDLRenderer::getWindowFlags(WindowContext::Type type)
 {
     switch (type) {
     case WindowContext::Resizable:
@@ -507,7 +507,7 @@ oA::Uint oA::SDLRenderer::getWindowFlags(WindowContext::Type type)
 
 bool oA::SDLRenderer::pollEvent(Event &target)
 {
-    static const UMap<Uint, bool(SDLRenderer::*)(Event &target, SDL_Event &event)> ConstructMap = {
+    static const UMap<UInt, bool(SDLRenderer::*)(Event &target, SDL_Event &event)> ConstructMap = {
         { SDL_WINDOWEVENT,      &SDLRenderer::constructWindowEvent },
         { SDL_MOUSEBUTTONUP,    &SDLRenderer::constructMouseEvent },
         { SDL_MOUSEBUTTONDOWN,  &SDLRenderer::constructMouseEvent },

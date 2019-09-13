@@ -44,9 +44,9 @@ public:
     /**
      * @brief Return number of children
      *
-     * @return Uint Number of children
+     * @return UInt Number of children
      */
-    Uint childCount(void) const noexcept { return _children.size(); }
+    UInt childCount(void) const noexcept { return _children.size(); }
 
     /**
      * @brief Add a child ItemPtr by copy
@@ -67,7 +67,7 @@ public:
      *
      * @param id Child index
      */
-    void removeChild(Uint index);
+    void removeChild(UInt index);
 
     /**
      * @brief Remove a child (using internal id)
@@ -87,7 +87,7 @@ public:
      * @param id Child index
      * @return ItemPtr Extracted item
      */
-    ItemPtr extractChild(Uint index);
+    ItemPtr extractChild(UInt index);
 
     /**
      * @brief Extract a child (using internal id)
@@ -112,7 +112,7 @@ public:
      * @param index Child index
      * @return Item& Child at index
      */
-    Item &getChild(Uint index);
+    Item &getChild(UInt index);
 
     /**
      * @brief Return a const reference to matching child using index
@@ -120,7 +120,7 @@ public:
      * @param index Child index
      * @return Item& Child at index
      */
-    const Item &getChild(Uint index) const;
+    const Item &getChild(UInt index) const;
 
     /**
      * @brief Return a non-const reference to matching child (using internal id)

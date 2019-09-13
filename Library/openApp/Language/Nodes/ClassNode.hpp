@@ -14,9 +14,9 @@ namespace oA::Lang { struct ClassNode; }
 struct oA::Lang::ClassNode : public ASTNode
 {
     String name;
-    Uint line = 0;
+    UInt line = 0;
 
-    ClassNode(String &&className, Uint contextLine = 0) : name(std::move(className)), line(contextLine) {}
+    ClassNode(String &&className, UInt contextLine = 0) : name(std::move(className)), line(contextLine) {}
 
     virtual ~ClassNode(void) = default;
 
