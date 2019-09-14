@@ -1,0 +1,3 @@
+[submodule "Library/openAudio"]
+	path = Library/openAudio
+	url = git@github.com:MatthieuMv/openAudio.git
