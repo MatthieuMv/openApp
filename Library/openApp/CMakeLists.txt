@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(openApp)
 
-set(oAPath .)
+set(oALibraryDir ..)
 
 set(oARendererTarget "SDL")
 
@@ -26,7 +26,7 @@ set(CMAKE_CXX_STANDARD 17)
 add_library(openApp SHARED ${oASources} ${oARendererSources})
 
 target_include_directories(openApp
-    PRIVATE ${oAPath}
+    PRIVATE ${oALibraryDir}
 )
 
 target_link_libraries(openApp

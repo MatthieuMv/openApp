@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(openApp)
 
-# This file need the variable 'oAPath' to be set !
+# This file need the variable 'oALibraryDir' to be set (linked to !
 
-set(oARoot ${oAPath}/openApp)
+set(oARoot ${oALibraryDir}/openApp)
 set(oATypes ${oARoot}/Types)
 set(oACore ${oARoot}/Core)
 set(oAContainers ${oARoot}/Containers)

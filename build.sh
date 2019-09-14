@@ -1,6 +1,6 @@
 mkdir -p Build
 cd Build
-cmake ../Library
+cmake ../Library/openApp
 make
 cd ..
 cp Build/libopenApp.* Library
