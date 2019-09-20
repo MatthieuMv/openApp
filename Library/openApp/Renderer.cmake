@@ -10,8 +10,8 @@ set(oASDL ${oARender}/SDL)
 set(oASDLRenderer
     ${oASDL}/SDLRenderer.hpp
     ${oASDL}/SDLRenderer.cpp
-    ${oASDL}/FontCache.hpp
-    ${oASDL}/FontCache.cpp
+    ${oASDL}/Extern/SDL_FontCache.h
+    ${oASDL}/Extern/SDL_FontCache.c
     ${oASDL}/Extern/SDL2_gfxPrimitives.h
     ${oASDL}/Extern/SDL2_gfxPrimitives.c
     ${oASDL}/Extern/SDL2_gfxPrimitives_font.h
