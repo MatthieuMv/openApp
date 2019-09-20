@@ -472,7 +472,7 @@ SDL_Texture *oA::SDLRenderer::getTexture(const ImageContext &context)
 FC_Font *oA::SDLRenderer::getFont(const LabelContext &context)
 {
     auto it = _current->fonts.findIf([&context](const auto &key) {
-        return key.first == context.font;
+        return key.first.first == context.font && key.first.second == context.fontSize;
     });
 
     if (it != _current->fonts.end())
@@ -487,7 +487,7 @@ FC_Font *oA::SDLRenderer::getFont(const LabelContext &context)
             TTF_STYLE_NORMAL
             ))
         throw RuntimeError("SDLRenderer", "Couldn't instantiate new font @" + String(context.font) + "@");
-    _current->fonts.emplace_back(context.font, font);
+    _current->fonts.emplace_back(std::make_pair(context.font, context.fontSize), font);
     return font;
 }
 

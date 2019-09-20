@@ -35,7 +35,7 @@ public:
         void clearCache(void);
 
         List<Pair<String, SDL_Texture *>> textures;
-        List<Pair<String, FC_Font *>> fonts;
+        List<Pair<Pair<String, UInt>, FC_Font *>> fonts;
         SDL_Window *window = nullptr;
         SDL_Renderer *renderer = nullptr;
         Color clear;
