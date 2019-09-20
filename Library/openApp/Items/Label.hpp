@@ -14,6 +14,11 @@ namespace oA { class Label; }
 class oA::Label : virtual public Item
 {
 public:
+    static String &GetDefaultFont(void) {
+        static String font;
+        return font;
+    }
+
     virtual ~Label(void) = default;
 
     Label(void) {
@@ -29,9 +34,10 @@ public:
     virtual void onDraw(IRenderer &renderer) { renderer.draw(getLabelContext()); }
 
     LabelContext getLabelContext(void) const {
+        const auto &font = getAs<Literal>("font");
         return LabelContext(
             getAs<Literal>("text").c_str(),
-            getAs<Literal>("font").c_str(),
+            font.empty() ? GetDefaultFont().c_str() : font.c_str(),
             V2f(getAs<Number>("screenX"), getAs<Number>("screenY")),
             V2f(getAs<Number>("width"), getAs<Number>("height")),
             oA::Color::RetreiveColor(getAs<Literal>("fontColor")),

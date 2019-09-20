@@ -8,6 +8,7 @@
 #include <openApp/App/App.hpp>
 #include <openApp/Items/Window.hpp>
 #include <openApp/Language/Instantiator.hpp>
+#include <openApp/Items/Label.hpp>
 
 bool oA::App::onEvent(const Event &event)
 {
@@ -80,6 +81,12 @@ void oA::App::openWindow(ItemPtr &&root)
     }
     _children[index] = std::move(root);
 }
+
+void oA::App::setDefaultFont(const String &path)
+{
+    Label::GetDefaultFont() = path;
+}
+
 
 void oA::App::update(void)
 {

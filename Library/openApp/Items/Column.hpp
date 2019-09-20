@@ -8,6 +8,7 @@
 #pragma once
 
 #include <openApp/Items/Layout.hpp>
+#include <openApp/Core/Log.hpp>
 
 namespace oA { class Column; }
 
@@ -19,20 +20,21 @@ public:
     virtual String getName(void) const noexcept { return "Column"; }
 
     virtual void updateLayout(void) override {
-        V2f size;
-        Float pos = 0.0f;
         bool fill = get("fill");
-        if (fill) {
-            size.x = getAs<Number>("width") / _children.size();
-            size.y = getAs<Number>("height");
-        }
-        for (auto &child : _children) {
-            child->get("x") = 0;
-            child->get("y") = pos;
-            pos += fill ? size.y : child->getAs<Number>("width");
+        V2f size = { getAs<Number>("width"), getAs<Number>("height") / _children.size() };
+
+        for (auto it = _children.begin(); it != _children.end(); ++it) {
+            auto &child = **it;
             if (fill) {
-                child->get("width") = size.x;
-                child->get("height") = size.y;
+                (child.get("width") = size.x).clearTree();
+                (child.get("height") = size.y).clearTree();
+            }
+            (child.get("x") = 0).clearTree();
+            if (it == _children.begin())
+                (child.get("y") = 0).clearTree();
+            else {
+                auto prev = it - 1;
+                child.setExpression("y", (*prev)->getID() + ".y + " + (*prev)->getID() + ".height");
             }
         }
     }

@@ -13,6 +13,11 @@ static oA::String SplitKeyExpr(const oA::String &expr, oA::String &token);
 
 void oA::Item::onAppendChild(Item &child)
 {
+    static auto assigned = 0;
+
+    if (child.getID().empty()) {
+        child.setID("noID" + ToString(assigned++));
+    }
     child.setParent(this);
     child.setExpression("screenX", "parent.screenX + x");
     child.setExpression("screenY", "parent.screenY + y");

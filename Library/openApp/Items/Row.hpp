@@ -19,21 +19,22 @@ public:
     virtual String getName(void) const noexcept { return "Row"; }
 
     virtual void updateLayout(void) override {
-        V2f size;
-        Float pos = 0.0f;
         bool fill = get("fill");
-        if (fill) {
-            size.x = getAs<Number>("width") / _children.size();
-            size.y = getAs<Number>("height");
-        }
-        for (auto &child : _children) {
-            (child->get("x") = pos).clearTree();
-            (child->get("y") = 0).clearTree();
-            pos += fill ? size.x : child->getAs<Number>("width");
+        V2f size = { getAs<Number>("width") / _children.size(), getAs<Number>("height") };
+
+        for (auto it = _children.begin(); it != _children.end(); ++it) {
+            auto &child = **it;
             if (fill) {
-                child->get("width") = size.x;
-                child->get("height") = size.y;
+                (child.get("width") = size.x).clearTree();
+                (child.get("height") = size.y).clearTree();
             }
+            (child.get("y") = 0).clearTree();
+            if (it == _children.begin()) {
+                (child.get("x") = 0).clearTree();
+                continue;
+            }
+            auto prev = it - 1;
+            child.setExpression("x", (*prev)->getID() + ".x + " + (*prev)->getID() + ".width");
         }
     }
 };
