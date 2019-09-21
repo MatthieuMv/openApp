@@ -23,6 +23,9 @@ public:
             get("focused") = true;
             return true;
         });
+        get("color") = "white";
+        get("fontColor") = "black";
+        get("borderWidth") = 1;
     }
 
     virtual String getName(void) const noexcept { return "TextInput"; }

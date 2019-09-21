@@ -21,20 +21,18 @@ public:
 
     virtual void updateLayout(void) override {
         bool fill = get("fill");
-        V2f size = { getAs<Number>("width"), getAs<Number>("height") / _children.size() };
-
         for (auto it = _children.begin(); it != _children.end(); ++it) {
             auto &child = **it;
             if (fill) {
-                (child.get("width") = size.x).clearTree();
-                (child.get("height") = size.y).clearTree();
+                child.setExpression("width", "parent.width - parent.padding * 2");
+                child.setExpression("height", "(parent.height - (parent.children + 1) * parent.padding) / parent.children");
             }
-            (child.get("x") = 0).clearTree();
+            child.setExpression("x", "parent.padding");
             if (it == _children.begin())
-                (child.get("y") = 0).clearTree();
+                child.setExpression("y", "parent.padding");
             else {
                 auto prev = it - 1;
-                child.setExpression("y", (*prev)->getID() + ".y + " + (*prev)->getID() + ".height");
+                child.setExpression("y", (*prev)->getID() + ".y + " + (*prev)->getID() + ".height + parent.padding");
             }
         }
     }

@@ -84,12 +84,14 @@ struct oA::TriangleContext : public Context
 struct oA::RectangleContext : public Context
 {
     RectangleContext(void) = default;
-    RectangleContext(const V2f &_pos, const V2f &_size, Color _color, bool _filled = true)
-        : pos(_pos), size(_size), color(_color), filled(_filled) {}
+    RectangleContext(const V2f &_pos, const V2f &_size, Color _color, bool _filled = true, UInt _borderWidth = 0, Color _borderColor = Color())
+        : pos(_pos), size(_size), color(_color), borderColor(_borderColor), borderWidth(_borderWidth), filled(_filled) {}
 
     V2f pos;
     V2f size;
     Color color;
+    Color borderColor;
+    UInt borderWidth = 0;
     bool filled = true;
 };
 

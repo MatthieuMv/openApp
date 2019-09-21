@@ -33,7 +33,7 @@ public:
 
     virtual void onDraw(IRenderer &renderer) { renderer.draw(getLabelContext()); }
 
-    LabelContext getLabelContext(void) const {
+    virtual LabelContext getLabelContext(void) const {
         const auto &font = getAs<Literal>("font");
         return LabelContext(
             getAs<Literal>("text").c_str(),
@@ -46,10 +46,9 @@ public:
         );
     }
 
-private:
+protected:
     LabelContext::Alignment getAlignment(void) const {
         auto &align = getAs<Literal>("alignment");
-
         if (align == "left")
             return LabelContext::Left;
         else if (align == "center")

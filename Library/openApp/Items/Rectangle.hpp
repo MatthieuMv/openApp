@@ -20,6 +20,8 @@ public:
     Rectangle(void) {
         append("color") = "black";
         append("fill") = true;
+        append("borderWidth") = 0;
+        append("borderColor") = "black";
     }
 
     virtual String getName(void) const noexcept { return "Rectangle"; }
@@ -31,7 +33,9 @@ public:
             V2f(getAs<Number>("screenX"), getAs<Number>("screenY")),
             V2f(getAs<Number>("width"), getAs<Number>("height")),
             oA::Color::RetreiveColor(getAs<Literal>("color")),
-            get("fill")
+            get("fill"),
+            getAs<Number>("borderWidth"),
+            oA::Color::RetreiveColor(getAs<Literal>("borderColor"))
         );
     }
 };
