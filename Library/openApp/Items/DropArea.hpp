@@ -24,7 +24,7 @@ public:
 
     virtual String getName(void) const noexcept { return "DropArea"; }
 
-    virtual bool onEvent(const Event &event) {
+    virtual bool onEvent(IRenderer &renderer, const Event &event) {
         if (!get("droppable") || event.getType() != Event::Drop)
             return false;
         auto &evt = event.getAs<DropEvent>();

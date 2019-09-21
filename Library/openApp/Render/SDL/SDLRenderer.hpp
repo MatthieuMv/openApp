@@ -76,6 +76,8 @@ public:
 
     virtual bool pollEvent(Event &event);
 
+    virtual void setTextInputState(bool state);
+
 private:
     UMap<Int, RenderContext> _contexts;
     RenderContext *_current = nullptr;
@@ -92,4 +94,5 @@ private:
     bool constructMotionEvent(Event &target, SDL_Event &event);
     bool constructWheelEvent(Event &target, SDL_Event &event);
     bool constructKeyboardEvent(Event &target, SDL_Event &event);
+    bool constructTextEvent(Event &target, SDL_Event &event);
 };

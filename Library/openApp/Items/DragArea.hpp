@@ -27,15 +27,15 @@ public:
 
     virtual String getName(void) const noexcept { return "DragArea"; }
 
-    virtual bool onEvent(const Event &event) {
-        bool res = EventArea::onEvent(event);
+    virtual bool onEvent(IRenderer &renderer, const Event &event) {
+        bool res = EventArea::onEvent(renderer, event);
         if (!get("draggable"))
             return res;
         if (get("dragging") && event.getType() == Event::Motion) {
             updateCoord(event.getAs<MotionEvent>().pos);
             return res;
         } else if (event.getType() == Event::Mouse)
-            return handleMouseEvent(event.getAs<MouseEvent>()) || res;
+            return handleMouseEvent(renderer, event.getAs<MouseEvent>()) || res;
         return res;
     }
 
@@ -48,9 +48,9 @@ private:
         get("y") = pos.y - getAs<Number>("height") / 2.0f;
     }
 
-    bool handleMouseEvent(const MouseEvent &event) {
+    bool handleMouseEvent(IRenderer &renderer, const MouseEvent &event) {
         if (event.type == MouseEvent::Released && get("dragging"))
-            return onDrop(event.pos);
+            return onDrop(renderer, event.pos);
         else if (event.type != MouseEvent::Pressed || get("dragging") || !get("hovered"))
             return false;
         onDrag();
@@ -68,14 +68,14 @@ private:
         get("dragged").call();
     }
 
-    bool onDrop(const V2i &pos) {
+    bool onDrop(IRenderer &renderer, const V2i &pos) {
         auto *root = getRoot();
         auto me = getParent()->extractChild(getMyIndex());
         Event event;
         revertDragState();
         get("dragging") = false;
         event.emplace<DropEvent>(ItemPtr(me), pos);
-        if (root->propagate(event)) {
+        if (root->propagate(renderer, event)) {
             get("catched").call();
             return true;
         }

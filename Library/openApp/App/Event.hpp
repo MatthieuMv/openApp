@@ -14,10 +14,11 @@
 #include <openApp/App/Events/WheelEvent.hpp>
 #include <openApp/App/Events/KeyboardEvent.hpp>
 #include <openApp/App/Events/DropEvent.hpp>
+#include <openApp/App/Events/TextEvent.hpp>
 
 namespace oA { struct Event; }
 
-struct oA::Event : public Variant<WindowEvent, MouseEvent, MotionEvent, WheelEvent, KeyboardEvent, DropEvent>
+struct oA::Event : public Variant<WindowEvent, MouseEvent, MotionEvent, WheelEvent, KeyboardEvent, TextEvent, DropEvent>
 {
     enum EventType {
         Window,
@@ -25,6 +26,7 @@ struct oA::Event : public Variant<WindowEvent, MouseEvent, MotionEvent, WheelEve
         Motion,
         Wheel,
         Keyboard,
+        Text,
         Drop
     };
 

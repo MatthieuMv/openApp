@@ -12,7 +12,6 @@
 #include <openApp/Render/SDL/Extern/SDL2_gfxPrimitives.h>
 #include <openApp/Types/Error.hpp>
 #include <openApp/Render/SDL/SDLRenderer.hpp>
-#include <openApp/Core/Log.hpp>
 
 oA::SDLRenderer::RenderContext::RenderContext(SDL_Window *_window, SDL_Renderer *_renderer, Color _clear)
     : window(_window), renderer(_renderer), clear(_clear)
@@ -514,7 +513,8 @@ bool oA::SDLRenderer::pollEvent(Event &target)
         { SDL_MOUSEMOTION,      &SDLRenderer::constructMotionEvent },
         { SDL_MOUSEWHEEL,       &SDLRenderer::constructWheelEvent },
         { SDL_KEYDOWN,          &SDLRenderer::constructKeyboardEvent },
-        { SDL_KEYUP,            &SDLRenderer::constructKeyboardEvent }
+        { SDL_KEYUP,            &SDLRenderer::constructKeyboardEvent },
+        { SDL_TEXTINPUT,        &SDLRenderer::constructTextEvent }
     };
     SDL_Event evt;
 
@@ -526,6 +526,16 @@ bool oA::SDLRenderer::pollEvent(Event &target)
         return (this->*pair.second)(target, evt);
     }
     return false;
+}
+
+void oA::SDLRenderer::setTextInputState(bool state)
+{
+    if (state == SDL_IsTextInputActive())
+        return;
+    if (state)
+        SDL_StartTextInput();
+    else
+        SDL_StopTextInput();
 }
 
 bool oA::SDLRenderer::constructWindowEvent(Event &target, SDL_Event &event)
@@ -668,6 +678,16 @@ bool oA::SDLRenderer::constructKeyboardEvent(Event &target, SDL_Event &event)
         event.type == SDL_KEYDOWN ? KeyboardEvent::Pressed : KeyboardEvent::Released,
         it->second,
         event.key.timestamp
+    );
+    target.window = event.window.windowID;
+    return true;
+}
+
+bool oA::SDLRenderer::constructTextEvent(Event &target, SDL_Event &event)
+{
+    target.emplace<TextEvent>(
+        event.text.text,
+        event.text.timestamp
     );
     target.window = event.window.windowID;
     return true;

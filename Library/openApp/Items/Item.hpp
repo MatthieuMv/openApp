@@ -111,7 +111,7 @@ public:
      * @return true Don't propagate event
      * @return false Propagate event
      */
-    virtual bool onEvent(const Event &) { return false; }
+    virtual bool onEvent(IRenderer &, const Event &) { return false; }
 
     /**
      * @brief Set internal parent pointer
@@ -186,7 +186,7 @@ public:
      *
      * @param event Received event
      */
-    bool propagate(const Event &event);
+    bool propagate(IRenderer &renderer, const Event &event);
 
     /**
      * @brief Set internal expression of matching key

@@ -65,15 +65,15 @@ void oA::Item::draw(IRenderer &renderer)
     onChildrenDrew(renderer);
 }
 
-bool oA::Item::propagate(const Event &event)
+bool oA::Item::propagate(IRenderer &renderer, const Event &event)
 {
     if (!get("enabled"))
         return false;
     for (auto it = _children.rbegin(); it != _children.rend(); ++it) {
-        if ((*it)->propagate(event))
+        if ((*it)->propagate(renderer, event))
             return true;
     }
-    if (onEvent(event))
+    if (onEvent(renderer, event))
         return true;
     return false;
 }

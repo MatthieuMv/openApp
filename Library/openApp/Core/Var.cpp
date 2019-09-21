@@ -584,6 +584,8 @@ oA::Var &oA::Var::pop(void)
             throw LogicError("Var", "Can't use function push on @Number@");
         },
         [] (Literal &literal) -> bool {
+            if (literal.empty())
+                return false;
             literal.pop_back();
             return true;
         },

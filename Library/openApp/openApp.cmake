@@ -96,6 +96,7 @@ set(Items
     ${oAItems}/Row.hpp
     ${oAItems}/DropArea.hpp
     ${oAItems}/DragArea.hpp
+    ${oAItems}/TextInput.hpp
 )
 
 set(Language

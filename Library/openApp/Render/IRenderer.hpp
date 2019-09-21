@@ -216,4 +216,11 @@ public:
      * @return false No event has been polled
      */
     virtual bool pollEvent(Event &target) = 0;
+
+    /**
+     * @brief Set the TextInput internal state. If true, will poll text input events
+     *
+     * @param state State
+     */
+    virtual void setTextInputState(bool state) = 0;
 };
