@@ -18,6 +18,8 @@ public:
 
     Layout(void) {
         append("children") = 0;
+        append("fillWidth") = false;
+        append("fillHeight") = false;
         append("fill") = false;
         append("padding") = 0;
         get("width").connect([this] { updateLayout(); return true; });

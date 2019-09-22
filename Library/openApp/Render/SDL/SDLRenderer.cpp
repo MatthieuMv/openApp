@@ -346,7 +346,7 @@ void oA::SDLRenderer::draw(const RectangleContext &context)
             p3 = { context.pos.x, context.pos.y + context.size.y },   p4 = { context.pos.x + context.size.x, context.pos.y + context.size.y };
         boxColor(_current->renderer, p1.x, p1.y, p2.x, p2.y + context.borderWidth, context.borderColor.getValue());
         boxColor(_current->renderer, p3.x, p3.y - context.borderWidth, p4.x, p4.y, context.borderColor.getValue());
-        boxColor(_current->renderer, p1.x - context.borderWidth, p1.y, p3.x, p3.y, context.borderColor.getValue());
+        boxColor(_current->renderer, p1.x, p1.y, p3.x + context.borderWidth, p3.y, context.borderColor.getValue());
         boxColor(_current->renderer, p2.x - context.borderWidth, p2.y, p4.x, p4.y, context.borderColor.getValue());
     }
 }

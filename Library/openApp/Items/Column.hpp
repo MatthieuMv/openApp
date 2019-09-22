@@ -20,13 +20,13 @@ public:
     virtual String getName(void) const noexcept { return "Column"; }
 
     virtual void updateLayout(void) override {
-        bool fill = get("fill");
+        bool fill = get("fill"), fillWidth = fill || get("fillWidth"), fillHeight = fill || get("fillHeight");
         for (auto it = _children.begin(); it != _children.end(); ++it) {
             auto &child = **it;
-            if (fill) {
+            if (fillWidth)
                 child.setExpression("width", "parent.width - parent.padding * 2");
+            if (fillHeight)
                 child.setExpression("height", "(parent.height - (parent.children + 1) * parent.padding) / parent.children");
-            }
             child.setExpression("x", "parent.padding");
             if (it == _children.begin())
                 child.setExpression("y", "parent.padding");
