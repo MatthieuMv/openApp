@@ -119,6 +119,14 @@ private:
     void collectExpressionGroup(Lexer::TokenList::iterator &it, Lexer::TokenList &target);
 
     /**
+     * @brief Push a token into a TokenList
+     *
+     * @param it Token iterator
+     * @param target Target token list
+     */
+    void pushToken(Lexer::TokenList::iterator &it, Lexer::TokenList &target);
+
+    /**
      * @brief Get the Error Context object
      *
      * @param line Line of the error

@@ -144,7 +144,7 @@ void oA::Lang::Parser::collectExpression(Lexer::TokenList::iterator &it, Lexer::
     if (it->first == "{")
         return collectExpressionGroup(++it, target);
     for (; it != _tokens.end() && it->second == line; ++it) {
-        target.emplace_back(std::move(it->first), it->second);
+        pushToken(it, target);
     }
 }
 
@@ -160,8 +160,15 @@ void oA::Lang::Parser::collectExpressionGroup(Lexer::TokenList::iterator &it, Le
             --groupLevel;
         if (!groupLevel)
             continue;
-        target.emplace_back(std::move(it->first), it->second);
+        pushToken(it, target);
     }
     if (groupLevel > 0)
         throw LogicError("Parser", "Missing end of expression declaration token @}@" + getErrorContext(firstLine));
+}
+
+void oA::Lang::Parser::pushToken(Lexer::TokenList::iterator &it, Lexer::TokenList &target)
+{
+    if (it->first == "-" && (!target.size() || target.back().first == "("))
+        target.emplace_back("0", it->second);
+    target.emplace_back(std::move(it->first), it->second);
 }
