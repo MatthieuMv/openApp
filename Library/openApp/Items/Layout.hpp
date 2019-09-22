@@ -22,15 +22,25 @@ public:
         append("fillHeight") = false;
         append("fill") = false;
         append("padding") = 0;
+        append("deltaX") = 0.0f;
+        append("deltaY") = 0.0f;
         get("width").connect([this] { updateLayout(); return true; });
         get("height").connect([this] { updateLayout(); return true; });
     }
 
     virtual String getName(void) const noexcept { return "Layout"; }
 
-    virtual void onAppendChild(Item &item) override { Item::onAppendChild(item); onSizeChanged(); }
+    virtual void onAppendChild(Item &child) override {
+        Item::onAppendChild(child);
+        child.setExpression("screenX", "parent.screenX + parent.deltaX + x");
+        child.setExpression("screenY", "parent.screenY + parent.deltaY + y");
+        onSizeChanged();
+    }
 
-    virtual void onRemoveChild(Item &item) override { Item::onRemoveChild(item); onSizeChanged(); }
+    virtual void onRemoveChild(Item &item) override {
+        Item::onRemoveChild(item);
+        onSizeChanged();
+    }
 
     virtual void updateLayout(void) {}
 

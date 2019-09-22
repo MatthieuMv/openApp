@@ -18,6 +18,7 @@
 #include <openApp/Items/Row.hpp>
 #include <openApp/Items/DragArea.hpp>
 #include <openApp/Items/TextInput.hpp>
+#include <openApp/Items/ScrollLayout.hpp>
 
 oA::UMap<oA::String, oA::Function<oA::ItemPtr(void)>> oA::ItemFactory::Components;
 
@@ -57,4 +58,5 @@ void oA::ItemFactory::RegisterBaseItems(void)
     Register<Row>();
     Register<DragArea>();
     Register<TextInput>();
+    Register<ScrollLayout>();
 }

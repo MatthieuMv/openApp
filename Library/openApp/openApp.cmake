@@ -97,6 +97,7 @@ set(Items
     ${oAItems}/DropArea.hpp
     ${oAItems}/DragArea.hpp
     ${oAItems}/TextInput.hpp
+    ${oAItems}/ScrollLayout.hpp
 )
 
 set(Language
