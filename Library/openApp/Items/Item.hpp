@@ -49,7 +49,7 @@ public:
         append("height") = 0; // Item height
         append("enabled") = true; // If true, Item will receive and propagate updates
         append("visible") = true; // If true, Item will draw himself and his children
-        append("clip") = true; // If true, Item will clip its children on draw
+        append("clip") = false; // If true, Item will clip its children on draw
     }
 
     /**
@@ -70,6 +70,13 @@ public:
      * @param child New Item
      */
     virtual void onAppendChild(Item &child);
+
+    /**
+     * @brief Set properties 'screenX' and 'screenY' of an appened child (called in Item::onAppendChild)
+     *
+     * @param child Children to set
+     */
+    virtual void setChildScreenPos(Item &child);
 
     /**
      * @brief Callback on removing child
@@ -178,8 +185,9 @@ public:
      * @brief Draw Item and its children
      *
      * @param renderer Drawing interface
+     * @param clipArea Clip rectangle
      */
-    void draw(IRenderer &renderer);
+    void draw(IRenderer &renderer, const AreaContext &clipArea);
 
     /**
      * @brief Propagate an event though Item and children

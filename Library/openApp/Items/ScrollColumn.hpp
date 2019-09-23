@@ -18,9 +18,9 @@ public:
     virtual ~ScrollColumn(void) = default;
 
     ScrollColumn(void) {
-        append("totalHeight") = 0.0f;
         get("verticalScroll") = true;
-        setExpression("scrollMinY", "-totalHeight");
+        get("width").connect([this] { updateScrollLimit(); return true; });
+        get("height").connect([this] { updateScrollLimit(); return true; });
     }
 
     virtual String getName(void) const noexcept { return "ScrollColumn"; }
@@ -28,13 +28,18 @@ public:
 protected:
     virtual void onSizeChanged(void) {
         Column::onSizeChanged();
-        updateTotalHeight();
+        updateScrollLimit();
     }
 
 private:
-    void updateTotalHeight(void) {
-        Float total = 0.0f;
-        _children.apply([&total](const ItemPtr &child) { total += child->getAs<Number>("height"); });
-        get("totalHeight") = total;
+    void updateScrollLimit(void) {
+        if (_children.empty()) {
+            get("scrollMinY") = 0;
+            return;
+        }
+        auto &back = *_children.back();
+        auto total = back.getAs<Number>("y") + back.getAs<Number>("height");
+        auto height = getAs<Number>("height");
+        get("scrollMinY") = total > height ? -total + height * 0.1f : 0;
     }
 };

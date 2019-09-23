@@ -21,9 +21,11 @@ public:
         append("fillWidth") = false;
         append("fillHeight") = false;
         append("fill") = false;
-        append("padding") = 0;
         append("deltaX") = 0.0f;
         append("deltaY") = 0.0f;
+        append("padding") = 0;
+        setExpression("paddingX", "padding");
+        setExpression("paddingY", "padding");
         get("width").connect([this] { updateLayout(); return true; });
         get("height").connect([this] { updateLayout(); return true; });
     }
@@ -32,14 +34,17 @@ public:
 
     virtual void onAppendChild(Item &child) override {
         Item::onAppendChild(child);
-        child.setExpression("screenX", "parent.screenX + parent.deltaX + x");
-        child.setExpression("screenY", "parent.screenY + parent.deltaY + y");
         onSizeChanged();
     }
 
     virtual void onRemoveChild(Item &item) override {
         Item::onRemoveChild(item);
         onSizeChanged();
+    }
+
+    virtual void setChildScreenPos(Item &child) override {
+        child.setExpression("screenX", "parent.screenX + parent.deltaX + x");
+        child.setExpression("screenY", "parent.screenY + parent.deltaY + y");
     }
 
     virtual void updateLayout(void) {}

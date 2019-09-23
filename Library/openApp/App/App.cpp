@@ -98,7 +98,7 @@ void oA::App::render(void)
 {
     _children.apply([this](auto &pair) {
         _renderer->clearWindow(pair.first);
-        pair.second->draw(*_renderer);
+        pair.second->draw(*_renderer, pair.second->getAreaContext());
         _renderer->renderWindow();
     });
     _renderer->handleTargetFPS();

@@ -33,7 +33,9 @@ public:
 private:
     void updateVisibility(void) {
         _children.apply([index = get("index").toInt(), i = 0](auto &child) mutable {
-            child->get("visible") = i++ == index;
+            auto isTarget = i++ == index;
+            child->get("visible") = isTarget;
+            child->get("enabled") = isTarget;
         });
     }
 };

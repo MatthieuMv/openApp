@@ -18,9 +18,9 @@ public:
     virtual ~ScrollRow(void) = default;
 
     ScrollRow(void) {
-        append("totalWidth") = 0.0f;
         get("horizontalScroll") = true;
-        setExpression("scrollMaxX", "-totalWidth");
+        get("width").connect([this] { updateScrollLimit(); return true; });
+        get("height").connect([this] { updateScrollLimit(); return true; });
     }
 
     virtual String getName(void) const noexcept { return "ScrollRow"; }
@@ -28,13 +28,18 @@ public:
 protected:
     virtual void onSizeChanged(void) {
         Row::onSizeChanged();
-        updateTotalWidth();
+        updateScrollLimit();
     }
 
 private:
-    void updateTotalWidth(void) {
-        Float total = 0.0f;
-        _children.apply([&total](const ItemPtr &child) { total += child->getAs<Number>("width"); });
-        get("totalWidth") = total;
+    void updateScrollLimit(void) {
+        if (_children.empty()) {
+            get("scrollMaxX") = 0;
+            return;
+        }
+        auto &back = *_children.back();
+        auto total = back.getAs<Number>("x") + back.getAs<Number>("width");
+        auto width = getAs<Number>("width");
+        get("scrollMaxX") = total > width ? -total + width * 0.1f : 0;
     }
 };

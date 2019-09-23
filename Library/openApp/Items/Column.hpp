@@ -24,15 +24,15 @@ public:
         for (auto it = _children.begin(); it != _children.end(); ++it) {
             auto &child = **it;
             if (fillWidth)
-                child.setExpression("width", "parent.width - parent.padding * 2", "Column width");
+                child.setExpression("width", "parent.width - parent.paddingX * 2", "Column width");
             if (fillHeight)
-                child.setExpression("height", "(parent.height - (parent.children + 1) * parent.padding) / parent.children", "Column height");
-            child.setExpression("x", "parent.padding", "Column x");
+                child.setExpression("height", "(parent.height - (parent.children + 1) * parent.paddingY) / parent.children", "Column height");
+            child.setExpression("x", "parent.paddingX", "Column x");
             if (it == _children.begin())
-                child.setExpression("y", "parent.padding", "Column y");
+                child.setExpression("y", "parent.paddingY", "Column y");
             else {
                 auto prev = it - 1;
-                child.setExpression("y", (*prev)->getID() + ".y + " + (*prev)->getID() + ".height + parent.padding", "Column y");
+                child.setExpression("y", (*prev)->getID() + ".y + " + (*prev)->getID() + ".height + parent.paddingY", "Column y");
             }
         }
     }

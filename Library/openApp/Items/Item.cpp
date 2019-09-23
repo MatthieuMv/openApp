@@ -19,8 +19,13 @@ void oA::Item::onAppendChild(Item &child)
         child.setID("noID" + ToString(assigned++));
     }
     child.setParent(this);
-    child.setExpression("screenX", "parent.screenX + x");
-    child.setExpression("screenY", "parent.screenY + y");
+    setChildScreenPos(child);
+}
+
+void oA::Item::setChildScreenPos(Item &child)
+{
+    child.setExpression("screenX", "x + parent.screenX");
+    child.setExpression("screenY", "y + parent.screenY");
 }
 
 void oA::Item::onRemoveChild(Item &child)
@@ -36,9 +41,10 @@ void oA::Item::onParentChanged(void)
     (get("screenY") = 0).clearTree();
 }
 
+
 void oA::Item::update(IRenderer &renderer)
 {
-    if (!get("visible") || !get("enabled"))
+    if (!get("enabled"))
         return;
     onUpdate(renderer);
     _children.apply([&renderer](auto &child) {
@@ -46,21 +52,24 @@ void oA::Item::update(IRenderer &renderer)
     });
 }
 
-void oA::Item::draw(IRenderer &renderer)
+void oA::Item::draw(IRenderer &renderer, const AreaContext &clipArea)
 {
+    auto process = [this, &renderer](const AreaContext &area) {
+        onDraw(renderer);
+        for (auto &child : _children) {
+            child->draw(renderer, area);
+        }
+    };
+
     if (!get("visible"))
         return;
-    onDraw(renderer);
     if (!get("clip")) {
-        _children.apply([this, &renderer](auto &child) {
-            renderer.stopClipping();
-            child->draw(renderer);
-        });
+        process(clipArea);
     } else {
-        _children.apply([this, &renderer, area = getAreaContext()](auto &child) {
-            renderer.setClippingArea(area);
-            child->draw(renderer);
-        });
+        auto area = getAreaContext();
+        renderer.setClippingArea(area);
+        process(area);
+        renderer.setClippingArea(clipArea);
     }
     onChildrenDrew(renderer);
 }
