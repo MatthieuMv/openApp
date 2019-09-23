@@ -69,6 +69,8 @@ private:
     Mode _mode;
     Int _line = 0;
     UInt _tab = 0;
+    ASTNode::NodeType _lastType = ASTNode::Root;
+    Operator _lastOp = Operator::Addition;
     bool _verbose = false;
 
     /**
@@ -92,8 +94,25 @@ private:
      */
     void processToken(Lexer::TokenList::const_iterator &it, ASTNode &root);
 
+    /**
+     * @brief Push a OperatorNode to the _opStack, setting the variable _lastType
+     *
+     * @param type OperatorNode's type
+     * @return ASTNodePtr& Inserted node
+     */
+    ASTNodePtr &pushToOpStack(Operator type);
+
+    /**
+     * @brief Push an ASTNode to the _stack, setting the variable _lastType
+     *
+     * @param ptr ASTNode pointer
+     * @return ASTNodePtr& Inserted node
+     */
+    ASTNodePtr &pushToStack(ASTNodePtr &&ptr);
+
     void processOperator(Lexer::TokenList::const_iterator &it, ASTNode &root);
     void processOperatorLogic(const OperatorModel &model);
+    void processSubstractionOperator(const OperatorModel &model);
     void processIncrementOperator(Lexer::TokenList::const_iterator &it);
 
     void processName(Lexer::TokenList::const_iterator &it);

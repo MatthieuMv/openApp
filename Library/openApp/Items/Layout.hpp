@@ -44,8 +44,8 @@ public:
 
     virtual void updateLayout(void) {}
 
-private:
-    void onSizeChanged(void) {
+protected:
+    virtual void onSizeChanged(void) {
         get("children") = _children.size();
         updateLayout();
     }

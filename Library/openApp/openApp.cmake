@@ -98,6 +98,8 @@ set(Items
     ${oAItems}/DragArea.hpp
     ${oAItems}/TextInput.hpp
     ${oAItems}/ScrollLayout.hpp
+    ${oAItems}/ScrollRow.hpp
+    ${oAItems}/ScrollColumn.hpp
 )
 
 set(Language

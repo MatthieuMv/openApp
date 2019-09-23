@@ -40,6 +40,8 @@ public:
         switch (event.getType()) {
         case Event::Wheel:
             return handleWheelEvent(event.getAs<WheelEvent>());
+        case Event::Motion:
+            return handleMotionEvent(event.getAs<MotionEvent>());
         default:
             return res;
         }
@@ -48,12 +50,27 @@ public:
 private:
     bool handleWheelEvent(const WheelEvent &event) {
         bool used = false;
-        if (get("horizontalScroll")) {
+        if (event.scroll.x && get("horizontalScroll")) {
             updateScroll(get("scrollX"), get("scrollMinX"), get("scrollMaxX"), event.scroll.x * getAs<Number>("width") * 0.05);
             used = true;
         }
-        if (get("verticalScroll")) {
+        if (event.scroll.y && get("verticalScroll")) {
             updateScroll(get("scrollY"), get("scrollMinY"), get("scrollMaxY"), event.scroll.y * getAs<Number>("height") * 0.05);
+            used = true;
+        }
+        return used;
+    }
+
+    bool handleMotionEvent(const MotionEvent &event) {
+        bool used = false;
+        if (!get("pressed"))
+            return false;
+        if (event.speed.x && get("horizontalScroll")) {
+            updateScroll(get("scrollX"), get("scrollMinX"), get("scrollMaxX"), event.speed.x);
+            used = true;
+        }
+        if (event.speed.y && get("verticalScroll")) {
+            updateScroll(get("scrollY"), get("scrollMinY"), get("scrollMaxY"), event.speed.y);
             used = true;
         }
         return used;

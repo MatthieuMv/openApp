@@ -74,16 +74,29 @@ void oA::Lang::ShuntingYard::processToken(Lexer::TokenList::const_iterator &it, 
         throw LogicError("ShuntingYard", "Couldn't identify expression token @" + it->first + "@" + getErrorContext(it->second));
 }
 
+oA::Lang::ASTNodePtr &oA::Lang::ShuntingYard::pushToOpStack(Operator type)
+{
+    _lastType = ASTNode::Operator;
+    return _opStack.emplace_back(std::make_unique<OperatorNode>(type));
+}
+
+oA::Lang::ASTNodePtr &oA::Lang::ShuntingYard::pushToStack(ASTNodePtr &&ptr)
+{
+    _lastType = ptr->getType();
+    return _stack.emplace_back(std::move(ptr));
+}
+
 void oA::Lang::ShuntingYard::processOperator(Lexer::TokenList::const_iterator &it, ASTNode &root)
 {
     const auto &model = GetOperator(it->first);
 
+    _lastOp = model.type;
     switch (model.type) {
     case End:
         buildStack(root);
         break;
     case LeftParenthese:
-        _opStack.emplace_back(std::make_unique<OperatorNode>(LeftParenthese));
+        pushToOpStack(LeftParenthese);
         break;
     case RightParenthese:
         popOpStack(LeftParenthese, it->second);
@@ -98,14 +111,17 @@ void oA::Lang::ShuntingYard::processOperator(Lexer::TokenList::const_iterator &i
         collectSingleGroup(it, *root.children.back());
         break;
     case Call:
-        _stack.emplace_back(std::make_unique<OperatorNode>(Call));
+        pushToStack(std::make_unique<OperatorNode>(Call));
         break;
     case LeftBracket:
         processValue(it);
         break;
+    case Substraction:
+        processSubstractionOperator(model);
+        break;
     default:
         processOperatorLogic(model);
-        _opStack.emplace_back(std::make_unique<OperatorNode>(model.type));
+        pushToOpStack(model.type);
         break;
     }
 }
@@ -124,6 +140,22 @@ void oA::Lang::ShuntingYard::processOperatorLogic(const OperatorModel &model)
     }
 }
 
+void oA::Lang::ShuntingYard::processSubstractionOperator(const OperatorModel &model)
+{
+    if (_lastType == ASTNode::Root || _lastType == ASTNode::Statement)
+        _stack.emplace_back(std::make_unique<ValueNode>(0));
+    if (_lastType == ASTNode::Operator) {
+        if (_lastOp == Substraction) {
+            dynamic_cast<OperatorNode &>(*_opStack.back()).op = Addition;
+            _lastOp = Addition;
+            return;
+        } else
+            _stack.emplace_back(std::make_unique<ValueNode>(0));
+    }
+    processOperatorLogic(model);
+    pushToOpStack(Substraction);
+}
+
 void oA::Lang::ShuntingYard::processIncrementOperator(Lexer::TokenList::const_iterator &it)
 {
     Operator op;
@@ -136,8 +168,9 @@ void oA::Lang::ShuntingYard::processIncrementOperator(Lexer::TokenList::const_it
         op = it->first.back() == '+' ? SufixIncrement : SufixDecrement;
         name = it->first.substr(0, it->first.length() - 2);
     }
-    auto &node = _stack.emplace_back(std::make_unique<OperatorNode>(op));
+    auto &node = pushToStack(std::make_unique<OperatorNode>(op));
     node->emplace(findReference(name, it->second));
+    _lastOp = op;
 }
 
 void oA::Lang::ShuntingYard::processName(Lexer::TokenList::const_iterator &it)
@@ -159,7 +192,7 @@ void oA::Lang::ShuntingYard::processReference(Lexer::TokenList::const_iterator &
 
     if (_mode == Expression)
         _target->depends(dynamic_cast<ReferenceNode &>(*node).ptr);
-    _stack.emplace_back(std::move(node));
+    pushToStack(std::move(node));
     auto tmp = it;
     if (++tmp != _tokens.end() && tmp->first == "((")
         throw LogicError("ShuntingYard", "openApp doesn't support arguments for @property call@" + getErrorContext(tmp->second));
@@ -184,7 +217,7 @@ void oA::Lang::ShuntingYard::processFunction(Lexer::TokenList::const_iterator &i
 
     processFunctionArguments(
         it,
-        *_stack.emplace_back(std::make_unique<FunctionNode>(model.type)),
+        *pushToStack(std::make_unique<FunctionNode>(model.type)),
         model
     );
 }
@@ -192,7 +225,7 @@ void oA::Lang::ShuntingYard::processFunction(Lexer::TokenList::const_iterator &i
 void oA::Lang::ShuntingYard::processFunction(Lexer::TokenList::const_iterator &it, const String &symbol, const String &object)
 {
     const auto &model = GetFunction(symbol);
-    auto &node = *_stack.emplace_back(std::make_unique<FunctionNode>(model.type));
+    auto &node = *pushToStack(std::make_unique<FunctionNode>(model.type));
 
     node.emplace(findReference(object, it->second));
     processFunctionArguments(
@@ -247,7 +280,7 @@ void oA::Lang::ShuntingYard::peekFunctionArguments(Lexer::TokenList::const_itera
 
 void oA::Lang::ShuntingYard::processValue(Lexer::TokenList::const_iterator &it)
 {
-    auto &node = dynamic_cast<ValueNode &>(*_stack.emplace_back(std::make_unique<ValueNode>()));
+    auto &node = dynamic_cast<ValueNode &>(*pushToStack(std::make_unique<ValueNode>()));
 
     parseValue(it, node.value);
 }
