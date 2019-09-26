@@ -87,5 +87,6 @@ void oA::Property::swap(Property &other)
 void oA::Property::bind(const PropertyPtr &other)
 {
     setTree(std::make_unique<Lang::ReferenceNode>(PropertyPtr(other)));
+    depends(other);
     compute();
 }
