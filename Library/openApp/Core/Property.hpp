@@ -129,7 +129,14 @@ public:
      */
     void swap(Property &other);
 
-//private:
+    /**
+     * @brief Bind this to an other property
+     *
+     * @param other Bind target
+     */
+    void bind(const PropertyPtr &other);
+
+private:
     Lang::ASTNodePtr _tree;
     Vector<Pair<UInt, PropertyPtr>> _dependencies;
 };

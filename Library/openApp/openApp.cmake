@@ -117,6 +117,8 @@ set(Language
     ${oALanguage}/ASTNode.cpp
     ${oALanguage}/Instantiator.hpp
     ${oALanguage}/Instantiator.cpp
+    ${oALanguage}/Delegate.hpp
+    ${oALanguage}/Delegate.cpp
     ${oALanguage}/ShuntingYard.hpp
     ${oALanguage}/ShuntingYard.cpp
     ${oALanguage}/Nodes.hpp

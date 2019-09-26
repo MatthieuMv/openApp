@@ -28,6 +28,9 @@ namespace oA::Lang
 class oA::Lang::Instantiator
 {
 public:
+    /**
+     * @brief This struct hold data of a unit (an AST tree and its path)
+     */
     struct Unit
     {
         String path;
@@ -36,6 +39,9 @@ public:
 
     using UnitPtr = Shared<Unit>;
 
+    /**
+     * @brief This struct holds data of a context (Generally a file)
+     */
     struct Context
     {
         UnitPtr unit;
@@ -44,7 +50,6 @@ public:
         Vector<String> imports;
         Deque<oA::Function<void(void)>> unresolved;
     };
-
     /**
      * @brief Instanciate an openApp class file (.oA)
      *
@@ -62,13 +67,23 @@ public:
      */
     static ItemPtr ProcessString(const String &string, const String &context = "Root", bool verbose = false, bool showItem = false);
 
-private:
+protected:
     Stack<Context> _contexts;
     Vector<UnitPtr> _units;
     UInt _tab = 0;
     bool _verbose = false;
 
+    /**
+     * @brief Construct a new Instantiator object
+     *
+     * @param verbose If true, will print instantiator steps
+     */
     Instantiator(bool verbose) : _verbose(verbose) {}
+
+    /**
+     * @brief Destroy the Instantiator object
+     */
+    virtual ~Instantiator(void) = default;
 
     /**
      * @brief Process a file

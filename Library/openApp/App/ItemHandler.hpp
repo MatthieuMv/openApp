@@ -70,7 +70,7 @@ public:
     void removeChild(UInt index);
 
     /**
-     * @brief Remove a child (using internal id)
+     * @brief Remove a child using internal id
      *
      * @param id Matching child id
      */
@@ -90,7 +90,7 @@ public:
     ItemPtr extractChild(UInt index);
 
     /**
-     * @brief Extract a child (using internal id)
+     * @brief Extract a child using internal id
      *
      * @param id Matching child id
      * @return ItemPtr Extracted item
@@ -98,7 +98,7 @@ public:
     ItemPtr extractChild(const String &id);
 
     /**
-     * @brief Check existence of a child (using internal id)
+     * @brief Check existence of a child using internal id
      *
      * @param id Child id to find
      * @return true Child has been found
@@ -123,7 +123,7 @@ public:
     const Item &getChild(UInt index) const;
 
     /**
-     * @brief Return a non-const reference to matching child (using internal id)
+     * @brief Return a non-const reference to matching child using internal id
      *
      * @param id Child id to find
      * @return Item& Matching child
@@ -131,12 +131,28 @@ public:
     Item &getChild(const String &id);
 
     /**
-     * @brief Return a const reference to matching child (using internal id)
+     * @brief Return a const reference to matching child using internal id
      *
      * @param id Child id to find
      * @return Item& Matching child
      */
     const Item &getChild(const String &id) const;
+
+    /**
+     * @brief Return a child pointer using index
+     *
+     * @param index Child index
+     * @return Item& Matching child
+     */
+    const ItemPtr &getChildPtr(UInt index) const;
+
+    /**
+     * @brief Return a child pointer using internal id
+     *
+     * @param id Child id to find
+     * @return Item& Matching child
+     */
+    const ItemPtr &getChildPtr(const String &id) const;
 
     /**
      * @brief Returun const reference to children

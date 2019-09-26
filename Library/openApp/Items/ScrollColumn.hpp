@@ -9,6 +9,7 @@
 
 #include <openApp/Items/ScrollLayout.hpp>
 #include <openApp/Items/Column.hpp>
+#include <openApp/Core/Log.hpp>
 
 namespace oA { class ScrollColumn; }
 
@@ -19,20 +20,13 @@ public:
 
     ScrollColumn(void) {
         get("verticalScroll") = true;
-        get("width").connect([this] { updateScrollLimit(); return true; });
-        get("height").connect([this] { updateScrollLimit(); return true; });
     }
 
     virtual String getName(void) const noexcept { return "ScrollColumn"; }
 
-protected:
-    virtual void onSizeChanged(void) {
-        Column::onSizeChanged();
-        updateScrollLimit();
-    }
-
 private:
-    void updateScrollLimit(void) {
+    virtual void updateLayout(void) {
+        Column::updateLayout();
         if (_children.empty()) {
             get("scrollMinY") = 0;
             return;

@@ -6,6 +6,7 @@
 */
 
 #include <openApp/Core/Property.hpp>
+#include <openApp/Language/Nodes/ReferenceNode.hpp>
 
 oA::Property &oA::Property::operator=(Property &&other)
 {
@@ -81,4 +82,10 @@ void oA::Property::swap(Property &other)
     Var::swap(other);
     _tree.swap(other._tree);
     _dependencies.swap(other._dependencies);
+}
+
+void oA::Property::bind(const PropertyPtr &other)
+{
+    setTree(std::make_unique<Lang::ReferenceNode>(PropertyPtr(other)));
+    compute();
 }

@@ -12,6 +12,8 @@ oA::Item &oA::ItemUtils::ItemHandler::appendChild(const ItemPtr &child)
 {
     if (!child.get())
         throw LogicError("Item", "Can't append @null@ chill");
+    if (childExists(child->getID()))
+        throw LogicError("Item", "Can't append child @" + child->getID() + "@, a child already have this ID");
     auto &p = _children.emplace_back(child);
     onAppendChild(*p);
     return *p;
@@ -21,6 +23,8 @@ oA::Item &oA::ItemUtils::ItemHandler::appendChild(ItemPtr &&child)
 {
     if (!child.get())
         throw LogicError("Item", "Can't append @null@ chill");
+    if (childExists(child->getID()))
+        throw LogicError("Item", "Can't append child @" + child->getID() + "@, a child already have this ID");
     auto &p = _children.emplace_back(std::move(child));
     onAppendChild(*p);
     return *p;
@@ -94,25 +98,35 @@ bool oA::ItemUtils::ItemHandler::childExists(const String &id) const noexcept
 
 oA::Item &oA::ItemUtils::ItemHandler::getChild(UInt index)
 {
-    auto it = _children.begin();
-
-    if (index >= _children.size())
-        throw AccessError("Item", "Can't get child with out of range index @" + ToString(index) + "@");
-    std::advance(it, index);
-    return *it->get();
+    return *getChildPtr(index);
 }
 
 const oA::Item &oA::ItemUtils::ItemHandler::getChild(UInt index) const
 {
+    return *getChildPtr(index);
+}
+
+oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id)
+{
+    return *getChildPtr(id);
+}
+
+const oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id) const
+{
+    return *getChildPtr(id);
+}
+
+const oA::ItemPtr &oA::ItemUtils::ItemHandler::getChildPtr(UInt index) const
+{
     auto it = _children.begin();
 
     if (index >= _children.size())
         throw AccessError("Item", "Can't get child with out of range index @" + ToString(index) + "@");
     std::advance(it, index);
-    return *it->get();
+    return *it;
 }
 
-oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id)
+const oA::ItemPtr &oA::ItemUtils::ItemHandler::getChildPtr(const String &id) const
 {
     auto it = _children.findIf([&id](const ItemPtr &child) {
         return id == child->getID();
@@ -120,16 +134,5 @@ oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id)
 
     if (it == _children.end())
         throw AccessError("Item", "Child with id @" + id + "@ doesn't exists");
-    return *it->get();
-}
-
-const oA::Item &oA::ItemUtils::ItemHandler::getChild(const String &id) const
-{
-    auto it = _children.findIf([&id](const ItemPtr &child) {
-        return id == child->getID();
-    });
-
-    if (it == _children.end())
-        throw AccessError("Item", "Child with id @" + id + "@ doesn't exists");
-    return *it->get();
+    return *it;
 }

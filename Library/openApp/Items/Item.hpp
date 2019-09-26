@@ -105,13 +105,6 @@ public:
     virtual void onDraw(IRenderer &) {}
 
     /**
-     * @brief Callback on children drew
-     *
-     * @param renderer Drawing interface
-     */
-    virtual void onChildrenDrew(IRenderer &) {}
-
-    /**
      * @brief Called on event handling
      *
      * @param event Received event
@@ -147,6 +140,17 @@ public:
      * @return Item* Root pointer
      */
     Item *getRoot(void) noexcept { return _parent ? _parent->getRoot() : this; }
+
+    /**
+     * @brief Get the ItemPtr object of 'this' (doesn't work for items without parent)
+     *
+     * @return ItemPtr Shared pointer object
+     */
+    ItemPtr getMyPtr(void) {
+        if (!getParent())
+            throw oA::LogicError("Item", "Can't get Root Item as SharedPtr");
+        return getParent()->getChildPtr(getID());
+    }
 
     /**
      * @brief Get the Area Context object of Item
@@ -267,4 +271,12 @@ private:
      * @return Item* Item pointer (can be null)
      */
     Item *findChildren(const String &key);
+
+    /**
+     * @brief Get item's clip area by reducing the size of its parent
+     *
+     * @param parent Parent clip area
+     * @return AreaContext New clip area
+     */
+    AreaContext getClipArea(const AreaContext &parent);
 };

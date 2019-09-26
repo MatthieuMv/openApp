@@ -54,7 +54,7 @@ void oA::Item::update(IRenderer &renderer)
 
 void oA::Item::draw(IRenderer &renderer, const AreaContext &clipArea)
 {
-    auto process = [this, &renderer](const AreaContext &area) {
+    auto processDraw = [this](IRenderer &renderer, const AreaContext &area) {
         onDraw(renderer);
         for (auto &child : _children) {
             child->draw(renderer, area);
@@ -64,14 +64,34 @@ void oA::Item::draw(IRenderer &renderer, const AreaContext &clipArea)
     if (!get("visible"))
         return;
     if (!get("clip")) {
-        process(clipArea);
-    } else {
-        auto area = getAreaContext();
-        renderer.setClippingArea(area);
-        process(area);
-        renderer.setClippingArea(clipArea);
+        processDraw(renderer, clipArea);
+        return;
     }
-    onChildrenDrew(renderer);
+    auto area = getClipArea(clipArea);
+    if (area.size.x <= 0 || area.size.y <= 0)
+        return;
+    renderer.setClippingArea(area);
+    processDraw(renderer, area);
+    renderer.setClippingArea(clipArea);
+}
+
+oA::AreaContext oA::Item::getClipArea(const AreaContext &parent)
+{
+    auto area = getAreaContext();
+
+    if (area.pos.x < parent.pos.x) {
+        area.size.x -= parent.pos.x - area.pos.x;
+        area.pos.x = parent.pos.x;
+    }
+    if (area.pos.y < parent.pos.y) {
+        area.size.y -= parent.pos.y - area.pos.y;
+        area.pos.y = parent.pos.y;
+    }
+    if (area.pos.x + area.size.x > parent.pos.x + parent.size.x)
+        area.size.x -= area.pos.x + area.size.x - (parent.pos.x + parent.size.x);
+    if (area.pos.y + area.size.y > parent.pos.y + parent.size.y)
+        area.size.y -= area.pos.y + area.size.y - (parent.pos.y + parent.size.y);
+    return area;
 }
 
 bool oA::Item::propagate(IRenderer &renderer, const Event &event)

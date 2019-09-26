@@ -19,20 +19,13 @@ public:
 
     ScrollRow(void) {
         get("horizontalScroll") = true;
-        get("width").connect([this] { updateScrollLimit(); return true; });
-        get("height").connect([this] { updateScrollLimit(); return true; });
     }
 
     virtual String getName(void) const noexcept { return "ScrollRow"; }
 
-protected:
-    virtual void onSizeChanged(void) {
-        Row::onSizeChanged();
-        updateScrollLimit();
-    }
-
 private:
-    void updateScrollLimit(void) {
+    virtual void updateLayout(void) {
+        Row::updateLayout();
         if (_children.empty()) {
             get("scrollMaxX") = 0;
             return;

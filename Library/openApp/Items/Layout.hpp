@@ -17,13 +17,13 @@ public:
     virtual ~Layout(void) = default;
 
     Layout(void) {
-        append("children") = 0;
         append("fillWidth") = false;
         append("fillHeight") = false;
         append("fill") = false;
         append("deltaX") = 0.0f;
         append("deltaY") = 0.0f;
         append("padding") = 0;
+        append("children") = 0;
         setExpression("paddingX", "padding");
         setExpression("paddingY", "padding");
         get("width").connect([this] { updateLayout(); return true; });
@@ -34,12 +34,14 @@ public:
 
     virtual void onAppendChild(Item &child) override {
         Item::onAppendChild(child);
-        onSizeChanged();
+        get("children") = _children.size();
+        updateLayout();
     }
 
     virtual void onRemoveChild(Item &item) override {
         Item::onRemoveChild(item);
-        onSizeChanged();
+        get("children") = _children.size();
+        updateLayout();
     }
 
     virtual void setChildScreenPos(Item &child) override {
@@ -48,10 +50,4 @@ public:
     }
 
     virtual void updateLayout(void) {}
-
-protected:
-    virtual void onSizeChanged(void) {
-        get("children") = _children.size();
-        updateLayout();
-    }
 };
