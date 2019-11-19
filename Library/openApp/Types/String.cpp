@@ -84,6 +84,8 @@ bool oA::String::isSigned(void) const noexcept
     auto it = begin();
     auto last = end();
 
+    if (it == last)
+        return false;
     if (*it == '-')
         ++it;
     for (; it != last; ++it) {
@@ -108,6 +110,8 @@ bool oA::String::isDecimal(void) const noexcept
     auto last = end();
     bool hasSeparator = false;
 
+    if (it == last)
+        return false;
     if (*it == '-')
         ++it;
     for (; it != last; ++it) {
