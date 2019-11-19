@@ -19,6 +19,7 @@ public:
     enum EventType {
         Title,
         Color,
+        Size,
         Resize,
         Fullscreen,
         Borderless,
@@ -32,8 +33,8 @@ public:
         (append("fullscreen") = false).connect([this] { pushEvent(Fullscreen); return true; });
         (append("borderless") = false).connect([this] { pushEvent(Borderless); return true; });
         (append("vsync") = false).connect([this] { pushEvent(VSync); return true; });
-        get("width") = 600;
-        get("height") = 400;
+        (get("width") = 600).connect([this] { pushEvent(Size); return true; });
+        (get("height") = 400).connect([this] { pushEvent(Size); return true; });
     }
 
     virtual String getName(void) const noexcept { return "Window"; }
@@ -97,6 +98,9 @@ private:
             break;
         case Color:
             renderer.setWindowColor(getWindowIndex(), Color::RetreiveColor(getAs<Literal>("color")));
+            break;
+        case Size:
+            renderer.setWindowSize(getWindowIndex(), V2i(get("width").toInt(), get("height").toInt()));
             break;
         case Resize:
         case Fullscreen:
