@@ -53,7 +53,7 @@ oA::Color oA::Color::RetreiveColor(const String &color)
 
     if (it != C_COLORS.end())
         return it->second;
-    if (!std::regex_match(color, RGBAMatch))
+    if (std::regex_match(color, RGBAMatch))
         return RetreiveColorArgs(color);
     throw LogicError("Color", "Invalid color @" + color + "@");
 }

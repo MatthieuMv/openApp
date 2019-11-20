@@ -25,7 +25,7 @@ public:
      *
      * @param verbose Activates or not Instantiator's verbose
      */
-    Delegate(bool verbose = false);
+    Delegate(const oA::String &path, bool verbose = false);
 
     /**
      * @brief Destroy the Delegate object
@@ -36,8 +36,10 @@ public:
      * @brief Instantiate a new child in root
      *
      * @param root Root Item
-     * @param path File Path
      * @return Item& Appened item
      */
-    Item &instantiate(const ItemPtr &root, const String &path);
+    Item &instantiate(const ItemPtr &root);
+
+private:
+    oA::String _path;
 };
