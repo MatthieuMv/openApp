@@ -23,7 +23,7 @@ public:
 
     virtual String getName(void) const noexcept { return "ScrollRow"; }
 
-private:
+protected:
     virtual void updateLayout(void) {
         Row::updateLayout();
         if (_children.empty()) {
