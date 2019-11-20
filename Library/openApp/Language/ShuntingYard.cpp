@@ -551,10 +551,9 @@ void oA::Lang::ShuntingYard::collectExpressionGroup(Lexer::TokenList::const_iter
 
 void oA::Lang::ShuntingYard::collectGroup(Lexer::TokenList::const_iterator &it, ASTNode &root)
 {
-    auto old = it->second;
-
-    for (auto line = it->second; it != _tokens.end() && old == line; line = (++it)->second)
+    for (auto old = it->second; it != _tokens.end() && old == it->second; ++it) {
         processToken(it, root);
+    }
     buildStack(root);
 }
 
