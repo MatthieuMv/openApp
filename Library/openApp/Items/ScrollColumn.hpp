@@ -24,7 +24,6 @@ public:
 
     virtual String getName(void) const noexcept { return "ScrollColumn"; }
 
-protected:
     virtual void updateLayout(void) {
         Column::updateLayout();
         if (_children.empty()) {

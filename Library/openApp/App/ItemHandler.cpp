@@ -16,6 +16,7 @@ oA::Item &oA::ItemUtils::ItemHandler::appendChild(const ItemPtr &child)
         throw LogicError("Item", "Can't append child @" + child->getID() + "@, a child already have this ID");
     auto &p = _children.emplace_back(child);
     onAppendChild(*p);
+    onSizeChanged();
     return *p;
 }
 
@@ -27,6 +28,7 @@ oA::Item &oA::ItemUtils::ItemHandler::appendChild(ItemPtr &&child)
         throw LogicError("Item", "Can't append child @" + child->getID() + "@, a child already have this ID");
     auto &p = _children.emplace_back(std::move(child));
     onAppendChild(*p);
+    onSizeChanged();
     return *p;
 }
 
@@ -39,6 +41,7 @@ void oA::ItemUtils::ItemHandler::removeChild(UInt index)
     std::advance(it, index);
     onRemoveChild(**it);
     _children.erase(it);
+    onSizeChanged();
 }
 
 void oA::ItemUtils::ItemHandler::removeChild(const String &id)
@@ -54,6 +57,7 @@ void oA::ItemUtils::ItemHandler::removeChild(const String &id)
     });
     if (!count)
         throw AccessError("Item", "Couldn't remove any instance of children with id @" + id + "@");
+    onSizeChanged();
 }
 
 void oA::ItemUtils::ItemHandler::popChild(void)
@@ -62,6 +66,7 @@ void oA::ItemUtils::ItemHandler::popChild(void)
         throw LogicError("Item", "Can't pop empty children list");
     onRemoveChild(*_children.back());
     _children.pop_back();
+    onSizeChanged();
 }
 
 oA::ItemPtr oA::ItemUtils::ItemHandler::extractChild(UInt index)
@@ -75,6 +80,7 @@ oA::ItemPtr oA::ItemUtils::ItemHandler::extractChild(UInt index)
     onRemoveChild(**it);
     ptr = *it;
     _children.erase(it);
+    onSizeChanged();
     return ptr;
 }
 
@@ -86,6 +92,8 @@ oA::ItemPtr oA::ItemUtils::ItemHandler::extractChild(const String &id)
     if (it == _children.end())
         throw AccessError("Item", "Couldn't extract any instance of children with id @" + id + "@");
     ptr = *it;
+    _children.erase(it);
+    onSizeChanged();
     return ptr;
 }
 

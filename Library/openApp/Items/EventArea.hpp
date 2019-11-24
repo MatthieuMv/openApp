@@ -8,6 +8,7 @@
 #pragma once
 
 #include <openApp/Core/LightChrono.hpp>
+#include <openApp/Core/Log.hpp>
 #include <openApp/Items/Item.hpp>
 #include <openApp/Render/RenderContexts.hpp>
 
@@ -25,8 +26,6 @@ public:
         append("released"); // Release event
         append("holded"); // Hold event
         append("holdDuration") = 500; // Pressed duration required to call holded event (in ms)
-        append("doublePressed"); // Hold event
-        append("doublePressInterval") = 500; // Press interval required to call doublePressed event (in ms)
     }
 
     virtual String getName(void) const noexcept { return "EventArea"; }
@@ -47,27 +46,23 @@ public:
     }
 
 private:
-    LightChrono _hold, _double;
+    LightChrono _hold;
 
     bool handleMouseEvent(const MouseEvent &event) {
-        auto &hovered = get("hovered") = contains(event.pos);
+        bool hovered = get("hovered") = contains(event.pos);
+        bool propagate = get("propagate");
         get("pressed") = hovered && event.type == MouseEvent::Pressed;
         if (!hovered)
             return false;
-        if (event.type != MouseEvent::Released) {
+        if (event.type == MouseEvent::Released)
+            get("released").call();
+        else
             _hold.reset();
-            return !get("propagate");
-        }
-        get("released").call();
-        if (_double.getMilliseconds() <= get("doublePressInterval").toUInt())
-            get("doublePressed").call();
-        _double.reset();
-        return !get("propagate");
+        return !propagate;
     }
 
     bool handleMotionEvent(const MotionEvent &event) {
-        bool hovered = contains(event.pos);
-        get("hovered") = hovered;
+        bool hovered = get("hovered") = contains(event.pos);
         if (!hovered)
             get("pressed") = false;
         return false;

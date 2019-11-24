@@ -42,6 +42,11 @@ public:
     virtual void onRemoveChild(Item &) {}
 
     /**
+     * @brief Event called when children count changes
+     */
+    virtual void onSizeChanged(void) {}
+
+    /**
      * @brief Return number of children
      *
      * @return UInt Number of children
