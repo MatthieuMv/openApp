@@ -95,6 +95,11 @@ private:
     void processToken(Lexer::TokenList::const_iterator &it, ASTNode &root);
 
     /**
+     * @brief Check if token is an increment / decrement operator
+     */
+    bool isIncrementOperator(const oA::String &token);
+
+    /**
      * @brief Push a OperatorNode to the _opStack, setting the variable _lastType
      *
      * @param type OperatorNode's type

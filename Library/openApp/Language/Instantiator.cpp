@@ -76,11 +76,8 @@ oA::ItemPtr oA::Lang::Instantiator::closeContext(void)
 {
     auto root = std::move(context().root);
     auto unresolved = std::move(context().unresolved);
-    auto left = 0;
 
     _contexts.erase(_contexts.begin());
-    if (_verbose)
-        oA::cout << "Resolving " << unresolved.size() << " expressions" << oA::endl;
     for (auto it = unresolved.begin(); it != unresolved.end(); it = unresolved.erase(it)) {
         try {
             (*it)();
@@ -88,11 +85,8 @@ oA::ItemPtr oA::Lang::Instantiator::closeContext(void)
             if (!hasContext())
                 throw;
             context().unresolved.emplace_front(*it);
-            ++left;
         }
     }
-    if (_verbose)
-        oA::cout << "Unresolved left " << left << "" << oA::endl;
     return root;
 }
 

@@ -15,7 +15,6 @@
 
 static const std::regex NameMatch("([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*", std::regex::optimize);
 static const std::regex ValueMatch("\".*\"|[[]|true|false|-?[[:digit:]]*[.]?[[:digit:]]+", std::regex::optimize);
-static const std::regex IncrementOperatorMatch("(([+][+]|[-][-])([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*)|((([[:alpha:]][[:alnum:]]*)(.[[:alpha:]][[:alnum:]]*)*)([+][+]|[-][-]))", std::regex::optimize);
 
 void oA::Lang::ShuntingYard::ProcessString(Item &root, const String &name, const String &expr, Mode mode, const String &context, bool verbose, UInt tab)
 {
@@ -61,17 +60,28 @@ void oA::Lang::ShuntingYard::process(void)
 void oA::Lang::ShuntingYard::processToken(Lexer::TokenList::const_iterator &it, ASTNode &root)
 {
     if (IsOperator(it->first))
-        processOperator(it, root);
+        return processOperator(it, root);
     else if (IsStatement(it->first))
-        processStatement(it, root);
-    else if (std::regex_match(it->first, IncrementOperatorMatch))
-        processIncrementOperator(it);
+        return processStatement(it, root);
+    else if (isIncrementOperator(it->first))
+        return processIncrementOperator(it);
     else if (std::regex_match(it->first, ValueMatch))
-        processValue(it);
+        return processValue(it);
     else if (std::regex_match(it->first, NameMatch))
-        processName(it);
+        return processName(it);
     else
         throw LogicError("ShuntingYard", "Couldn't identify expression token @" + it->first + "@" + getErrorContext(it->second));
+}
+
+bool oA::Lang::ShuntingYard::isIncrementOperator(const oA::String &token)
+{
+    if (token.size() < 3)
+        return false;
+    else if (auto ch = token.front(); (ch == '+' || ch == '-') && ch == *++token.begin())
+        return true;
+    else if (auto ch = token.back(); (ch == '+' || ch == '-') && ch == *++token.rbegin())
+        return true;
+    return false;
 }
 
 oA::Lang::ASTNodePtr &oA::Lang::ShuntingYard::pushToOpStack(Operator type)
