@@ -49,7 +49,7 @@ oA::ItemPtr oA::Lang::Instantiator::process(const String &path)
 
 oA::ItemPtr oA::Lang::Instantiator::process(const String &string, const String &context)
 {
-    auto &ctx = _contexts.emplace_front();
+    auto &ctx = _contexts.emplace();
 
     ctx.unit = std::make_shared<Unit>();
     ctx.unit->path = context;
@@ -60,7 +60,7 @@ oA::ItemPtr oA::Lang::Instantiator::process(const String &string, const String &
 
 void oA::Lang::Instantiator::openFileContext(String &&path)
 {
-    auto &ctx = _contexts.emplace_front();
+    auto &ctx = _contexts.emplace();
     auto it = _units.findIf([&path](const auto &unit) { return unit->path == path; });
 
     if (it != _units.end())
@@ -77,7 +77,7 @@ oA::ItemPtr oA::Lang::Instantiator::closeContext(void)
     auto root = std::move(context().root);
     auto unresolved = std::move(context().unresolved);
 
-    _contexts.erase(_contexts.begin());
+    _contexts.pop();
     for (auto it = unresolved.begin(); it != unresolved.end(); it = unresolved.erase(it)) {
         try {
             (*it)();
@@ -133,14 +133,12 @@ void oA::Lang::Instantiator::processClass(const ClassNode &node)
         if (!isKnownItem)
             throw LogicError("Instantiator", "Infinite instantiation loop detected on Item @" + node.name + "@");
         ptr = ItemFactory::Instanciate(node.name);
-        if (!ctx.root && _contexts.size() > 1)
-            (++_contexts.begin())->target->appendChild(ptr);
-        else if (ctx.root)
-            ctx.target->appendChild(ptr);
     } else
         ptr = process(path);
     if (!ctx.root)
         ctx.root = ptr;
+    else
+        ctx.target->appendChild(ptr);
     auto oldTarget = ctx.target ? std::move(ctx.target) : ctx.root;
     ctx.target = std::move(ptr);
     processRoot(node);

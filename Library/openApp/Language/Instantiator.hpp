@@ -68,7 +68,7 @@ public:
     static ItemPtr ProcessString(const String &string, const String &context = "Root", bool verbose = false, bool showItem = false);
 
 protected:
-    List<Context> _contexts;
+    Stack<Context> _contexts;
     Vector<UnitPtr> _units;
     UInt _tab = 0;
     bool _verbose = false;
@@ -208,14 +208,14 @@ protected:
      *
      * @return Context& Current Context
      */
-    Context &context(void) { return _contexts.front(); }
+    Context &context(void) { return _contexts.top(); }
 
     /**
      * @brief Get current context
      *
      * @return const Context& Current Context
      */
-    const Context &context(void) const { return _contexts.front(); }
+    const Context &context(void) const { return _contexts.top(); }
 
     /**
      * @brief Tell if the current Context has a Unit loaded
