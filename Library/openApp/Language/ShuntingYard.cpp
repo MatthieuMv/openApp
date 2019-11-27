@@ -543,8 +543,10 @@ void oA::Lang::ShuntingYard::parseStaticVariable(Lexer::TokenList::const_iterato
     if (++it == _tokens.end() || it->first != "var" || ++it == _tokens.end() || !std::regex_match(it->first, NameMatch))
         throw LogicError("ShuntingYard", "Invalid @local variable@ declaration" + getErrorContext(it->second));
     auto &var = locals()[it->first] = 0;
-    if (++it != _tokens.end() && it->first == "=")
-        parseValue(it, var);
+	if (++it != _tokens.end() && it->first == "=") {
+		parseValue(++it, var);
+		++it;
+	}
     if (it == _tokens.end() || it->first != ";")
         throw LogicError("ShuntingYard", "Excepted end of declaration token @;@" + getErrorContext(line));
 }
