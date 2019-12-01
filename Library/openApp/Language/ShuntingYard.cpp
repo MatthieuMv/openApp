@@ -48,6 +48,8 @@ void oA::Lang::ShuntingYard::process(void)
 {
     auto it = _tokens.begin();
 
+    if (_mode != Event)
+        _target->clearTree();
     collectGroup(it, *_expr, String());
     buildTarget();
     if (_verbose) {
