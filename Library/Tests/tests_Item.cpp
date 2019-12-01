@@ -22,6 +22,7 @@ Test(Item, Basics)
     cr_assert_neq(child.getParent(), &item);
 }
 
+#include <openApp/Core/Log.hpp>
 Test(Item, Expression)
 {
     oA::Item item;
@@ -29,17 +30,18 @@ Test(Item, Expression)
     item.setExpression("z", "y * 2");
     item.setFunction("fct", "height += 2");
     item.addExpressionEvent("z", "++width; fct();");
-    cr_assert_eq(item.getAs<oA::Number>("z"), 0);
-    cr_assert_eq(item.getAs<oA::Number>("width"), 0);
-    cr_assert_eq(item.getAs<oA::Number>("height"), 0);
+    cr_assert_eq(item.get("z").toInt(), 0);
+    cr_assert_eq(item.get("width").toInt(), 0);
+    cr_assert_eq(item.get("height").toInt(), 0);
     item.get("y") = 1;
-    cr_assert_eq(item.getAs<oA::Number>("z"), 2);
-    cr_assert_eq(item.getAs<oA::Number>("width"), 1);
-    cr_assert_eq(item.getAs<oA::Number>("height"), 2);
+    oA::cout << "Z eq " << item.get("z").toInt() << oA::endl;
+    cr_assert_eq(item.get("z").toInt(), 2);
+    cr_assert_eq(item.get("width").toInt(), 1);
+    cr_assert_eq(item.get("height").toInt(), 2);
     item.get("y") = 2;
-    cr_assert_eq(item.getAs<oA::Number>("z"), 4);
-    cr_assert_eq(item.getAs<oA::Number>("width"), 2);
-    cr_assert_eq(item.getAs<oA::Number>("height"), 4);
+    cr_assert_eq(item.get("z").toInt(), 4);
+    cr_assert_eq(item.get("width").toInt(), 2);
+    cr_assert_eq(item.get("height").toInt(), 4);
 }
 
 Test(Item, ExpressionItem)

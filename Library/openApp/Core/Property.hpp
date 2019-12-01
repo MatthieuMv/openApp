@@ -40,7 +40,7 @@ public:
      * @param value Value
      */
     template<typename T>
-    Property(T &&value) : Var(std::move(value)) {}
+    explicit Property(T &&value) : Var(std::move(value)) {}
 
     /**
      * @brief Construct a new Property object by move

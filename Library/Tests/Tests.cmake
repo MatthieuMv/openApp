@@ -1,12 +1,11 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(openApp VERSION 1.0.0)
 
-set(oALibraryDir ..)
-set(oATestsDir ${oALibraryDir}/Tests)
-
 include(${oALibraryDir}/openApp/openApp.cmake)
 
-set(TestsSources
+set(oATestsDir ${oALibraryDir}/Tests)
+
+set(oATestsSources
     ${oATestsDir}/tests_Error.cpp
     ${oATestsDir}/tests_String.cpp
     ${oATestsDir}/tests_ContainerHelper.cpp
@@ -36,16 +35,3 @@ set(TestsSources
     ${oATestsDir}/tests_ExpressionGroupNode.cpp
     ${oATestsDir}/tests_ShuntingYard.cpp
 )
-
-set(CMAKE_CXX_STANDARD 17)
-
-
-if (UNIX)
-    set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -coverage")
-endif ()
-
-link_libraries(criterion)
-
-include_directories(${oALibraryDir})
-
-add_executable(run_tests ${TestsSources} ${oASources})
